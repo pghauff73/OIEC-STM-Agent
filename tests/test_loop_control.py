@@ -142,7 +142,30 @@ class LoopControlTests(unittest.TestCase):
         self.assertIn("bounded_control_progress", assessment.certificate.reasons)
         self.assertEqual(0, assessment.certificate.hypothesis_resolution_bp)
 
-    def test_grounded_hypothesis_link_is_hypothesis_resolution_progress(self) -> None:
+    def test_grounded_hypothesis_link_is_bookkeeping_not_independent_epistemic_progress(self) -> None:
+        before = self.projection("before", hypothesis_definitions=("h:def",))
+        after = self.projection(
+            "after",
+            hypothesis_definitions=("h:def",),
+            hypothesis_evidence=("h:evidence",),
+        )
+        assessment = LoopProgressController(
+            max_control_only_progress=2,
+            initial_control_only_streak=1,
+        ).assess(
+            before=before,
+            after=after,
+            step_signature="link-grounded-evidence",
+        )
+        self.assertTrue(assessment.allowed)
+        self.assertTrue(assessment.control_only)
+        self.assertEqual(2, assessment.control_only_streak)
+        self.assertGreater(assessment.certificate.hypothesis_resolution_bp, 0)
+        self.assertIn("hypothesis_bookkeeping", assessment.certificate.reasons)
+        self.assertIn("bounded_control_progress", assessment.certificate.reasons)
+        self.assertNotIn("novel_evidence", assessment.certificate.reasons)
+
+    def test_hypothesis_link_cannot_reset_exhausted_control_budget_without_new_evidence(self) -> None:
         before = self.projection("before", hypothesis_definitions=("h:def",))
         after = self.projection(
             "after",
@@ -155,13 +178,12 @@ class LoopControlTests(unittest.TestCase):
         ).assess(
             before=before,
             after=after,
-            step_signature="link-grounded-evidence",
+            step_signature="link-existing-evidence",
         )
-        self.assertTrue(assessment.allowed)
-        self.assertFalse(assessment.control_only)
-        self.assertEqual(0, assessment.control_only_streak)
-        self.assertGreater(assessment.certificate.hypothesis_resolution_bp, 0)
-        self.assertIn("hypothesis_resolution", assessment.certificate.reasons)
+        self.assertFalse(assessment.allowed)
+        self.assertEqual(3, assessment.control_only_streak)
+        self.assertFalse(assessment.certificate.accepted)
+        self.assertEqual("CONTROL_ONLY_BUDGET_EXHAUSTED", assessment.cycle_kind)
 
     def test_control_only_progress_is_bounded_to_two_consecutive_transitions(self) -> None:
         controller = LoopProgressController(max_control_only_progress=2)
@@ -192,6 +214,28 @@ class LoopControlTests(unittest.TestCase):
         self.assertEqual(0, evidence.control_only_streak)
         self.assertEqual(1, next_control.control_only_streak)
         self.assertTrue(next_control.allowed)
+
+    def test_new_evidence_and_hypothesis_link_same_transition_resets_streak(self) -> None:
+        before = self.projection("before", hypothesis_definitions=("h:def",))
+        after = self.projection(
+            "after",
+            evidence=("e:new",),
+            hypothesis_definitions=("h:def",),
+            hypothesis_evidence=("h:evidence",),
+        )
+        assessment = LoopProgressController(
+            max_control_only_progress=2,
+            initial_control_only_streak=2,
+        ).assess(
+            before=before,
+            after=after,
+            step_signature="read-and-link",
+        )
+        self.assertTrue(assessment.allowed)
+        self.assertFalse(assessment.control_only)
+        self.assertEqual(0, assessment.control_only_streak)
+        self.assertIn("novel_evidence", assessment.certificate.reasons)
+        self.assertIn("hypothesis_bookkeeping", assessment.certificate.reasons)
 
     def test_repeated_control_only_semantic_step_is_cycle(self) -> None:
         controller = LoopProgressController(max_period=2, max_control_only_progress=2)
