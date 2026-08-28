@@ -6,7 +6,7 @@ This document records the research basis for OIEC-STM-Agent's formal writing pro
 
 ### 1. University essays are thesis-driven arguments
 
-Monash University describes an academic essay as a position on a topic supported by evidence, with an introduction, logically connected evidence-bearing body paragraphs, and a conclusion that shows how the argument answered the question. The University of Melbourne likewise emphasises responding directly to the task, following genre conventions, using a clear supported structure, demonstrating research, and critically analysing rather than merely summarising sources.
+Monash University describes an academic essay as a position on a topic supported by evidence, with an introduction, logically connected evidence-bearing body paragraphs, and a conclusion that shows how the argument answered the question. The University of Melbourne and Oxford similarly emphasise responding directly to the task, using a clear supported structure, and making each body paragraph contribute evidence to the developing argument.
 
 Implementation consequence: every formal profile requires task analysis, a central thesis, a roadmap, evidence-bearing body claims, and a conclusion that answers the task without adding new evidence.
 
@@ -14,6 +14,7 @@ Sources:
 - https://www.monash.edu/student-academic-success/excel-at-writing/how-to-write/essay
 - https://students.unimelb.edu.au/academic-skills/reading-writing-and-referencing/writing-effectively/using-a-writing-process
 - https://students.unimelb.edu.au/academic-skills/reading-writing-and-referencing/essays/six-top-tips-for-writing-a-great-essay
+- https://www.ox.ac.uk/students/academic/guidance/skills/essay
 
 ### 2. Synthesis is more than summary
 
@@ -26,7 +27,18 @@ Sources:
 - https://www.monash.edu/student-academic-success/sharpen-your-thinking/critical-thinking/create-argument/bring-together-your-evidence-and-reasoning
 - https://www.monash.edu/student-academic-success/sharpen-your-thinking/critical-thinking/analyse-sources-and-arguments/analyse-sources
 
-### 3. Argument maps expose logical structure
+### 3. Science essays are essays, not automatically laboratory reports
+
+Sheffield Hallam's undergraduate science-writing guide explicitly distinguishes science essays from lab reports, literature reviews and other scientific genres. The University of Sussex recommends that science-based essay paragraphs use sources, explanation, examples and data to support a topic idea, with critical analysis and synthesis of evidence. Science essays may need discipline-specific data/diagram conventions, but the assessment brief remains authoritative.
+
+Implementation consequence: `scientific-essay` retains the thesis-driven essay form unless the assignment explicitly asks for IMRaD/report structure. It asks for scientific claim/evidence/method/limitation analysis rather than mechanically applying a research-paper template.
+
+Sources:
+- https://libguides.shu.ac.uk/writingscience
+- https://www.sussex.ac.uk/skills-hub/writing-and-assessments
+- https://www.ox.ac.uk/students/academic/guidance/skills/essay
+
+### 4. Argument maps expose logical structure
 
 Monash recommends argument maps for complex academic arguments because they make relationships among claims, reasons and evidence visible. Stanford's current Informal Logic entry similarly describes standardising arguments into premises and conclusions and using diagrams to distinguish linked and convergent support. It stresses the importance of identifying implicit premises and evaluating them.
 
@@ -37,7 +49,7 @@ Sources:
 - https://plato.stanford.edu/entries/logic-informal/
 - https://plato.stanford.edu/entries/argument/
 
-### 4. Counterarguments must be answered, not merely mentioned
+### 5. Counterarguments must be answered, not merely mentioned
 
 University argument guidance asks writers to consider claims and counterclaims, test their main claim against opposing perspectives, and identify missing or weakly evidenced claims. Informal logic treats rebutting and undercutting defeaters as materially different ways an inference can fail.
 
@@ -48,17 +60,17 @@ Sources:
 - https://www.monash.edu/student-academic-success/sharpen-your-thinking/critical-thinking/evaluate-arguments-of-others
 - https://plato.stanford.edu/entries/reasoning-defeasible/
 
-### 5. Scientific writing should preserve the claim-evidence-method relationship
+### 6. Scientific writing should preserve the claim-evidence-method relationship
 
 Nature Genetics recommends planning scientific papers by laying out claims together with supporting evidence and methods so the semantic structure of the argument remains visible. Nature Methods describes scientific writing as selecting data and interpretation to deliver a message to an audience, while enabling the reader to understand observations, reproduce analysis where needed, and assess how interpretation was reached.
 
-Implementation consequence: the scientific-essay profile requires every major scientific claim to track evidence, method/source, reasoning, limitations, competing explanation and claim strength. It distinguishes scientific essays from laboratory reports unless the assessment explicitly requests IMRaD/report structure.
+Implementation consequence: the scientific-essay profile requires every major scientific claim to track evidence, method/source, reasoning, limitations, competing explanation and claim strength.
 
 Sources:
 - https://www.nature.com/articles/ng.3271
 - https://www.nature.com/articles/nmeth.4532
 
-### 6. Scientific certainty must be calibrated
+### 7. Scientific certainty must be calibrated
 
 Evidence communication guidance warns against unwarranted certainty and over-neat narratives. Reproducibility scholarship stresses that scientific credibility rests on transparent evidence, methods, data and interpretation, and that reproducibility, replicability and robustness provide different information about a finding.
 
@@ -100,6 +112,8 @@ Edges are typed as:
 - `limits`
 
 The positive support graph is required to be acyclic. This does not mean an essay cannot discuss dialectical back-and-forth; attack and rebuttal edges may cross the support hierarchy. The constraint means a claim cannot ultimately justify itself.
+
+Linked premises may share an `inference_id`; ungrouped support is treated as convergent/independent unless otherwise specified. Material inference modes may be labelled deductive, inductive, abductive, causal, analogical, authority/expert, or defeasible.
 
 ## Scientific essay profile
 
