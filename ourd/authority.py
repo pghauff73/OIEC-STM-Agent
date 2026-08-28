@@ -5,7 +5,7 @@ import json
 from dataclasses import asdict
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any, Dict, Iterable, Optional
 
 from .errors import PolicyError
 from .models import AuthorityManifest, RISK_ORDER
@@ -35,6 +35,68 @@ def read_only_authority(workspace: Workspace) -> AuthorityManifest:
     return finalize_authority(
         AuthorityManifest(source_snapshot_hash=workspace.snapshot_hash(), read_only=True)
     )
+
+
+def scoped_write_authority(
+    workspace: Workspace,
+    *,
+    allowed_paths: Iterable[str],
+    goal: str,
+    operator: str = "cli-user",
+    command_capabilities: Optional[Iterable[str]] = None,
+    mandatory_tests: Optional[Iterable[str]] = None,
+    allow_interactive_l2: bool = False,
+    max_retries_per_action: int = 1,
+) -> AuthorityManifest:
+    """Create exact-snapshot mutation authority from explicit CLI user scope.
+
+    This helper is intentionally conservative: L1 changes still require exact
+    candidate approval, L2 is disabled unless the CLI user explicitly enables
+    it, and --yolo is never granted. It does not broaden scope beyond the path
+    patterns supplied by the human invocation.
+    """
+
+    normalized_paths = []
+    for raw in allowed_paths:
+        path = str(raw).strip()
+        if not path:
+            continue
+        if Path(path).is_absolute() or "\x00" in path:
+            raise PolicyError(f"invalid write path pattern: {path!r}")
+        normalized_paths.append(path.replace("\\", "/"))
+    normalized_paths = list(dict.fromkeys(normalized_paths))
+    if not normalized_paths:
+        raise PolicyError("bounded write authority requires at least one allowed path")
+
+    capabilities = list(dict.fromkeys(str(value) for value in (command_capabilities or ()) if str(value)))
+    tests = list(dict.fromkeys(str(value) for value in (mandatory_tests or ()) if str(value)))
+    manifest = AuthorityManifest(
+        task_id="cli-write",
+        goal=goal.strip() or "Human-authorized bounded writing session",
+        source_snapshot_hash=workspace.snapshot_hash(),
+        allowed_paths=normalized_paths,
+        forbidden_paths=[".ourd-agent/**"],
+        command_capabilities=capabilities,
+        semantic_capability_ceiling="C3",
+        semantic_capabilities=["filesystem.write"],
+        max_retries_per_action=max(0, min(int(max_retries_per_action), 10)),
+        max_automatic_risk="L0",
+        allow_l1_auto_apply=False,
+        allow_interactive_l2=bool(allow_interactive_l2),
+        allow_yolo=False,
+        mandatory_tests=tests,
+        mandatory_evidence=[],
+        operator=operator.strip() or "cli-user",
+        read_only=False,
+    )
+    validate_authority(manifest, workspace)
+    return finalize_authority(manifest)
+
+
+def save_authority(path: Path, manifest: AuthorityManifest) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    payload = authority_payload(finalize_authority(manifest))
+    path.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
 
 
 def load_authority(
@@ -141,5 +203,4 @@ def save_authority_example(path: Path, workspace: Workspace) -> None:
         operator="replace-me",
         read_only=False,
     )
-    payload = authority_payload(finalize_authority(manifest))
-    path.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+    save_authority(path, manifest)
