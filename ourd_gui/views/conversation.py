@@ -87,7 +87,10 @@ class ConversationView(ttk.Frame):
         self.stop_button.grid(row=1, column=1, padx=(6, 0), pady=(4, 0), sticky="ew")
         ttk.Label(
             composer_frame,
-            text="Enter sends • Shift+Enter inserts a newline • mutations still require authority and evidence",
+            text=(
+                "Enter sends • Shift+Enter inserts a newline • @img references attach registered "
+                "images • mutations still require authority and evidence"
+            ),
         ).grid(row=2, column=0, columnspan=2, sticky="w", pady=(4, 0))
 
     def _return_pressed(self, event: tk.Event) -> str | None:
@@ -176,6 +179,17 @@ class ConversationView(ttk.Frame):
             return
         self.composer.delete("1.0", "end")
         self.composer.insert("1.0", text)
+        self.focus_composer()
+
+    def insert_text(self, text: str) -> None:
+        if self._chat_status != "idle" or not text:
+            return
+        current = self.composer.get("1.0", "end-1c")
+        if current and not current.endswith((" ", "\n")):
+            self.composer.insert("end", " ")
+        self.composer.insert("end", text)
+        self.composer.insert("end", " ")
+        self.composer.see("end")
         self.focus_composer()
 
     def _render(self, *, context_start: int = 0) -> None:
