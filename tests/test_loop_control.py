@@ -13,6 +13,27 @@ from ourd.models import EvidenceArtifact, RuntimeState
 
 
 class LoopControlTests(unittest.TestCase):
+    def projection(
+        self,
+        signature: str,
+        *,
+        evidence=(),
+        collisions=(),
+        control=(),
+        hypothesis_definitions=(),
+        hypothesis_evidence=(),
+    ) -> VerifiedProjection:
+        return VerifiedProjection(
+            workspace_snapshot_hash="snapshot",
+            evidence_atoms=tuple(evidence),
+            collision_atoms=tuple(collisions),
+            control_atoms=tuple(control),
+            hypothesis_definition_atoms=tuple(hypothesis_definitions),
+            hypothesis_evidence_atoms=tuple(hypothesis_evidence),
+            boundary_uncertainty_bp=0,
+            signature=signature,
+        )
+
     def test_model_belief_does_not_mutate_verified_projection(self) -> None:
         state = RuntimeState()
         before = verified_projection(state, "snapshot")
@@ -82,16 +103,8 @@ class LoopControlTests(unittest.TestCase):
         self.assertEqual(first.signature, second.signature)
 
     def test_nonterminal_no_verified_change_is_blocked(self) -> None:
-        projection = VerifiedProjection(
-            workspace_snapshot_hash="snapshot",
-            evidence_atoms=(),
-            collision_atoms=(),
-            control_atoms=(),
-            boundary_uncertainty_bp=0,
-            signature="same",
-        )
-        controller = LoopProgressController()
-        assessment = controller.assess(
+        projection = self.projection("same")
+        assessment = LoopProgressController().assess(
             before=projection,
             after=projection,
             step_signature="step",
@@ -103,22 +116,8 @@ class LoopControlTests(unittest.TestCase):
         self.assertEqual("CYCLE_STOP", assessment.terminal_state)
 
     def test_novel_verified_evidence_accepts_progress(self) -> None:
-        before = VerifiedProjection(
-            workspace_snapshot_hash="snapshot",
-            evidence_atoms=(),
-            collision_atoms=(),
-            control_atoms=(),
-            boundary_uncertainty_bp=0,
-            signature="before",
-        )
-        after = VerifiedProjection(
-            workspace_snapshot_hash="snapshot",
-            evidence_atoms=("evidence:new",),
-            collision_atoms=(),
-            control_atoms=(),
-            boundary_uncertainty_bp=0,
-            signature="after",
-        )
+        before = self.projection("before")
+        after = self.projection("after", evidence=("evidence:new",))
         assessment = LoopProgressController().assess(
             before=before,
             after=after,
@@ -129,32 +128,76 @@ class LoopControlTests(unittest.TestCase):
         self.assertEqual(1, assessment.new_evidence_count)
         self.assertIn("novel_evidence", assessment.certificate.reasons)
 
+    def test_hypothesis_definition_is_control_only(self) -> None:
+        before = self.projection("before")
+        after = self.projection("after", hypothesis_definitions=("h:def",))
+        assessment = LoopProgressController(max_control_only_progress=2).assess(
+            before=before,
+            after=after,
+            step_signature="propose-hypothesis",
+        )
+        self.assertTrue(assessment.allowed)
+        self.assertTrue(assessment.control_only)
+        self.assertEqual(1, assessment.control_only_streak)
+        self.assertIn("bounded_control_progress", assessment.certificate.reasons)
+        self.assertEqual(0, assessment.certificate.hypothesis_resolution_bp)
+
+    def test_grounded_hypothesis_link_is_hypothesis_resolution_progress(self) -> None:
+        before = self.projection("before", hypothesis_definitions=("h:def",))
+        after = self.projection(
+            "after",
+            hypothesis_definitions=("h:def",),
+            hypothesis_evidence=("h:evidence",),
+        )
+        assessment = LoopProgressController(
+            max_control_only_progress=2,
+            initial_control_only_streak=2,
+        ).assess(
+            before=before,
+            after=after,
+            step_signature="link-grounded-evidence",
+        )
+        self.assertTrue(assessment.allowed)
+        self.assertFalse(assessment.control_only)
+        self.assertEqual(0, assessment.control_only_streak)
+        self.assertGreater(assessment.certificate.hypothesis_resolution_bp, 0)
+        self.assertIn("hypothesis_resolution", assessment.certificate.reasons)
+
+    def test_control_only_progress_is_bounded_to_two_consecutive_transitions(self) -> None:
+        controller = LoopProgressController(max_control_only_progress=2)
+        s0 = self.projection("s0")
+        s1 = self.projection("s1", control=("control:a",))
+        s2 = self.projection("s2", control=("control:a", "control:b"))
+        s3 = self.projection("s3", control=("control:a", "control:b", "control:c"))
+        first = controller.assess(before=s0, after=s1, step_signature="control-A")
+        second = controller.assess(before=s1, after=s2, step_signature="control-B")
+        third = controller.assess(before=s2, after=s3, step_signature="control-C")
+        self.assertTrue(first.allowed)
+        self.assertTrue(second.allowed)
+        self.assertFalse(third.allowed)
+        self.assertEqual(3, third.control_only_streak)
+        self.assertFalse(third.certificate.accepted)
+        self.assertEqual("CONTROL_ONLY_BUDGET_EXHAUSTED", third.cycle_kind)
+
+    def test_epistemic_evidence_resets_persistent_control_streak(self) -> None:
+        controller = LoopProgressController(max_control_only_progress=2)
+        s0 = self.projection("s0")
+        s1 = self.projection("s1", control=("control:a",))
+        s2 = self.projection("s2", control=("control:a",), evidence=("e:new",))
+        s3 = self.projection("s3", control=("control:a", "control:b"), evidence=("e:new",))
+        first = controller.assess(before=s0, after=s1, step_signature="control-A")
+        evidence = controller.assess(before=s1, after=s2, step_signature="read-E")
+        next_control = controller.assess(before=s2, after=s3, step_signature="control-B")
+        self.assertEqual(1, first.control_only_streak)
+        self.assertEqual(0, evidence.control_only_streak)
+        self.assertEqual(1, next_control.control_only_streak)
+        self.assertTrue(next_control.allowed)
+
     def test_repeated_control_only_semantic_step_is_cycle(self) -> None:
-        controller = LoopProgressController(max_period=2)
-        start = VerifiedProjection(
-            workspace_snapshot_hash="snapshot",
-            evidence_atoms=(),
-            collision_atoms=(),
-            control_atoms=(),
-            boundary_uncertainty_bp=0,
-            signature="s0",
-        )
-        middle = VerifiedProjection(
-            workspace_snapshot_hash="snapshot",
-            evidence_atoms=(),
-            collision_atoms=(),
-            control_atoms=("control:a",),
-            boundary_uncertainty_bp=0,
-            signature="s1",
-        )
-        end = VerifiedProjection(
-            workspace_snapshot_hash="snapshot",
-            evidence_atoms=(),
-            collision_atoms=(),
-            control_atoms=("control:a", "control:b"),
-            boundary_uncertainty_bp=0,
-            signature="s2",
-        )
+        controller = LoopProgressController(max_period=2, max_control_only_progress=2)
+        start = self.projection("s0")
+        middle = self.projection("s1", control=("control:a",))
+        end = self.projection("s2", control=("control:a", "control:b"))
         first = controller.assess(
             before=start,
             after=middle,
@@ -171,15 +214,8 @@ class LoopControlTests(unittest.TestCase):
         self.assertEqual(1, second.period)
 
     def test_terminal_response_always_gets_certificate_but_not_fact_status(self) -> None:
-        projection = VerifiedProjection(
-            workspace_snapshot_hash="snapshot",
-            evidence_atoms=(),
-            collision_atoms=(),
-            control_atoms=(),
-            boundary_uncertainty_bp=0,
-            signature="same",
-        )
-        assessment = LoopProgressController().assess(
+        projection = self.projection("same")
+        assessment = LoopProgressController(initial_control_only_streak=2).assess(
             before=projection,
             after=projection,
             step_signature="final",
@@ -188,6 +224,7 @@ class LoopControlTests(unittest.TestCase):
         self.assertTrue(assessment.allowed)
         self.assertTrue(assessment.certificate.terminal)
         self.assertIn("terminal", assessment.certificate.reasons)
+        self.assertEqual(0, assessment.control_only_streak)
 
 
 if __name__ == "__main__":
