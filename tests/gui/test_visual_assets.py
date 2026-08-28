@@ -23,6 +23,27 @@ class VisualAssetTests(unittest.TestCase):
             self.assertEqual((first.reference,), registry.image_references_in(first.reference))
             self.assertTrue(registry.path_for(first.reference).is_file())
 
+    def test_match_reports_receive_stable_match_references(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            registry = VisualAssetRegistry(root)
+            content = b'{"type":"image_match","score_bp":9876}\n'
+            first = registry.register_bytes(
+                content,
+                filename="match.json",
+                kind="report",
+                media_type="application/json",
+            )
+            second = registry.register_bytes(
+                content,
+                filename="match.json",
+                kind="report",
+                media_type="application/json",
+            )
+            self.assertEqual(first.reference, second.reference)
+            self.assertTrue(first.reference.startswith("@match:"))
+            self.assertEqual("report", first.kind)
+
     def test_provider_expands_latest_img_reference_only(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
