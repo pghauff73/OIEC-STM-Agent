@@ -47,10 +47,10 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends xvfb xauth
 
-      - name: Install project with visual support
+      - name: Install visual test dependency
         run: |
           python -m pip install --upgrade pip
-          python -m pip install -e '.[visual]'
+          python -m pip install 'Pillow>=10.0.0'
 
       - name: Run complete unit test suite
         run: xvfb-run -a python -m unittest discover -s tests -v
@@ -76,10 +76,10 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends xvfb xauth x11-utils python3-tk
 
-      - name: Install project with visual support
+      - name: Install visual validation dependency
         run: |
           python -m pip install --upgrade pip
-          python -m pip install -e '.[visual]'
+          python -m pip install 'Pillow>=10.0.0'
 
       - name: Verify Tk availability
         run: python -c "import tkinter; print('Tk', tkinter.TkVersion)"
@@ -93,6 +93,35 @@ jobs:
         with:
           name: deterministic-validation
           path: validation.json
+          if-no-files-found: warn
+          retention-days: 14
+
+  build-wheel:
+    name: PEP 517 wheel build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: pyproject.toml
+
+      - name: Build wheel using repository backend
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip wheel . --no-deps --wheel-dir dist
+
+      - name: Upload wheel
+        uses: actions/upload-artifact@v4
+        with:
+          name: oiec-stm-agent-wheel
+          path: dist/*.whl
           if-no-files-found: error
           retention-days: 14
 
@@ -120,10 +149,10 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends libegl1 libegl-mesa0 libgl1-mesa-dri mesa-utils
 
-      - name: Install project with OpenGL support
+      - name: Install OpenGL test dependencies
         run: |
           python -m pip install --upgrade pip
-          python -m pip install -e '.[opengl]'
+          python -m pip install 'moderngl[headless]>=5.12.0,<6' 'Pillow>=10.0.0'
 
       - name: Run OpenGL compiler and renderer tests
         run: |
@@ -185,7 +214,7 @@ jobs:
           PY
 
       - name: Upload OpenGL smoke capture
-        if: always()
+        if: success()
         uses: actions/upload-artifact@v4
         with:
           name: opengl-smoke
