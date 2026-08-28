@@ -47,8 +47,10 @@ def migrate_v1_to_v2(payload: Dict[str, Any]) -> Dict[str, Any]:
     migrated.setdefault("boundary_state", None)
     migrated.setdefault("dimension_budget", None)
     migrated.setdefault("finite_evidence", None)
+    migrated.setdefault("hypothesis_state", None)
     migrated.setdefault("last_progress", None)
     migrated.setdefault("transition_index", 0)
+    migrated.setdefault("control_only_progress_streak", 0)
     action = migrated.get("pending_action")
     if isinstance(action, dict):
         action.setdefault("varied_dimensions", [])

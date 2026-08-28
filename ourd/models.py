@@ -6,6 +6,14 @@ from typing import Any, Dict, List, Optional, Tuple
 
 RISK_ORDER = {"L0": 0, "L1": 1, "L2": 2}
 SCORE_SCALE = 10_000
+HYPOTHESIS_STATUSES = {
+    "ACTIVE",
+    "SUPPORTED_BY_LINKED_EVIDENCE",
+    "WEAKENED_BY_LINKED_EVIDENCE",
+    "FALSIFIED_BY_LINKED_EVIDENCE",
+    "UNRESOLVED",
+}
+HYPOTHESIS_RELATIONS = {"supports", "conflicts", "falsifies"}
 
 
 def max_risk(*risks: str) -> str:
@@ -329,6 +337,83 @@ class FiniteEvidenceState:
 
 
 @dataclass(frozen=True)
+class HypothesisEvidenceLink:
+    evidence_id: str
+    evidence_fingerprint: str
+    relation: str
+    quality_bp: int
+    source_snapshot_hash: str = ""
+    relation_epistemic_status: str = "MODEL_PROPOSED_RELATION_TO_VERIFIED_EVIDENCE"
+    signature: str = ""
+
+    def __post_init__(self) -> None:
+        if not self.evidence_id or not self.evidence_fingerprint:
+            raise ValueError("hypothesis evidence link requires evidence identity and fingerprint")
+        if self.relation not in HYPOTHESIS_RELATIONS:
+            raise ValueError(f"unsupported hypothesis evidence relation: {self.relation!r}")
+        if not 0 <= int(self.quality_bp) <= SCORE_SCALE:
+            raise ValueError("hypothesis evidence link quality must be 0..10000")
+        if self.relation_epistemic_status != "MODEL_PROPOSED_RELATION_TO_VERIFIED_EVIDENCE":
+            raise ValueError("hypothesis evidence relation must remain explicitly model-proposed")
+
+
+@dataclass(frozen=True)
+class Hypothesis:
+    hypothesis_id: str
+    proposition: str
+    model_prior_bp: int = 5_000
+    assumptions: Tuple[str, ...] = ()
+    predictions: Tuple[str, ...] = ()
+    falsifiers: Tuple[str, ...] = ()
+    evidence_links: Tuple[HypothesisEvidenceLink, ...] = ()
+    evidence_support_bp: int = 0
+    evidence_conflict_bp: int = 0
+    evidence_balance_bp: int = 0
+    status: str = "ACTIVE"
+    verification_status: str = "UNVERIFIED_PROPOSITION"
+    signature: str = ""
+
+    def __post_init__(self) -> None:
+        if not self.hypothesis_id or not self.proposition.strip():
+            raise ValueError("hypothesis requires non-empty identity and proposition")
+        if not 0 <= int(self.model_prior_bp) <= SCORE_SCALE:
+            raise ValueError("model hypothesis prior must be 0..10000")
+        for name in ("assumptions", "predictions", "falsifiers"):
+            object.__setattr__(self, name, _canonical_strings(getattr(self, name)))
+        links = tuple(sorted(self.evidence_links, key=lambda item: item.signature or item.evidence_fingerprint))
+        if len({(item.evidence_fingerprint, item.relation) for item in links}) != len(links):
+            raise ValueError("hypothesis evidence links must be unique by evidence content and relation")
+        object.__setattr__(self, "evidence_links", links)
+        if not 0 <= int(self.evidence_support_bp) <= SCORE_SCALE:
+            raise ValueError("hypothesis support score must be 0..10000")
+        if not 0 <= int(self.evidence_conflict_bp) <= SCORE_SCALE:
+            raise ValueError("hypothesis conflict score must be 0..10000")
+        if not -SCORE_SCALE <= int(self.evidence_balance_bp) <= SCORE_SCALE:
+            raise ValueError("hypothesis evidence balance must be -10000..10000")
+        if self.status not in HYPOTHESIS_STATUSES:
+            raise ValueError(f"unsupported hypothesis status: {self.status!r}")
+        if self.verification_status != "UNVERIFIED_PROPOSITION":
+            raise ValueError("hypothesis proposition cannot be promoted by model bookkeeping")
+
+
+@dataclass(frozen=True)
+class HypothesisSet:
+    max_hypotheses: int = 16
+    hypotheses: Tuple[Hypothesis, ...] = ()
+    signature: str = ""
+
+    def __post_init__(self) -> None:
+        if int(self.max_hypotheses) < 1:
+            raise ValueError("hypothesis bound must be positive")
+        ordered = tuple(sorted(self.hypotheses, key=lambda item: item.hypothesis_id))
+        if len(ordered) > int(self.max_hypotheses):
+            raise ValueError("hypothesis set exceeds configured bound")
+        if len({item.hypothesis_id for item in ordered}) != len(ordered):
+            raise ValueError("hypothesis IDs must be unique")
+        object.__setattr__(self, "hypotheses", ordered)
+
+
+@dataclass(frozen=True)
 class AttemptKey:
     source_snapshot_hash: str = ""
     action_id: str = ""
@@ -340,13 +425,14 @@ class AttemptKey:
 
 @dataclass(frozen=True)
 class ProgressCertificate:
-    schema_version: int = 1
+    schema_version: int = 2
     evidence_gain_bp: int = 0
     uncertainty_reduction_bp: int = 0
     goal_improvement_bp: int = 0
     residual_risk_reduction_bp: int = 0
     boundary_uncertainty_reduction_bp: int = 0
     expected_information_gain_bp: int = 0
+    hypothesis_resolution_bp: int = 0
     novel_evidence: bool = False
     novel_experiment: bool = False
     terminal: bool = False
@@ -355,7 +441,11 @@ class ProgressCertificate:
     signature: str = ""
 
     def __post_init__(self) -> None:
-        for name in ("evidence_gain_bp", "expected_information_gain_bp"):
+        for name in (
+            "evidence_gain_bp",
+            "expected_information_gain_bp",
+            "hypothesis_resolution_bp",
+        ):
             if not 0 <= int(getattr(self, name)) <= SCORE_SCALE:
                 raise ValueError(f"{name} must be 0..10000")
         for name in (
@@ -384,10 +474,16 @@ class RuntimeState:
     boundary_state: Optional[BoundaryState] = None
     dimension_budget: Optional[DimensionBudget] = None
     finite_evidence: Optional[FiniteEvidenceState] = None
+    hypothesis_state: Optional[HypothesisSet] = None
     last_progress: Optional[ProgressCertificate] = None
     transition_index: int = 0
+    control_only_progress_streak: int = 0
     active_transaction_id: str = ""
     event_head: str = ""
+
+    def __post_init__(self) -> None:
+        if int(self.control_only_progress_streak) < 0:
+            raise ValueError("control-only progress streak cannot be negative")
 
     def to_dict(self) -> Dict[str, Any]:
         return asdict(self)
@@ -401,6 +497,7 @@ class RuntimeState:
         boundary_payload = payload.get("boundary_state")
         budget_payload = payload.get("dimension_budget")
         finite_evidence_payload = payload.get("finite_evidence")
+        hypothesis_payload = payload.get("hypothesis_state")
         progress_payload = payload.get("last_progress")
         evidence = {
             key: EvidenceArtifact(**value)
@@ -411,6 +508,23 @@ class RuntimeState:
             for key, value in payload.get("transactions", {}).items()
         }
         collisions = [CollisionRecord(**value) for value in payload.get("collisions", [])]
+
+        hypothesis_state = None
+        if hypothesis_payload:
+            hypotheses = []
+            for value in hypothesis_payload.get("hypotheses", []):
+                item = dict(value)
+                links = tuple(
+                    HypothesisEvidenceLink(**link)
+                    for link in item.pop("evidence_links", [])
+                )
+                hypotheses.append(Hypothesis(**item, evidence_links=links))
+            hypothesis_state = HypothesisSet(
+                max_hypotheses=int(hypothesis_payload.get("max_hypotheses", 16)),
+                hypotheses=tuple(hypotheses),
+                signature=str(hypothesis_payload.get("signature", "")),
+            )
+
         return cls(
             schema_version=int(payload.get("schema_version", 1)),
             authority=authority,
@@ -432,10 +546,12 @@ class RuntimeState:
                 if finite_evidence_payload
                 else None
             ),
+            hypothesis_state=hypothesis_state,
             last_progress=(
                 ProgressCertificate(**progress_payload) if progress_payload else None
             ),
             transition_index=int(payload.get("transition_index", 0)),
+            control_only_progress_streak=int(payload.get("control_only_progress_streak", 0)),
             active_transaction_id=str(payload.get("active_transaction_id", "")),
             event_head=str(payload.get("event_head", "")),
         )
