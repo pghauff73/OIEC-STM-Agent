@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Dict, Iterable, Mapping, Sequence, Tuple
+from typing import Dict, Mapping, Tuple
 
 from .errors import PolicyError
 
@@ -32,6 +32,17 @@ EDGE_KINDS = {
     "depends_on",
 }
 
+INFERENCE_MODES = {
+    "unspecified",
+    "deductive",
+    "inductive",
+    "abductive",
+    "causal",
+    "analogical",
+    "authority",
+    "defeasible",
+}
+
 POSITIVE_EDGE_KINDS = {"supports", "warrants", "entails", "depends_on"}
 
 
@@ -56,6 +67,8 @@ class ArgumentEdge:
     source: str
     target: str
     relation: str
+    inference_id: str = ""
+    inference_mode: str = "unspecified"
 
     def __post_init__(self) -> None:
         if not self.source or not self.target:
@@ -64,6 +77,8 @@ class ArgumentEdge:
             raise PolicyError("argument edge cannot be a self-loop")
         if self.relation not in EDGE_KINDS:
             raise PolicyError(f"unsupported argument relation: {self.relation!r}")
+        if self.inference_mode not in INFERENCE_MODES:
+            raise PolicyError(f"unsupported inference mode: {self.inference_mode!r}")
 
 
 @dataclass(frozen=True)
@@ -91,19 +106,17 @@ class ArgumentTopology:
 
         self._require_positive_graph_acyclic(node_map)
 
-        positive_parents = {node_id: set() for node_id in node_map}
+        dialectical = {node_id: set() for node_id in node_map}
         for edge in self.edges:
-            if edge.relation in POSITIVE_EDGE_KINDS:
-                positive_parents[edge.source].add(edge.target)
+            dialectical[edge.source].add(edge.target)
 
         for node in self.nodes:
-            if node.node_id == thesis_id or node.kind in {"counterclaim", "rebuttal", "limitation", "qualifier"}:
+            if node.node_id == thesis_id or node.kind == "implication":
                 continue
-            if node.kind in {"claim", "premise", "evidence", "warrant", "implication"}:
-                if not self._reaches(node.node_id, thesis_id, positive_parents):
-                    raise PolicyError(
-                        f"argument node {node.node_id!r} does not contribute to the thesis"
-                    )
+            if not self._reaches(node.node_id, thesis_id, dialectical):
+                raise PolicyError(
+                    f"argument node {node.node_id!r} is disconnected from the thesis"
+                )
 
         for node in self.nodes:
             if node.kind == "evidence" and not node.source_refs:
@@ -113,14 +126,14 @@ class ArgumentTopology:
 
         if require_counterargument_response:
             counterclaims = {node.node_id for node in self.nodes if node.kind == "counterclaim"}
-            attacked = {
+            active_counterclaims = {
                 edge.source
                 for edge in self.edges
                 if edge.relation == "attacks" and edge.source in counterclaims
             }
             unanswered = {
                 counterclaim
-                for counterclaim in attacked
+                for counterclaim in active_counterclaims
                 if not any(
                     edge.relation == "rebuts" and edge.target == counterclaim
                     for edge in self.edges
@@ -131,6 +144,34 @@ class ArgumentTopology:
                     "counterclaims require an explicit rebuttal/response: "
                     f"{sorted(unanswered)!r}"
                 )
+
+    def linked_inference_groups(self) -> Dict[str, Tuple[ArgumentEdge, ...]]:
+        """Return explicitly grouped inference edges.
+
+        Edges that share a non-empty inference_id are treated as linked premises:
+        their support is intended to work together. Ungrouped support edges are
+        interpreted as independent/convergent unless the writer specifies a group.
+        """
+
+        groups: Dict[str, list[ArgumentEdge]] = {}
+        for edge in self.edges:
+            if not edge.inference_id:
+                continue
+            groups.setdefault(edge.inference_id, []).append(edge)
+        return {
+            inference_id: tuple(
+                sorted(
+                    edges,
+                    key=lambda edge: (
+                        edge.source,
+                        edge.target,
+                        edge.relation,
+                        edge.inference_mode,
+                    ),
+                )
+            )
+            for inference_id, edges in sorted(groups.items())
+        }
 
     def _require_positive_graph_acyclic(self, node_map: Mapping[str, ArgumentNode]) -> None:
         adjacency = {node_id: [] for node_id in node_map}
@@ -207,8 +248,10 @@ ARGUMENTATIVE ESSAY + LOGIC TOPOLOGY PROFILE
 - Construct an explicit ArgumentTopology before prose. Use one thesis node and nodes for claims, premises, evidence, warrants/implicit assumptions, counterclaims, rebuttals, qualifiers, limitations and implications.
 - Use directed relations such as supports, warrants, attacks, rebuts, qualifies, limits, entails and depends_on.
 - Keep the positive support graph acyclic: evidence/premises support intermediate claims, and intermediate claims support the thesis. Avoid circular support.
+- Connect opposing evidence and premises through the counterclaim they support; dialectical attack/rebuttal relations may cross the positive support hierarchy.
 - Standardise important reasoning into premises and conclusion. Identify unstated premises needed for an inference and test whether they are defensible.
-- Distinguish linked premises (needed together) from convergent premises (independent reasons). Do not imply that several weak restatements are independent evidence.
+- Distinguish linked premises (needed together) from convergent premises (independent reasons). Use a shared inference_id for linked premises where a machine representation is produced.
+- Label material inference modes where useful: deductive, inductive, abductive, causal, analogical, authority or defeasible.
 - For deductive reasoning, test validity and premise acceptability. For inductive/abductive/causal reasoning, state the inference as defeasible and test alternative explanations or defeaters.
 - Every serious counterclaim must attack a specific claim, inference or premise. Every rebuttal must answer that counterclaim by rebutting its conclusion, undermining a premise or undercutting the inference.
 - Apply critical questions to argument schemes: source expertise, domain relevance, independence, consistency, evidence base, analogy relevance, causal alternatives and possible exceptions.
