@@ -25,6 +25,11 @@ The generated session authority:
 The temporary authority manifest exists only for the CLI process. Normal
 invocations without `--write` or `--authority` remain read-only.
 
+Because authority is bound to an exact snapshot, a successful mutation makes
+that session authority stale. One session should therefore prepare one atomic
+transaction, which may contain many file changes. Start a fresh `--write`
+session for another transaction so it binds to the new workspace snapshot.
+
 ## Write a document
 
 ```bash
