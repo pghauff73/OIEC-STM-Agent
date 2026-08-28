@@ -34,6 +34,7 @@ from .session_compare import SessionComparisonView
 from .tasks import TaskListView
 from .terminal import SemanticTerminalView
 from .trace import TraceTimelineView
+from .visual_workbench import VisualWorkbenchView
 from .workflow import WorkflowView
 
 
@@ -106,6 +107,12 @@ class WorkbenchShell(ttk.Frame):
             repository,
             on_semantic_command or (lambda request: None),
         )
+        self.visual = VisualWorkbenchView(
+            center_tabs,
+            repository_root,
+            on_insert_chat_reference=self.conversation.insert_text,
+            on_chat_send=on_chat_send,
+        )
         self.replay = ReplayView(
             center_tabs,
             event_supplier or (lambda: ()),
@@ -114,6 +121,7 @@ class WorkbenchShell(ttk.Frame):
         )
         self.session_compare = SessionComparisonView(center_tabs, repository)
         center_tabs.add(self.conversation, text="Agent Chat")
+        center_tabs.add(self.visual, text="Visual Workbench")
         center_tabs.add(self.selection, text="Selection Trace")
         center_tabs.add(self.workflow, text="Workflow")
         center_tabs.add(self.ourd, text="OURD")
@@ -268,6 +276,7 @@ class WorkbenchShell(ttk.Frame):
         self.artifacts.refresh()
         self.assurance.refresh()
         self.performance.refresh()
+        self.visual.refresh_assets()
 
     def show_selection(self) -> None:
         self.center_tabs.select(self.selection)
@@ -293,6 +302,10 @@ class WorkbenchShell(ttk.Frame):
 
     def show_terminal(self) -> None:
         self.center_tabs.select(self.terminal)
+
+    def show_visual(self) -> None:
+        self.visual.refresh_assets()
+        self.center_tabs.select(self.visual)
 
     def show_chat(self) -> None:
         self.center_tabs.select(self.conversation)

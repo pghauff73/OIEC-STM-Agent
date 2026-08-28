@@ -14,6 +14,7 @@ class ProviderConfig:
     context_budget_tokens: int = 6000
     timeout_seconds: float = 600.0
     max_transport_retries: int = 0
+    visual_asset_root: str = ""
 
 
 class ModelProvider(Protocol):

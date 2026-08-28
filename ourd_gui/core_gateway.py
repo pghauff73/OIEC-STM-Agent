@@ -35,6 +35,10 @@ class CoreGateway:
         self.actor = actor
         self.recovery_transaction_id = recovery_transaction_id
         self.provider_config = provider_config or ProviderConfig(model="gpt-5.6")
+        if not self.provider_config.visual_asset_root:
+            self.provider_config.visual_asset_root = str(
+                self.repository_root / ".ourd-agent" / "gui-assets"
+            )
         self.max_agent_steps = max(1, int(max_agent_steps))
         Workspace(self.repository_root)
 
