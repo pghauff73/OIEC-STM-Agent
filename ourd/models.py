@@ -461,7 +461,7 @@ class ProgressCertificate:
 
 @dataclass
 class RuntimeState:
-    schema_version: int = 3
+    schema_version: int = 2
     authority: AuthorityManifest = field(default_factory=AuthorityManifest)
     governance: GovernanceRecord = field(default_factory=GovernanceRecord)
     pending_action: Optional[EONAction] = None
