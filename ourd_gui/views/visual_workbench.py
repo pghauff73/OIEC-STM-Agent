@@ -8,6 +8,7 @@ from tkinter.scrolledtext import ScrolledText
 from typing import Callable
 
 from ..visual_assets import VisualAsset, VisualAssetRegistry
+from ..visual_match_cli import VisualMatchCLI
 from ..visual_models import BezierScene, load_mesh
 from ..widgets.mesh_viewer import MeshViewer
 from .bezier_editor import SupervisedBezierEditor
@@ -114,8 +115,14 @@ class VisualWorkbenchView(ttk.Frame):
         ttk.Button(command_bar, text="Run", command=self._submit_command).pack(side="left", padx=(4, 0))
         ttk.Label(
             command_bar,
-            text="help | list | show REF | image ... | curve ... | mesh reset | chat ...",
+            text="help | match ... | mesh-views ... | match-3view ... | classify-3view ... | chat ...",
         ).pack(side="left", padx=8)
+        self.match_cli = VisualMatchCLI(
+            self.registry,
+            self.mesh_viewer,
+            append=self._append,
+            refresh_assets=self.refresh_assets,
+        )
         self.refresh_assets()
         self._append("SYSTEM", "Visual CLI ready. Type `help` for commands.")
 
@@ -212,6 +219,11 @@ class VisualWorkbenchView(ttk.Frame):
             scene = BezierScene.from_json(path.read_text(encoding="utf-8"))
             self.bezier_editor.load_scene(scene, reference=asset.reference)
             self.tabs.select(self.bezier_editor)
+        elif asset.kind == "report":
+            text = path.read_text(encoding="utf-8", errors="replace")
+            if len(text) > 50_000:
+                text = text[:50_000] + "\n[report truncated in transcript]"
+            self._append("MATCH REPORT", f"{asset.reference}\n{text}")
 
     def _register_image_revision(self, content: bytes, filename: str) -> VisualAsset:
         asset = self.registry.register_bytes(
@@ -270,7 +282,7 @@ class VisualWorkbenchView(ttk.Frame):
             self._append(
                 "HELP",
                 "commands:\n"
-                "  list [image|mesh|curve]\n"
+                "  list [image|mesh|curve|report]\n"
                 "  open-image [PATH]\n"
                 "  open-mesh [PATH]\n"
                 "  show REF\n"
@@ -281,6 +293,13 @@ class VisualWorkbenchView(ttk.Frame):
                 "  curve new [NAME]\n"
                 "  curve accept|revert|export|import\n"
                 "  mesh reset\n"
+                "  match IMG1 IMG2 [method=all] [profile=balanced] [preprocess=fit] [size=256]\n"
+                "  match-matrix IMG1 IMG2 [IMG3 ...] [profile=balanced]\n"
+                "  mesh-views MESH [orientation=world|camera] [size=512]\n"
+                "  match-3view MESH front=IMG top=IMG side=IMG [orientation=world|camera] [profile=shape]\n"
+                "  classify-3view MESH IMG1 IMG2 IMG3 [more...] [orientation=world|camera] [profile=shape]\n"
+                "  match methods: mse, ncc, ssim-global, histogram, edge-dice, edge-chamfer\n"
+                "  match profiles: appearance, shape, balanced\n"
                 "  chat TEXT...            send a governed Agent Chat turn; @img refs become image inputs",
             )
             return
@@ -315,6 +334,9 @@ class VisualWorkbenchView(ttk.Frame):
             return
         if command == "mesh" and argv[1:] == ["reset"]:
             self.mesh_viewer.reset_view()
+            return
+        if self.match_cli.handles(command):
+            self.match_cli.dispatch(argv)
             return
         if command == "chat":
             message = raw_after_command(argv, "chat")
