@@ -2,33 +2,11 @@ from __future__ import annotations
 
 import json
 import math
-import struct
 import uuid
 from dataclasses import dataclass, field
-from pathlib import Path
-from typing import Iterable, Sequence
+from typing import Sequence
 
-
-MAX_MESH_VERTICES = 100_000
-MAX_MESH_EDGES = 200_000
-
-
-Vec3 = tuple[float, float, float]
-
-
-@dataclass(frozen=True)
-class MeshData:
-    name: str
-    vertices: tuple[Vec3, ...]
-    edges: tuple[tuple[int, int], ...]
-    source_path: str = ""
-
-    def bounding_box(self) -> tuple[Vec3, Vec3]:
-        if not self.vertices:
-            return (0.0, 0.0, 0.0), (0.0, 0.0, 0.0)
-        minimum = tuple(min(vertex[index] for vertex in self.vertices) for index in range(3))
-        maximum = tuple(max(vertex[index] for vertex in self.vertices) for index in range(3))
-        return minimum, maximum
+from .mesh_formats import MeshData, Vec3, load_mesh, load_obj, load_ply, load_stl
 
 
 @dataclass(frozen=True)
@@ -123,110 +101,6 @@ def sample_bezier(curve: BezierCurve3D, samples: int = 48) -> tuple[Vec3, ...]:
     return tuple(cubic_bezier_point(curve, index / (samples - 1)) for index in range(samples))
 
 
-def _unique_edges(edges: Iterable[tuple[int, int]]) -> tuple[tuple[int, int], ...]:
-    normalized = set()
-    for left, right in edges:
-        if left == right or left < 0 or right < 0:
-            continue
-        normalized.add((left, right) if left < right else (right, left))
-        if len(normalized) >= MAX_MESH_EDGES:
-            break
-    return tuple(sorted(normalized))
-
-
-def load_obj(path: Path) -> MeshData:
-    vertices: list[Vec3] = []
-    edges: list[tuple[int, int]] = []
-    for raw in path.read_text(encoding="utf-8", errors="replace").splitlines():
-        fields = raw.strip().split()
-        if not fields:
-            continue
-        if fields[0] == "v" and len(fields) >= 4:
-            if len(vertices) >= MAX_MESH_VERTICES:
-                break
-            try:
-                vertices.append((float(fields[1]), float(fields[2]), float(fields[3])))
-            except ValueError:
-                continue
-        elif fields[0] == "f" and len(fields) >= 3:
-            face: list[int] = []
-            for token in fields[1:]:
-                head = token.split("/", 1)[0]
-                try:
-                    index = int(head)
-                except ValueError:
-                    continue
-                if index < 0:
-                    index = len(vertices) + index
-                else:
-                    index -= 1
-                if 0 <= index < len(vertices):
-                    face.append(index)
-            if len(face) >= 2:
-                for index, left in enumerate(face):
-                    edges.append((left, face[(index + 1) % len(face)]))
-    return MeshData(path.name, tuple(vertices), _unique_edges(edges), str(path))
-
-
-def load_stl(path: Path) -> MeshData:
-    content = path.read_bytes()
-    vertices: list[Vec3] = []
-    edges: list[tuple[int, int]] = []
-    if len(content) >= 84:
-        triangle_count = struct.unpack_from("<I", content, 80)[0]
-        expected_size = 84 + triangle_count * 50
-    else:
-        triangle_count = 0
-        expected_size = -1
-    if expected_size == len(content):
-        for triangle in range(min(triangle_count, MAX_MESH_VERTICES // 3)):
-            base = 84 + triangle * 50 + 12
-            indices = []
-            for offset in range(3):
-                vertex = struct.unpack_from("<fff", content, base + offset * 12)
-                indices.append(len(vertices))
-                vertices.append(tuple(float(value) for value in vertex))  # type: ignore[arg-type]
-            edges.extend(
-                (
-                    (indices[0], indices[1]),
-                    (indices[1], indices[2]),
-                    (indices[2], indices[0]),
-                )
-            )
-    else:
-        triangle: list[int] = []
-        for raw in content.decode("utf-8", errors="replace").splitlines():
-            fields = raw.strip().split()
-            if fields[:1] != ["vertex"] or len(fields) < 4:
-                continue
-            if len(vertices) >= MAX_MESH_VERTICES:
-                break
-            try:
-                vertices.append((float(fields[1]), float(fields[2]), float(fields[3])))
-            except ValueError:
-                continue
-            triangle.append(len(vertices) - 1)
-            if len(triangle) == 3:
-                edges.extend(
-                    (
-                        (triangle[0], triangle[1]),
-                        (triangle[1], triangle[2]),
-                        (triangle[2], triangle[0]),
-                    )
-                )
-                triangle = []
-    return MeshData(path.name, tuple(vertices), _unique_edges(edges), str(path))
-
-
-def load_mesh(path: Path) -> MeshData:
-    suffix = path.suffix.casefold()
-    if suffix == ".obj":
-        return load_obj(path)
-    if suffix == ".stl":
-        return load_stl(path)
-    raise ValueError(f"unsupported 3D mesh type: {suffix or '(none)'}")
-
-
 def rotate_point(point: Vec3, yaw: float, pitch: float) -> Vec3:
     x, y, z = point
     cy, sy = math.cos(yaw), math.sin(yaw)
@@ -249,3 +123,19 @@ def normalize_vertices(vertices: Sequence[Vec3]) -> tuple[Vec3, ...]:
         tuple((vertex[index] - center[index]) / extent * 2.0 for index in range(3))
         for vertex in vertices
     )  # type: ignore[return-value]
+
+
+__all__ = [
+    "BezierCurve3D",
+    "BezierScene",
+    "MeshData",
+    "Vec3",
+    "cubic_bezier_point",
+    "load_mesh",
+    "load_obj",
+    "load_ply",
+    "load_stl",
+    "normalize_vertices",
+    "rotate_point",
+    "sample_bezier",
+]
