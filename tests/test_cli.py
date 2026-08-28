@@ -3,6 +3,7 @@ import unittest
 from ourd import OURDAgent
 from ourd.authority import scoped_write_authority
 from ourd.cli import _validate_write_args, build_parser
+from ourd.workspace import Workspace
 from ourd.writing import writing_task_prompt
 from tests.helpers import RepoFixture
 
@@ -41,14 +42,15 @@ class CliAndToolSchemaTests(unittest.TestCase):
     def test_cli_write_authority_is_exact_snapshot_and_not_yolo(self) -> None:
         fixture = RepoFixture()
         try:
+            workspace = Workspace(fixture.root)
             manifest = scoped_write_authority(
-                fixture.workspace,
+                workspace,
                 allowed_paths=["docs/**", "README.md"],
                 goal="Write project documentation",
                 operator="test-user",
             )
             self.assertFalse(manifest.read_only)
-            self.assertEqual(fixture.workspace.snapshot_hash(), manifest.source_snapshot_hash)
+            self.assertEqual(workspace.snapshot_hash(), manifest.source_snapshot_hash)
             self.assertEqual(["docs/**", "README.md"], manifest.allowed_paths)
             self.assertEqual([".ourd-agent/**"], manifest.forbidden_paths)
             self.assertEqual("L0", manifest.max_automatic_risk)
