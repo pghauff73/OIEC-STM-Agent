@@ -1,10 +1,9 @@
 from __future__ import annotations
 
 import hashlib
-import json
 import re
 from dataclasses import asdict, dataclass, replace
-from typing import Any, Iterable, Mapping, Sequence
+from typing import Any, Mapping, Sequence
 
 from .models import ProgressCertificate, RuntimeState, SCORE_SCALE
 from .oiec import certify_progress, stable_hash
@@ -99,6 +98,14 @@ def _collision_atom(collision: Any) -> str:
     )
 
 
+def _stable_evidence_refs(state: RuntimeState, evidence_ids: Sequence[str]) -> list[str]:
+    return sorted(
+        _evidence_atom(state.evidence_registry[evidence_id])
+        for evidence_id in evidence_ids
+        if evidence_id in state.evidence_registry
+    )
+
+
 def _control_atoms(state: RuntimeState) -> tuple[str, ...]:
     atoms: list[str] = []
     governance = state.governance
@@ -145,7 +152,7 @@ def _control_atoms(state: RuntimeState) -> tuple[str, ...]:
                     "required_tests": sorted(set(action.required_tests)),
                     "varied_dimensions": sorted(set(action.varied_dimensions)),
                     "use_limit": int(action.use_limit),
-                    "use_count": int(action.use_count),
+                    # use_count is bookkeeping, not epistemic/goal progress.
                 }
             )
         )
@@ -158,7 +165,7 @@ def _control_atoms(state: RuntimeState) -> tuple[str, ...]:
                     "proposed_verdict": gate.proposed_verdict,
                     "verdict": gate.verdict,
                     "evidence_categories": {
-                        name: sorted(set(values))
+                        name: _stable_evidence_refs(state, values)
                         for name, values in sorted(gate.evidence_categories.items())
                     },
                     "satisfied_requirements": sorted(set(gate.satisfied_requirements)),
@@ -197,10 +204,9 @@ def _control_atoms(state: RuntimeState) -> tuple[str, ...]:
                     "status": record.status,
                     "status_rank": transaction_rank.get(record.status, 0),
                     "applied_snapshot_hash": record.applied_snapshot_hash,
-                    "verification_evidence": sorted(
-                        _evidence_atom(state.evidence_registry[evidence_id])
-                        for evidence_id in record.verification_evidence_ids
-                        if evidence_id in state.evidence_registry
+                    "verification_evidence": _stable_evidence_refs(
+                        state,
+                        record.verification_evidence_ids,
                     ),
                 }
             )
