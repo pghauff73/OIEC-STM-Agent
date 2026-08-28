@@ -26,6 +26,7 @@ class FormalWritingTests(unittest.TestCase):
         self.assertIn("ARGUMENTATIVE ESSAY + LOGIC TOPOLOGY PROFILE", prompt)
         self.assertIn("positive support graph acyclic", prompt)
         self.assertIn("implicit premises", prompt)
+        self.assertIn("inference_id", prompt)
         dimensions = profile_dimensions("argumentative-essay")
         self.assertIn("argument topology", dimensions)
         self.assertIn("defeaters", dimensions)
@@ -38,18 +39,23 @@ class FormalWritingTests(unittest.TestCase):
                 ArgumentNode("e", "evidence", "Controlled studies report lower risk.", ("doi:example",)),
                 ArgumentNode("w", "warrant", "Comparable lower measured risk supports lower expected risk."),
                 ArgumentNode("x", "counterclaim", "The policy is too costly."),
+                ArgumentNode("xe", "evidence", "Initial capital cost is higher.", ("study:cost",)),
                 ArgumentNode("r", "rebuttal", "Lifecycle savings offset the initial cost."),
             ),
             edges=(
-                ArgumentEdge("e", "c", "supports"),
-                ArgumentEdge("w", "c", "warrants"),
+                ArgumentEdge("e", "c", "supports", "risk-inference", "inductive"),
+                ArgumentEdge("w", "c", "warrants", "risk-inference", "inductive"),
                 ArgumentEdge("c", "t", "supports"),
+                ArgumentEdge("xe", "x", "supports", "cost-inference", "inductive"),
                 ArgumentEdge("x", "t", "attacks"),
                 ArgumentEdge("r", "x", "rebuts"),
                 ArgumentEdge("r", "t", "supports"),
             ),
         )
         topology.validate()
+        groups = topology.linked_inference_groups()
+        self.assertEqual(2, len(groups["risk-inference"]))
+        self.assertEqual("inductive", groups["cost-inference"][0].inference_mode)
 
     def test_positive_support_cycle_is_rejected(self) -> None:
         topology = ArgumentTopology(
@@ -88,6 +94,21 @@ class FormalWritingTests(unittest.TestCase):
         )
         with self.assertRaises(PolicyError):
             topology.validate()
+
+    def test_disconnected_argument_node_is_rejected(self) -> None:
+        topology = ArgumentTopology(
+            nodes=(
+                ArgumentNode("t", "thesis", "Thesis"),
+                ArgumentNode("c", "claim", "Unconnected claim"),
+            ),
+            edges=(),
+        )
+        with self.assertRaises(PolicyError):
+            topology.validate(require_counterargument_response=False)
+
+    def test_invalid_inference_mode_is_rejected(self) -> None:
+        with self.assertRaises(PolicyError):
+            ArgumentEdge("a", "b", "supports", inference_mode="magic")
 
 
 if __name__ == "__main__":
