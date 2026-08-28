@@ -220,7 +220,6 @@ def _hypothesis_atoms(state: RuntimeState) -> tuple[tuple[str, ...], tuple[str, 
                 {
                     "hypothesis_id": hypothesis.hypothesis_id,
                     "proposition": hypothesis.proposition,
-                    "model_prior_bp": hypothesis.model_prior_bp,
                     "assumptions": hypothesis.assumptions,
                     "predictions": hypothesis.predictions,
                     "falsifiers": hypothesis.falsifiers,
@@ -366,20 +365,22 @@ class LoopProgressController:
             SCORE_SCALE,
             (evidence_count * 1_000) + (collision_count * 500),
         )
+        # This is a bookkeeping metric only. The relation between grounded
+        # evidence and a hypothesis remains model-proposed, so it does not by
+        # itself count as verified epistemic progress.
         hypothesis_resolution_bp = min(SCORE_SCALE, hypothesis_evidence_count * 1_000)
         boundary_reduction = (
             int(before.boundary_uncertainty_bp) - int(after.boundary_uncertainty_bp)
         )
         has_epistemic_progress = bool(
-            evidence_count
-            or collision_count
-            or hypothesis_evidence_count
-            or boundary_reduction >= 100
+            evidence_count or collision_count or boundary_reduction >= 100
         )
-        has_control_progress = bool(control_count or hypothesis_definition_count)
+        has_control_progress = bool(
+            control_count or hypothesis_definition_count or hypothesis_evidence_count
+        )
         control_only = bool(has_control_progress and not has_epistemic_progress)
 
-        certificate = certify_progress(
+        base_certificate = certify_progress(
             evidence_gain_bp=evidence_gain_bp,
             uncertainty_reduction_bp=0,
             goal_improvement_bp=0,
@@ -390,23 +391,26 @@ class LoopProgressController:
             novel_experiment=False,
             terminal=terminal,
         )
-        reasons = set(certificate.reasons)
-        accepted = bool(certificate.accepted)
+        reasons = set(base_certificate.reasons)
         if hypothesis_resolution_bp > 0:
-            reasons.add("hypothesis_resolution")
-            accepted = True
+            reasons.add("hypothesis_bookkeeping")
+
         if terminal:
             self.control_only_streak = 0
         elif control_only:
             self.control_only_streak += 1
-            if self.control_only_streak <= self.max_control_only_progress:
-                reasons.add("bounded_control_progress")
-                accepted = True
         elif has_epistemic_progress:
             self.control_only_streak = 0
 
+        accepted = bool(base_certificate.accepted)
+        if control_only and self.control_only_streak <= self.max_control_only_progress:
+            reasons.add("bounded_control_progress")
+            accepted = True
+        if control_only and self.control_only_streak > self.max_control_only_progress:
+            accepted = False
+
         certificate = replace(
-            certificate,
+            base_certificate,
             hypothesis_resolution_bp=hypothesis_resolution_bp,
             accepted=accepted,
             reasons=tuple(sorted(reasons)),
@@ -442,12 +446,11 @@ class LoopProgressController:
             reason = "terminal response recorded; model output remains unverified unless evidence supports it"
         elif control_only and self.control_only_streak > self.max_control_only_progress:
             allowed = False
-            certificate = replace(certificate, accepted=False)
             cycle_kind = "CONTROL_ONLY_BUDGET_EXHAUSTED"
             terminal_state = "CYCLE_STOP"
             reason = (
                 f"control-only progress streak {self.control_only_streak} exceeded bounded allowance "
-                f"{self.max_control_only_progress}; new verified evidence or hypothesis discrimination is required"
+                f"{self.max_control_only_progress}; new verified evidence is required"
             )
         elif not certificate.accepted:
             allowed = False
@@ -474,18 +477,10 @@ class LoopProgressController:
                         continue
                     comparison = candidate_assessments[-(2 * candidate_period - 1) :]
                     comparison_epistemic = sum(
-                        item.new_evidence_count
-                        + item.new_collision_count
-                        + item.new_hypothesis_evidence_count
+                        item.new_evidence_count + item.new_collision_count
                         for item in comparison
                     )
-                    if (
-                        evidence_count
-                        + collision_count
-                        + hypothesis_evidence_count
-                        + comparison_epistemic
-                        == 0
-                    ):
+                    if evidence_count + collision_count + comparison_epistemic == 0:
                         allowed = False
                         cycle_kind = "SEMANTIC_PERIODIC_CYCLE"
                         period = candidate_period
