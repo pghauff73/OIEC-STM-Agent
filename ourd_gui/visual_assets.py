@@ -8,16 +8,26 @@ import re
 import shutil
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Iterable, Sequence
+from typing import Sequence
 
 
 IMAGE_REFERENCE_RE = re.compile(r"@img:([0-9a-f]{12,64})\b", re.IGNORECASE)
 MESH_REFERENCE_RE = re.compile(r"@mesh:([0-9a-f]{12,64})\b", re.IGNORECASE)
 CURVE_REFERENCE_RE = re.compile(r"@curve:([0-9a-f]{12,64})\b", re.IGNORECASE)
+MATCH_REFERENCE_RE = re.compile(r"@match:([0-9a-f]{12,64})\b", re.IGNORECASE)
 
 SUPPORTED_IMAGE_SUFFIXES = {".png", ".jpg", ".jpeg", ".gif", ".webp"}
 SUPPORTED_MESH_SUFFIXES = {".obj", ".stl"}
 MAX_ASSET_BYTES = 64 * 1024 * 1024
+
+
+def _reference_prefix(kind: str) -> str:
+    return {
+        "image": "img",
+        "mesh": "mesh",
+        "curve": "curve",
+        "report": "match",
+    }.get(kind, "asset")
 
 
 @dataclass(frozen=True)
@@ -113,11 +123,7 @@ class VisualAssetRegistry:
         if inferred_kind == "mesh" and suffix not in SUPPORTED_MESH_SUFFIXES:
             raise ValueError(f"unsupported mesh type: {suffix or '(none)'}")
         digest, size = self._digest_file(source)
-        prefix = {"image": "img", "mesh": "mesh", "curve": "curve"}.get(
-            inferred_kind,
-            "asset",
-        )
-        reference = f"@{prefix}:{digest[:16]}"
+        reference = f"@{_reference_prefix(inferred_kind)}:{digest[:16]}"
         destination = self.root / f"{digest}{suffix}"
         if not destination.exists():
             shutil.copyfile(source, destination)
@@ -148,8 +154,7 @@ class VisualAssetRegistry:
             raise ValueError("visual asset exceeds bounded size limit")
         digest = hashlib.sha256(content).hexdigest()
         suffix = Path(filename).suffix.casefold()
-        prefix = {"image": "img", "mesh": "mesh", "curve": "curve"}.get(kind, "asset")
-        reference = f"@{prefix}:{digest[:16]}"
+        reference = f"@{_reference_prefix(kind)}:{digest[:16]}"
         destination = self.root / f"{digest}{suffix}"
         if not destination.exists():
             destination.write_bytes(content)
