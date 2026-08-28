@@ -10,6 +10,8 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Sequence
 
+from .mesh_formats import discover_mesh_dependencies
+
 
 IMAGE_REFERENCE_RE = re.compile(r"@img:([0-9a-f]{12,64})\b", re.IGNORECASE)
 MESH_REFERENCE_RE = re.compile(r"@mesh:([0-9a-f]{12,64})\b", re.IGNORECASE)
@@ -17,7 +19,7 @@ CURVE_REFERENCE_RE = re.compile(r"@curve:([0-9a-f]{12,64})\b", re.IGNORECASE)
 MATCH_REFERENCE_RE = re.compile(r"@match:([0-9a-f]{12,64})\b", re.IGNORECASE)
 
 SUPPORTED_IMAGE_SUFFIXES = {".png", ".jpg", ".jpeg", ".gif", ".webp"}
-SUPPORTED_MESH_SUFFIXES = {".obj", ".stl"}
+SUPPORTED_MESH_SUFFIXES = {".obj", ".stl", ".ply"}
 MAX_ASSET_BYTES = 64 * 1024 * 1024
 
 
@@ -30,6 +32,14 @@ def _reference_prefix(kind: str) -> str:
     }.get(kind, "asset")
 
 
+def _mesh_media_type(suffix: str) -> str:
+    return {
+        ".obj": "model/obj",
+        ".stl": "model/stl",
+        ".ply": "model/ply",
+    }.get(suffix, "application/octet-stream")
+
+
 @dataclass(frozen=True)
 class VisualAsset:
     reference: str
@@ -40,14 +50,16 @@ class VisualAsset:
     size: int
     stored_path: str
     source_path: str = ""
+    dependencies: tuple[str, ...] = ()
+    import_warnings: tuple[str, ...] = ()
 
 
 class VisualAssetRegistry:
     """Content-addressed GUI asset registry under the protected state directory.
 
-    User-selected visual files are copied into .ourd-agent/gui-assets. The
-    registry is GUI bookkeeping rather than model mutation authority. Models see
-    only explicit references selected by the user.
+    User-selected visual files are copied into .ourd-agent/gui-assets. Textured
+    mesh imports are stored as bounded bundles so relative MTL/texture references
+    remain resolvable. Referenced texture images also receive normal @img IDs.
     """
 
     def __init__(self, repository_root: Path) -> None:
@@ -106,6 +118,36 @@ class VisualAssetRegistry:
                 digest.update(block)
         return digest.hexdigest(), size
 
+    def _copy_mesh_bundle(
+        self,
+        source: Path,
+        digest: str,
+    ) -> tuple[Path, tuple[str, ...], tuple[str, ...]]:
+        discovery = discover_mesh_dependencies(source)
+        bundle = self.root / "mesh-bundles" / digest
+        bundle.mkdir(parents=True, exist_ok=True)
+        destination = bundle / source.name
+        if not destination.exists():
+            shutil.copyfile(source, destination)
+        dependency_refs: list[str] = []
+        for dependency in discovery.files:
+            try:
+                relative = dependency.relative_to(source.parent)
+            except ValueError:
+                continue
+            target = bundle / relative
+            target.parent.mkdir(parents=True, exist_ok=True)
+            if not target.exists():
+                shutil.copyfile(dependency, target)
+        texture_set = set(discovery.textures)
+        for dependency in discovery.textures:
+            if dependency not in texture_set:
+                continue
+            texture_asset = self.register_file(dependency, kind="image")
+            if texture_asset.reference not in dependency_refs:
+                dependency_refs.append(texture_asset.reference)
+        return destination, tuple(dependency_refs), discovery.warnings
+
     def register_file(self, path: Path, *, kind: str | None = None) -> VisualAsset:
         source = path.expanduser().resolve()
         if not source.is_file():
@@ -124,10 +166,16 @@ class VisualAssetRegistry:
             raise ValueError(f"unsupported mesh type: {suffix or '(none)'}")
         digest, size = self._digest_file(source)
         reference = f"@{_reference_prefix(inferred_kind)}:{digest[:16]}"
-        destination = self.root / f"{digest}{suffix}"
-        if not destination.exists():
-            shutil.copyfile(source, destination)
-        media_type = mimetypes.guess_type(source.name)[0] or "application/octet-stream"
+        dependencies: tuple[str, ...] = ()
+        import_warnings: tuple[str, ...] = ()
+        if inferred_kind == "mesh":
+            destination, dependencies, import_warnings = self._copy_mesh_bundle(source, digest)
+            media_type = _mesh_media_type(suffix)
+        else:
+            destination = self.root / f"{digest}{suffix}"
+            if not destination.exists():
+                shutil.copyfile(source, destination)
+            media_type = mimetypes.guess_type(source.name)[0] or "application/octet-stream"
         asset = VisualAsset(
             reference=reference,
             kind=inferred_kind,
@@ -137,6 +185,8 @@ class VisualAssetRegistry:
             size=size,
             stored_path=destination.relative_to(self.repository_root).as_posix(),
             source_path=str(source),
+            dependencies=dependencies,
+            import_warnings=import_warnings,
         )
         self._assets[reference] = asset
         self._save()
@@ -202,9 +252,10 @@ class VisualAssetRegistry:
         descriptions: list[str] = []
         for reference, asset in sorted(self._assets.items()):
             if reference in text:
+                dependency_text = f", dependencies={list(asset.dependencies)}" if asset.dependencies else ""
                 descriptions.append(
                     f"{reference}: kind={asset.kind}, filename={asset.filename}, "
-                    f"sha256={asset.sha256}, bytes={asset.size}"
+                    f"sha256={asset.sha256}, bytes={asset.size}{dependency_text}"
                 )
         return tuple(descriptions)
 
