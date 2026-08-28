@@ -1,0 +1,194 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  PYTHONDONTWRITEBYTECODE: "1"
+  PIP_DISABLE_PIP_VERSION_CHECK: "1"
+
+jobs:
+  unit-tests:
+    name: Unit tests / Python ${{ matrix.python-version }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version:
+          - "3.10"
+          - "3.12"
+          - "3.13"
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+          cache-dependency-path: pyproject.toml
+
+      - name: Install Linux GUI test dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends xvfb xauth
+
+      - name: Install project with visual support
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e '.[visual]'
+
+      - name: Run complete unit test suite
+        run: xvfb-run -a python -m unittest discover -s tests -v
+
+  deterministic-validation:
+    name: Deterministic validation + GUI smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: pyproject.toml
+
+      - name: Install Linux GUI validation dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends xvfb xauth x11-utils python3-tk
+
+      - name: Install project with visual support
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e '.[visual]'
+
+      - name: Verify Tk availability
+        run: python -c "import tkinter; print('Tk', tkinter.TkVersion)"
+
+      - name: Run authoritative deterministic validator
+        run: python tools/validate.py --report validation.json
+
+      - name: Upload validation evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: deterministic-validation
+          path: validation.json
+          if-no-files-found: error
+          retention-days: 14
+
+  opengl-headless:
+    name: Headless OpenGL 3.3 / EGL
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      OURD_GL_BACKEND: egl
+      LIBGL_ALWAYS_SOFTWARE: "1"
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: pyproject.toml
+
+      - name: Install Mesa EGL runtime
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends libegl1 libegl-mesa0 libgl1-mesa-dri mesa-utils
+
+      - name: Install project with OpenGL support
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e '.[opengl]'
+
+      - name: Run OpenGL compiler and renderer tests
+        run: |
+          python -m unittest \
+            tests.gui.test_opengl_mesh_compile \
+            tests.gui.test_opengl_renderer_optional \
+            -v
+
+      - name: Require EGL context and render real pixels
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          from ourd_gui.mesh_formats import MeshData, MeshFace
+          from ourd_gui.opengl.math3d import RenderCamera
+          from ourd_gui.opengl.renderer import OpenGLRenderer
+
+          mesh = MeshData(
+              name="ci-triangle",
+              vertices=(
+                  (-0.8, 0.0, -0.8),
+                  (0.8, 0.0, -0.8),
+                  (0.0, 0.0, 0.8),
+              ),
+              edges=((0, 1), (1, 2), (0, 2)),
+              faces=(MeshFace((0, 1, 2)),),
+              format_name="ci",
+              encoding="generated",
+          )
+
+          renderer = OpenGLRenderer(backend="egl")
+          try:
+              capabilities = renderer.capabilities()
+              print(capabilities.to_dict())
+              assert capabilities.version_code >= 330, capabilities
+
+              frame = renderer.render(
+                  mesh,
+                  cache_key="ci-triangle",
+                  mode="silhouette",
+                  width=256,
+                  height=256,
+                  camera=RenderCamera(view="front", ortho_scale=1.2),
+                  background=(0.0, 0.0, 0.0, 1.0),
+              )
+              assert len(frame.rgba) == 256 * 256 * 4
+              pixels = {
+                  frame.rgba[index : index + 4]
+                  for index in range(0, len(frame.rgba), 4)
+              }
+              assert len(pixels) >= 2, "rendered framebuffer is uniform"
+
+              png = frame.to_png_bytes()
+              assert png.startswith(b"\x89PNG\r\n\x1a\n")
+              Path("opengl-smoke.png").write_bytes(png)
+          finally:
+              renderer.close()
+          PY
+
+      - name: Upload OpenGL smoke capture
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: opengl-smoke
+          path: opengl-smoke.png
+          if-no-files-found: error
+          retention-days: 14
