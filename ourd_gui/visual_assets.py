@@ -10,7 +10,7 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Sequence
 
-from .mesh_formats import discover_mesh_dependencies
+from .mesh_formats import MeshDependencyDiscovery, discover_mesh_dependencies
 
 
 IMAGE_REFERENCE_RE = re.compile(r"@img:([0-9a-f]{12,64})\b", re.IGNORECASE)
@@ -57,9 +57,9 @@ class VisualAsset:
 class VisualAssetRegistry:
     """Content-addressed GUI asset registry under the protected state directory.
 
-    User-selected visual files are copied into .ourd-agent/gui-assets. Textured
-    mesh imports are stored as bounded bundles so relative MTL/texture references
-    remain resolvable. Referenced texture images also receive normal @img IDs.
+    Textured mesh identity covers the complete resolved import bundle, not merely
+    the primary OBJ/PLY/STL bytes. This prevents different MTL/texture sidecars
+    from silently sharing one @mesh identity.
     """
 
     def __init__(self, repository_root: Path) -> None:
@@ -118,12 +118,40 @@ class VisualAssetRegistry:
                 digest.update(block)
         return digest.hexdigest(), size
 
+    def _digest_mesh_bundle(
+        self,
+        source: Path,
+        discovery: MeshDependencyDiscovery,
+    ) -> tuple[str, int]:
+        digest = hashlib.sha256()
+        primary_digest, primary_size = self._digest_file(source)
+        digest.update(b"mesh-bundle-v1\0")
+        digest.update(source.name.encode("utf-8", errors="surrogateescape"))
+        digest.update(primary_digest.encode("ascii"))
+        total_size = primary_size
+        for dependency in sorted(set(discovery.files), key=lambda path: str(path)):
+            dependency_digest, dependency_size = self._digest_file(dependency)
+            total_size += dependency_size
+            if total_size > MAX_ASSET_BYTES:
+                raise ValueError(
+                    f"mesh bundle exceeds bounded size limit ({MAX_ASSET_BYTES} bytes)"
+                )
+            try:
+                relative = dependency.relative_to(source.parent).as_posix()
+            except ValueError:
+                relative = dependency.name
+            digest.update(b"\0dep\0")
+            digest.update(relative.encode("utf-8", errors="surrogateescape"))
+            digest.update(b"\0")
+            digest.update(dependency_digest.encode("ascii"))
+        return digest.hexdigest(), total_size
+
     def _copy_mesh_bundle(
         self,
         source: Path,
         digest: str,
+        discovery: MeshDependencyDiscovery,
     ) -> tuple[Path, tuple[str, ...], tuple[str, ...]]:
-        discovery = discover_mesh_dependencies(source)
         bundle = self.root / "mesh-bundles" / digest
         bundle.mkdir(parents=True, exist_ok=True)
         destination = bundle / source.name
@@ -139,10 +167,7 @@ class VisualAssetRegistry:
             target.parent.mkdir(parents=True, exist_ok=True)
             if not target.exists():
                 shutil.copyfile(dependency, target)
-        texture_set = set(discovery.textures)
         for dependency in discovery.textures:
-            if dependency not in texture_set:
-                continue
             texture_asset = self.register_file(dependency, kind="image")
             if texture_asset.reference not in dependency_refs:
                 dependency_refs.append(texture_asset.reference)
@@ -164,18 +189,24 @@ class VisualAssetRegistry:
             raise ValueError(f"unsupported image type: {suffix or '(none)'}")
         if inferred_kind == "mesh" and suffix not in SUPPORTED_MESH_SUFFIXES:
             raise ValueError(f"unsupported mesh type: {suffix or '(none)'}")
-        digest, size = self._digest_file(source)
-        reference = f"@{_reference_prefix(inferred_kind)}:{digest[:16]}"
         dependencies: tuple[str, ...] = ()
         import_warnings: tuple[str, ...] = ()
         if inferred_kind == "mesh":
-            destination, dependencies, import_warnings = self._copy_mesh_bundle(source, digest)
+            discovery = discover_mesh_dependencies(source)
+            digest, size = self._digest_mesh_bundle(source, discovery)
+            destination, dependencies, import_warnings = self._copy_mesh_bundle(
+                source,
+                digest,
+                discovery,
+            )
             media_type = _mesh_media_type(suffix)
         else:
+            digest, size = self._digest_file(source)
             destination = self.root / f"{digest}{suffix}"
             if not destination.exists():
                 shutil.copyfile(source, destination)
             media_type = mimetypes.guess_type(source.name)[0] or "application/octet-stream"
+        reference = f"@{_reference_prefix(inferred_kind)}:{digest[:16]}"
         asset = VisualAsset(
             reference=reference,
             kind=inferred_kind,
