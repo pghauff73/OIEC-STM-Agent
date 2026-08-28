@@ -7,6 +7,7 @@ from tkinter import filedialog, ttk
 from tkinter.scrolledtext import ScrolledText
 from typing import Callable
 
+from ..opengl.cli import OpenGLVisualCLI
 from ..visual_assets import VisualAsset, VisualAssetRegistry
 from ..visual_match_cli import VisualMatchCLI
 from ..visual_models import BezierScene, load_mesh
@@ -82,9 +83,10 @@ class VisualWorkbenchView(ttk.Frame):
         mesh_toolbar.pack(fill="x")
         ttk.Label(
             mesh_toolbar,
-            text="Drag to orbit | mouse wheel to zoom | OBJ/STL wireframe preview",
+            text="Drag to orbit | mouse wheel to zoom | OBJ/STL/PLY software preview",
         ).pack(side="left")
         ttk.Button(mesh_toolbar, text="Reset View", command=lambda: self.mesh_viewer.reset_view()).pack(side="right")
+        ttk.Button(mesh_toolbar, text="OpenGL Render", command=self._render_selected_opengl).pack(side="right", padx=(0, 4))
         self.mesh_viewer = MeshViewer(mesh_frame)
         self.mesh_viewer.pack(fill="both", expand=True)
         self.bezier_editor = SupervisedBezierEditor(
@@ -115,7 +117,7 @@ class VisualWorkbenchView(ttk.Frame):
         ttk.Button(command_bar, text="Run", command=self._submit_command).pack(side="left", padx=(4, 0))
         ttk.Label(
             command_bar,
-            text="help | match ... | mesh-views ... | match-3view ... | classify-3view ... | chat ...",
+            text="help | gl-info | render ... | render-3view ... | match ... | chat ...",
         ).pack(side="left", padx=8)
         self.match_cli = VisualMatchCLI(
             self.registry,
@@ -123,8 +125,22 @@ class VisualWorkbenchView(ttk.Frame):
             append=self._append,
             refresh_assets=self.refresh_assets,
         )
+        self.opengl_cli = OpenGLVisualCLI(
+            self.registry,
+            self.mesh_viewer,
+            append=self._append,
+            refresh_assets=self.refresh_assets,
+            show_asset=self._show_asset,
+        )
         self.refresh_assets()
         self._append("SYSTEM", "Visual CLI ready. Type `help` for commands.")
+
+    def destroy(self) -> None:
+        try:
+            self.opengl_cli.close()
+        except Exception:
+            pass
+        super().destroy()
 
     def refresh_assets(self) -> None:
         current = self.selected_reference
@@ -168,7 +184,7 @@ class VisualWorkbenchView(ttk.Frame):
         if path is None:
             filename = filedialog.askopenfilename(
                 title="Input 3D object",
-                filetypes=[("3D mesh", "*.obj *.stl"), ("All files", "*")],
+                filetypes=[("3D mesh", "*.obj *.stl *.ply"), ("All files", "*")],
             )
             if not filename:
                 return None
@@ -187,6 +203,19 @@ class VisualWorkbenchView(ttk.Frame):
         curve = self.bezier_editor.add_curve(name)
         self.tabs.select(self.bezier_editor)
         self._append("CURVE", f"staged curve {curve.name} ({curve.curve_id})")
+
+    def _render_selected_opengl(self) -> None:
+        reference = self.selected_reference
+        if not reference:
+            self._append("ERROR", "select a mesh asset before OpenGL rendering")
+            return
+        try:
+            asset = self.registry.get(reference)
+            if asset.kind != "mesh":
+                raise ValueError("selected asset is not a mesh")
+            self.opengl_cli.dispatch(["render", reference, "mode=textured", "view=perspective", "size=768"])
+        except Exception as exc:
+            self._append("OPENGL ERROR", f"{type(exc).__name__}: {exc}")
 
     def insert_selected_reference(self) -> None:
         if not self.selected_reference:
@@ -284,15 +313,18 @@ class VisualWorkbenchView(ttk.Frame):
                 "commands:\n"
                 "  list [image|mesh|curve|report]\n"
                 "  open-image [PATH]\n"
-                "  open-mesh [PATH]\n"
+                "  open-mesh [PATH]          OBJ/STL/PLY including texture sidecars\n"
                 "  show REF\n"
-                "  ref REF                 insert visual reference into Agent Chat\n"
-                "  image rotate DEG        stage a supervised rotation\n"
+                "  ref REF                   insert visual reference into Agent Chat\n"
+                "  image rotate DEG          stage a supervised rotation\n"
                 "  image flip-h|flip-v|grayscale\n"
                 "  image accept|revert|export\n"
                 "  curve new [NAME]\n"
                 "  curve accept|revert|export|import\n"
                 "  mesh reset\n"
+                "  gl-info\n"
+                "  render MESH [mode=textured|material|vertex-color|wireframe|silhouette|normal|depth] [view=perspective|front|top|side] [size=512]\n"
+                "  render-3view MESH [mode=textured|material|vertex-color|wireframe|silhouette|normal|depth] [orientation=world|camera] [size=512]\n"
                 "  match IMG1 IMG2 [method=all] [profile=balanced] [preprocess=fit] [size=256]\n"
                 "  match-matrix IMG1 IMG2 [IMG3 ...] [profile=balanced]\n"
                 "  mesh-views MESH [orientation=world|camera] [size=512]\n"
@@ -300,7 +332,7 @@ class VisualWorkbenchView(ttk.Frame):
                 "  classify-3view MESH IMG1 IMG2 IMG3 [more...] [orientation=world|camera] [profile=shape]\n"
                 "  match methods: mse, ncc, ssim-global, histogram, edge-dice, edge-chamfer\n"
                 "  match profiles: appearance, shape, balanced\n"
-                "  chat TEXT...            send a governed Agent Chat turn; @img refs become image inputs",
+                "  chat TEXT...              send a governed Agent Chat turn; @img refs become image inputs",
             )
             return
         if command == "list":
@@ -334,6 +366,9 @@ class VisualWorkbenchView(ttk.Frame):
             return
         if command == "mesh" and argv[1:] == ["reset"]:
             self.mesh_viewer.reset_view()
+            return
+        if self.opengl_cli.handles(command):
+            self.opengl_cli.dispatch(argv)
             return
         if self.match_cli.handles(command):
             self.match_cli.dispatch(argv)
