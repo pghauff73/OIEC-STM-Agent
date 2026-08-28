@@ -1,2 +1,1 @@
-"""Tkinter views for the OURD workbench."""
-
+"""Tkinter views for the OIEC-STM-Agent workbench."""

@@ -1,6 +1,6 @@
-# OURD Agent GUI Implementation Plan
+# OIEC-STM-Agent GUI Implementation Plan
 
-**System:** OURD Agent evidence-governed engineering workbench  
+**System:** OIEC-STM-Agent evidence-governed engineering workbench
 **Plan date:** 2026-08-21, Australia/Brisbane  
 **Plan status:** Candidate implementation plan; not implementation authority, certification, or release approval  
 **Certified implementation baseline:** source snapshot `d1f9ba74cb9fb91228a9924da58eee8f89e2e0f23ead9d42f0eb642f6691b47e`  
@@ -10,7 +10,7 @@
 
 ## 1. Executive Decision
 
-The OURD Agent GUI will be implemented as an inspectable control and
+The OIEC-STM-Agent GUI will be implemented as an inspectable control and
 observability surface over the existing governed core. It will not be a shell
 wrapper, a second policy engine, or an alternate mutation path.
 
@@ -273,7 +273,8 @@ tests/gui/
 The project scripts should eventually add:
 
 ```toml
-ourd-gui = "ourd_gui.app:main"
+oiec-stm-gui = "ourd_gui.app:main"
+ourd-gui = "ourd_gui.app:main"  # compatibility alias
 ```
 
 The build backend must include `ourd_gui/**/*.py` in wheels and source
@@ -860,7 +861,8 @@ GUI projection must not affect EGCF execution or evidence.
 
 **Deliverables**
 
-- Add `ourd_gui` package, `ourd-gui` entry point, and build-backend inclusion.
+- Add `ourd_gui` package, canonical `oiec-stm-gui` entry point, legacy
+  `ourd-gui` alias, and build-backend inclusion.
 - Implement `app.py`, `controller.py`, `events.py`, `state.py`, and minimal
   `views/shell.py`.
 - Open a repository, display source snapshot, and close cleanly.
@@ -1339,4 +1341,3 @@ The required order is:
 This order keeps the first implementation focused on the system's distinguishing
 value: exposing the evidence-governed reasoning chain rather than merely adding
 more desktop controls around command execution.
-

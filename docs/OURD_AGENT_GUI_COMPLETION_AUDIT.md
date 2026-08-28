@@ -1,4 +1,4 @@
-# OURD Agent GUI Completion Audit
+# OIEC-STM-Agent GUI Completion Audit
 
 **Audit date:** 2026-08-21, Australia/Brisbane  
 **Plan:** `OURD_AGENT_GUI_IMPLEMENTATION_PLAN.md`  
@@ -21,7 +21,7 @@ hashes, and human approval are separate records.
 | Phase | Result | Primary implementation and evidence |
 | --- | --- | --- |
 | 0 - Contract and fixtures | Complete | `tests/gui/fixtures_v1.py` defines schema-v1, source-snapshot-locked, bundle-digest-locked canonical selection, workflow, evidence, approval, execution, failure, assurance, and artifact fixtures; `test_fixtures_v1.py` loads them through GUI read models. |
-| 1 - Application scaffold | Complete | `ourd_gui/app.py`, `controller.py`, `events.py`, `state.py`, `views/shell.py`, `ourd-gui` entry point, wheel/sdist inclusion, structured errors, worker polling, clean headless close. |
+| 1 - Application scaffold | Complete | `ourd_gui/app.py`, `controller.py`, `events.py`, `state.py`, `views/shell.py`, canonical `oiec-stm-gui` and compatibility `ourd-gui` entry points, wheel/sdist inclusion, structured errors, worker polling, clean headless close. |
 | 2 - Event and task projection | Complete | Typed schema-v1 events, core-event mapping, append-only GUI journal, deterministic reducer, task/session projection, navigation, partial-line handling, unknown-event preservation, and provenance requirement for authoritative events. |
 | 3 - SelectionTrace model | Complete | Exact command, invocation, selection, algorithm digest, qualification, evidence, candidate, exclusion, score, ranking criteria, tie-break, stale snapshot, missing-object, and duplicate diagnostics. Recorded candidate order is preserved. |
 | 4 - InteractiveSelectionTrace | Complete | Layered canvas, scrolling, 75/100/125 percent zoom presets, keyboard navigation, non-color state text, candidate details, evidence links, qualification/command links, comparison, rejections, and 100-node layout test. |
@@ -55,7 +55,8 @@ Completed before candidate freeze:
 - `python3 -m unittest discover -s tests -t . -v` - 175 tests passed.
 - Headless Tk smoke with authenticated Xvfb transport - pass.
 - Wheel and source distribution build - pass.
-- Wheel contains `ourd_gui` and `ourd-gui = ourd_gui.app:main` - pass.
+- Wheel contains `ourd_gui`, `oiec-stm-gui = ourd_gui.app:main`, and the
+  compatibility `ourd-gui = ourd_gui.app:main` alias - pass.
 - Schema-v1 GUI fixture digest: `4c217e07d70d8feb3e479d8ec1d4d36e6d4ef8f4548ccfc6dc1796d5161c7813`.
 
 The final deterministic validation report and exact source snapshot are created

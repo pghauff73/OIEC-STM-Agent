@@ -7,12 +7,16 @@ import os
 import re
 import tempfile
 import uuid
+from copy import deepcopy
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, Iterable, Optional
 
 from .errors import StateError
 from .models import RuntimeState
+
+
+RUNTIME_SCHEMA_VERSION = 2
 
 
 SENSITIVE_KEY = re.compile(r"(?:api[_-]?key|token|secret|password|authorization)", re.I)
@@ -33,6 +37,35 @@ def canonical_json(payload: Any) -> str:
 
 def sha256_text(text: str) -> str:
     return hashlib.sha256(text.encode("utf-8")).hexdigest()
+
+
+def migrate_v1_to_v2(payload: Dict[str, Any]) -> Dict[str, Any]:
+    migrated = deepcopy(payload)
+    if int(migrated.get("schema_version", 1)) != 1:
+        raise StateError("runtime migration requires schema version 1")
+    migrated["schema_version"] = RUNTIME_SCHEMA_VERSION
+    migrated.setdefault("boundary_state", None)
+    migrated.setdefault("dimension_budget", None)
+    migrated.setdefault("finite_evidence", None)
+    migrated.setdefault("last_progress", None)
+    migrated.setdefault("transition_index", 0)
+    action = migrated.get("pending_action")
+    if isinstance(action, dict):
+        action.setdefault("varied_dimensions", [])
+    for artifact in migrated.get("evidence_registry", {}).values():
+        if not isinstance(artifact, dict):
+            continue
+        artifact.setdefault("requirement_ids", [])
+        artifact.setdefault("quality_bp", 10_000)
+        artifact.setdefault("polarity", "support")
+    for collision in migrated.get("collisions", []):
+        if not isinstance(collision, dict):
+            continue
+        collision.setdefault("severity_bp", 0)
+        collision.setdefault("attempt_key", "")
+        collision.setdefault("boundary_signature", "")
+        collision.setdefault("dimension_signature", "")
+    return migrated
 
 
 def redact(payload: Any) -> Any:
@@ -235,11 +268,40 @@ class StateStore:
         if payload is None:
             return RuntimeState(event_head=self.events.head)
         try:
+            schema_version = int(payload.get("schema_version", 1))
+        except (TypeError, ValueError) as exc:
+            raise StateError("invalid runtime state schema version") from exc
+        migrated_from = None
+        if schema_version == 1:
+            payload = migrate_v1_to_v2(payload)
+            migrated_from = 1
+        elif schema_version != RUNTIME_SCHEMA_VERSION:
+            raise StateError(f"unsupported runtime state schema: {schema_version}")
+        try:
             state = RuntimeState.from_dict(payload)
         except (TypeError, ValueError, KeyError) as exc:
             raise StateError(f"invalid runtime state: {exc}") from exc
-        if state.schema_version != 1:
+        if state.schema_version != RUNTIME_SCHEMA_VERSION:
             raise StateError(f"unsupported runtime state schema: {state.schema_version}")
+        if migrated_from is not None:
+            migration_payload = state.to_dict()
+            migration_payload["event_head"] = self.events.head
+            event = self.events.append(
+                "state_snapshot",
+                {
+                    "state": migration_payload,
+                    "migration": {
+                        "from_schema": migrated_from,
+                        "to_schema": RUNTIME_SCHEMA_VERSION,
+                    },
+                },
+            )
+            state.event_head = event["event_hash"]
+            migration_payload["event_head"] = state.event_head
+            atomic_write_text(
+                self.state_path,
+                json.dumps(migration_payload, indent=2) + "\n",
+            )
         state.event_head = self.events.head
         return state
 
@@ -251,6 +313,8 @@ class StateStore:
         action_id: str = "",
         transaction_id: str = "",
     ) -> None:
+        if state.schema_version != RUNTIME_SCHEMA_VERSION:
+            raise StateError(f"unsupported runtime state schema: {state.schema_version}")
         payload = state.to_dict()
         payload["event_head"] = self.events.head
         event = self.events.append(

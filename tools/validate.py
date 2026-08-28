@@ -305,7 +305,7 @@ def run_gui_smoke() -> Dict[str, Any]:
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Validate the OURD coding agent")
+    parser = argparse.ArgumentParser(description="Validate OIEC-STM-Agent")
     parser.add_argument("--live-ollama", action="store_true")
     parser.add_argument("--model", default="qwen3.8-27b-fast")
     parser.add_argument("--base-url", default="http://127.0.0.1:11434/v1")

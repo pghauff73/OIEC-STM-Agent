@@ -315,13 +315,25 @@ class AlgorithmRegistry:
         return sha256_json(material)
 
     def register(self, definition: AlgorithmDefinition) -> str:
-        if definition.implementation_kind != "builtin":
+        if definition.implementation_kind not in {"builtin", "reference"}:
             raise EGCFError(
                 "non-core algorithm proposals cannot select privileged executor kinds"
             )
+        if definition.implementation_kind == "reference" and definition.status not in {
+            "PROPOSED",
+            "CANDIDATE",
+        }:
+            raise EGCFError("external algorithm references cannot self-qualify")
         forbidden = ("shell", "subprocess", "callback", "callable", "exec(", "eval(")
         if any(marker in definition.implementation_ref.lower() for marker in forbidden):
             raise EGCFError("algorithm implementation reference contains a forbidden executor marker")
+        if len(definition.implementation_digest) != 64 or any(
+            character not in "0123456789abcdef"
+            for character in definition.implementation_digest.lower()
+        ):
+            raise EGCFError("algorithm implementation digest must be an exact SHA-256 digest")
+        for command_id in definition.command_ids:
+            self.commands.resolve(command_id)
         self._search_cache.clear()
         self._qualification_cache.clear()
         return self.store.register(definition)

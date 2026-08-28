@@ -4,6 +4,7 @@
   "description": "Each exact command version receives a content-addressed built-in algorithm definition and contextual qualification record.",
   "implementation_kinds": {
     "builtin": "Read-only or internal semantic operation",
+    "reference": "Content-addressed external algorithm source stored for analysis only; never a direct executor",
     "simulation": "C2 operation with mandatory simulated result labeling",
     "eon": "C3 workspace mutation through OURDAgent EON and TransactionManager only"
   },

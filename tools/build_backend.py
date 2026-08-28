@@ -31,7 +31,7 @@ def _source_files() -> Iterable[tuple[Path, str]]:
     for package in ("ourd", "ourd_gui"):
         for path in sorted((ROOT / package).rglob("*.py")):
             yield path, path.relative_to(ROOT).as_posix()
-    for name in ("ourd_agent.py", "egcf.py"):
+    for name in ("oiec_stm_agent.py", "ourd_agent.py", "egcf.py"):
         path = ROOT / name
         yield path, name
     for directory in ("algorithms", "commands", "schemas", "workflows"):
@@ -124,7 +124,10 @@ def build_wheel(
             (f"{dist_info}/METADATA", _metadata().encode("utf-8")),
             (f"{dist_info}/WHEEL", _wheel_metadata().encode("utf-8")),
             (f"{dist_info}/entry_points.txt", _entry_points().encode("utf-8")),
-            (f"{dist_info}/top_level.txt", b"ourd\nourd_gui\nourd_agent\negcf\n"),
+            (
+                f"{dist_info}/top_level.txt",
+                b"ourd\nourd_gui\noiec_stm_agent\nourd_agent\negcf\n",
+            ),
         ]
     )
     records = [[name, _record_digest(content), str(len(content))] for name, content in entries]
@@ -152,6 +155,7 @@ def build_sdist(
     included = [
         ROOT / "pyproject.toml",
         ROOT / "README.md",
+        ROOT / "oiec_stm_agent.py",
         ROOT / "ourd_agent.py",
         ROOT / "egcf.py",
         *sorted((ROOT / "ourd").rglob("*.py")),

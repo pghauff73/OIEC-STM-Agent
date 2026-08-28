@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Compatibility launcher and public imports for the OURD coding agent."""
+"""Legacy launcher and public imports for OIEC-STM-Agent."""
 
 from ourd import (
     AuthorityManifest,
