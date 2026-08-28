@@ -61,6 +61,17 @@ def hypothesis_definition_material(
     }
 
 
+def _hypothesis_identity_material(material: Mapping[str, Any]) -> dict[str, Any]:
+    """Identity excludes model confidence/prior so confidence churn is not novelty."""
+
+    return {
+        "proposition": material["proposition"],
+        "assumptions": material["assumptions"],
+        "predictions": material["predictions"],
+        "falsifiers": material["falsifiers"],
+    }
+
+
 def _hypothesis_signature(hypothesis: Hypothesis) -> str:
     payload = asdict(hypothesis)
     payload.pop("signature", None)
@@ -94,7 +105,7 @@ def make_hypothesis(
         predictions=predictions,
         falsifiers=falsifiers,
     )
-    hypothesis_id = "hypothesis:" + stable_hash(material)
+    hypothesis_id = "hypothesis:" + stable_hash(_hypothesis_identity_material(material))
     hypothesis = Hypothesis(
         hypothesis_id=hypothesis_id,
         proposition=material["proposition"],
@@ -193,6 +204,9 @@ def link_hypothesis_evidence(
         raise PolicyError("unknown hypothesis_id")
 
     fingerprint = evidence_fingerprint(artifact)
+    # One grounded observation may contribute once per hypothesis. A model cannot
+    # recycle the same evidence as supports/conflicts/falsifies to manufacture
+    # multiple progress events.
     if any(item.evidence_fingerprint == fingerprint for item in hypothesis.evidence_links):
         return current, False
     if len(hypothesis.evidence_links) >= MAX_EVIDENCE_LINKS_PER_HYPOTHESIS:
