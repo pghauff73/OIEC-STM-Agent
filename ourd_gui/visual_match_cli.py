@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import json
 from pathlib import Path
 from typing import Callable
 
@@ -233,13 +232,14 @@ class VisualMatchCLI:
         if len(positional) != 1:
             raise ValueError(
                 "usage: match-3view MESH front=IMG top=IMG side=IMG "
-                "[orientation=world|camera] [profile=shape] [preprocess=edge-fit] [size=256]"
+                "[orientation=world|camera] [method=all] [profile=shape] "
+                "[preprocess=edge-fit] [size=256]"
             )
         required = {view: options.get(view, "") for view in ("front", "top", "side")}
         missing = [view for view, reference in required.items() if not reference]
         if missing:
             raise ValueError(f"missing three-view options: {', '.join(missing)}")
-        _, profile, preprocess, size = self._common(options, default_profile="shape")
+        method, profile, preprocess, size = self._common(options, default_profile="shape")
         mesh_asset, mesh = self._mesh(positional[0])
         orientation, yaw, pitch = self._orientation(options)
         reference_assets = {view: self._image(reference)[0] for view, reference in required.items()}
@@ -264,6 +264,7 @@ class VisualMatchCLI:
             orientation=orientation,
             yaw=yaw,
             pitch=pitch,
+            method=method,
             profile=profile,
             preprocess=preprocess,
             size=size,
@@ -282,9 +283,10 @@ class VisualMatchCLI:
         if len(positional) < 2:
             raise ValueError(
                 "usage: classify-3view MESH IMG1 [IMG2 ... IMG12] "
-                "[orientation=world|camera] [profile=shape] [preprocess=edge-fit] [size=256]"
+                "[orientation=world|camera] [method=all] [profile=shape] "
+                "[preprocess=edge-fit] [size=256]"
             )
-        _, profile, preprocess, size = self._common(options, default_profile="shape")
+        method, profile, preprocess, size = self._common(options, default_profile="shape")
         mesh_asset, mesh = self._mesh(positional[0])
         orientation, yaw, pitch = self._orientation(options)
         candidate_assets = [self._image(reference)[0] for reference in positional[1:]]
@@ -307,6 +309,7 @@ class VisualMatchCLI:
             orientation=orientation,
             yaw=yaw,
             pitch=pitch,
+            method=method,
             profile=profile,
             preprocess=preprocess,
             size=size,
