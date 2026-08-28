@@ -8,7 +8,7 @@ import tempfile
 from pathlib import Path
 from typing import Optional, Sequence
 
-from .agent import OURDAgent
+from .production_agent import ProductionOURDAgent as OURDAgent
 from .authority import save_authority, save_authority_example, scoped_write_authority
 from .formal_writing import WRITING_PROFILES
 from .providers import ProviderConfig
