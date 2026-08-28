@@ -16,7 +16,7 @@ from .errors import StateError
 from .models import RuntimeState
 
 
-RUNTIME_SCHEMA_VERSION = 3
+RUNTIME_SCHEMA_VERSION = 2
 
 
 SENSITIVE_KEY = re.compile(r"(?:api[_-]?key|token|secret|password|authorization)", re.I)
@@ -43,12 +43,14 @@ def migrate_v1_to_v2(payload: Dict[str, Any]) -> Dict[str, Any]:
     migrated = deepcopy(payload)
     if int(migrated.get("schema_version", 1)) != 1:
         raise StateError("runtime migration requires schema version 1")
-    migrated["schema_version"] = 2
+    migrated["schema_version"] = RUNTIME_SCHEMA_VERSION
     migrated.setdefault("boundary_state", None)
     migrated.setdefault("dimension_budget", None)
     migrated.setdefault("finite_evidence", None)
+    migrated.setdefault("hypothesis_state", None)
     migrated.setdefault("last_progress", None)
     migrated.setdefault("transition_index", 0)
+    migrated.setdefault("control_only_progress_streak", 0)
     action = migrated.get("pending_action")
     if isinstance(action, dict):
         action.setdefault("varied_dimensions", [])
@@ -65,19 +67,6 @@ def migrate_v1_to_v2(payload: Dict[str, Any]) -> Dict[str, Any]:
         collision.setdefault("attempt_key", "")
         collision.setdefault("boundary_signature", "")
         collision.setdefault("dimension_signature", "")
-    return migrated
-
-
-def migrate_v2_to_v3(payload: Dict[str, Any]) -> Dict[str, Any]:
-    migrated = deepcopy(payload)
-    if int(migrated.get("schema_version", 2)) != 2:
-        raise StateError("runtime migration requires schema version 2")
-    migrated["schema_version"] = 3
-    migrated.setdefault("hypothesis_state", None)
-    migrated.setdefault("control_only_progress_streak", 0)
-    progress = migrated.get("last_progress")
-    if isinstance(progress, dict):
-        progress.setdefault("hypothesis_resolution_bp", 0)
     return migrated
 
 
@@ -287,11 +276,7 @@ class StateStore:
         migrated_from = None
         if schema_version == 1:
             payload = migrate_v1_to_v2(payload)
-            payload = migrate_v2_to_v3(payload)
             migrated_from = 1
-        elif schema_version == 2:
-            payload = migrate_v2_to_v3(payload)
-            migrated_from = 2
         elif schema_version != RUNTIME_SCHEMA_VERSION:
             raise StateError(f"unsupported runtime state schema: {schema_version}")
         try:
