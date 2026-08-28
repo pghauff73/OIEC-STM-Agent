@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1160" height="317" viewBox="0 0 1160 317">
+<style>
+  :root { color-scheme: light; }
+  svg { background:#fbf8ff; font-family:'Courier New',monospace; }
+  .grid { stroke:#e5d6ff; stroke-width:1; }
+  .title { fill:#2b0a5a; font-size:25px; font-weight:700; letter-spacing:2px; }
+  .subtitle { fill:#6e3aa8; font-size:13px; letter-spacing:1.4px; }
+  .signal-path { fill:none; stroke:#9b4dff; stroke-width:3; stroke-dasharray:8 8; animation:flow 2s linear infinite; }
+  .module-node { cursor:pointer; outline:none; }
+  .module-node rect { fill:#ffffff; stroke:#5d168f; stroke-width:3; filter:drop-shadow(6px 6px 0 #d7b8ff); transition:120ms ease; }
+  .module-node:hover rect,.module-node:focus rect,.module-node.active rect { fill:#f3e8ff; stroke:#ff3fcf; transform:translate(-2px,-2px); }
+  .node-index { fill:#ff2dbf; font-size:17px; font-weight:700; }
+  .node-title { fill:#2b0a5a; font-size:15px; font-weight:700; }
+  .node-meta { fill:#6e3aa8; font-size:11px; letter-spacing:1px; }
+  @keyframes flow { to { stroke-dashoffset:-32; } }
+</style>
+<defs><pattern id="grid" width="24" height="24" patternUnits="userSpaceOnUse"><path class="grid" d="M 24 0 L 0 0 0 24" fill="none" /></pattern></defs>
+<rect width="100%" height="100%" fill="url(#grid)" />
+<text class="title" x="70" y="58">ADR 0004: EON Remains the Sole Workspace Mutation Boundary</text>
+<text class="subtitle" x="70" y="88">INTERACTIVE MODULE CIRCUIT · SELECT A NODE TO NAVIGATE</text>
+<g class="edges"><path class="signal-path" d="M 380 186.0 C 404 186.0, 401 186.0, 425 186.0" /><path class="signal-path" d="M 735 186.0 C 759 186.0, 756 186.0, 780 186.0" /></g><g class="nodes"><g class="module-node" id="node-adr-0004-eon-remains-the-sole-workspace-mutation-boundary" data-target="adr-0004-eon-remains-the-sole-workspace-mutation-boundary" tabindex="0" role="link"><rect x="70" y="145" width="310" height="82" rx="3" /><text class="node-index" x="88" y="172">01</text><text class="node-title" x="128" y="174">ADR 0004: EON Remains the Sole Wo…</text><text class="node-meta" x="88" y="205">LEVEL 1 · 25 PARAGRAPHS</text><title>Open module 1: ADR 0004: EON Remains the Sole Workspace Mutation Boundary</title></g><g class="module-node" id="node-decision" data-target="decision" tabindex="0" role="link"><rect x="425" y="145" width="310" height="82" rx="3" /><text class="node-index" x="443" y="172">02</text><text class="node-title" x="483" y="174">Decision</text><text class="node-meta" x="443" y="205">LEVEL 2 · 25 PARAGRAPHS</text><title>Open module 2: Decision</title></g><g class="module-node" id="node-consequences" data-target="consequences" tabindex="0" role="link"><rect x="780" y="145" width="310" height="82" rx="3" /><text class="node-index" x="798" y="172">03</text><text class="node-title" x="838" y="174">Consequences</text><text class="node-meta" x="798" y="205">LEVEL 2 · 25 PARAGRAPHS</text><title>Open module 3: Consequences</title></g></g>
+</svg>

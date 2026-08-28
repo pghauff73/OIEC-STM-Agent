@@ -1,7 +1,7 @@
 [project]
-name = "ourd-coding-agent"
-version = "0.3.1"
-description = "A governed Codex-like coding agent using OURD, IURM, EON and HRT principles"
+name = "oiec-stm-agent"
+version = "0.4.0"
+description = "A deterministic governed coding agent using OIEC-STM, OURD, IURM, EON, and CFEL"
 requires-python = ">=3.10"
 dependencies = []
 
@@ -9,6 +9,8 @@ dependencies = []
 openai = ["openai>=1.0.0"]
 
 [project.scripts]
+oiec-stm-agent = "ourd.cli:main"
+oiec-stm-gui = "ourd_gui.app:main"
 ourd-agent = "ourd.cli:main"
 egcf = "ourd.egcf.cli:main"
 ourd-gui = "ourd_gui.app:main"

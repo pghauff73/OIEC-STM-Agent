@@ -3,11 +3,14 @@ from __future__ import annotations
 import shlex
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import List, Sequence
+from typing import List, Sequence, TYPE_CHECKING
 
 from .errors import PolicyError
 from .models import AuthorityManifest, EONAction, RISK_ORDER, max_risk
 from .workspace import Workspace
+
+if TYPE_CHECKING:
+    from .models import BoundaryState, DimensionBudget
 
 
 @dataclass(frozen=True)
@@ -72,6 +75,25 @@ class PolicyEngine:
             model_risk,
             self.minimum_risk(operation, summary, targets, command_capabilities),
         )
+
+    @staticmethod
+    def require_oiec_boundary_target(
+        workspace: Workspace,
+        boundary: "BoundaryState",
+        target: str,
+    ) -> str:
+        from .oiec import require_boundary_target
+
+        return require_boundary_target(workspace, boundary, target)
+
+    @staticmethod
+    def require_oiec_dimension_action(
+        budget: "DimensionBudget",
+        varied_dimensions: Sequence[str],
+    ) -> None:
+        from .oiec import require_dimension_action
+
+        require_dimension_action(budget, varied_dimensions)
 
     def require_mutation_authority(self, authority: AuthorityManifest) -> None:
         if authority.read_only:

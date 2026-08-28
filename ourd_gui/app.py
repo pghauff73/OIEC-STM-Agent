@@ -29,8 +29,8 @@ from .widgets.status_badge import StatusBadge
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        prog="ourd-gui",
-        description="Evidence-governed OURD Agent workbench",
+        prog="oiec-stm-gui",
+        description="Evidence-governed OIEC-STM-Agent workbench",
     )
     parser.add_argument("--repo", default=".", help="Repository/workspace root")
     parser.add_argument("--authority", type=Path, help="External authority manifest")
@@ -119,7 +119,7 @@ class OURDWorkbench(tk.Tk):
             base_url=base_url,
             context_tokens=context_budget,
         )
-        self.title("OURD Agent Workbench")
+        self.title("OIEC-STM-Agent Workbench")
         self.geometry(self.preferences.window_geometry)
         self.minsize(900, 600)
         self.controller = GuiController(
@@ -239,7 +239,7 @@ class OURDWorkbench(tk.Tk):
                     "gui.agent_chat",
                     "Open Agent Chat",
                     "Agent",
-                    "Open the governed multi-turn OURD Agent chat composer.",
+                    "Open the governed multi-turn OIEC-STM-Agent chat composer.",
                     self._show_chat,
                 ),
                 PaletteCommand(
@@ -793,11 +793,11 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             max_steps=args.max_steps,
         )
     except Exception as exc:
-        print(f"OURD Agent GUI startup failed: {type(exc).__name__}: {exc}", file=sys.stderr)
+        print(f"OIEC-STM-Agent GUI startup failed: {type(exc).__name__}: {exc}", file=sys.stderr)
         try:
             root = tk.Tk()
             root.withdraw()
-            messagebox.showerror("OURD Agent GUI", f"{type(exc).__name__}: {exc}")
+            messagebox.showerror("OIEC-STM-Agent GUI", f"{type(exc).__name__}: {exc}")
             root.destroy()
         except Exception:
             pass

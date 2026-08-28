@@ -1,11 +1,11 @@
-# OURD Agent GUI
+# OIEC-STM-Agent GUI
 
 **Implementation date:** 2026-08-21  
 **State:** governed candidate; deterministic validation and exact-snapshot human approval required
 
 ## Purpose
 
-`ourd-gui` is an inspectable workbench over the existing EGCF core. It exposes
+`oiec-stm-gui` is an inspectable workbench over the existing EGCF core. It exposes
 the chain from intent to qualified algorithm, evidence, approval, execution,
 verification, rollback, and learning. It is not a second policy engine and does
 not provide a direct filesystem or shell bypass.
@@ -30,8 +30,10 @@ python3 -m ourd_gui --repo .
 Installed entry point:
 
 ```bash
-ourd-gui --repo .
+oiec-stm-gui --repo .
 ```
+
+`ourd-gui` remains an equivalent compatibility alias.
 
 Agent Chat provider flags:
 

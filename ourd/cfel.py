@@ -5,7 +5,8 @@ import json
 import uuid
 from typing import List
 
-from .models import CollisionRecord, RuntimeState
+from .errors import PolicyError
+from .models import CollisionRecord, RuntimeState, SCORE_SCALE
 from .persistence import utc_now
 
 
@@ -29,7 +30,14 @@ def record_collision(
     falsifier: str = "",
     disposition: str = "recorded",
     collision_fingerprint: str = "",
+    severity_bp: int = 0,
+    attempt_key: str = "",
+    boundary_signature: str = "",
+    dimension_signature: str = "",
 ) -> CollisionRecord:
+    severity_bp = int(severity_bp)
+    if not 0 <= severity_bp <= SCORE_SCALE:
+        raise PolicyError("collision severity must be 0..10000")
     collision_fingerprint = collision_fingerprint or fingerprint(
         {
             "action_id": action_id,
@@ -40,8 +48,11 @@ def record_collision(
             "active_dimension": active_dimension,
         }
     )
-    retry_count = state.failed_attempts.get(collision_fingerprint, 0) + 1
-    state.failed_attempts[collision_fingerprint] = retry_count
+    retry_identity = attempt_key or collision_fingerprint
+    retry_count = state.failed_attempts.get(retry_identity, 0)
+    if not attempt_key or severity_bp >= SCORE_SCALE // 2:
+        retry_count += 1
+        state.failed_attempts[retry_identity] = retry_count
     record = CollisionRecord(
         collision_id=str(uuid.uuid4()),
         timestamp=utc_now(),
@@ -58,6 +69,10 @@ def record_collision(
         retry_count=retry_count,
         disposition=disposition,
         fingerprint=collision_fingerprint,
+        severity_bp=severity_bp,
+        attempt_key=attempt_key,
+        boundary_signature=boundary_signature,
+        dimension_signature=dimension_signature,
     )
     state.collisions.append(record)
     return record

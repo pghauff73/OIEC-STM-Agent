@@ -58,6 +58,7 @@ class SchemaTests(unittest.TestCase):
         self.assertEqual(1, checked_in["schema_version"])
         self.assertEqual(command_catalog()["namespaces"], checked_in["namespaces"])
         self.assertEqual(1, algorithms["schema_version"])
+        self.assertIn("reference", algorithms["implementation_kinds"])
         self.assertFalse(algorithms["floating_versions_allowed"])
         self.assertFalse(algorithms["direct_command_callbacks_allowed"])
 

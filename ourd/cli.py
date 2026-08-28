@@ -14,7 +14,8 @@ from .workspace import Workspace
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        description="HRT/OURD/IURM/EON governed coding agent"
+        prog="oiec-stm-agent",
+        description="OIEC-STM bounded HRT/OURD/IURM/EON/CFEL coding agent",
     )
     parser.add_argument("repo", nargs="?", default=".", help="Repository/workspace root")
     parser.add_argument("--task", help="Run one task and exit")
@@ -120,13 +121,13 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             print(agent.run_task(args.task))
             return 0
         print(
-            f"OURD-Agent | repo={agent.ws.root} | model={agent.model} | "
+            f"OIEC-STM-Agent | repo={agent.ws.root} | model={agent.model} | "
             f"authority={agent.state.authority.task_id}\n"
             "Enter a coding task. Ctrl-D / Ctrl-C exits."
         )
         while True:
             try:
-                task = input("\nourd> ").strip()
+                task = input("\noiec-stm> ").strip()
             except (EOFError, KeyboardInterrupt):
                 print()
                 return 0

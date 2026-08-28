@@ -1,4 +1,4 @@
-"""Tkinter workbench for the evidence-governed OURD agent."""
+"""Tkinter workbench for OIEC-STM-Agent."""
 
 from .events import AgentEvent, AgentEventBus, AgentEventType
 from .selection_trace import SelectionTrace, SelectionTraceAssembler
@@ -15,4 +15,3 @@ __all__ = [
     "SelectionTraceAssembler",
     "reduce_event",
 ]
-

@@ -1,7 +1,7 @@
-# OURD Coding Agent
+# OIEC-STM-Agent
 
-A compact Python coding agent with a deterministic governance and transaction
-boundary:
+A compact Python coding agent with a deterministic bounded-transition,
+governance, and transaction boundary:
 
 **HRTv1 → OURD → IURMv1.1.1 → EONv1 → Evidence Gate → Action → CFEL feedback**
 
@@ -52,6 +52,38 @@ release.
 Internal `.ourd-agent/` bookkeeping is created independently of workspace
 mutation governance. Model tools cannot read or write that namespace.
 
+## OIEC-STMv1.2 Bounded Transitions
+
+OIEC-STMv1.2 adds a deterministic, fixed-point control projection without
+creating another authority, evidence, or execution engine. Its six primitives
+are `BoundaryState`, `DimensionBudget`, `FiniteEvidenceState`, `AttemptKey`,
+`ProgressCertificate`, and `BoundedTransitionKernel`.
+
+The kernel composes with existing owners:
+
+- `BoundaryState` requires every concrete target to satisfy both the human
+  authority patterns and the established governance patterns.
+- `DimensionBudget` selects a finite, deterministic experimental basis and
+  defaults to one varied dimension at a time.
+- `FiniteEvidenceState` projects only action-relevant evidence atoms while the
+  durable evidence registry remains append-only.
+- `AttemptKey` binds the exact current snapshot, EON action, relevant evidence,
+  boundary, and dimension state before execution.
+- CFEL records significant failures against that pre-action key, so unrelated
+  evidence or changed prose cannot unlock blind repetition.
+- `ProgressCertificate` accepts continuation only for new evidence, material
+  goal or risk improvement, boundary resolution, a discriminating experiment,
+  or a terminal stop.
+
+`BoundedTransitionKernel.prepare()` runs immediately before the existing
+transaction apply and governed command paths. It can block or prepare, but it
+has no subprocess or repository-write method. EON, the evidence gate,
+`PolicyEngine`, `TransactionManager`, and human approval remain authoritative.
+
+All OIEC control quantities use integer basis points from `0` to `10000`.
+These values are deterministic telemetry and cannot lower the existing L0/L1/L2
+risk floor.
+
 ## Install
 
 Python 3.10 or newer is required.
@@ -69,12 +101,19 @@ another remote OpenAI-compatible provider, install the optional SDK:
 pip install -e '.[openai]'
 ```
 
+The canonical commands are `oiec-stm-agent` and `oiec-stm-gui`. The historical
+`ourd-agent`, `ourd-gui`, and `python ourd_agent.py` launch paths remain
+supported compatibility aliases. The `ourd` Python package, `OURD_*`
+environment variables, and `.ourd-agent/` state directory remain stable public
+interfaces because OURD is still the semantic problem-model layer inside
+OIEC-STM-Agent.
+
 ## Read-Only Use
 
 Without `--authority`, the agent is deliberately read-only:
 
 ```bash
-python ourd_agent.py /path/to/repo \
+oiec-stm-agent /path/to/repo \
   --task "Inspect the parser and report the likely regression. Do not modify files."
 ```
 
@@ -95,7 +134,7 @@ Revalidate the current host before every governed run:
 
 ```bash
 mkdir -p /tmp/ourd-preflight
-python ourd_agent.py /tmp/ourd-preflight \
+oiec-stm-agent /tmp/ourd-preflight \
   --base-url http://127.0.0.1:11434/v1 \
   --api-key ollama \
   --model qwen3.8-27b-fast \
@@ -116,7 +155,7 @@ export OURD_CONTEXT_BUDGET=6000
 export OURD_MAX_OUTPUT_TOKENS=700
 export OURD_TRANSPORT_RETRIES=0
 
-python ourd_agent.py /path/to/repo --task "Inspect the repository read-only."
+oiec-stm-agent /path/to/repo --task "Inspect the repository read-only."
 ```
 
 The provider refuses requests estimated to exceed its configured context budget
@@ -127,7 +166,7 @@ context while preserving the repository audit trail, `/help` lists the local
 commands, and `/exit` or `/quit` closes the session:
 
 ```bash
-python ourd_agent.py /path/to/repo
+oiec-stm-agent /path/to/repo
 ```
 
 ### Optional VisualGrammar2d Qwen 16B drafting path
@@ -157,7 +196,7 @@ python3 ../VisualGrammar2d/qwen_cli.py \
   --max-new-tokens 700 \
   --response-style precise \
   --no-sample \
-  "Draft a candidate README section describing the OURD GUI. Preserve all governance limits and mark unsupported claims."
+  "Draft a candidate README section describing the OIEC-STM-Agent GUI. Preserve all governance limits and mark unsupported claims."
 ```
 
 The generated text is a proposal only. Source inspection, deterministic tests,
@@ -167,16 +206,16 @@ observational metadata and explicitly marks model output non-authoritative.
 
 ## Evidence-Governed GUI Workbench
 
-The `ourd-gui` entry point opens the Tkinter engineering workbench:
+The `oiec-stm-gui` entry point opens the Tkinter engineering workbench:
 
 ```bash
-ourd-gui --repo /path/to/repository
+oiec-stm-gui --repo /path/to/repository
 ```
 
 For the currently verified local Qwen profile:
 
 ```bash
-ourd-gui --repo /path/to/repository \
+oiec-stm-gui --repo /path/to/repository \
   --model qwen3.8-27b-fast \
   --base-url http://127.0.0.1:11434/v1 \
   --api-key ollama \
@@ -230,8 +269,9 @@ events, selection semantics, safety, testing, migrations, and current limits.
 
 ## EGCFv1 Semantic Command Fabric
 
-Version `0.3.1` adds the Evidence Governed Command Fabric as a separate `egcf`
-entry point above the existing OURD/EON primitives:
+Version `0.4.0` publishes the OIEC-STM-Agent name and OIEC-STMv1.2 bounded
+transition layer. The Evidence Governed Command Fabric remains available as the
+separate `egcf` entry point above the existing OURD/EON primitives:
 
 ```text
 Intent
@@ -306,14 +346,14 @@ python3 tools/generate_egcf_reference.py --check
 First capture the source snapshot:
 
 ```bash
-python ourd_agent.py /path/to/repo --snapshot
+oiec-stm-agent /path/to/repo --snapshot
 ```
 
 Generate an example manifest **outside the target repository** so writing the
 manifest does not invalidate its own snapshot:
 
 ```bash
-python ourd_agent.py /path/to/repo \
+oiec-stm-agent /path/to/repo \
   --write-authority-example /tmp/ourd-authority.json
 ```
 
@@ -334,7 +374,7 @@ Review and narrow every field before use. The manifest follows
 Then run:
 
 ```bash
-python ourd_agent.py /path/to/repo \
+oiec-stm-agent /path/to/repo \
   --authority /tmp/ourd-authority.json \
   --task "Implement the authorized task and preserve the listed invariants."
 ```
@@ -408,7 +448,9 @@ The internal directory contains:
 - `.ourd-agent/lock`: one-writer lock.
 
 If `state.json` is invalid JSON or differs from the latest valid state event, it
-is rebuilt from the event chain. A broken event hash chain fails closed.
+is rebuilt from the event chain. Runtime schema 1 is migrated to schema 2 by
+appending a new hash-chained state snapshot; historical events are never
+rewritten. A broken event hash chain or unknown runtime schema fails closed.
 
 ## Validation
 

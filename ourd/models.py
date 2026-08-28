@@ -1,10 +1,11 @@
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass, field
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Tuple
 
 
 RISK_ORDER = {"L0": 0, "L1": 1, "L2": 2}
+SCORE_SCALE = 10_000
 
 
 def max_risk(*risks: str) -> str:
@@ -76,6 +77,17 @@ class EvidenceArtifact:
     path: str = ""
     command_capability: str = ""
     success: Optional[bool] = None
+    requirement_ids: List[str] = field(default_factory=list)
+    quality_bp: int = SCORE_SCALE
+    polarity: str = "support"
+
+    def __post_init__(self) -> None:
+        self.requirement_ids = list(dict.fromkeys(str(value) for value in self.requirement_ids))
+        self.quality_bp = int(self.quality_bp)
+        if not 0 <= self.quality_bp <= SCORE_SCALE:
+            raise ValueError("evidence quality must be 0..10000")
+        if self.polarity not in {"support", "counterexample", "conflict"}:
+            raise ValueError("evidence polarity must be support, counterexample, or conflict")
 
 
 @dataclass
@@ -119,6 +131,12 @@ class EONAction:
     expires_at: str = ""
     use_limit: int = 1
     use_count: int = 0
+    varied_dimensions: List[str] = field(default_factory=list)
+
+    def __post_init__(self) -> None:
+        self.varied_dimensions = list(
+            dict.fromkeys(str(value) for value in self.varied_dimensions if str(value))
+        )
 
 
 @dataclass
@@ -152,11 +170,208 @@ class CollisionRecord:
     retry_count: int
     disposition: str
     fingerprint: str
+    severity_bp: int = 0
+    attempt_key: str = ""
+    boundary_signature: str = ""
+    dimension_signature: str = ""
+
+    def __post_init__(self) -> None:
+        self.severity_bp = int(self.severity_bp)
+        if not 0 <= self.severity_bp <= SCORE_SCALE:
+            raise ValueError("collision severity must be 0..10000")
+
+
+def _canonical_strings(values: Any) -> Tuple[str, ...]:
+    return tuple(sorted({str(value) for value in values or () if str(value)}))
+
+
+def _stable_strings(values: Any) -> Tuple[str, ...]:
+    return tuple(dict.fromkeys(str(value) for value in values or () if str(value)))
+
+
+def _canonical_score_pairs(values: Any) -> Tuple[Tuple[str, int], ...]:
+    normalized: Dict[str, int] = {}
+    for name, value in values or ():
+        key = str(name)
+        if not key:
+            raise ValueError("OIEC score keys must be non-empty")
+        normalized[key] = int(value)
+    return tuple(sorted(normalized.items()))
+
+
+@dataclass(frozen=True)
+class BoundaryState:
+    schema_version: int = 1
+    authority_hash: str = ""
+    source_snapshot_hash: str = ""
+    semantic_objects: Tuple[str, ...] = ()
+    semantic_relations: Tuple[str, ...] = ()
+    authority_allowed_patterns: Tuple[str, ...] = ()
+    authority_forbidden_patterns: Tuple[str, ...] = ()
+    governance_allowed_patterns: Tuple[str, ...] = ()
+    governance_excluded_patterns: Tuple[str, ...] = ()
+    experimental_dimensions: Tuple[str, ...] = ()
+    semantic_membership_bp: Tuple[Tuple[str, int], ...] = ()
+    boundary_uncertainty_bp: int = 0
+    signature: str = ""
+
+    def __post_init__(self) -> None:
+        for name in (
+            "semantic_objects",
+            "semantic_relations",
+            "authority_allowed_patterns",
+            "authority_forbidden_patterns",
+            "governance_allowed_patterns",
+            "governance_excluded_patterns",
+            "experimental_dimensions",
+        ):
+            object.__setattr__(self, name, _canonical_strings(getattr(self, name)))
+        memberships = _canonical_score_pairs(self.semantic_membership_bp)
+        if any(not 0 <= value <= SCORE_SCALE for _, value in memberships):
+            raise ValueError("boundary membership must be 0..10000")
+        object.__setattr__(self, "semantic_membership_bp", memberships)
+        if not 0 <= int(self.boundary_uncertainty_bp) <= SCORE_SCALE:
+            raise ValueError("boundary uncertainty must be 0..10000")
+
+
+@dataclass(frozen=True)
+class DimensionBudget:
+    schema_version: int = 1
+    max_active_objects: int = 64
+    max_active_relations: int = 256
+    max_active_dimensions: int = 16
+    max_active_hypotheses: int = 16
+    max_quantization_levels: int = 17
+    max_interaction_order: int = 1
+    max_candidate_actions: int = 16
+    max_active_evidence_atoms: int = 128
+    max_decomposition_depth: int = 8
+    max_branch_factor: int = 16
+    max_retries_per_attempt: int = 1
+    selected_dimensions: Tuple[str, ...] = ()
+    dimension_utility_bp: Tuple[Tuple[str, int], ...] = ()
+    signature: str = ""
+
+    def __post_init__(self) -> None:
+        positive = (
+            self.max_active_objects,
+            self.max_active_relations,
+            self.max_active_dimensions,
+            self.max_active_hypotheses,
+            self.max_quantization_levels,
+            self.max_candidate_actions,
+            self.max_active_evidence_atoms,
+            self.max_decomposition_depth,
+            self.max_branch_factor,
+        )
+        if any(int(value) < 1 for value in positive):
+            raise ValueError("OIEC active-state limits must be positive")
+        if not 1 <= int(self.max_interaction_order) <= int(self.max_active_dimensions):
+            raise ValueError("OIEC interaction order must fit within active dimensions")
+        if int(self.max_retries_per_attempt) < 0:
+            raise ValueError("OIEC retry limit cannot be negative")
+        selected = _stable_strings(self.selected_dimensions)
+        if len(selected) > int(self.max_active_dimensions):
+            raise ValueError("selected dimensions exceed the OIEC budget")
+        object.__setattr__(self, "selected_dimensions", selected)
+        object.__setattr__(
+            self,
+            "dimension_utility_bp",
+            _canonical_score_pairs(self.dimension_utility_bp),
+        )
+
+
+@dataclass(frozen=True)
+class FiniteEvidenceState:
+    schema_version: int = 1
+    atoms: Tuple[str, ...] = ()
+    present_mask: int = 0
+    conflict_mask: int = 0
+    quality_bp: Tuple[int, ...] = ()
+    representative_ids: Tuple[str, ...] = ()
+    signature: str = ""
+
+    def __post_init__(self) -> None:
+        source_atoms = tuple(str(value) for value in self.atoms)
+        source_quality = tuple(int(value) for value in self.quality_bp)
+        source_representatives = tuple(str(value) for value in self.representative_ids)
+        if len(source_quality) != len(source_atoms) or len(source_representatives) != len(source_atoms):
+            raise ValueError("finite evidence arrays must align with the atom universe")
+        if any(not atom for atom in source_atoms) or len(set(source_atoms)) != len(source_atoms):
+            raise ValueError("finite evidence atoms must be unique and non-empty")
+        order = sorted(range(len(source_atoms)), key=source_atoms.__getitem__)
+        old_to_new = {old_index: new_index for new_index, old_index in enumerate(order)}
+        atoms = tuple(source_atoms[index] for index in order)
+        quality = tuple(source_quality[index] for index in order)
+        representatives = tuple(source_representatives[index] for index in order)
+        present_mask = sum(
+            1 << old_to_new[index]
+            for index in range(len(source_atoms))
+            if self.present_mask & (1 << index)
+        )
+        conflict_mask = sum(
+            1 << old_to_new[index]
+            for index in range(len(source_atoms))
+            if self.conflict_mask & (1 << index)
+        )
+        object.__setattr__(self, "atoms", atoms)
+        object.__setattr__(self, "quality_bp", quality)
+        object.__setattr__(self, "representative_ids", representatives)
+        object.__setattr__(self, "present_mask", present_mask)
+        object.__setattr__(self, "conflict_mask", conflict_mask)
+        if any(not 0 <= value <= SCORE_SCALE for value in quality):
+            raise ValueError("evidence quality must be 0..10000")
+        valid_mask = (1 << len(atoms)) - 1 if atoms else 0
+        if self.present_mask < 0 or self.conflict_mask < 0:
+            raise ValueError("evidence masks cannot be negative")
+        if self.present_mask & ~valid_mask or self.conflict_mask & ~valid_mask:
+            raise ValueError("evidence mask refers outside the finite universe")
+
+
+@dataclass(frozen=True)
+class AttemptKey:
+    source_snapshot_hash: str = ""
+    action_id: str = ""
+    evidence_signature: str = ""
+    boundary_signature: str = ""
+    dimension_signature: str = ""
+    digest: str = ""
+
+
+@dataclass(frozen=True)
+class ProgressCertificate:
+    schema_version: int = 1
+    evidence_gain_bp: int = 0
+    uncertainty_reduction_bp: int = 0
+    goal_improvement_bp: int = 0
+    residual_risk_reduction_bp: int = 0
+    boundary_uncertainty_reduction_bp: int = 0
+    expected_information_gain_bp: int = 0
+    novel_evidence: bool = False
+    novel_experiment: bool = False
+    terminal: bool = False
+    accepted: bool = False
+    reasons: Tuple[str, ...] = ()
+    signature: str = ""
+
+    def __post_init__(self) -> None:
+        for name in ("evidence_gain_bp", "expected_information_gain_bp"):
+            if not 0 <= int(getattr(self, name)) <= SCORE_SCALE:
+                raise ValueError(f"{name} must be 0..10000")
+        for name in (
+            "uncertainty_reduction_bp",
+            "goal_improvement_bp",
+            "residual_risk_reduction_bp",
+            "boundary_uncertainty_reduction_bp",
+        ):
+            if not -SCORE_SCALE <= int(getattr(self, name)) <= SCORE_SCALE:
+                raise ValueError(f"{name} must be -10000..10000")
+        object.__setattr__(self, "reasons", _canonical_strings(self.reasons))
 
 
 @dataclass
 class RuntimeState:
-    schema_version: int = 1
+    schema_version: int = 2
     authority: AuthorityManifest = field(default_factory=AuthorityManifest)
     governance: GovernanceRecord = field(default_factory=GovernanceRecord)
     pending_action: Optional[EONAction] = None
@@ -166,6 +381,11 @@ class RuntimeState:
     transactions: Dict[str, TransactionRecord] = field(default_factory=dict)
     collisions: List[CollisionRecord] = field(default_factory=list)
     failed_attempts: Dict[str, int] = field(default_factory=dict)
+    boundary_state: Optional[BoundaryState] = None
+    dimension_budget: Optional[DimensionBudget] = None
+    finite_evidence: Optional[FiniteEvidenceState] = None
+    last_progress: Optional[ProgressCertificate] = None
+    transition_index: int = 0
     active_transaction_id: str = ""
     event_head: str = ""
 
@@ -178,6 +398,10 @@ class RuntimeState:
         governance = GovernanceRecord(**payload.get("governance", {}))
         action_payload = payload.get("pending_action")
         gate_payload = payload.get("last_gate")
+        boundary_payload = payload.get("boundary_state")
+        budget_payload = payload.get("dimension_budget")
+        finite_evidence_payload = payload.get("finite_evidence")
+        progress_payload = payload.get("last_progress")
         evidence = {
             key: EvidenceArtifact(**value)
             for key, value in payload.get("evidence_registry", {}).items()
@@ -201,6 +425,17 @@ class RuntimeState:
                 str(key): int(value)
                 for key, value in payload.get("failed_attempts", {}).items()
             },
+            boundary_state=BoundaryState(**boundary_payload) if boundary_payload else None,
+            dimension_budget=DimensionBudget(**budget_payload) if budget_payload else None,
+            finite_evidence=(
+                FiniteEvidenceState(**finite_evidence_payload)
+                if finite_evidence_payload
+                else None
+            ),
+            last_progress=(
+                ProgressCertificate(**progress_payload) if progress_payload else None
+            ),
+            transition_index=int(payload.get("transition_index", 0)),
             active_transaction_id=str(payload.get("active_transaction_id", "")),
             event_head=str(payload.get("event_head", "")),
         )

@@ -1,4 +1,7 @@
-# OURD Coding Agent Implementation Plan
+# OIEC-STM-Agent Implementation Plan
+
+The `ourd` package and legacy `ourd-agent` command remain compatibility
+interfaces for the OURD semantic layer within OIEC-STM-Agent.
 
 **Plan status:** Candidate implementation plan; not authority-approved, certified, or released  
 **Plan date:** 2026-08-21, Australia/Brisbane  

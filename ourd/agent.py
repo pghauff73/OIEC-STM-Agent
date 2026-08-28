@@ -24,6 +24,7 @@ from .models import (
     RISK_ORDER,
     RuntimeState,
 )
+from .oiec import BoundedTransitionKernel, PreparedTransition
 from .persistence import StateStore, atomic_write_text, canonical_json, redact
 from .policy import PolicyEngine
 from .providers import ModelProvider, OpenAIResponsesProvider, ProviderConfig
@@ -55,6 +56,8 @@ class OURDAgent:
         self.yolo = yolo
         self.max_steps = max_steps
         self.policy = PolicyEngine()
+        self.oiec = BoundedTransitionKernel()
+        self._last_oiec_prepared: Optional[PreparedTransition] = None
         self.state_dir = self.ws.root / self.ws.internal_name
         self.store = StateStore(self.state_dir)
         self.state = self.store.load()
@@ -278,6 +281,52 @@ class OURDAgent:
             )
         return canonical
 
+    def _prepare_oiec_transition(
+        self,
+        action: EONAction,
+        gate: GateDecision,
+        *,
+        expected_snapshot_hash: str = "",
+    ) -> PreparedTransition:
+        prepared = self.oiec.prepare(
+            runtime=self.state,
+            workspace=self.ws,
+            policy=self.policy,
+            action=action,
+            varied_dimensions=action.varied_dimensions,
+            gate=gate,
+            expected_snapshot_hash=expected_snapshot_hash,
+        )
+        self.state.boundary_state = prepared.boundary
+        self.state.dimension_budget = prepared.budget
+        self.state.finite_evidence = prepared.evidence
+        self._last_oiec_prepared = prepared
+        self.trace(
+            "oiec_transition_prepared",
+            {
+                "action_id": action.action_id,
+                "boundary_signature": prepared.boundary.signature,
+                "dimension_signature": prepared.budget.signature,
+                "evidence_signature": prepared.evidence.signature,
+                "attempt_key": prepared.attempt.digest,
+                "effective_risk": prepared.effective_risk,
+                "gate_decision_id": prepared.gate_decision_id,
+            },
+        )
+        self.save_state()
+        return prepared
+
+    def _oiec_collision_fields(self, action_id: str) -> Dict[str, Any]:
+        prepared = self._last_oiec_prepared
+        if prepared is None or prepared.attempt.action_id != action_id:
+            return {}
+        return {
+            "severity_bp": 10_000,
+            "attempt_key": prepared.attempt.digest,
+            "boundary_signature": prepared.boundary.signature,
+            "dimension_signature": prepared.budget.signature,
+        }
+
     def _require_current_action(
         self,
         *,
@@ -347,6 +396,9 @@ class OURDAgent:
         command_capability: str = "",
         success: Optional[bool] = None,
         content_sha256: str = "",
+        requirement_ids: Optional[Iterable[str]] = None,
+        quality_bp: int = 10_000,
+        polarity: str = "support",
     ) -> EvidenceArtifact:
         action_id = self.state.pending_action.action_id if self.state.pending_action else ""
         source_snapshot_hash = self.ws.snapshot_hash()
@@ -360,6 +412,9 @@ class OURDAgent:
             "path": path,
             "command_capability": command_capability,
             "success": success,
+            "requirement_ids": sorted(set(requirement_ids or ())),
+            "quality_bp": int(quality_bp),
+            "polarity": polarity,
             "action_id": action_id,
             "source_snapshot_hash": source_snapshot_hash,
         }
@@ -375,6 +430,9 @@ class OURDAgent:
             path=path,
             command_capability=command_capability,
             success=success,
+            requirement_ids=sorted(set(requirement_ids or ())),
+            quality_bp=int(quality_bp),
+            polarity=polarity,
         )
         self.state.evidence_registry[artifact.artifact_id] = artifact
         self.save_state()
@@ -423,6 +481,19 @@ class OURDAgent:
         self.state.governance = record
         self.state.pending_action = None
         self.state.last_gate = None
+        self._last_oiec_prepared = None
+        current_snapshot = self.ws.snapshot_hash()
+        self.state.boundary_state = self.oiec.derive_boundary(
+            runtime=self.state,
+            source_snapshot_hash=current_snapshot,
+        )
+        self.state.dimension_budget = self.oiec.derive_dimension_budget(
+            boundary=self.state.boundary_state,
+            authority=self.state.authority,
+        )
+        self.state.finite_evidence = None
+        self.state.last_progress = None
+        self.state.transition_index = 0
         self.trace("governance_established", asdict(record))
         self.save_state()
         return {"ok": True, "governance": asdict(record)}
@@ -566,6 +637,16 @@ class OURDAgent:
         )
         use_limit = max(1, min(int(args.get("use_limit", 1)), 20))
         required_tests = canonical_required_tests
+        varied_dimensions = list(dict.fromkeys(args.get("varied_dimensions", [])))
+        boundary = self.oiec.derive_boundary(
+            runtime=self.state,
+            source_snapshot_hash=source_snapshot_hash,
+        )
+        budget = self.oiec.derive_dimension_budget(
+            boundary=boundary,
+            authority=self.state.authority,
+        )
+        self.policy.require_oiec_dimension_action(budget, varied_dimensions)
         material = {
             "summary": args["summary"],
             "operation": args["operation"],
@@ -588,10 +669,16 @@ class OURDAgent:
             "expires_at": args.get("expires_at", ""),
             "use_limit": use_limit,
             "use_count": 0,
+            "varied_dimensions": varied_dimensions,
         }
         action = EONAction(action_id=sha256_json(material), **material)
         self.state.pending_action = action
         self.state.last_gate = None
+        self.state.boundary_state = boundary
+        self.state.dimension_budget = budget
+        self.state.finite_evidence = None
+        self.state.last_progress = None
+        self._last_oiec_prepared = None
         if transaction_id:
             self.state.transactions[transaction_id].action_id = action.action_id
         self.trace("eon_action_proposed", asdict(action))
@@ -710,6 +797,7 @@ class OURDAgent:
         action = self._require_current_action(transaction_id=transaction_id)
         gate = self._require_gate(action)
         self._enforce_gate_limits(action, gate, targets=record.targets)
+        self._prepare_oiec_transition(action, gate)
         mode = self.policy.require_auto_or_interactive_permission(
             self.state.authority,
             action.effective_risk,
@@ -888,6 +976,8 @@ class OURDAgent:
         if self.state.pending_action and self.state.pending_action.transaction_id == transaction_id:
             self.state.pending_action = None
             self.state.last_gate = None
+            self.state.finite_evidence = None
+            self._last_oiec_prepared = None
         for path in record.targets:
             if path in self.state.changed_files:
                 self.state.changed_files.remove(path)
@@ -1061,11 +1151,18 @@ class OURDAgent:
                 command_capability=decision.capability,
                 command=canonical_command,
             )
+            expected_snapshot_hash = ""
             if action.transaction_id:
                 record = self.state.transactions.get(action.transaction_id)
                 if record is None:
                     raise PolicyError("EON action references an unknown transaction")
                 self.transactions.verify_applied(record)
+                expected_snapshot_hash = record.applied_snapshot_hash
+            self._prepare_oiec_transition(
+                action,
+                gate,
+                expected_snapshot_hash=expected_snapshot_hash,
+            )
         timeout = max(1, min(int(timeout), 600))
         process = subprocess.run(
             decision.argv,
@@ -1103,6 +1200,8 @@ class OURDAgent:
             command_capability=decision.capability,
             success=result["ok"],
             content_sha256=output_digest,
+            requirement_ids=[canonical_command],
+            polarity="support" if result["ok"] else "counterexample",
         )
         result["evidence_id"] = artifact.artifact_id
         if action is not None:
@@ -1126,6 +1225,7 @@ class OURDAgent:
                         "argv": decision.argv,
                     }
                 ),
+                **self._oiec_collision_fields(action.action_id if action else ""),
             )
             result["collision_id"] = collision.collision_id
         self.save_state()
@@ -1298,6 +1398,7 @@ class OURDAgent:
                     "command_capabilities": strings,
                     "commands": strings,
                     "required_tests": strings,
+                    "varied_dimensions": strings,
                     "expires_at": string,
                     "use_limit": {"type": "integer", "minimum": 1, "maximum": 20},
                 },
@@ -1483,6 +1584,9 @@ class OURDAgent:
                 evidence_ids=[],
                 disposition="requires revised action or evidence",
                 collision_fingerprint=call_fingerprint,
+                **self._oiec_collision_fields(
+                    self.state.pending_action.action_id if self.state.pending_action else ""
+                ),
             )
             result["collision_id"] = collision.collision_id
         self.save_state()

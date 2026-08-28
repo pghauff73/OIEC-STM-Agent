@@ -187,7 +187,7 @@ class ConversationView(ttk.Frame):
             role = message.role.casefold()
             label = {
                 "user": "You",
-                "assistant": "OURD Agent",
+                "assistant": "OIEC-STM-Agent",
                 "system": "System",
                 "error": "Error",
             }.get(role, message.role.title() or "Message")

@@ -57,7 +57,8 @@ The custom PEP 517 backend is tested directly. The wheel must contain the full
 `ourd_gui` package and:
 
 ```text
-ourd-gui = ourd_gui.app:main
+oiec-stm-gui = ourd_gui.app:main
+ourd-gui = ourd_gui.app:main  # compatibility alias
 ```
 
 The source distribution includes GUI source and documentation.

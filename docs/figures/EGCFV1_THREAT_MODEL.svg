@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1160" height="317" viewBox="0 0 1160 317">
+<style>
+  :root { color-scheme: light; }
+  svg { background:#fbf8ff; font-family:'Courier New',monospace; }
+  .grid { stroke:#e5d6ff; stroke-width:1; }
+  .title { fill:#2b0a5a; font-size:25px; font-weight:700; letter-spacing:2px; }
+  .subtitle { fill:#6e3aa8; font-size:13px; letter-spacing:1.4px; }
+  .signal-path { fill:none; stroke:#9b4dff; stroke-width:3; stroke-dasharray:8 8; animation:flow 2s linear infinite; }
+  .module-node { cursor:pointer; outline:none; }
+  .module-node rect { fill:#ffffff; stroke:#5d168f; stroke-width:3; filter:drop-shadow(6px 6px 0 #d7b8ff); transition:120ms ease; }
+  .module-node:hover rect,.module-node:focus rect,.module-node.active rect { fill:#f3e8ff; stroke:#ff3fcf; transform:translate(-2px,-2px); }
+  .node-index { fill:#ff2dbf; font-size:17px; font-weight:700; }
+  .node-title { fill:#2b0a5a; font-size:15px; font-weight:700; }
+  .node-meta { fill:#6e3aa8; font-size:11px; letter-spacing:1px; }
+  @keyframes flow { to { stroke-dashoffset:-32; } }
+</style>
+<defs><pattern id="grid" width="24" height="24" patternUnits="userSpaceOnUse"><path class="grid" d="M 24 0 L 0 0 0 24" fill="none" /></pattern></defs>
+<rect width="100%" height="100%" fill="url(#grid)" />
+<text class="title" x="70" y="58">EGCFv1 Threat Model</text>
+<text class="subtitle" x="70" y="88">INTERACTIVE MODULE CIRCUIT · SELECT A NODE TO NAVIGATE</text>
+<g class="edges"></g><g class="nodes"><g class="module-node" id="node-egcfv1-threat-model" data-target="egcfv1-threat-model" tabindex="0" role="link"><rect x="70" y="145" width="310" height="82" rx="3" /><text class="node-index" x="88" y="172">01</text><text class="node-title" x="128" y="174">EGCFv1 Threat Model</text><text class="node-meta" x="88" y="205">LEVEL 1 · 25 PARAGRAPHS</text><title>Open module 1: EGCFv1 Threat Model</title></g></g>
+</svg>

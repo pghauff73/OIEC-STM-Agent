@@ -1,2 +1,1 @@
-"""Reusable Tkinter widgets for the OURD workbench."""
-
+"""Reusable Tkinter widgets for the OIEC-STM-Agent workbench."""

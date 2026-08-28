@@ -1,0 +1,3945 @@
+{
+  "build_date": "2026-08-28",
+  "documents": [
+    {
+      "title": "EGCFv1 Command Reference",
+      "source": "EGCFV1_COMMAND_REFERENCE.md",
+      "html": "EGCFV1_COMMAND_REFERENCE.html",
+      "figure": "figures/EGCFV1_COMMAND_REFERENCE.svg",
+      "source_sha256": "735230ceb12023d618b4af8e8a67e2989261f86a7aae1b79cc1ced6a614dbea3",
+      "headings": [
+        {
+          "title": "EGCFv1 Command Reference",
+          "slug": "egcfv1-command-reference",
+          "level": 1
+        },
+        {
+          "title": "Invocation",
+          "slug": "invocation",
+          "level": 2
+        },
+        {
+          "title": "Universal Modifiers",
+          "slug": "universal-modifiers",
+          "level": 2
+        },
+        {
+          "title": "Capability Classes",
+          "slug": "capability-classes",
+          "level": 2
+        },
+        {
+          "title": "Core Namespaces",
+          "slug": "core-namespaces",
+          "level": 2
+        },
+        {
+          "title": "Domain Namespaces",
+          "slug": "domain-namespaces",
+          "level": 2
+        },
+        {
+          "title": "Examples",
+          "slug": "examples",
+          "level": 2
+        },
+        {
+          "title": "Record Families",
+          "slug": "record-families",
+          "level": 2
+        },
+        {
+          "title": "Trust Rules",
+          "slug": "trust-rules",
+          "level": 2
+        }
+      ]
+    },
+    {
+      "title": "EGCFv1 Completion Audit",
+      "source": "EGCFV1_COMPLETION_AUDIT.md",
+      "html": "EGCFV1_COMPLETION_AUDIT.html",
+      "figure": "figures/EGCFV1_COMPLETION_AUDIT.svg",
+      "source_sha256": "3558d0dc5aed1f87ee7a2344f41648d28563bcfb913c4cd3f28c531d6b1d277c",
+      "headings": [
+        {
+          "title": "EGCFv1 Completion Audit",
+          "slug": "egcfv1-completion-audit",
+          "level": 1
+        },
+        {
+          "title": "Closed Gaps",
+          "slug": "closed-gaps",
+          "level": 2
+        },
+        {
+          "title": "Preserved Boundaries",
+          "slug": "preserved-boundaries",
+          "level": 2
+        },
+        {
+          "title": "External Gates",
+          "slug": "external-gates",
+          "level": 2
+        }
+      ]
+    },
+    {
+      "title": "EGCFv1 Generated Command Contracts",
+      "source": "EGCFV1_GENERATED_REFERENCE.md",
+      "html": "EGCFV1_GENERATED_REFERENCE.html",
+      "figure": "figures/EGCFV1_GENERATED_REFERENCE.svg",
+      "source_sha256": "36628454085e0f5904bd75895f2545ea22b63a1eb99915fc3f3600b8ba26129c",
+      "headings": [
+        {
+          "title": "EGCFv1 Generated Command Contracts",
+          "slug": "egcfv1-generated-command-contracts",
+          "level": 1
+        }
+      ]
+    },
+    {
+      "title": "EGCFv1 Migration Guide",
+      "source": "EGCFV1_MIGRATION.md",
+      "html": "EGCFV1_MIGRATION.html",
+      "figure": "figures/EGCFV1_MIGRATION.svg",
+      "source_sha256": "072ad62e07412f6273930cbbde56cbf53f6af5e9015f13f13847d4bba50b599d",
+      "headings": [
+        {
+          "title": "EGCFv1 Migration Guide",
+          "slug": "egcfv1-migration-guide",
+          "level": 1
+        },
+        {
+          "title": "Compatibility Contract",
+          "slug": "compatibility-contract",
+          "level": 2
+        },
+        {
+          "title": "Recommended Adoption",
+          "slug": "recommended-adoption",
+          "level": 2
+        },
+        {
+          "title": "Mapping Existing Operations",
+          "slug": "mapping-existing-operations",
+          "level": 2
+        },
+        {
+          "title": "Project Extensions",
+          "slug": "project-extensions",
+          "level": 2
+        },
+        {
+          "title": "Qwen Integration",
+          "slug": "qwen-integration",
+          "level": 2
+        },
+        {
+          "title": "Validation And Promotion",
+          "slug": "validation-and-promotion",
+          "level": 2
+        },
+        {
+          "title": "Rollback",
+          "slug": "rollback",
+          "level": 2
+        }
+      ]
+    },
+    {
+      "title": "EGCFv1 Requirements Matrix",
+      "source": "EGCFV1_REQUIREMENTS_MATRIX.md",
+      "html": "EGCFV1_REQUIREMENTS_MATRIX.html",
+      "figure": "figures/EGCFV1_REQUIREMENTS_MATRIX.svg",
+      "source_sha256": "5a7bf08d6b022707be8483d1c2faa5a76cf1feed071be70c7c9a043ea5e1ffab",
+      "headings": [
+        {
+          "title": "EGCFv1 Requirements Matrix",
+          "slug": "egcfv1-requirements-matrix",
+          "level": 1
+        },
+        {
+          "title": "Architecture And Identity",
+          "slug": "architecture-and-identity",
+          "level": 2
+        },
+        {
+          "title": "Capability And Authority",
+          "slug": "capability-and-authority",
+          "level": 2
+        },
+        {
+          "title": "Algorithms And Commands",
+          "slug": "algorithms-and-commands",
+          "level": 2
+        },
+        {
+          "title": "Workflow, Execution, And Recovery",
+          "slug": "workflow-execution-and-recovery",
+          "level": 2
+        },
+        {
+          "title": "Evidence, Memory, And Assurance",
+          "slug": "evidence-memory-and-assurance",
+          "level": 2
+        },
+        {
+          "title": "Adapters And Domain Packs",
+          "slug": "adapters-and-domain-packs",
+          "level": 2
+        },
+        {
+          "title": "Validation And Promotion",
+          "slug": "validation-and-promotion",
+          "level": 2
+        },
+        {
+          "title": "Release Boundary",
+          "slug": "release-boundary",
+          "level": 2
+        }
+      ]
+    },
+    {
+      "title": "EGCFv1 Threat Model",
+      "source": "EGCFV1_THREAT_MODEL.md",
+      "html": "EGCFV1_THREAT_MODEL.html",
+      "figure": "figures/EGCFV1_THREAT_MODEL.svg",
+      "source_sha256": "e7d87a5b569fd317fba47a5ad2fc228b959a62b84177ddca9dbe07e49f1f43e8",
+      "headings": [
+        {
+          "title": "EGCFv1 Threat Model",
+          "slug": "egcfv1-threat-model",
+          "level": 1
+        }
+      ]
+    },
+    {
+      "title": "OURD GUI Architecture",
+      "source": "GUI_ARCHITECTURE.md",
+      "html": "GUI_ARCHITECTURE.html",
+      "figure": "figures/GUI_ARCHITECTURE.svg",
+      "source_sha256": "c5df9ec395361c51d166a8a48affea3dd023af86c990f561e1b2bd095a36904c",
+      "headings": [
+        {
+          "title": "OURD GUI Architecture",
+          "slug": "ourd-gui-architecture",
+          "level": 1
+        },
+        {
+          "title": "Authority Path",
+          "slug": "authority-path",
+          "level": 2
+        },
+        {
+          "title": "Layers",
+          "slug": "layers",
+          "level": 2
+        },
+        {
+          "title": "Threads and Locks",
+          "slug": "threads-and-locks",
+          "level": 2
+        },
+        {
+          "title": "Large State",
+          "slug": "large-state",
+          "level": 2
+        },
+        {
+          "title": "Recovery",
+          "slug": "recovery",
+          "level": 2
+        },
+        {
+          "title": "Renderer Boundary",
+          "slug": "renderer-boundary",
+          "level": 2
+        }
+      ]
+    },
+    {
+      "title": "OURD GUI Event Schema",
+      "source": "GUI_EVENT_SCHEMA.md",
+      "html": "GUI_EVENT_SCHEMA.html",
+      "figure": "figures/GUI_EVENT_SCHEMA.svg",
+      "source_sha256": "7619fd2e74efd327dce72e0066bfbb4c200e932b2bf0d28aa1c18cdc15be046e",
+      "headings": [
+        {
+          "title": "OURD GUI Event Schema",
+          "slug": "ourd-gui-event-schema",
+          "level": 1
+        },
+        {
+          "title": "Envelope",
+          "slug": "envelope",
+          "level": 2
+        },
+        {
+          "title": "Authority Rule",
+          "slug": "authority-rule",
+          "level": 2
+        },
+        {
+          "title": "Event Types",
+          "slug": "event-types",
+          "level": 2
+        },
+        {
+          "title": "Replay",
+          "slug": "replay",
+          "level": 2
+        },
+        {
+          "title": "Projection",
+          "slug": "projection",
+          "level": 2
+        }
+      ]
+    },
+    {
+      "title": "OURD GUI Safety Boundary",
+      "source": "GUI_SAFETY.md",
+      "html": "GUI_SAFETY.html",
+      "figure": "figures/GUI_SAFETY.svg",
+      "source_sha256": "15b1f07bbca01af87c12fcde997d89731e0ae3228c464fa7f4ae9e8bf48eba82",
+      "headings": [
+        {
+          "title": "OURD GUI Safety Boundary",
+          "slug": "ourd-gui-safety-boundary",
+          "level": 1
+        },
+        {
+          "title": "Primary Invariant",
+          "slug": "primary-invariant",
+          "level": 2
+        },
+        {
+          "title": "Mutation Boundary",
+          "slug": "mutation-boundary",
+          "level": 2
+        },
+        {
+          "title": "Untrusted Data",
+          "slug": "untrusted-data",
+          "level": 2
+        },
+        {
+          "title": "Model Boundary",
+          "slug": "model-boundary",
+          "level": 2
+        },
+        {
+          "title": "Export Boundary",
+          "slug": "export-boundary",
+          "level": 2
+        }
+      ]
+    },
+    {
+      "title": "OURD GUI Selection Trace",
+      "source": "GUI_SELECTION_TRACE.md",
+      "html": "GUI_SELECTION_TRACE.html",
+      "figure": "figures/GUI_SELECTION_TRACE.svg",
+      "source_sha256": "e4d548161517280f40ef8caffc3ea392e59db8c9cae217d1b31d3457c49ff4af",
+      "headings": [
+        {
+          "title": "OURD GUI Selection Trace",
+          "slug": "ourd-gui-selection-trace",
+          "level": 1
+        },
+        {
+          "title": "Purpose",
+          "slug": "purpose",
+          "level": 2
+        },
+        {
+          "title": "Exact Assembly",
+          "slug": "exact-assembly",
+          "level": 2
+        },
+        {
+          "title": "Interaction",
+          "slug": "interaction",
+          "level": 2
+        },
+        {
+          "title": "First Milestone",
+          "slug": "first-milestone",
+          "level": 2
+        }
+      ]
+    },
+    {
+      "title": "OURD GUI State Migrations",
+      "source": "GUI_STATE_MIGRATIONS.md",
+      "html": "GUI_STATE_MIGRATIONS.html",
+      "figure": "figures/GUI_STATE_MIGRATIONS.svg",
+      "source_sha256": "482630e6cedeb9dcbd1a70ce38de97e67be669b8218d419b30e1665476c32cf5",
+      "headings": [
+        {
+          "title": "OURD GUI State Migrations",
+          "slug": "ourd-gui-state-migrations",
+          "level": 1
+        },
+        {
+          "title": "Current Versions",
+          "slug": "current-versions",
+          "level": 2
+        },
+        {
+          "title": "Projection Version 2",
+          "slug": "projection-version-2",
+          "level": 2
+        },
+        {
+          "title": "Event Version 1 Rules",
+          "slug": "event-version-1-rules",
+          "level": 2
+        },
+        {
+          "title": "Future Migration Procedure",
+          "slug": "future-migration-procedure",
+          "level": 2
+        }
+      ]
+    },
+    {
+      "title": "OURD GUI Testing",
+      "source": "GUI_TESTING.md",
+      "html": "GUI_TESTING.html",
+      "figure": "figures/GUI_TESTING.svg",
+      "source_sha256": "0633285778afdec50285653c4e9b10121691330f25273e9acb0677ab3d4b1fac",
+      "headings": [
+        {
+          "title": "OURD GUI Testing",
+          "slug": "ourd-gui-testing",
+          "level": 1
+        },
+        {
+          "title": "Deterministic GUI Suite",
+          "slug": "deterministic-gui-suite",
+          "level": 2
+        },
+        {
+          "title": "Schema-v1 Fixture",
+          "slug": "schema-v1-fixture",
+          "level": 2
+        },
+        {
+          "title": "Headless Launch",
+          "slug": "headless-launch",
+          "level": 2
+        },
+        {
+          "title": "Packaging",
+          "slug": "packaging",
+          "level": 2
+        },
+        {
+          "title": "Full Repository Validation",
+          "slug": "full-repository-validation",
+          "level": 2
+        },
+        {
+          "title": "Performance Targets",
+          "slug": "performance-targets",
+          "level": 2
+        }
+      ]
+    },
+    {
+      "title": "OIEC-STM-Agent GUI",
+      "source": "OURD_AGENT_GUI.md",
+      "html": "OURD_AGENT_GUI.html",
+      "figure": "figures/OURD_AGENT_GUI.svg",
+      "source_sha256": "c1f65b1c33901bad1c3500b556f1e976473ff88f761ed0ce48507aa830a56997",
+      "headings": [
+        {
+          "title": "OIEC-STM-Agent GUI",
+          "slug": "oiec-stm-agent-gui",
+          "level": 1
+        },
+        {
+          "title": "Purpose",
+          "slug": "purpose",
+          "level": 2
+        },
+        {
+          "title": "Launch",
+          "slug": "launch",
+          "level": 2
+        },
+        {
+          "title": "Implemented Views",
+          "slug": "implemented-views",
+          "level": 2
+        },
+        {
+          "title": "Agent Chat",
+          "slug": "agent-chat",
+          "level": 3
+        },
+        {
+          "title": "Selection Trace",
+          "slug": "selection-trace",
+          "level": 3
+        },
+        {
+          "title": "Workflow and EON",
+          "slug": "workflow-and-eon",
+          "level": 3
+        },
+        {
+          "title": "Evidence and Governance",
+          "slug": "evidence-and-governance",
+          "level": 3
+        },
+        {
+          "title": "OURD and IURM",
+          "slug": "ourd-and-iurm",
+          "level": 3
+        },
+        {
+          "title": "CFEL, Replay, and Comparison",
+          "slug": "cfel-replay-and-comparison",
+          "level": 3
+        },
+        {
+          "title": "Artifacts and Assurance",
+          "slug": "artifacts-and-assurance",
+          "level": 3
+        },
+        {
+          "title": "Semantic Terminal",
+          "slug": "semantic-terminal",
+          "level": 3
+        },
+        {
+          "title": "Persistence",
+          "slug": "persistence",
+          "level": 2
+        },
+        {
+          "title": "Qwen From VisualGrammar2d",
+          "slug": "qwen-from-visualgrammar2d",
+          "level": 2
+        },
+        {
+          "title": "Validation",
+          "slug": "validation",
+          "level": 2
+        },
+        {
+          "title": "Compatibility",
+          "slug": "compatibility",
+          "level": 2
+        },
+        {
+          "title": "Current Limits",
+          "slug": "current-limits",
+          "level": 2
+        }
+      ]
+    },
+    {
+      "title": "OIEC-STM-Agent GUI Completion Audit",
+      "source": "OURD_AGENT_GUI_COMPLETION_AUDIT.md",
+      "html": "OURD_AGENT_GUI_COMPLETION_AUDIT.html",
+      "figure": "figures/OURD_AGENT_GUI_COMPLETION_AUDIT.svg",
+      "source_sha256": "87888c362f582027979e235770329d702f8afc4b9d91e2c2f289eecd69aff45e",
+      "headings": [
+        {
+          "title": "OIEC-STM-Agent GUI Completion Audit",
+          "slug": "oiec-stm-agent-gui-completion-audit",
+          "level": 1
+        },
+        {
+          "title": "Decision",
+          "slug": "decision",
+          "level": 2
+        },
+        {
+          "title": "Phase Results",
+          "slug": "phase-results",
+          "level": 2
+        },
+        {
+          "title": "Safety Invariants",
+          "slug": "safety-invariants",
+          "level": 2
+        },
+        {
+          "title": "Validation Evidence",
+          "slug": "validation-evidence",
+          "level": 2
+        },
+        {
+          "title": "Qwen Boundary",
+          "slug": "qwen-boundary",
+          "level": 2
+        },
+        {
+          "title": "Explicit Deferrals and Limits",
+          "slug": "explicit-deferrals-and-limits",
+          "level": 2
+        },
+        {
+          "title": "Release State",
+          "slug": "release-state",
+          "level": 2
+        }
+      ]
+    },
+    {
+      "title": "ADR 0001: EGCF Is an Additive Semantic Layer",
+      "source": "adr/0001-egcf-semantic-layer.md",
+      "html": "adr/0001-egcf-semantic-layer.html",
+      "figure": "figures/adr/0001-egcf-semantic-layer.svg",
+      "source_sha256": "c43d89a532990970f6a862268da91c502e6fd6b600a952a8e442dc05497d613c",
+      "headings": [
+        {
+          "title": "ADR 0001: EGCF Is an Additive Semantic Layer",
+          "slug": "adr-0001-egcf-is-an-additive-semantic-layer",
+          "level": 1
+        },
+        {
+          "title": "Decision",
+          "slug": "decision",
+          "level": 2
+        },
+        {
+          "title": "Consequences",
+          "slug": "consequences",
+          "level": 2
+        }
+      ]
+    },
+    {
+      "title": "ADR 0002: Canonical Ledger and Content-Addressed Objects",
+      "source": "adr/0002-egcf-canonical-storage.md",
+      "html": "adr/0002-egcf-canonical-storage.html",
+      "figure": "figures/adr/0002-egcf-canonical-storage.svg",
+      "source_sha256": "684d137ae504c0af2074f8595096aec6786d9dac511980c4c5f0b287be8ea946",
+      "headings": [
+        {
+          "title": "ADR 0002: Canonical Ledger and Content-Addressed Objects",
+          "slug": "adr-0002-canonical-ledger-and-content-addressed-objects",
+          "level": 1
+        },
+        {
+          "title": "Decision",
+          "slug": "decision",
+          "level": 2
+        },
+        {
+          "title": "Consequences",
+          "slug": "consequences",
+          "level": 2
+        }
+      ]
+    },
+    {
+      "title": "ADR 0003: Capability Requirements Union, Authority Intersection",
+      "source": "adr/0003-egcf-capability-authority.md",
+      "html": "adr/0003-egcf-capability-authority.html",
+      "figure": "figures/adr/0003-egcf-capability-authority.svg",
+      "source_sha256": "bb9e931a03a21630509278379edb955bf108471bca939f40717016b7e25a29ee",
+      "headings": [
+        {
+          "title": "ADR 0003: Capability Requirements Union, Authority Intersection",
+          "slug": "adr-0003-capability-requirements-union-authority-intersection",
+          "level": 1
+        },
+        {
+          "title": "Decision",
+          "slug": "decision",
+          "level": 2
+        },
+        {
+          "title": "Consequences",
+          "slug": "consequences",
+          "level": 2
+        }
+      ]
+    },
+    {
+      "title": "ADR 0004: EON Remains the Sole Workspace Mutation Boundary",
+      "source": "adr/0004-egcf-eon-boundary.md",
+      "html": "adr/0004-egcf-eon-boundary.html",
+      "figure": "figures/adr/0004-egcf-eon-boundary.svg",
+      "source_sha256": "5d6b1613f8c17a0f18f195bf3eaf1d755873abba02dbd064a49b215c98245e97",
+      "headings": [
+        {
+          "title": "ADR 0004: EON Remains the Sole Workspace Mutation Boundary",
+          "slug": "adr-0004-eon-remains-the-sole-workspace-mutation-boundary",
+          "level": 1
+        },
+        {
+          "title": "Decision",
+          "slug": "decision",
+          "level": 2
+        },
+        {
+          "title": "Consequences",
+          "slug": "consequences",
+          "level": 2
+        }
+      ]
+    }
+  ],
+  "concepts": [
+    {
+      "slug": "type-babcsregistration",
+      "title": "BABCS Registration",
+      "category": "Agent Runtime",
+      "definition": "A public OURD runtime concept that owns or represents babcs registration behaviour in ourd/egcf/external_algorithms.py.",
+      "thesis": "BABCS Registration should keep agent coordination subordinate to authority, evidence, and recoverable execution.",
+      "html": "concepts/type-babcsregistration.html",
+      "figure": "figures/concepts/type-babcsregistration.svg",
+      "sources": [
+        {
+          "path": "ourd/egcf/external_algorithms.py",
+          "sha256": "eab749e5471189f8f5333e179baefe6eac0ee1880bb9da68bb463d957a1ebebf"
+        }
+      ],
+      "related": [
+        "EGCF",
+        "Evidence",
+        "Authority",
+        "Replay"
+      ]
+    },
+    {
+      "slug": "type-boundedtransitionkernel",
+      "title": "Bounded Transition Kernel",
+      "category": "Agent Runtime",
+      "definition": "The pure two-phase OIEC control layer that prepares governed actions and accepts evidence-bearing observations without executing commands or writing repository files.",
+      "thesis": "Bounded Transition Kernel should keep agent coordination subordinate to authority, evidence, and recoverable execution.",
+      "html": "concepts/type-boundedtransitionkernel.html",
+      "figure": "figures/concepts/type-boundedtransitionkernel.svg",
+      "sources": [
+        {
+          "path": "ourd/oiec.py",
+          "sha256": "bffc17ea07ac8c376bbcf873a290eba9fd4ed88947ced1870ca2fb41766a85ae"
+        }
+      ],
+      "related": [
+        "EGCF",
+        "Evidence",
+        "Authority",
+        "Replay"
+      ]
+    },
+    {
+      "slug": "type-dimensioncandidate",
+      "title": "Dimension Candidate",
+      "category": "Agent Runtime",
+      "definition": "A public OURD runtime concept that owns or represents dimension candidate behaviour in ourd/oiec.py.",
+      "thesis": "Dimension Candidate should keep agent coordination subordinate to authority, evidence, and recoverable execution.",
+      "html": "concepts/type-dimensioncandidate.html",
+      "figure": "figures/concepts/type-dimensioncandidate.svg",
+      "sources": [
+        {
+          "path": "ourd/oiec.py",
+          "sha256": "bffc17ea07ac8c376bbcf873a290eba9fd4ed88947ced1870ca2fb41766a85ae"
+        }
+      ],
+      "related": [
+        "EGCF",
+        "Evidence",
+        "Authority",
+        "Replay"
+      ]
+    },
+    {
+      "slug": "type-evidencemanager",
+      "title": "Evidence Manager",
+      "category": "Agent Runtime",
+      "definition": "The lifecycle service that creates, validates, queries, or supersedes evidence records.",
+      "thesis": "Evidence Manager should keep agent coordination subordinate to authority, evidence, and recoverable execution.",
+      "html": "concepts/type-evidencemanager.html",
+      "figure": "figures/concepts/type-evidencemanager.svg",
+      "sources": [
+        {
+          "path": "ourd/egcf/evidence.py",
+          "sha256": "294b0509fc1e4e9b9c6735f326faff8612f13b12dfd3cda5b58263c20978addc"
+        }
+      ],
+      "related": [
+        "EGCF",
+        "Evidence",
+        "Authority",
+        "Replay"
+      ]
+    },
+    {
+      "slug": "type-ourdagent",
+      "title": "OURD Agent",
+      "category": "Agent Runtime",
+      "definition": "The runtime coordinator that presents model reasoning as proposals while routing governed tools, candidate transactions, EON actions, evidence, and CFEL through deterministic controls.",
+      "thesis": "OURD Agent should keep agent coordination subordinate to authority, evidence, and recoverable execution.",
+      "html": "concepts/type-ourdagent.html",
+      "figure": "figures/concepts/type-ourdagent.svg",
+      "sources": [
+        {
+          "path": "ourd/agent.py",
+          "sha256": "346fe3e4fdb0d400200fc47eaac8071bdfacae259f8e68400dfeb1f07473eb68"
+        }
+      ],
+      "related": [
+        "EGCF",
+        "Evidence",
+        "Authority",
+        "Replay"
+      ]
+    },
+    {
+      "slug": "type-preparedtransition",
+      "title": "Prepared Transition",
+      "category": "Agent Runtime",
+      "definition": "A public OURD runtime concept that owns or represents prepared transition behaviour in ourd/oiec.py.",
+      "thesis": "Prepared Transition should keep agent coordination subordinate to authority, evidence, and recoverable execution.",
+      "html": "concepts/type-preparedtransition.html",
+      "figure": "figures/concepts/type-preparedtransition.svg",
+      "sources": [
+        {
+          "path": "ourd/oiec.py",
+          "sha256": "bffc17ea07ac8c376bbcf873a290eba9fd4ed88947ced1870ca2fb41766a85ae"
+        }
+      ],
+      "related": [
+        "EGCF",
+        "Evidence",
+        "Authority",
+        "Replay"
+      ]
+    },
+    {
+      "slug": "type-sourcesnapshot",
+      "title": "Source Snapshot",
+      "category": "Agent Runtime",
+      "definition": "A public OURD runtime concept that owns or represents source snapshot behaviour in ourd/egcf/external_algorithms.py.",
+      "thesis": "Source Snapshot should keep agent coordination subordinate to authority, evidence, and recoverable execution.",
+      "html": "concepts/type-sourcesnapshot.html",
+      "figure": "figures/concepts/type-sourcesnapshot.svg",
+      "sources": [
+        {
+          "path": "ourd/egcf/external_algorithms.py",
+          "sha256": "eab749e5471189f8f5333e179baefe6eac0ee1880bb9da68bb463d957a1ebebf"
+        }
+      ],
+      "related": [
+        "EGCF",
+        "Evidence",
+        "Authority",
+        "Replay"
+      ]
+    },
+    {
+      "slug": "type-transitionmetrics",
+      "title": "Transition Metrics",
+      "category": "Agent Runtime",
+      "definition": "A public OURD runtime concept that owns or represents transition metrics behaviour in ourd/oiec.py.",
+      "thesis": "Transition Metrics should keep agent coordination subordinate to authority, evidence, and recoverable execution.",
+      "html": "concepts/type-transitionmetrics.html",
+      "figure": "figures/concepts/type-transitionmetrics.svg",
+      "sources": [
+        {
+          "path": "ourd/oiec.py",
+          "sha256": "bffc17ea07ac8c376bbcf873a290eba9fd4ed88947ced1870ca2fb41766a85ae"
+        }
+      ],
+      "related": [
+        "EGCF",
+        "Evidence",
+        "Authority",
+        "Replay"
+      ]
+    },
+    {
+      "slug": "type-workspace",
+      "title": "Workspace",
+      "category": "Agent Runtime",
+      "definition": "A public OURD runtime concept that owns or represents workspace behaviour in ourd/workspace.py.",
+      "thesis": "Workspace should keep agent coordination subordinate to authority, evidence, and recoverable execution.",
+      "html": "concepts/type-workspace.html",
+      "figure": "figures/concepts/type-workspace.svg",
+      "sources": [
+        {
+          "path": "ourd/workspace.py",
+          "sha256": "6dcd92a021ff59242a13051195b4cde6c822d4b6eb64f3780dbce20d60689729"
+        }
+      ],
+      "related": [
+        "EGCF",
+        "Evidence",
+        "Authority",
+        "Replay"
+      ]
+    },
+    {
+      "slug": "type-algorithmdefinition",
+      "title": "Algorithm Definition",
+      "category": "Canonical Records",
+      "definition": "The canonical schema-backed definition of algorithm behaviour.",
+      "thesis": "Algorithm Definition should preserve one canonical, content-addressed account of its fact rather than duplicate mutable interpretations.",
+      "html": "concepts/type-algorithmdefinition.html",
+      "figure": "figures/concepts/type-algorithmdefinition.svg",
+      "sources": [
+        {
+          "path": "ourd/egcf/models.py",
+          "sha256": "8d1ed9aab355072438ac862861ce70e0bddaf404fa64d5d5536b0da42c1a2c0a"
+        }
+      ],
+      "related": [
+        "Content Addressing",
+        "Typed Identity",
+        "Supersedence"
+      ]
+    },
+    {
+      "slug": "type-approvalrecord",
+      "title": "Approval Record",
+      "category": "Canonical Records",
+      "definition": "A typed canonical record that preserves the identity, provenance, and lifecycle facts for approval.",
+      "thesis": "Approval Record should preserve one canonical, content-addressed account of its fact rather than duplicate mutable interpretations.",
+      "html": "concepts/type-approvalrecord.html",
+      "figure": "figures/concepts/type-approvalrecord.svg",
+      "sources": [
+        {
+          "path": "ourd/egcf/models.py",
+          "sha256": "8d1ed9aab355072438ac862861ce70e0bddaf404fa64d5d5536b0da42c1a2c0a"
+        }
+      ],
+      "related": [
+        "Content Addressing",
+        "Typed Identity",
+        "Supersedence"
+      ]
+    },
+    {
+      "slug": "type-artifactrecord",
+      "title": "Artifact Record",
+      "category": "Canonical Records",
+      "definition": "A typed canonical record that preserves the identity, provenance, and lifecycle facts for artifact.",
+      "thesis": "Artifact Record should preserve one canonical, content-addressed account of its fact rather than duplicate mutable interpretations.",
+      "html": "concepts/type-artifactrecord.html",
+      "figure": "figures/concepts/type-artifactrecord.svg",
+      "sources": [
+        {
+          "path": "ourd/egcf/models.py",
+          "sha256": "8d1ed9aab355072438ac862861ce70e0bddaf404fa64d5d5536b0da42c1a2c0a"
+        }
+      ],
+      "related": [
+        "Content Addressing",
+        "Typed Identity",
+        "Supersedence"
+      ]
+    },
+    {
+      "slug": "type-assurancecase",
+      "title": "Assurance Case",
+      "category": "Canonical Records",
+      "definition": "A public OURD runtime concept that owns or represents assurance case behaviour in ourd/egcf/models.py.",
+      "thesis": "Assurance Case should preserve one canonical, content-addressed account of its fact rather than duplicate mutable interpretations.",
+      "html": "concepts/type-assurancecase.html",
+      "figure": "figures/concepts/type-assurancecase.svg",
+      "sources": [
+        {
+          "path": "ourd/egcf/models.py",
+          "sha256": "8d1ed9aab355072438ac862861ce70e0bddaf404fa64d5d5536b0da42c1a2c0a"
+        }
+      ],
+      "related": [
+        "Content Addressing",
+        "Typed Identity",
+        "Supersedence"
+      ]
+    },
+    {
+      "slug": "type-attemptkey",
+      "title": "Attempt Key",
+      "category": "Canonical Records",
+      "definition": "The pre-action identity binding an exact snapshot, EON action, relevant evidence state, boundary state, and dimension state for no-blind-retry enforcement.",
+      "thesis": "Attempt Key should preserve one canonical, content-addressed account of its fact rather than duplicate mutable interpretations.",
+      "html": "concepts/type-attemptkey.html",
+      "figure": "figures/concepts/type-attemptkey.svg",
+      "sources": [
+        {
+          "path": "ourd/models.py",
+          "sha256": "71540fe724b4be4043cd58e71d60fcddcf1f6ab1af53ad04716f544b022381fa"
+        }
+      ],
+      "related": [
+        "Content Addressing",
+        "Typed Identity",
+        "Supersedence"
+      ]
+    },
+    {
+      "slug": "type-authoritymanifest",
+      "title": "Authority Manifest",
+      "category": "Canonical Records",
+      "definition": "The human-authored declaration of which workspace snapshot, paths, commands, capabilities, evidence rules, risks, and retry limits may be used.",
+      "thesis": "Authority Manifest should preserve one canonical, content-addressed account of its fact rather than duplicate mutable interpretations.",
+      "html": "concepts/type-authoritymanifest.html",
+      "figure": "figures/concepts/type-authoritymanifest.svg",
+      "sources": [
+        {
+          "path": "ourd/models.py",
+          "sha256": "71540fe724b4be4043cd58e71d60fcddcf1f6ab1af53ad04716f544b022381fa"
+        }
+      ],
+      "related": [
+        "Content Addressing",
+        "Typed Identity",
+        "Supersedence"
+      ]
+    },
+    {
+      "slug": "type-boundarystate",
+      "title": "Boundary State",
+      "category": "Canonical Records",
+      "definition": "The signed fixed-point projection of semantic scope, authority patterns, governance patterns, experimental dimensions, and boundary uncertainty for one exact source snapshot.",
+      "thesis": "Boundary State should preserve one canonical, content-addressed account of its fact rather than duplicate mutable interpretations.",
+      "html": "concepts/type-boundarystate.html",
+      "figure": "figures/concepts/type-boundarystate.svg",
+      "sources": [
+        {
+          "path": "ourd/models.py",
+          "sha256": "71540fe724b4be4043cd58e71d60fcddcf1f6ab1af53ad04716f544b022381fa"
+        }
+      ],
+      "related": [
+        "Content Addressing",
+        "Typed Identity",
+        "Supersedence"
+      ]
+    },
+    {
+      "slug": "type-capabilitygrant",
+      "title": "Capability Grant",
+      "category": "Canonical Records",
+      "definition": "A public OURD runtime concept that owns or represents capability grant behaviour in ourd/egcf/models.py.",
+      "thesis": "Capability Grant should preserve one canonical, content-addressed account of its fact rather than duplicate mutable interpretations.",
+      "html": "concepts/type-capabilitygrant.html",
+      "figure": "figures/concepts/type-capabilitygrant.svg",
+      "sources": [
+        {
+          "path": "ourd/egcf/models.py",
+          "sha256": "8d1ed9aab355072438ac862861ce70e0bddaf404fa64d5d5536b0da42c1a2c0a"
+        }
+      ],
+      "related": [
+        "Content Addressing",
+        "Typed Identity",
+        "Supersedence"
+      ]
+    },
+    {
+      "slug": "type-capabilityspec",
+      "title": "Capability Spec",
+      "category": "Canonical Records",
+      "definition": "A public OURD runtime concept that owns or represents capability spec behaviour in ourd/egcf/models.py.",
+      "thesis": "Capability Spec should preserve one canonical, content-addressed account of its fact rather than duplicate mutable interpretations.",
+      "html": "concepts/type-capabilityspec.html",
+      "figure": "figures/concepts/type-capabilityspec.svg",
+      "sources": [
+        {
+          "path": "ourd/egcf/models.py",
+          "sha256": "8d1ed9aab355072438ac862861ce70e0bddaf404fa64d5d5536b0da42c1a2c0a"
+        }
+      ],
+      "related": [
+        "Content Addressing",
+        "Typed Identity",
+        "Supersedence"
+      ]
+    },
+    {
+      "slug": "type-claimrecord",
+      "title": "Claim Record",
+      "category": "Canonical Records",
+      "definition": "A typed canonical record that preserves the identity, provenance, and lifecycle facts for claim.",
+      "thesis": "Claim Record should preserve one canonical, content-addressed account of its fact rather than duplicate mutable interpretations.",
+      "html": "concepts/type-claimrecord.html",
+      "figure": "figures/concepts/type-claimrecord.svg",
+      "sources": [
+        {
+          "path": "ourd/egcf/models.py",
+          "sha256": "8d1ed9aab355072438ac862861ce70e0bddaf404fa64d5d5536b0da42c1a2c0a"
+        }
+      ],
+      "related": [
+        "Content Addressing",
+        "Typed Identity",
+        "Supersedence"
+      ]
+    },
+    {
+      "slug": "type-collisionrecord",
+      "title": "Collision Record",
+      "category": "Canonical Records",
+      "definition": "The durable CFEL record of a significant mismatch between expectation and observation.",
+      "thesis": "Collision Record should preserve one canonical, content-addressed account of its fact rather than duplicate mutable interpretations.",
+      "html": "concepts/type-collisionrecord.html",
+      "figure": "figures/concepts/type-collisionrecord.svg",
+      "sources": [
+        {
+          "path": "ourd/models.py",
+          "sha256": "71540fe724b4be4043cd58e71d60fcddcf1f6ab1af53ad04716f544b022381fa"
+        }
+      ],
+      "related": [
+        "Content Addressing",
+        "Typed Identity",
+        "Supersedence"
+      ]
+    },
+    {
+      "slug": "type-commanddefinition",
+      "title": "Command Definition",
+      "category": "Canonical Records",
+      "definition": "The canonical schema-backed definition of command behaviour.",
+      "thesis": "Command Definition should preserve one canonical, content-addressed account of its fact rather than duplicate mutable interpretations.",
+      "html": "concepts/type-commanddefinition.html",
+      "figure": "figures/concepts/type-commanddefinition.svg",
+      "sources": [
+        {
+          "path": "ourd/egcf/models.py",
+          "sha256": "8d1ed9aab355072438ac862861ce70e0bddaf404fa64d5d5536b0da42c1a2c0a"
+        }
+      ],
+      "related": [
+        "Content Addressing",
+        "Typed Identity",
+        "Supersedence"
+      ]
+    },
+    {
+      "slug": "type-commandinvocation",
+      "title": "Command Invocation",
+      "category": "Canonical Records",
+      "definition": "A public OURD runtime concept that owns or represents command invocation behaviour in ourd/egcf/models.py.",
+      "thesis": "Command Invocation should preserve one canonical, content-addressed account of its fact rather than duplicate mutable interpretations.",
+      "html": "concepts/type-commandinvocation.html",
+      "figure": "figures/concepts/type-commandinvocation.svg",
+      "sources": [
+        {
+          "path": "ourd/egcf/models.py",
+          "sha256": "8d1ed9aab355072438ac862861ce70e0bddaf404fa64d5d5536b0da42c1a2c0a"
+        }
+      ],
+      "related": [
+        "Content Addressing",
+        "Typed Identity",
+        "Supersedence"
+      ]
+    },
+    {
+      "slug": "type-compiledworkflow",
+      "title": "Compiled Workflow",
+      "category": "Canonical Records",
+      "definition": "A public OURD runtime concept that owns or represents compiled workflow behaviour in ourd/egcf/models.py.",
+      "thesis": "Compiled Workflow should preserve one canonical, content-addressed account of its fact rather than duplicate mutable interpretations.",
+      "html": "concepts/type-compiledworkflow.html",
+      "figure": "figures/concepts/type-compiledworkflow.svg",
+      "sources": [
+        {
+          "path": "ourd/egcf/models.py",
+          "sha256": "8d1ed9aab355072438ac862861ce70e0bddaf404fa64d5d5536b0da42c1a2c0a"
+        }
+      ],
+      "related": [
+        "Content Addressing",
+        "Typed Identity",
+        "Supersedence"
+      ]
+    },
+    {
+      "slug": "type-confidenceassessment",
+      "title": "Confidence Assessment",
+      "category": "Canonical Records",
+      "definition": "A public OURD runtime concept that owns or represents confidence assessment behaviour in ourd/egcf/models.py.",
+      "thesis": "Confidence Assessment should preserve one canonical, content-addressed account of its fact rather than duplicate mutable interpretations.",
+      "html": "concepts/type-confidenceassessment.html",
+      "figure": "figures/concepts/type-confidenceassessment.svg",
+      "sources": [
+        {
+          "path": "ourd/egcf/models.py",
+          "sha256": "8d1ed9aab355072438ac862861ce70e0bddaf404fa64d5d5536b0da42c1a2c0a"
+        }
+      ],
+      "related": [
+        "Content Addressing",
+        "Typed Identity",
+        "Supersedence"
+      ]
+    },
+    {
+      "slug": "type-decisionrecord",
+      "title": "Decision Record",
+      "category": "Canonical Records",
+      "definition": "A typed canonical record that preserves the identity, provenance, and lifecycle facts for decision.",
+      "thesis": "Decision Record should preserve one canonical, content-addressed account of its fact rather than duplicate mutable interpretations.",
+      "html": "concepts/type-decisionrecord.html",
+      "figure": "figures/concepts/type-decisionrecord.svg",
+      "sources": [
+        {
+          "path": "ourd/egcf/models.py",
+          "sha256": "8d1ed9aab355072438ac862861ce70e0bddaf404fa64d5d5536b0da42c1a2c0a"
+        }
+      ],
+      "related": [
+        "Content Addressing",
+        "Typed Identity",
+        "Supersedence"
+      ]
+    },
+    {
+      "slug": "type-dimensionbudget",
+      "title": "Dimension Budget",
+      "category": "Canonical Records",
+      "definition": "The finite deterministic limits and selected experimental dimensions that constrain active OIEC complexity without enlarging authority.",
+      "thesis": "Dimension Budget should preserve one canonical, content-addressed account of its fact rather than duplicate mutable interpretations.",
+      "html": "concepts/type-dimensionbudget.html",
+      "figure": "figures/concepts/type-dimensionbudget.svg",
+      "sources": [
+        {
+          "path": "ourd/models.py",
+          "sha256": "71540fe724b4be4043cd58e71d60fcddcf1f6ab1af53ad04716f544b022381fa"
+        }
+      ],
+      "related": [
+        "Content Addressing",
+        "Typed Identity",
+        "Supersedence"
+      ]
+    },
+    {
+      "slug": "type-eonaction",
+      "title": "EON Action",
+      "category": "Canonical Records",
+      "definition": "The exact action object that binds authority, source state, candidate content, target paths, command arguments, evidence, risk, expiry, and use limits.",
+      "thesis": "EON Action should preserve one canonical, content-addressed account of its fact rather than duplicate mutable interpretations.",
+      "html": "concepts/type-eonaction.html",
+      "figure": "figures/concepts/type-eonaction.svg",
+      "sources": [
+        {
+          "path": "ourd/models.py",
+          "sha256": "71540fe724b4be4043cd58e71d60fcddcf1f6ab1af53ad04716f544b022381fa"
+        }
+      ],
+      "related": [
+        "Content Addressing",
+        "Typed Identity",
+        "Supersedence"
+      ]
+    },
+    {
+      "slug": "type-evidenceartifact",
+      "title": "Evidence Artifact",
+      "category": "Canonical Records",
+      "definition": "A public OURD runtime concept that owns or represents evidence artifact behaviour in ourd/egcf/models.py.",
+      "thesis": "Evidence Artifact should preserve one canonical, content-addressed account of its fact rather than duplicate mutable interpretations.",
+      "html": "concepts/type-evidenceartifact.html",
+      "figure": "figures/concepts/type-evidenceartifact.svg",
+      "sources": [
+        {
+          "path": "ourd/egcf/models.py",
+          "sha256": "8d1ed9aab355072438ac862861ce70e0bddaf404fa64d5d5536b0da42c1a2c0a"
+        }
+      ],
+      "related": [
+        "Content Addressing",
+        "Typed Identity",
+        "Supersedence"
+      ]
+    },
+    {
+      "slug": "type-evidencerequirement",
+      "title": "Evidence Requirement",
+      "category": "Canonical Records",
+      "definition": "A public OURD runtime concept that owns or represents evidence requirement behaviour in ourd/egcf/models.py.",
+      "thesis": "Evidence Requirement should preserve one canonical, content-addressed account of its fact rather than duplicate mutable interpretations.",
+      "html": "concepts/type-evidencerequirement.html",
+      "figure": "figures/concepts/type-evidencerequirement.svg",
+      "sources": [
+        {
+          "path": "ourd/egcf/models.py",
+          "sha256": "8d1ed9aab355072438ac862861ce70e0bddaf404fa64d5d5536b0da42c1a2c0a"
+        }
+      ],
+      "related": [
+        "Content Addressing",
+        "Typed Identity",
+        "Supersedence"
+      ]
+    },
+    {
+      "slug": "type-executionplan",
+      "title": "Execution Plan",
+      "category": "Canonical Records",
+      "definition": "A public OURD runtime concept that owns or represents execution plan behaviour in ourd/egcf/models.py.",
+      "thesis": "Execution Plan should preserve one canonical, content-addressed account of its fact rather than duplicate mutable interpretations.",
+      "html": "concepts/type-executionplan.html",
+      "figure": "figures/concepts/type-executionplan.svg",
+      "sources": [
+        {
+          "path": "ourd/egcf/models.py",
+          "sha256": "8d1ed9aab355072438ac862861ce70e0bddaf404fa64d5d5536b0da42c1a2c0a"
+        }
+      ],
+      "related": [
+        "Content Addressing",
+        "Typed Identity",
+        "Supersedence"
+      ]
+    },
+    {
+      "slug": "type-executionrecord",
+      "title": "Execution Record",
+      "category": "Canonical Records",
+      "definition": "A typed canonical record that preserves the identity, provenance, and lifecycle facts for execution.",
+      "thesis": "Execution Record should preserve one canonical, content-addressed account of its fact rather than duplicate mutable interpretations.",
+      "html": "concepts/type-executionrecord.html",
+      "figure": "figures/concepts/type-executionrecord.svg",
+      "sources": [
+        {
+          "path": "ourd/egcf/models.py",
+          "sha256": "8d1ed9aab355072438ac862861ce70e0bddaf404fa64d5d5536b0da42c1a2c0a"
+        }
+      ],
+      "related": [
+        "Content Addressing",
+        "Typed Identity",
+        "Supersedence"
+      ]
+    },
+    {
+      "slug": "type-failurerecord",
+      "title": "Failure Record",
+      "category": "Canonical Records",
+      "definition": "A typed canonical record that preserves the identity, provenance, and lifecycle facts for failure.",
+      "thesis": "Failure Record should preserve one canonical, content-addressed account of its fact rather than duplicate mutable interpretations.",
+      "html": "concepts/type-failurerecord.html",
+      "figure": "figures/concepts/type-failurerecord.svg",
+      "sources": [
+        {
+          "path": "ourd/egcf/models.py",
+          "sha256": "8d1ed9aab355072438ac862861ce70e0bddaf404fa64d5d5536b0da42c1a2c0a"
+        }
+      ],
+      "related": [
+        "Content Addressing",
+        "Typed Identity",
+        "Supersedence"
+      ]
+    },
+    {
+      "slug": "type-finiteevidencestate",
+      "title": "Finite Evidence State",
+      "category": "Canonical Records",
+      "definition": "The action-scoped bitmask and quality projection that keeps active evidence finite while leaving the durable evidence registry append-only.",
+      "thesis": "Finite Evidence State should preserve one canonical, content-addressed account of its fact rather than duplicate mutable interpretations.",
+      "html": "concepts/type-finiteevidencestate.html",
+      "figure": "figures/concepts/type-finiteevidencestate.svg",
+      "sources": [
+        {
+          "path": "ourd/models.py",
+          "sha256": "71540fe724b4be4043cd58e71d60fcddcf1f6ab1af53ad04716f544b022381fa"
+        }
+      ],
+      "related": [
+        "Content Addressing",
+        "Typed Identity",
+        "Supersedence"
+      ]
+    },
+    {
+      "slug": "type-gatedecision",
+      "title": "Gate Decision",
+      "category": "Canonical Records",
+      "definition": "The deterministic evidence-gate result that records whether an exact EON action may proceed and why.",
+      "thesis": "Gate Decision should preserve one canonical, content-addressed account of its fact rather than duplicate mutable interpretations.",
+      "html": "concepts/type-gatedecision.html",
+      "figure": "figures/concepts/type-gatedecision.svg",
+      "sources": [
+        {
+          "path": "ourd/models.py",
+          "sha256": "71540fe724b4be4043cd58e71d60fcddcf1f6ab1af53ad04716f544b022381fa"
+        }
+      ],
+      "related": [
+        "Content Addressing",
+        "Typed Identity",
+        "Supersedence"
+      ]
+    },
+    {
+      "slug": "type-governancerecord",
+      "title": "Governance Record",
+      "category": "Canonical Records",
+      "definition": "A typed canonical record that preserves the identity, provenance, and lifecycle facts for governance.",
+      "thesis": "Governance Record should preserve one canonical, content-addressed account of its fact rather than duplicate mutable interpretations.",
+      "html": "concepts/type-governancerecord.html",
+      "figure": "figures/concepts/type-governancerecord.svg",
+      "sources": [
+        {
+          "path": "ourd/models.py",
+          "sha256": "71540fe724b4be4043cd58e71d60fcddcf1f6ab1af53ad04716f544b022381fa"
+        }
+      ],
+      "related": [
+        "Content Addressing",
+        "Typed Identity",
+        "Supersedence"
+      ]
+    },
+    {
+      "slug": "type-intentrecord",
+      "title": "Intent Record",
+      "category": "Canonical Records",
+      "definition": "A typed canonical record that preserves the identity, provenance, and lifecycle facts for intent.",
+      "thesis": "Intent Record should preserve one canonical, content-addressed account of its fact rather than duplicate mutable interpretations.",
+      "html": "concepts/type-intentrecord.html",
+      "figure": "figures/concepts/type-intentrecord.svg",
+      "sources": [
+        {
+          "path": "ourd/egcf/models.py",
+          "sha256": "8d1ed9aab355072438ac862861ce70e0bddaf404fa64d5d5536b0da42c1a2c0a"
+        }
+      ],
+      "related": [
+        "Content Addressing",
+        "Typed Identity",
+        "Supersedence"
+      ]
+    },
+    {
+      "slug": "type-invariantrecord",
+      "title": "Invariant Record",
+      "category": "Canonical Records",
+      "definition": "A typed canonical record that preserves the identity, provenance, and lifecycle facts for invariant.",
+      "thesis": "Invariant Record should preserve one canonical, content-addressed account of its fact rather than duplicate mutable interpretations.",
+      "html": "concepts/type-invariantrecord.html",
+      "figure": "figures/concepts/type-invariantrecord.svg",
+      "sources": [
+        {
+          "path": "ourd/egcf/models.py",
+          "sha256": "8d1ed9aab355072438ac862861ce70e0bddaf404fa64d5d5536b0da42c1a2c0a"
+        }
+      ],
+      "related": [
+        "Content Addressing",
+        "Typed Identity",
+        "Supersedence"
+      ]
+    },
+    {
+      "slug": "type-progresscertificate",
+      "title": "Progress Certificate",
+      "category": "Canonical Records",
+      "definition": "The deterministic proof that an observed transition gained relevant evidence, improved a goal or risk measure, resolved boundary uncertainty, ran a discriminating experiment, or stopped terminally.",
+      "thesis": "Progress Certificate should preserve one canonical, content-addressed account of its fact rather than duplicate mutable interpretations.",
+      "html": "concepts/type-progresscertificate.html",
+      "figure": "figures/concepts/type-progresscertificate.svg",
+      "sources": [
+        {
+          "path": "ourd/models.py",
+          "sha256": "71540fe724b4be4043cd58e71d60fcddcf1f6ab1af53ad04716f544b022381fa"
+        }
+      ],
+      "related": [
+        "Content Addressing",
+        "Typed Identity",
+        "Supersedence"
+      ]
+    },
+    {
+      "slug": "type-qualificationrecord",
+      "title": "Qualification Record",
+      "category": "Canonical Records",
+      "definition": "A typed canonical record that preserves the identity, provenance, and lifecycle facts for qualification.",
+      "thesis": "Qualification Record should preserve one canonical, content-addressed account of its fact rather than duplicate mutable interpretations.",
+      "html": "concepts/type-qualificationrecord.html",
+      "figure": "figures/concepts/type-qualificationrecord.svg",
+      "sources": [
+        {
+          "path": "ourd/egcf/models.py",
+          "sha256": "8d1ed9aab355072438ac862861ce70e0bddaf404fa64d5d5536b0da42c1a2c0a"
+        }
+      ],
+      "related": [
+        "Content Addressing",
+        "Typed Identity",
+        "Supersedence"
+      ]
+    },
+    {
+      "slug": "type-recordmixin",
+      "title": "Record Mixin",
+      "category": "Canonical Records",
+      "definition": "A public OURD runtime concept that owns or represents record mixin behaviour in ourd/egcf/models.py.",
+      "thesis": "Record Mixin should preserve one canonical, content-addressed account of its fact rather than duplicate mutable interpretations.",
+      "html": "concepts/type-recordmixin.html",
+      "figure": "figures/concepts/type-recordmixin.svg",
+      "sources": [
+        {
+          "path": "ourd/egcf/models.py",
+          "sha256": "8d1ed9aab355072438ac862861ce70e0bddaf404fa64d5d5536b0da42c1a2c0a"
+        }
+      ],
+      "related": [
+        "Content Addressing",
+        "Typed Identity",
+        "Supersedence"
+      ]
+    },
+    {
+      "slug": "type-rollbackrecord",
+      "title": "Rollback Record",
+      "category": "Canonical Records",
+      "definition": "A typed canonical record that preserves the identity, provenance, and lifecycle facts for rollback.",
+      "thesis": "Rollback Record should preserve one canonical, content-addressed account of its fact rather than duplicate mutable interpretations.",
+      "html": "concepts/type-rollbackrecord.html",
+      "figure": "figures/concepts/type-rollbackrecord.svg",
+      "sources": [
+        {
+          "path": "ourd/egcf/models.py",
+          "sha256": "8d1ed9aab355072438ac862861ce70e0bddaf404fa64d5d5536b0da42c1a2c0a"
+        }
+      ],
+      "related": [
+        "Content Addressing",
+        "Typed Identity",
+        "Supersedence"
+      ]
+    },
+    {
+      "slug": "type-runtimestate",
+      "title": "Runtime State",
+      "category": "Canonical Records",
+      "definition": "The rebuildable current-state projection used to coordinate unresolved transactions, actions, collisions, and execution history.",
+      "thesis": "Runtime State should preserve one canonical, content-addressed account of its fact rather than duplicate mutable interpretations.",
+      "html": "concepts/type-runtimestate.html",
+      "figure": "figures/concepts/type-runtimestate.svg",
+      "sources": [
+        {
+          "path": "ourd/models.py",
+          "sha256": "71540fe724b4be4043cd58e71d60fcddcf1f6ab1af53ad04716f544b022381fa"
+        }
+      ],
+      "related": [
+        "Content Addressing",
+        "Typed Identity",
+        "Supersedence"
+      ]
+    },
+    {
+      "slug": "type-selectiondecision",
+      "title": "Selection Decision",
+      "category": "Canonical Records",
+      "definition": "A typed decision object that records the basis and consequence of selection.",
+      "thesis": "Selection Decision should preserve one canonical, content-addressed account of its fact rather than duplicate mutable interpretations.",
+      "html": "concepts/type-selectiondecision.html",
+      "figure": "figures/concepts/type-selectiondecision.svg",
+      "sources": [
+        {
+          "path": "ourd/egcf/models.py",
+          "sha256": "8d1ed9aab355072438ac862861ce70e0bddaf404fa64d5d5536b0da42c1a2c0a"
+        }
+      ],
+      "related": [
+        "Content Addressing",
+        "Typed Identity",
+        "Supersedence"
+      ]
+    },
+    {
+      "slug": "type-supersedencerecord",
+      "title": "Supersedence Record",
+      "category": "Canonical Records",
+      "definition": "A typed canonical record that preserves the identity, provenance, and lifecycle facts for supersedence.",
+      "thesis": "Supersedence Record should preserve one canonical, content-addressed account of its fact rather than duplicate mutable interpretations.",
+      "html": "concepts/type-supersedencerecord.html",
+      "figure": "figures/concepts/type-supersedencerecord.svg",
+      "sources": [
+        {
+          "path": "ourd/egcf/models.py",
+          "sha256": "8d1ed9aab355072438ac862861ce70e0bddaf404fa64d5d5536b0da42c1a2c0a"
+        }
+      ],
+      "related": [
+        "Content Addressing",
+        "Typed Identity",
+        "Supersedence"
+      ]
+    },
+    {
+      "slug": "type-transactionrecord",
+      "title": "Transaction Record",
+      "category": "Canonical Records",
+      "definition": "The durable record of a staged or applied file transaction, including original and candidate content hashes needed for verification and rollback.",
+      "thesis": "Transaction Record should preserve one canonical, content-addressed account of its fact rather than duplicate mutable interpretations.",
+      "html": "concepts/type-transactionrecord.html",
+      "figure": "figures/concepts/type-transactionrecord.svg",
+      "sources": [
+        {
+          "path": "ourd/models.py",
+          "sha256": "71540fe724b4be4043cd58e71d60fcddcf1f6ab1af53ad04716f544b022381fa"
+        }
+      ],
+      "related": [
+        "Content Addressing",
+        "Typed Identity",
+        "Supersedence"
+      ]
+    },
+    {
+      "slug": "type-workflowdefinition",
+      "title": "Workflow Definition",
+      "category": "Canonical Records",
+      "definition": "The canonical schema-backed definition of workflow behaviour.",
+      "thesis": "Workflow Definition should preserve one canonical, content-addressed account of its fact rather than duplicate mutable interpretations.",
+      "html": "concepts/type-workflowdefinition.html",
+      "figure": "figures/concepts/type-workflowdefinition.svg",
+      "sources": [
+        {
+          "path": "ourd/egcf/models.py",
+          "sha256": "8d1ed9aab355072438ac862861ce70e0bddaf404fa64d5d5536b0da42c1a2c0a"
+        }
+      ],
+      "related": [
+        "Content Addressing",
+        "Typed Identity",
+        "Supersedence"
+      ]
+    },
+    {
+      "slug": "type-workflownode",
+      "title": "Workflow Node",
+      "category": "Canonical Records",
+      "definition": "A public OURD runtime concept that owns or represents workflow node behaviour in ourd/egcf/models.py.",
+      "thesis": "Workflow Node should preserve one canonical, content-addressed account of its fact rather than duplicate mutable interpretations.",
+      "html": "concepts/type-workflownode.html",
+      "figure": "figures/concepts/type-workflownode.svg",
+      "sources": [
+        {
+          "path": "ourd/egcf/models.py",
+          "sha256": "8d1ed9aab355072438ac862861ce70e0bddaf404fa64d5d5536b0da42c1a2c0a"
+        }
+      ],
+      "related": [
+        "Content Addressing",
+        "Typed Identity",
+        "Supersedence"
+      ]
+    },
+    {
+      "slug": "type-algorithmregistry",
+      "title": "Algorithm Registry",
+      "category": "Engineering Services",
+      "definition": "The canonical registry that qualifies, indexes, and resolves algorithm definitions.",
+      "thesis": "Algorithm Registry should add reusable engineering analysis without hiding evidence, assumptions, or lifecycle state.",
+      "html": "concepts/type-algorithmregistry.html",
+      "figure": "figures/concepts/type-algorithmregistry.svg",
+      "sources": [
+        {
+          "path": "ourd/egcf/registry.py",
+          "sha256": "dfbe7bc0d81d0a4838dafd3fcbc38ff7e99f143dfcad246664944d1ce73565fa"
+        }
+      ],
+      "related": [
+        "EGCF",
+        "Evidence",
+        "Authority",
+        "Replay"
+      ]
+    },
+    {
+      "slug": "type-assurancemanager",
+      "title": "Assurance Manager",
+      "category": "Engineering Services",
+      "definition": "The lifecycle service that creates, validates, queries, or supersedes assurance records.",
+      "thesis": "Assurance Manager should add reusable engineering analysis without hiding evidence, assumptions, or lifecycle state.",
+      "html": "concepts/type-assurancemanager.html",
+      "figure": "figures/concepts/type-assurancemanager.svg",
+      "sources": [
+        {
+          "path": "ourd/egcf/assurance.py",
+          "sha256": "af221520a11bfe812824ef019264fbbbef0e9f9c11affd7d50134369d1708892"
+        }
+      ],
+      "related": [
+        "EGCF",
+        "Evidence",
+        "Authority",
+        "Replay"
+      ]
+    },
+    {
+      "slug": "type-commandregistry",
+      "title": "Command Registry",
+      "category": "Engineering Services",
+      "definition": "The canonical registry that qualifies, indexes, and resolves command definitions.",
+      "thesis": "Command Registry should add reusable engineering analysis without hiding evidence, assumptions, or lifecycle state.",
+      "html": "concepts/type-commandregistry.html",
+      "figure": "figures/concepts/type-commandregistry.svg",
+      "sources": [
+        {
+          "path": "ourd/egcf/registry.py",
+          "sha256": "dfbe7bc0d81d0a4838dafd3fcbc38ff7e99f143dfcad246664944d1ce73565fa"
+        }
+      ],
+      "related": [
+        "EGCF",
+        "Evidence",
+        "Authority",
+        "Replay"
+      ]
+    },
+    {
+      "slug": "type-decisionmanager",
+      "title": "Decision Manager",
+      "category": "Engineering Services",
+      "definition": "The lifecycle service that creates, validates, queries, or supersedes decision records.",
+      "thesis": "Decision Manager should add reusable engineering analysis without hiding evidence, assumptions, or lifecycle state.",
+      "html": "concepts/type-decisionmanager.html",
+      "figure": "figures/concepts/type-decisionmanager.svg",
+      "sources": [
+        {
+          "path": "ourd/egcf/decisions.py",
+          "sha256": "4440d16ab3103d2bd5af36858b3ffca9a3d14a444e6bf2dfdf9670ebad94d007"
+        }
+      ],
+      "related": [
+        "EGCF",
+        "Evidence",
+        "Authority",
+        "Replay"
+      ]
+    },
+    {
+      "slug": "type-domainpack",
+      "title": "Domain Pack",
+      "category": "Engineering Services",
+      "definition": "A public OURD runtime concept that owns or represents domain pack behaviour in ourd/egcf/domains.py.",
+      "thesis": "Domain Pack should add reusable engineering analysis without hiding evidence, assumptions, or lifecycle state.",
+      "html": "concepts/type-domainpack.html",
+      "figure": "figures/concepts/type-domainpack.svg",
+      "sources": [
+        {
+          "path": "ourd/egcf/domains.py",
+          "sha256": "d411b558ee26c75189fe48b40228a9db75ed46a9fa612bdc49e71b5eec428ef3"
+        }
+      ],
+      "related": [
+        "EGCF",
+        "Evidence",
+        "Authority",
+        "Replay"
+      ]
+    },
+    {
+      "slug": "type-domainpackregistry",
+      "title": "Domain Pack Registry",
+      "category": "Engineering Services",
+      "definition": "The canonical registry that qualifies, indexes, and resolves domain pack definitions.",
+      "thesis": "Domain Pack Registry should add reusable engineering analysis without hiding evidence, assumptions, or lifecycle state.",
+      "html": "concepts/type-domainpackregistry.html",
+      "figure": "figures/concepts/type-domainpackregistry.svg",
+      "sources": [
+        {
+          "path": "ourd/egcf/domains.py",
+          "sha256": "d411b558ee26c75189fe48b40228a9db75ed46a9fa612bdc49e71b5eec428ef3"
+        }
+      ],
+      "related": [
+        "EGCF",
+        "Evidence",
+        "Authority",
+        "Replay"
+      ]
+    },
+    {
+      "slug": "type-experimentdesigner",
+      "title": "Experiment Designer",
+      "category": "Engineering Services",
+      "definition": "A public OURD runtime concept that owns or represents experiment designer behaviour in ourd/egcf/experiments.py.",
+      "thesis": "Experiment Designer should add reusable engineering analysis without hiding evidence, assumptions, or lifecycle state.",
+      "html": "concepts/type-experimentdesigner.html",
+      "figure": "figures/concepts/type-experimentdesigner.svg",
+      "sources": [
+        {
+          "path": "ourd/egcf/experiments.py",
+          "sha256": "725dae502fbd0e9001d5950d621949aa733ac50f0ef8b717e5bceafaad3104ca"
+        }
+      ],
+      "related": [
+        "EGCF",
+        "Evidence",
+        "Authority",
+        "Replay"
+      ]
+    },
+    {
+      "slug": "type-ieps",
+      "title": "IEPS",
+      "category": "Engineering Services",
+      "definition": "The evidence-production service for coverage, counterexamples, mutation, shrinking, uniqueness, qualification, and gates.",
+      "thesis": "IEPS should add reusable engineering analysis without hiding evidence, assumptions, or lifecycle state.",
+      "html": "concepts/type-ieps.html",
+      "figure": "figures/concepts/type-ieps.svg",
+      "sources": [
+        {
+          "path": "ourd/egcf/ieps.py",
+          "sha256": "5d7c8fe8f24640a7a211cc126a712d5b1d68aad19c9a248aa4e870322b0c0b78"
+        }
+      ],
+      "related": [
+        "EGCF",
+        "Evidence",
+        "Authority",
+        "Replay"
+      ]
+    },
+    {
+      "slug": "type-invariantmanager",
+      "title": "Invariant Manager",
+      "category": "Engineering Services",
+      "definition": "The lifecycle service that creates, validates, queries, or supersedes invariant records.",
+      "thesis": "Invariant Manager should add reusable engineering analysis without hiding evidence, assumptions, or lifecycle state.",
+      "html": "concepts/type-invariantmanager.html",
+      "figure": "figures/concepts/type-invariantmanager.svg",
+      "sources": [
+        {
+          "path": "ourd/egcf/invariants.py",
+          "sha256": "84fbbd065a37ed1213f3dc623b4ec0bcad78adb47c1b80ce05eded643371d0f2"
+        }
+      ],
+      "related": [
+        "EGCF",
+        "Evidence",
+        "Authority",
+        "Replay"
+      ]
+    },
+    {
+      "slug": "type-selectionengine",
+      "title": "Selection Engine",
+      "category": "Engineering Services",
+      "definition": "The service that chooses a context-qualified algorithm using declared qualification strength and deterministic selection order.",
+      "thesis": "Selection Engine should add reusable engineering analysis without hiding evidence, assumptions, or lifecycle state.",
+      "html": "concepts/type-selectionengine.html",
+      "figure": "figures/concepts/type-selectionengine.svg",
+      "sources": [
+        {
+          "path": "ourd/egcf/registry.py",
+          "sha256": "dfbe7bc0d81d0a4838dafd3fcbc38ff7e99f143dfcad246664944d1ce73565fa"
+        }
+      ],
+      "related": [
+        "EGCF",
+        "Evidence",
+        "Authority",
+        "Replay"
+      ]
+    },
+    {
+      "slug": "type-simulationengine",
+      "title": "Simulation Engine",
+      "category": "Engineering Services",
+      "definition": "The deterministic orchestration service for simulation operations.",
+      "thesis": "Simulation Engine should add reusable engineering analysis without hiding evidence, assumptions, or lifecycle state.",
+      "html": "concepts/type-simulationengine.html",
+      "figure": "figures/concepts/type-simulationengine.svg",
+      "sources": [
+        {
+          "path": "ourd/egcf/simulation.py",
+          "sha256": "1669b61ed153d1831e5dfa443f0d2cb1b36b7dd97509513bd45214b8d464ea8f"
+        }
+      ],
+      "related": [
+        "EGCF",
+        "Evidence",
+        "Authority",
+        "Replay"
+      ]
+    },
+    {
+      "slug": "type-agentadapter",
+      "title": "Agent Adapter",
+      "category": "Execution Adapters",
+      "definition": "A controlled execution bridge that translates an authorized EGCF plan node into agent behaviour without transferring authority.",
+      "thesis": "Agent Adapter should translate already-authorized intent without broadening scope, authority, or evidence claims.",
+      "html": "concepts/type-agentadapter.html",
+      "figure": "figures/concepts/type-agentadapter.svg",
+      "sources": [
+        {
+          "path": "ourd/egcf/adapters/agent.py",
+          "sha256": "da2beac347bb54bbd86133ea13980c761caca3d9463af04944c75a7b7401cdc9"
+        }
+      ],
+      "related": [
+        "Execution Plan",
+        "Capability Grant",
+        "Evidence Artifact"
+      ]
+    },
+    {
+      "slug": "type-codexadapter",
+      "title": "Codex Adapter",
+      "category": "Execution Adapters",
+      "definition": "A controlled execution bridge that translates an authorized EGCF plan node into codex behaviour without transferring authority.",
+      "thesis": "Codex Adapter should translate already-authorized intent without broadening scope, authority, or evidence claims.",
+      "html": "concepts/type-codexadapter.html",
+      "figure": "figures/concepts/type-codexadapter.svg",
+      "sources": [
+        {
+          "path": "ourd/egcf/adapters/codex.py",
+          "sha256": "cf8a28b4e4afdf9687bb229cdee4679bc82a9a01facbf4c2ffecec5ac4254ef8"
+        }
+      ],
+      "related": [
+        "Execution Plan",
+        "Capability Grant",
+        "Evidence Artifact"
+      ]
+    },
+    {
+      "slug": "type-eonadapter",
+      "title": "EON Adapter",
+      "category": "Execution Adapters",
+      "definition": "A controlled execution bridge that translates an authorized EGCF plan node into eon behaviour without transferring authority.",
+      "thesis": "EON Adapter should translate already-authorized intent without broadening scope, authority, or evidence claims.",
+      "html": "concepts/type-eonadapter.html",
+      "figure": "figures/concepts/type-eonadapter.svg",
+      "sources": [
+        {
+          "path": "ourd/egcf/adapters/eon.py",
+          "sha256": "3bb1bb57a06875026acb0a26120e8327ebfd62fdeddcace05c5242a17fbfed76"
+        }
+      ],
+      "related": [
+        "Execution Plan",
+        "Capability Grant",
+        "Evidence Artifact"
+      ]
+    },
+    {
+      "slug": "type-enginecontroladapter",
+      "title": "Engine Control Adapter",
+      "category": "Execution Adapters",
+      "definition": "A controlled execution bridge that translates an authorized EGCF plan node into engine control behaviour without transferring authority.",
+      "thesis": "Engine Control Adapter should translate already-authorized intent without broadening scope, authority, or evidence claims.",
+      "html": "concepts/type-enginecontroladapter.html",
+      "figure": "figures/concepts/type-enginecontroladapter.svg",
+      "sources": [
+        {
+          "path": "ourd/egcf/adapters/control.py",
+          "sha256": "d64c656d3cf71e13f983ba39604e3c86e265653b424fa095327341b9490a559c"
+        }
+      ],
+      "related": [
+        "Execution Plan",
+        "Capability Grant",
+        "Evidence Artifact"
+      ]
+    },
+    {
+      "slug": "type-executoradapter",
+      "title": "Executor Adapter",
+      "category": "Execution Adapters",
+      "definition": "A controlled execution bridge that translates an authorized EGCF plan node into executor behaviour without transferring authority.",
+      "thesis": "Executor Adapter should translate already-authorized intent without broadening scope, authority, or evidence claims.",
+      "html": "concepts/type-executoradapter.html",
+      "figure": "figures/concepts/type-executoradapter.svg",
+      "sources": [
+        {
+          "path": "ourd/egcf/adapters/base.py",
+          "sha256": "7863871c4b83b2ea69c0ef5595118b0e382bfbc405f997cf9c7219b8bbfd3a53"
+        }
+      ],
+      "related": [
+        "Execution Plan",
+        "Capability Grant",
+        "Evidence Artifact"
+      ]
+    },
+    {
+      "slug": "type-mcpadapter",
+      "title": "MCP Adapter",
+      "category": "Execution Adapters",
+      "definition": "A controlled execution bridge that translates an authorized EGCF plan node into mcp behaviour without transferring authority.",
+      "thesis": "MCP Adapter should translate already-authorized intent without broadening scope, authority, or evidence claims.",
+      "html": "concepts/type-mcpadapter.html",
+      "figure": "figures/concepts/type-mcpadapter.svg",
+      "sources": [
+        {
+          "path": "ourd/egcf/adapters/mcp.py",
+          "sha256": "1bde4c7b54a587db0bb1c73a9cad5455a79d7b4f9397c412c07e3b18860ba3c6"
+        }
+      ],
+      "related": [
+        "Execution Plan",
+        "Capability Grant",
+        "Evidence Artifact"
+      ]
+    },
+    {
+      "slug": "type-modeladapter",
+      "title": "Model Adapter",
+      "category": "Execution Adapters",
+      "definition": "A controlled execution bridge that translates an authorized EGCF plan node into model behaviour without transferring authority.",
+      "thesis": "Model Adapter should translate already-authorized intent without broadening scope, authority, or evidence claims.",
+      "html": "concepts/type-modeladapter.html",
+      "figure": "figures/concepts/type-modeladapter.svg",
+      "sources": [
+        {
+          "path": "ourd/egcf/adapters/model.py",
+          "sha256": "b195eb6474761969793481d8de792df16d3f10d27db92274b315a105a8b38981"
+        }
+      ],
+      "related": [
+        "Execution Plan",
+        "Capability Grant",
+        "Evidence Artifact"
+      ]
+    },
+    {
+      "slug": "type-semanticadapter",
+      "title": "Semantic Adapter",
+      "category": "Execution Adapters",
+      "definition": "A controlled execution bridge that translates an authorized EGCF plan node into semantic behaviour without transferring authority.",
+      "thesis": "Semantic Adapter should translate already-authorized intent without broadening scope, authority, or evidence claims.",
+      "html": "concepts/type-semanticadapter.html",
+      "figure": "figures/concepts/type-semanticadapter.svg",
+      "sources": [
+        {
+          "path": "ourd/egcf/adapters/semantic.py",
+          "sha256": "32457e573a0b82c5e317572c849bd18646027b3938a988e894dcc05c5210c16f"
+        }
+      ],
+      "related": [
+        "Execution Plan",
+        "Capability Grant",
+        "Evidence Artifact"
+      ]
+    },
+    {
+      "slug": "type-shelladapter",
+      "title": "Shell Adapter",
+      "category": "Execution Adapters",
+      "definition": "A controlled execution bridge that translates an authorized EGCF plan node into shell behaviour without transferring authority.",
+      "thesis": "Shell Adapter should translate already-authorized intent without broadening scope, authority, or evidence claims.",
+      "html": "concepts/type-shelladapter.html",
+      "figure": "figures/concepts/type-shelladapter.svg",
+      "sources": [
+        {
+          "path": "ourd/egcf/adapters/shell.py",
+          "sha256": "de735f2c5c08ee03f57ba9465a4c26abfa6c677ee9fa1ed41394e6922528fbef"
+        }
+      ],
+      "related": [
+        "Execution Plan",
+        "Capability Grant",
+        "Evidence Artifact"
+      ]
+    },
+    {
+      "slug": "type-simulationadapter",
+      "title": "Simulation Adapter",
+      "category": "Execution Adapters",
+      "definition": "A controlled execution bridge that translates an authorized EGCF plan node into simulation behaviour without transferring authority.",
+      "thesis": "Simulation Adapter should translate already-authorized intent without broadening scope, authority, or evidence claims.",
+      "html": "concepts/type-simulationadapter.html",
+      "figure": "figures/concepts/type-simulationadapter.svg",
+      "sources": [
+        {
+          "path": "ourd/egcf/adapters/simulation.py",
+          "sha256": "2ad55f0109224c382357284425365f15b97e9e97c2f6a88d03ec650bbdb3929b"
+        }
+      ],
+      "related": [
+        "Execution Plan",
+        "Capability Grant",
+        "Evidence Artifact"
+      ]
+    },
+    {
+      "slug": "type-skilladapter",
+      "title": "Skill Adapter",
+      "category": "Execution Adapters",
+      "definition": "A controlled execution bridge that translates an authorized EGCF plan node into skill behaviour without transferring authority.",
+      "thesis": "Skill Adapter should translate already-authorized intent without broadening scope, authority, or evidence claims.",
+      "html": "concepts/type-skilladapter.html",
+      "figure": "figures/concepts/type-skilladapter.svg",
+      "sources": [
+        {
+          "path": "ourd/egcf/adapters/skill.py",
+          "sha256": "886d3eddd4b3886149ed848a19dee514bba4abeb172f8897a7657e09a048ba2d"
+        }
+      ],
+      "related": [
+        "Execution Plan",
+        "Capability Grant",
+        "Evidence Artifact"
+      ]
+    },
+    {
+      "slug": "type-approvalmanager",
+      "title": "Approval Manager",
+      "category": "Governance and Authority",
+      "definition": "The lifecycle service that creates, validates, queries, or supersedes approval records.",
+      "thesis": "Approval Manager should make mutation permission deterministic, proportional, exact, and reviewable.",
+      "html": "concepts/type-approvalmanager.html",
+      "figure": "figures/concepts/type-approvalmanager.svg",
+      "sources": [
+        {
+          "path": "ourd/egcf/approval.py",
+          "sha256": "536cfad5615fd5660d06433538370abf44a49bcfe1b4043c279d8820bd87340a"
+        }
+      ],
+      "related": [
+        "EGCF",
+        "Evidence",
+        "Authority",
+        "Replay"
+      ]
+    },
+    {
+      "slug": "type-capabilityresolver",
+      "title": "Capability Resolver",
+      "category": "Governance and Authority",
+      "definition": "The service that intersects capability requirements, grants, facets, scope, expiry, and use limits to compute effective authority.",
+      "thesis": "Capability Resolver should make mutation permission deterministic, proportional, exact, and reviewable.",
+      "html": "concepts/type-capabilityresolver.html",
+      "figure": "figures/concepts/type-capabilityresolver.svg",
+      "sources": [
+        {
+          "path": "ourd/egcf/capabilities.py",
+          "sha256": "399f537e7b2324cd7e5fce097808b4f1cb3498a10c304b2539d1cf1fd39c98ef"
+        }
+      ],
+      "related": [
+        "EGCF",
+        "Evidence",
+        "Authority",
+        "Replay"
+      ]
+    },
+    {
+      "slug": "type-commanddecision",
+      "title": "Command Decision",
+      "category": "Governance and Authority",
+      "definition": "A typed decision object that records the basis and consequence of command.",
+      "thesis": "Command Decision should make mutation permission deterministic, proportional, exact, and reviewable.",
+      "html": "concepts/type-commanddecision.html",
+      "figure": "figures/concepts/type-commanddecision.svg",
+      "sources": [
+        {
+          "path": "ourd/policy.py",
+          "sha256": "9e01bced2eb9f0a3c9ef87bf479a8e6279e5b9e083af404ac1e5c8192c5692b8"
+        }
+      ],
+      "related": [
+        "EGCF",
+        "Evidence",
+        "Authority",
+        "Replay"
+      ]
+    },
+    {
+      "slug": "type-policyengine",
+      "title": "Policy Engine",
+      "category": "Governance and Authority",
+      "definition": "The deterministic evaluator for risk floors, evidence sufficiency, authority, approvals, commands, targets, and execution permission.",
+      "thesis": "Policy Engine should make mutation permission deterministic, proportional, exact, and reviewable.",
+      "html": "concepts/type-policyengine.html",
+      "figure": "figures/concepts/type-policyengine.svg",
+      "sources": [
+        {
+          "path": "ourd/policy.py",
+          "sha256": "9e01bced2eb9f0a3c9ef87bf479a8e6279e5b9e083af404ac1e5c8192c5692b8"
+        }
+      ],
+      "related": [
+        "EGCF",
+        "Evidence",
+        "Authority",
+        "Replay"
+      ]
+    },
+    {
+      "slug": "type-transactionmanager",
+      "title": "Transaction Manager",
+      "category": "Governance and Authority",
+      "definition": "The service that stages immutable candidates, applies them atomically where possible, verifies results, and restores original bytes during rollback.",
+      "thesis": "Transaction Manager should make mutation permission deterministic, proportional, exact, and reviewable.",
+      "html": "concepts/type-transactionmanager.html",
+      "figure": "figures/concepts/type-transactionmanager.svg",
+      "sources": [
+        {
+          "path": "ourd/transactions.py",
+          "sha256": "ab782d419271f35785415b54074c3415a09db668f7ea05cc1f05d65626bc5a2a"
+        }
+      ],
+      "related": [
+        "EGCF",
+        "Evidence",
+        "Authority",
+        "Replay"
+      ]
+    },
+    {
+      "slug": "cfel",
+      "title": "CFEL: Collision, Failure, Evidence, and Learning Feedback",
+      "category": "Governed Reasoning Loop",
+      "definition": "CFEL records the difference between expectation and observation, blocks unchanged blind retries, and turns failure into bounded evidence for a revised model.",
+      "thesis": "A failure is valuable only when it changes the next hypothesis, experiment, or action.",
+      "html": "concepts/cfel.html",
+      "figure": "figures/concepts/cfel.svg",
+      "sources": [
+        {
+          "path": "README.md",
+          "sha256": "4376282d2453a8ff6bd03ac23ea6a9209e1e39e0aab0273f58968c01dc703508"
+        },
+        {
+          "path": "IMPLEMENTATION_PLAN.md",
+          "sha256": "449ac10f29b1d8fdaad608d2ba0b06be27b7302f90bf7917a9d9104e65d93560"
+        },
+        {
+          "path": "ourd/cfel.py",
+          "sha256": "7d52dac536a51e765cbf1488965a32e47d55ff06b66cb0e9337365d71606b769"
+        },
+        {
+          "path": "ourd/models.py",
+          "sha256": "71540fe724b4be4043cd58e71d60fcddcf1f6ab1af53ad04716f544b022381fa"
+        }
+      ],
+      "related": [
+        "Governed Action",
+        "OURD",
+        "IURM",
+        "Collision Record",
+        "Failure Record"
+      ]
+    },
+    {
+      "slug": "eon",
+      "title": "EON: Exact Governed Action Boundary",
+      "category": "Governed Reasoning Loop",
+      "definition": "EON binds a proposed operation to exact authority, source state, targets, candidate content, commands, tests, invariants, risk, expiry, and use limits.",
+      "thesis": "Reasoning should cross into mutation only through an exact, reviewable, stale-detecting action identity.",
+      "html": "concepts/eon.html",
+      "figure": "figures/concepts/eon.svg",
+      "sources": [
+        {
+          "path": "README.md",
+          "sha256": "4376282d2453a8ff6bd03ac23ea6a9209e1e39e0aab0273f58968c01dc703508"
+        },
+        {
+          "path": "IMPLEMENTATION_PLAN.md",
+          "sha256": "449ac10f29b1d8fdaad608d2ba0b06be27b7302f90bf7917a9d9104e65d93560"
+        },
+        {
+          "path": "ourd/models.py",
+          "sha256": "71540fe724b4be4043cd58e71d60fcddcf1f6ab1af53ad04716f544b022381fa"
+        },
+        {
+          "path": "ourd/egcf/adapters/eon.py",
+          "sha256": "3bb1bb57a06875026acb0a26120e8327ebfd62fdeddcace05c5242a17fbfed76"
+        }
+      ],
+      "related": [
+        "IURM",
+        "Evidence Gate",
+        "EON Action",
+        "Candidate Transaction",
+        "Rollback"
+      ]
+    },
+    {
+      "slug": "evidence-gate",
+      "title": "Evidence Gate",
+      "category": "Governed Reasoning Loop",
+      "definition": "The evidence gate compares the proposed action's declared requirements with current artifacts, authority, approval, risk, and invariants.",
+      "thesis": "The gate should decide from deterministic records rather than from the model's confidence or persuasive language.",
+      "html": "concepts/evidence-gate.html",
+      "figure": "figures/concepts/evidence-gate.svg",
+      "sources": [
+        {
+          "path": "README.md",
+          "sha256": "4376282d2453a8ff6bd03ac23ea6a9209e1e39e0aab0273f58968c01dc703508"
+        },
+        {
+          "path": "IMPLEMENTATION_PLAN.md",
+          "sha256": "449ac10f29b1d8fdaad608d2ba0b06be27b7302f90bf7917a9d9104e65d93560"
+        },
+        {
+          "path": "ourd/policy.py",
+          "sha256": "9e01bced2eb9f0a3c9ef87bf479a8e6279e5b9e083af404ac1e5c8192c5692b8"
+        },
+        {
+          "path": "ourd/models.py",
+          "sha256": "71540fe724b4be4043cd58e71d60fcddcf1f6ab1af53ad04716f544b022381fa"
+        }
+      ],
+      "related": [
+        "EON",
+        "Gate Decision",
+        "Evidence Artifact",
+        "Approval Record"
+      ]
+    },
+    {
+      "slug": "governed-action",
+      "title": "Governed Action",
+      "category": "Governed Reasoning Loop",
+      "definition": "A governed action is the actual mutation or command execution performed only after the exact candidate passes its deterministic gate.",
+      "thesis": "Execution should be the consequence of evidence and authority, not a side effect of model reasoning.",
+      "html": "concepts/governed-action.html",
+      "figure": "figures/concepts/governed-action.svg",
+      "sources": [
+        {
+          "path": "README.md",
+          "sha256": "4376282d2453a8ff6bd03ac23ea6a9209e1e39e0aab0273f58968c01dc703508"
+        },
+        {
+          "path": "ourd/transactions.py",
+          "sha256": "ab782d419271f35785415b54074c3415a09db668f7ea05cc1f05d65626bc5a2a"
+        },
+        {
+          "path": "ourd/workspace.py",
+          "sha256": "6dcd92a021ff59242a13051195b4cde6c822d4b6eb64f3780dbce20d60689729"
+        },
+        {
+          "path": "ourd/agent.py",
+          "sha256": "346fe3e4fdb0d400200fc47eaac8071bdfacae259f8e68400dfeb1f07473eb68"
+        }
+      ],
+      "related": [
+        "Evidence Gate",
+        "Transaction Manager",
+        "Execution Record",
+        "CFEL"
+      ]
+    },
+    {
+      "slug": "hrt",
+      "title": "HRT: Human-Readable Task Interpretation",
+      "category": "Governed Reasoning Loop",
+      "definition": "HRT turns a human request into explicit claims, assumptions, ambiguities, scope, exclusions, and provenance before deeper reasoning begins.",
+      "thesis": "Human intent should be made inspectable before the system treats it as an engineering problem.",
+      "html": "concepts/hrt.html",
+      "figure": "figures/concepts/hrt.svg",
+      "sources": [
+        {
+          "path": "README.md",
+          "sha256": "4376282d2453a8ff6bd03ac23ea6a9209e1e39e0aab0273f58968c01dc703508"
+        },
+        {
+          "path": "EGCFV1_IMPLEMENTATION_PLAN.md",
+          "sha256": "92afcf0fb2f862b887c5ed9baebc27f61f1b6f172ed39a2fb75d1418a7a754fc"
+        },
+        {
+          "path": "ourd/egcf/catalog.py",
+          "sha256": "bc066ded9880925d6ff716a60278eb42cbc71ec7ff9245829bb2a9e71332190e"
+        }
+      ],
+      "related": [
+        "OURD",
+        "Intent Record",
+        "Provenance",
+        "Scope"
+      ]
+    },
+    {
+      "slug": "ieps",
+      "title": "IEPS: Invariant and Evidence Production System",
+      "category": "Governed Reasoning Loop",
+      "definition": "IEPS produces coverage, oracles, counterexamples, uniqueness checks, mutations, shrinking, qualification, and evidence gates.",
+      "thesis": "A candidate should meet evidence designed to discriminate truth from plausible appearance.",
+      "html": "concepts/ieps.html",
+      "figure": "figures/concepts/ieps.svg",
+      "sources": [
+        {
+          "path": "EGCFV1_IMPLEMENTATION_PLAN.md",
+          "sha256": "92afcf0fb2f862b887c5ed9baebc27f61f1b6f172ed39a2fb75d1418a7a754fc"
+        },
+        {
+          "path": "ourd/egcf/ieps.py",
+          "sha256": "5d7c8fe8f24640a7a211cc126a712d5b1d68aad19c9a248aa4e870322b0c0b78"
+        },
+        {
+          "path": "ourd/egcf/evidence.py",
+          "sha256": "294b0509fc1e4e9b9c6735f326faff8612f13b12dfd3cda5b58263c20978addc"
+        }
+      ],
+      "related": [
+        "IURM",
+        "Evidence Artifact",
+        "Invariant Record",
+        "Evidence Gate"
+      ]
+    },
+    {
+      "slug": "iurm",
+      "title": "IURM: Invariant-Uncertainty-Response Modeling",
+      "category": "Governed Reasoning Loop",
+      "definition": "IURM identifies dimensions, baselines, controlled variations, interactions, sensitivity, and minimum viable designs.",
+      "thesis": "Useful learning comes from discriminating experiments, not from changing many coupled dimensions at once.",
+      "html": "concepts/iurm.html",
+      "figure": "figures/concepts/iurm.svg",
+      "sources": [
+        {
+          "path": "README.md",
+          "sha256": "4376282d2453a8ff6bd03ac23ea6a9209e1e39e0aab0273f58968c01dc703508"
+        },
+        {
+          "path": "docs/OURD_AGENT_GUI.md",
+          "sha256": "c1f65b1c33901bad1c3500b556f1e976473ff88f761ed0ce48507aa830a56997"
+        },
+        {
+          "path": "ourd/egcf/catalog.py",
+          "sha256": "bc066ded9880925d6ff716a60278eb42cbc71ec7ff9245829bb2a9e71332190e"
+        },
+        {
+          "path": "ourd_gui/views/iurm.py",
+          "sha256": "a6bb454b5b1d3dbee5a3f772bbd2e0474ac3c2e8b2ff7ac09b5daf19f6e87289"
+        }
+      ],
+      "related": [
+        "OURD",
+        "Experiment Designer",
+        "OFAT",
+        "MVD",
+        "Invariant"
+      ]
+    },
+    {
+      "slug": "ourd",
+      "title": "OURD: Object-Universe-Relation-Dependency Modeling",
+      "category": "Governed Reasoning Loop",
+      "definition": "OURD builds the relational map of the problem: objects, boundaries, dependencies, goals, impacts, exclusions, and unresolved relations.",
+      "thesis": "The agent should model the territory before choosing one imagined implementation path.",
+      "html": "concepts/ourd.html",
+      "figure": "figures/concepts/ourd.svg",
+      "sources": [
+        {
+          "path": "README.md",
+          "sha256": "4376282d2453a8ff6bd03ac23ea6a9209e1e39e0aab0273f58968c01dc703508"
+        },
+        {
+          "path": "docs/OURD_AGENT_GUI.md",
+          "sha256": "c1f65b1c33901bad1c3500b556f1e976473ff88f761ed0ce48507aa830a56997"
+        },
+        {
+          "path": "ourd/egcf/catalog.py",
+          "sha256": "bc066ded9880925d6ff716a60278eb42cbc71ec7ff9245829bb2a9e71332190e"
+        },
+        {
+          "path": "ourd_gui/views/ourd.py",
+          "sha256": "30c777a91f7a4b1dc60b4b8409c18be784538e1e8440f0b96d9971ec502113cb"
+        }
+      ],
+      "related": [
+        "HRT",
+        "IURM",
+        "Semantic Graph",
+        "Canonical Identity"
+      ]
+    },
+    {
+      "slug": "type-modelprovider",
+      "title": "Model Provider",
+      "category": "Model Boundary",
+      "definition": "The bounded model-provider interface for model requests and responses.",
+      "thesis": "Model Provider should preserve model usefulness while preventing model output from becoming approval or certification authority.",
+      "html": "concepts/type-modelprovider.html",
+      "figure": "figures/concepts/type-modelprovider.svg",
+      "sources": [
+        {
+          "path": "ourd/providers/base.py",
+          "sha256": "519e44d0b858728980d9d77f97fb11036ac64733c2838bddb1859440f663a3c2"
+        }
+      ],
+      "related": [
+        "EGCF",
+        "Evidence",
+        "Authority",
+        "Replay"
+      ]
+    },
+    {
+      "slug": "type-openairesponsesprovider",
+      "title": "Open AI Responses Provider",
+      "category": "Model Boundary",
+      "definition": "The bounded provider adapter for OpenAI-compatible Responses APIs, including context estimation, retries, tool-call normalization, and cancellation points.",
+      "thesis": "Open AI Responses Provider should preserve model usefulness while preventing model output from becoming approval or certification authority.",
+      "html": "concepts/type-openairesponsesprovider.html",
+      "figure": "figures/concepts/type-openairesponsesprovider.svg",
+      "sources": [
+        {
+          "path": "ourd/providers/openai_responses.py",
+          "sha256": "d532c166acb6c66cd129bb1fd3f1a6bafee6c42c06f0c32411c6f08e0891316c"
+        }
+      ],
+      "related": [
+        "EGCF",
+        "Evidence",
+        "Authority",
+        "Replay"
+      ]
+    },
+    {
+      "slug": "type-providerconfig",
+      "title": "Provider Config",
+      "category": "Model Boundary",
+      "definition": "A public OURD runtime concept that owns or represents provider config behaviour in ourd/providers/base.py.",
+      "thesis": "Provider Config should preserve model usefulness while preventing model output from becoming approval or certification authority.",
+      "html": "concepts/type-providerconfig.html",
+      "figure": "figures/concepts/type-providerconfig.svg",
+      "sources": [
+        {
+          "path": "ourd/providers/base.py",
+          "sha256": "519e44d0b858728980d9d77f97fb11036ac64733c2838bddb1859440f663a3c2"
+        }
+      ],
+      "related": [
+        "EGCF",
+        "Evidence",
+        "Authority",
+        "Replay"
+      ]
+    },
+    {
+      "slug": "type-artifactstore",
+      "title": "Artifact Store",
+      "category": "Persistence and Provenance",
+      "definition": "The content-addressed store for larger evidence and execution artifacts.",
+      "thesis": "Artifact Store should keep canonical facts durable, verifiable, replayable, and separable from rebuildable projections.",
+      "html": "concepts/type-artifactstore.html",
+      "figure": "figures/concepts/type-artifactstore.svg",
+      "sources": [
+        {
+          "path": "ourd/egcf/store.py",
+          "sha256": "102ddade91ba8acda7452bda66aec044c79b9386bd5fa71a54c68bdc423dbf46"
+        }
+      ],
+      "related": [
+        "EGCF",
+        "Evidence",
+        "Authority",
+        "Replay"
+      ]
+    },
+    {
+      "slug": "type-egcfstore",
+      "title": "EGCF Store",
+      "category": "Persistence and Provenance",
+      "definition": "The combined persistence boundary for canonical objects, artifacts, events, and rebuildable query projections.",
+      "thesis": "EGCF Store should keep canonical facts durable, verifiable, replayable, and separable from rebuildable projections.",
+      "html": "concepts/type-egcfstore.html",
+      "figure": "figures/concepts/type-egcfstore.svg",
+      "sources": [
+        {
+          "path": "ourd/egcf/store.py",
+          "sha256": "102ddade91ba8acda7452bda66aec044c79b9386bd5fa71a54c68bdc423dbf46"
+        }
+      ],
+      "related": [
+        "EGCF",
+        "Evidence",
+        "Authority",
+        "Replay"
+      ]
+    },
+    {
+      "slug": "type-eventstore",
+      "title": "Event Store",
+      "category": "Persistence and Provenance",
+      "definition": "The append-only, SHA-256-chained event ledger used as durable provenance and replay history.",
+      "thesis": "Event Store should keep canonical facts durable, verifiable, replayable, and separable from rebuildable projections.",
+      "html": "concepts/type-eventstore.html",
+      "figure": "figures/concepts/type-eventstore.svg",
+      "sources": [
+        {
+          "path": "ourd/persistence.py",
+          "sha256": "250b379e5f44e463e19668f3e977db7358739a15c8dc9d0a23442b27cc797848"
+        }
+      ],
+      "related": [
+        "EGCF",
+        "Evidence",
+        "Authority",
+        "Replay"
+      ]
+    },
+    {
+      "slug": "type-objectstore",
+      "title": "Object Store",
+      "category": "Persistence and Provenance",
+      "definition": "The content-addressed canonical store for immutable EGCF records.",
+      "thesis": "Object Store should keep canonical facts durable, verifiable, replayable, and separable from rebuildable projections.",
+      "html": "concepts/type-objectstore.html",
+      "figure": "figures/concepts/type-objectstore.svg",
+      "sources": [
+        {
+          "path": "ourd/egcf/store.py",
+          "sha256": "102ddade91ba8acda7452bda66aec044c79b9386bd5fa71a54c68bdc423dbf46"
+        }
+      ],
+      "related": [
+        "EGCF",
+        "Evidence",
+        "Authority",
+        "Replay"
+      ]
+    },
+    {
+      "slug": "type-statestore",
+      "title": "State Store",
+      "category": "Persistence and Provenance",
+      "definition": "The rebuildable state projection derived from canonical events.",
+      "thesis": "State Store should keep canonical facts durable, verifiable, replayable, and separable from rebuildable projections.",
+      "html": "concepts/type-statestore.html",
+      "figure": "figures/concepts/type-statestore.svg",
+      "sources": [
+        {
+          "path": "ourd/persistence.py",
+          "sha256": "250b379e5f44e463e19668f3e977db7358739a15c8dc9d0a23442b27cc797848"
+        }
+      ],
+      "related": [
+        "EGCF",
+        "Evidence",
+        "Authority",
+        "Replay"
+      ]
+    },
+    {
+      "slug": "type-workspacelock",
+      "title": "Workspace Lock",
+      "category": "Persistence and Provenance",
+      "definition": "The exclusive writer lock that prevents concurrent mutation and exposes unresolved transaction state.",
+      "thesis": "Workspace Lock should keep canonical facts durable, verifiable, replayable, and separable from rebuildable projections.",
+      "html": "concepts/type-workspacelock.html",
+      "figure": "figures/concepts/type-workspacelock.svg",
+      "sources": [
+        {
+          "path": "ourd/persistence.py",
+          "sha256": "250b379e5f44e463e19668f3e977db7358739a15c8dc9d0a23442b27cc797848"
+        }
+      ],
+      "related": [
+        "EGCF",
+        "Evidence",
+        "Authority",
+        "Replay"
+      ]
+    },
+    {
+      "slug": "type-agentcancellederror",
+      "title": "Agent Cancelled Error",
+      "category": "Refusal and Error Semantics",
+      "definition": "Raised when an interactive agent turn is cooperatively stopped.",
+      "thesis": "Agent Cancelled Error should make unsafe or inconsistent states explicit and fail closed rather than degrade silently.",
+      "html": "concepts/type-agentcancellederror.html",
+      "figure": "figures/concepts/type-agentcancellederror.svg",
+      "sources": [
+        {
+          "path": "ourd/errors.py",
+          "sha256": "a6396086a6e019172983a3a84542f1f0756971b7bf1a5726ec46dd7a1911c13e"
+        }
+      ],
+      "related": [
+        "Fail Closed",
+        "CFEL",
+        "Evidence Gate"
+      ]
+    },
+    {
+      "slug": "type-approvalerror",
+      "title": "Approval Error",
+      "category": "Refusal and Error Semantics",
+      "definition": "Raised when execution lacks a current exact-plan approval.",
+      "thesis": "Approval Error should make unsafe or inconsistent states explicit and fail closed rather than degrade silently.",
+      "html": "concepts/type-approvalerror.html",
+      "figure": "figures/concepts/type-approvalerror.svg",
+      "sources": [
+        {
+          "path": "ourd/egcf/errors.py",
+          "sha256": "21f95d8d317b28281f696f67489a99bbcbf5484281b42c7077e2e0f8f5bae091"
+        }
+      ],
+      "related": [
+        "Fail Closed",
+        "CFEL",
+        "Evidence Gate"
+      ]
+    },
+    {
+      "slug": "type-capabilityerror",
+      "title": "Capability Error",
+      "category": "Refusal and Error Semantics",
+      "definition": "Raised when effective authority does not cover requirements.",
+      "thesis": "Capability Error should make unsafe or inconsistent states explicit and fail closed rather than degrade silently.",
+      "html": "concepts/type-capabilityerror.html",
+      "figure": "figures/concepts/type-capabilityerror.svg",
+      "sources": [
+        {
+          "path": "ourd/egcf/errors.py",
+          "sha256": "21f95d8d317b28281f696f67489a99bbcbf5484281b42c7077e2e0f8f5bae091"
+        }
+      ],
+      "related": [
+        "Fail Closed",
+        "CFEL",
+        "Evidence Gate"
+      ]
+    },
+    {
+      "slug": "type-compilationerror",
+      "title": "Compilation Error",
+      "category": "Refusal and Error Semantics",
+      "definition": "Raised when a semantic command or workflow cannot compile safely.",
+      "thesis": "Compilation Error should make unsafe or inconsistent states explicit and fail closed rather than degrade silently.",
+      "html": "concepts/type-compilationerror.html",
+      "figure": "figures/concepts/type-compilationerror.svg",
+      "sources": [
+        {
+          "path": "ourd/egcf/errors.py",
+          "sha256": "21f95d8d317b28281f696f67489a99bbcbf5484281b42c7077e2e0f8f5bae091"
+        }
+      ],
+      "related": [
+        "Fail Closed",
+        "CFEL",
+        "Evidence Gate"
+      ]
+    },
+    {
+      "slug": "type-contextbudgeterror",
+      "title": "Context Budget Error",
+      "category": "Refusal and Error Semantics",
+      "definition": "Raised when a provider request exceeds the configured context budget.",
+      "thesis": "Context Budget Error should make unsafe or inconsistent states explicit and fail closed rather than degrade silently.",
+      "html": "concepts/type-contextbudgeterror.html",
+      "figure": "figures/concepts/type-contextbudgeterror.svg",
+      "sources": [
+        {
+          "path": "ourd/errors.py",
+          "sha256": "a6396086a6e019172983a3a84542f1f0756971b7bf1a5726ec46dd7a1911c13e"
+        }
+      ],
+      "related": [
+        "Fail Closed",
+        "CFEL",
+        "Evidence Gate"
+      ]
+    },
+    {
+      "slug": "type-egcferror",
+      "title": "EGCF Error",
+      "category": "Refusal and Error Semantics",
+      "definition": "Base EGCF refusal or consistency error.",
+      "thesis": "EGCF Error should make unsafe or inconsistent states explicit and fail closed rather than degrade silently.",
+      "html": "concepts/type-egcferror.html",
+      "figure": "figures/concepts/type-egcferror.svg",
+      "sources": [
+        {
+          "path": "ourd/egcf/errors.py",
+          "sha256": "21f95d8d317b28281f696f67489a99bbcbf5484281b42c7077e2e0f8f5bae091"
+        }
+      ],
+      "related": [
+        "Fail Closed",
+        "CFEL",
+        "Evidence Gate"
+      ]
+    },
+    {
+      "slug": "type-policyerror",
+      "title": "Policy Error",
+      "category": "Refusal and Error Semantics",
+      "definition": "Raised when a deterministic governance or execution policy blocks work.",
+      "thesis": "Policy Error should make unsafe or inconsistent states explicit and fail closed rather than degrade silently.",
+      "html": "concepts/type-policyerror.html",
+      "figure": "figures/concepts/type-policyerror.svg",
+      "sources": [
+        {
+          "path": "ourd/errors.py",
+          "sha256": "a6396086a6e019172983a3a84542f1f0756971b7bf1a5726ec46dd7a1911c13e"
+        }
+      ],
+      "related": [
+        "Fail Closed",
+        "CFEL",
+        "Evidence Gate"
+      ]
+    },
+    {
+      "slug": "type-providererror",
+      "title": "Provider Error",
+      "category": "Refusal and Error Semantics",
+      "definition": "Raised when a model provider cannot satisfy the requested protocol.",
+      "thesis": "Provider Error should make unsafe or inconsistent states explicit and fail closed rather than degrade silently.",
+      "html": "concepts/type-providererror.html",
+      "figure": "figures/concepts/type-providererror.svg",
+      "sources": [
+        {
+          "path": "ourd/errors.py",
+          "sha256": "a6396086a6e019172983a3a84542f1f0756971b7bf1a5726ec46dd7a1911c13e"
+        }
+      ],
+      "related": [
+        "Fail Closed",
+        "CFEL",
+        "Evidence Gate"
+      ]
+    },
+    {
+      "slug": "type-qualificationerror",
+      "title": "Qualification Error",
+      "category": "Refusal and Error Semantics",
+      "definition": "Raised when no context-qualified algorithm is available.",
+      "thesis": "Qualification Error should make unsafe or inconsistent states explicit and fail closed rather than degrade silently.",
+      "html": "concepts/type-qualificationerror.html",
+      "figure": "figures/concepts/type-qualificationerror.svg",
+      "sources": [
+        {
+          "path": "ourd/egcf/errors.py",
+          "sha256": "21f95d8d317b28281f696f67489a99bbcbf5484281b42c7077e2e0f8f5bae091"
+        }
+      ],
+      "related": [
+        "Fail Closed",
+        "CFEL",
+        "Evidence Gate"
+      ]
+    },
+    {
+      "slug": "type-schemaerror",
+      "title": "Schema Error",
+      "category": "Refusal and Error Semantics",
+      "definition": "Raised when a typed EGCF object is invalid.",
+      "thesis": "Schema Error should make unsafe or inconsistent states explicit and fail closed rather than degrade silently.",
+      "html": "concepts/type-schemaerror.html",
+      "figure": "figures/concepts/type-schemaerror.svg",
+      "sources": [
+        {
+          "path": "ourd/egcf/errors.py",
+          "sha256": "21f95d8d317b28281f696f67489a99bbcbf5484281b42c7077e2e0f8f5bae091"
+        }
+      ],
+      "related": [
+        "Fail Closed",
+        "CFEL",
+        "Evidence Gate"
+      ]
+    },
+    {
+      "slug": "type-stateerror",
+      "title": "State Error",
+      "category": "Refusal and Error Semantics",
+      "definition": "Raised when persisted evidence or state cannot be trusted.",
+      "thesis": "State Error should make unsafe or inconsistent states explicit and fail closed rather than degrade silently.",
+      "html": "concepts/type-stateerror.html",
+      "figure": "figures/concepts/type-stateerror.svg",
+      "sources": [
+        {
+          "path": "ourd/errors.py",
+          "sha256": "a6396086a6e019172983a3a84542f1f0756971b7bf1a5726ec46dd7a1911c13e"
+        }
+      ],
+      "related": [
+        "Fail Closed",
+        "CFEL",
+        "Evidence Gate"
+      ]
+    },
+    {
+      "slug": "type-budget",
+      "title": "Budget",
+      "category": "Semantic Command Fabric",
+      "definition": "A public OURD runtime concept that owns or represents budget behaviour in ourd/egcf/context.py.",
+      "thesis": "Budget should turn engineering meaning into a typed plan before any executor is selected.",
+      "html": "concepts/type-budget.html",
+      "figure": "figures/concepts/type-budget.svg",
+      "sources": [
+        {
+          "path": "ourd/egcf/context.py",
+          "sha256": "ead3256a998c220a5823ffb1baee3a11d1bd32cefc95989237fd4027600807b1"
+        }
+      ],
+      "related": [
+        "EGCF",
+        "Evidence",
+        "Authority",
+        "Replay"
+      ]
+    },
+    {
+      "slug": "type-commandcontext",
+      "title": "Command Context",
+      "category": "Semantic Command Fabric",
+      "definition": "The shared scope, evidence, approval, risk, rollback, budget, timeout, trace, simulation, and strictness contract inherited by semantic commands.",
+      "thesis": "Command Context should turn engineering meaning into a typed plan before any executor is selected.",
+      "html": "concepts/type-commandcontext.html",
+      "figure": "figures/concepts/type-commandcontext.svg",
+      "sources": [
+        {
+          "path": "ourd/egcf/context.py",
+          "sha256": "ead3256a998c220a5823ffb1baee3a11d1bd32cefc95989237fd4027600807b1"
+        }
+      ],
+      "related": [
+        "EGCF",
+        "Evidence",
+        "Authority",
+        "Replay"
+      ]
+    },
+    {
+      "slug": "type-egcfengine",
+      "title": "EGCF Engine",
+      "category": "Semantic Command Fabric",
+      "definition": "The high-level semantic command engine that coordinates catalogs, stores, registries, compilation, evidence, approval, simulation, and execution adapters.",
+      "thesis": "EGCF Engine should turn engineering meaning into a typed plan before any executor is selected.",
+      "html": "concepts/type-egcfengine.html",
+      "figure": "figures/concepts/type-egcfengine.svg",
+      "sources": [
+        {
+          "path": "ourd/egcf/engine.py",
+          "sha256": "7134153f0bb6744fcdac1db7b3c56d13bc5e64b456101a225981a9cb23360921"
+        }
+      ],
+      "related": [
+        "EGCF",
+        "Evidence",
+        "Authority",
+        "Replay"
+      ]
+    },
+    {
+      "slug": "egcf",
+      "title": "EGCF: Evidence-Governed Command Fabric",
+      "category": "Semantic Command Fabric",
+      "definition": "EGCF compiles semantic engineering intent into typed, content-addressed workflow plans governed by capabilities, evidence, approvals, and exact execution adapters.",
+      "thesis": "A command should express engineering meaning before it selects an executor.",
+      "html": "concepts/egcf.html",
+      "figure": "figures/concepts/egcf.svg",
+      "sources": [
+        {
+          "path": "EGCFV1_IMPLEMENTATION_PLAN.md",
+          "sha256": "92afcf0fb2f862b887c5ed9baebc27f61f1b6f172ed39a2fb75d1418a7a754fc"
+        },
+        {
+          "path": "docs/EGCFV1_COMMAND_REFERENCE.md",
+          "sha256": "735230ceb12023d618b4af8e8a67e2989261f86a7aae1b79cc1ced6a614dbea3"
+        },
+        {
+          "path": "ourd/egcf/engine.py",
+          "sha256": "7134153f0bb6744fcdac1db7b3c56d13bc5e64b456101a225981a9cb23360921"
+        }
+      ],
+      "related": [
+        "HRT",
+        "OURD",
+        "IURM",
+        "IEPS",
+        "EON",
+        "Command Namespace"
+      ]
+    },
+    {
+      "slug": "type-lifecycle",
+      "title": "Lifecycle",
+      "category": "Semantic Command Fabric",
+      "definition": "A public OURD runtime concept that owns or represents lifecycle behaviour in ourd/egcf/lifecycle.py.",
+      "thesis": "Lifecycle should turn engineering meaning into a typed plan before any executor is selected.",
+      "html": "concepts/type-lifecycle.html",
+      "figure": "figures/concepts/type-lifecycle.svg",
+      "sources": [
+        {
+          "path": "ourd/egcf/lifecycle.py",
+          "sha256": "6b9dca544717403e61d98419cc791c8e6c59422a0c6c4440954d88da06a13b2c"
+        }
+      ],
+      "related": [
+        "EGCF",
+        "Evidence",
+        "Authority",
+        "Replay"
+      ]
+    },
+    {
+      "slug": "type-semantichandlers",
+      "title": "Semantic Handlers",
+      "category": "Semantic Command Fabric",
+      "definition": "A public OURD runtime concept that owns or represents semantic handlers behaviour in ourd/egcf/handlers.py.",
+      "thesis": "Semantic Handlers should turn engineering meaning into a typed plan before any executor is selected.",
+      "html": "concepts/type-semantichandlers.html",
+      "figure": "figures/concepts/type-semantichandlers.svg",
+      "sources": [
+        {
+          "path": "ourd/egcf/handlers.py",
+          "sha256": "38681b3031751ad1e084bd4ea1c1bd0401cdb15a6bcbb561fc5342b85db24ff7"
+        }
+      ],
+      "related": [
+        "EGCF",
+        "Evidence",
+        "Authority",
+        "Replay"
+      ]
+    },
+    {
+      "slug": "type-workflowcompiler",
+      "title": "Workflow Compiler",
+      "category": "Semantic Command Fabric",
+      "definition": "The compiler that turns semantic commands and workflow definitions into typed plans while applying schema, capability, algorithm, evidence, and refusal rules.",
+      "thesis": "Workflow Compiler should turn engineering meaning into a typed plan before any executor is selected.",
+      "html": "concepts/type-workflowcompiler.html",
+      "figure": "figures/concepts/type-workflowcompiler.svg",
+      "sources": [
+        {
+          "path": "ourd/egcf/compiler.py",
+          "sha256": "fdd5a4a5ff822d7a3514d9b7764ba986561d01d0bb81e5b641241be9af10d7da"
+        }
+      ],
+      "related": [
+        "EGCF",
+        "Evidence",
+        "Authority",
+        "Replay"
+      ]
+    },
+    {
+      "slug": "namespace-agent",
+      "title": "Agent Command Namespace",
+      "category": "Semantic Command Namespaces",
+      "definition": "The agent semantic command namespace groups the governed operations spawn, specialise, debate, review, critic, merge, consensus, and terminate.",
+      "thesis": "The Agent namespace should preserve semantic intent, typed inputs, capability requirements, and evidence policy instead of becoming an alias for arbitrary shell execution.",
+      "html": "concepts/namespace-agent.html",
+      "figure": "figures/concepts/namespace-agent.svg",
+      "sources": [
+        {
+          "path": "commands/v1/catalog.json",
+          "sha256": "0dc8778495e2d95455397abf9db20fe59f8f327bf1f67960f37a8dc033d0df9d"
+        },
+        {
+          "path": "commands/v1/contracts.json",
+          "sha256": "44387cc737dc4917432111f679f3f0a50c01a28d9e2847dbb441fdd944cac1b1"
+        },
+        {
+          "path": "ourd/egcf/catalog.py",
+          "sha256": "bc066ded9880925d6ff716a60278eb42cbc71ec7ff9245829bb2a9e71332190e"
+        }
+      ],
+      "related": [
+        "spawn",
+        "specialise",
+        "debate",
+        "review",
+        "critic"
+      ]
+    },
+    {
+      "slug": "namespace-algorithm",
+      "title": "Algorithm Command Namespace",
+      "category": "Semantic Command Namespaces",
+      "definition": "The algorithm semantic command namespace groups the governed operations register, search, compare, qualify, benchmark, compose, evolve, retire, explain, and select.",
+      "thesis": "The Algorithm namespace should preserve semantic intent, typed inputs, capability requirements, and evidence policy instead of becoming an alias for arbitrary shell execution.",
+      "html": "concepts/namespace-algorithm.html",
+      "figure": "figures/concepts/namespace-algorithm.svg",
+      "sources": [
+        {
+          "path": "commands/v1/catalog.json",
+          "sha256": "0dc8778495e2d95455397abf9db20fe59f8f327bf1f67960f37a8dc033d0df9d"
+        },
+        {
+          "path": "commands/v1/contracts.json",
+          "sha256": "44387cc737dc4917432111f679f3f0a50c01a28d9e2847dbb441fdd944cac1b1"
+        },
+        {
+          "path": "ourd/egcf/catalog.py",
+          "sha256": "bc066ded9880925d6ff716a60278eb42cbc71ec7ff9245829bb2a9e71332190e"
+        }
+      ],
+      "related": [
+        "register",
+        "search",
+        "compare",
+        "qualify",
+        "benchmark"
+      ]
+    },
+    {
+      "slug": "namespace-assurance",
+      "title": "Assurance Command Namespace",
+      "category": "Semantic Command Namespaces",
+      "definition": "The assurance semantic command namespace groups the governed operations generate.",
+      "thesis": "The Assurance namespace should preserve semantic intent, typed inputs, capability requirements, and evidence policy instead of becoming an alias for arbitrary shell execution.",
+      "html": "concepts/namespace-assurance.html",
+      "figure": "figures/concepts/namespace-assurance.svg",
+      "sources": [
+        {
+          "path": "commands/v1/catalog.json",
+          "sha256": "0dc8778495e2d95455397abf9db20fe59f8f327bf1f67960f37a8dc033d0df9d"
+        },
+        {
+          "path": "commands/v1/contracts.json",
+          "sha256": "44387cc737dc4917432111f679f3f0a50c01a28d9e2847dbb441fdd944cac1b1"
+        },
+        {
+          "path": "ourd/egcf/catalog.py",
+          "sha256": "bc066ded9880925d6ff716a60278eb42cbc71ec7ff9245829bb2a9e71332190e"
+        }
+      ],
+      "related": [
+        "generate"
+      ]
+    },
+    {
+      "slug": "namespace-cfel",
+      "title": "CFEL Command Namespace",
+      "category": "Semantic Command Namespaces",
+      "definition": "The cfel semantic command namespace groups the governed operations observe, classify, compare, diagnose, recover, learn, stability, and regression.",
+      "thesis": "The CFEL namespace should preserve semantic intent, typed inputs, capability requirements, and evidence policy instead of becoming an alias for arbitrary shell execution.",
+      "html": "concepts/namespace-cfel.html",
+      "figure": "figures/concepts/namespace-cfel.svg",
+      "sources": [
+        {
+          "path": "commands/v1/catalog.json",
+          "sha256": "0dc8778495e2d95455397abf9db20fe59f8f327bf1f67960f37a8dc033d0df9d"
+        },
+        {
+          "path": "commands/v1/contracts.json",
+          "sha256": "44387cc737dc4917432111f679f3f0a50c01a28d9e2847dbb441fdd944cac1b1"
+        },
+        {
+          "path": "ourd/egcf/catalog.py",
+          "sha256": "bc066ded9880925d6ff716a60278eb42cbc71ec7ff9245829bb2a9e71332190e"
+        }
+      ],
+      "related": [
+        "observe",
+        "classify",
+        "compare",
+        "diagnose",
+        "recover"
+      ]
+    },
+    {
+      "slug": "namespace-cad",
+      "title": "Cad Command Namespace",
+      "category": "Semantic Command Namespaces",
+      "definition": "The cad semantic command namespace groups the governed operations mesh, topology, simplify, and validate.",
+      "thesis": "The Cad namespace should preserve semantic intent, typed inputs, capability requirements, and evidence policy instead of becoming an alias for arbitrary shell execution.",
+      "html": "concepts/namespace-cad.html",
+      "figure": "figures/concepts/namespace-cad.svg",
+      "sources": [
+        {
+          "path": "commands/v1/catalog.json",
+          "sha256": "0dc8778495e2d95455397abf9db20fe59f8f327bf1f67960f37a8dc033d0df9d"
+        },
+        {
+          "path": "commands/v1/contracts.json",
+          "sha256": "44387cc737dc4917432111f679f3f0a50c01a28d9e2847dbb441fdd944cac1b1"
+        },
+        {
+          "path": "ourd/egcf/catalog.py",
+          "sha256": "bc066ded9880925d6ff716a60278eb42cbc71ec7ff9245829bb2a9e71332190e"
+        }
+      ],
+      "related": [
+        "mesh",
+        "topology",
+        "simplify",
+        "validate"
+      ]
+    },
+    {
+      "slug": "namespace-capability",
+      "title": "Capability Command Namespace",
+      "category": "Semantic Command Namespaces",
+      "definition": "The capability semantic command namespace groups the governed operations list, describe, graph, check, request, grant, revoke, audit, and explain.",
+      "thesis": "The Capability namespace should preserve semantic intent, typed inputs, capability requirements, and evidence policy instead of becoming an alias for arbitrary shell execution.",
+      "html": "concepts/namespace-capability.html",
+      "figure": "figures/concepts/namespace-capability.svg",
+      "sources": [
+        {
+          "path": "commands/v1/catalog.json",
+          "sha256": "0dc8778495e2d95455397abf9db20fe59f8f327bf1f67960f37a8dc033d0df9d"
+        },
+        {
+          "path": "commands/v1/contracts.json",
+          "sha256": "44387cc737dc4917432111f679f3f0a50c01a28d9e2847dbb441fdd944cac1b1"
+        },
+        {
+          "path": "ourd/egcf/catalog.py",
+          "sha256": "bc066ded9880925d6ff716a60278eb42cbc71ec7ff9245829bb2a9e71332190e"
+        }
+      ],
+      "related": [
+        "list",
+        "describe",
+        "graph",
+        "check",
+        "request"
+      ]
+    },
+    {
+      "slug": "namespace-debug",
+      "title": "Debug Command Namespace",
+      "category": "Semantic Command Namespaces",
+      "definition": "The debug semantic command namespace groups the governed operations reproduce, minimise, bisect, hypotheses, trace, compare, rootcause, and verify.",
+      "thesis": "The Debug namespace should preserve semantic intent, typed inputs, capability requirements, and evidence policy instead of becoming an alias for arbitrary shell execution.",
+      "html": "concepts/namespace-debug.html",
+      "figure": "figures/concepts/namespace-debug.svg",
+      "sources": [
+        {
+          "path": "commands/v1/catalog.json",
+          "sha256": "0dc8778495e2d95455397abf9db20fe59f8f327bf1f67960f37a8dc033d0df9d"
+        },
+        {
+          "path": "commands/v1/contracts.json",
+          "sha256": "44387cc737dc4917432111f679f3f0a50c01a28d9e2847dbb441fdd944cac1b1"
+        },
+        {
+          "path": "ourd/egcf/catalog.py",
+          "sha256": "bc066ded9880925d6ff716a60278eb42cbc71ec7ff9245829bb2a9e71332190e"
+        }
+      ],
+      "related": [
+        "reproduce",
+        "minimise",
+        "bisect",
+        "hypotheses",
+        "trace"
+      ]
+    },
+    {
+      "slug": "namespace-decision",
+      "title": "Decision Command Namespace",
+      "category": "Semantic Command Namespaces",
+      "definition": "The decision semantic command namespace groups the governed operations create, query, history, supersede, explain, and conflicts.",
+      "thesis": "The Decision namespace should preserve semantic intent, typed inputs, capability requirements, and evidence policy instead of becoming an alias for arbitrary shell execution.",
+      "html": "concepts/namespace-decision.html",
+      "figure": "figures/concepts/namespace-decision.svg",
+      "sources": [
+        {
+          "path": "commands/v1/catalog.json",
+          "sha256": "0dc8778495e2d95455397abf9db20fe59f8f327bf1f67960f37a8dc033d0df9d"
+        },
+        {
+          "path": "commands/v1/contracts.json",
+          "sha256": "44387cc737dc4917432111f679f3f0a50c01a28d9e2847dbb441fdd944cac1b1"
+        },
+        {
+          "path": "ourd/egcf/catalog.py",
+          "sha256": "bc066ded9880925d6ff716a60278eb42cbc71ec7ff9245829bb2a9e71332190e"
+        }
+      ],
+      "related": [
+        "create",
+        "query",
+        "history",
+        "supersede",
+        "explain"
+      ]
+    },
+    {
+      "slug": "namespace-eon",
+      "title": "EON Command Namespace",
+      "category": "Semantic Command Namespaces",
+      "definition": "The eon semantic command namespace groups the governed operations draft, validate, compile, simulate, authorise, execute, rollback, and compare.",
+      "thesis": "The EON namespace should preserve semantic intent, typed inputs, capability requirements, and evidence policy instead of becoming an alias for arbitrary shell execution.",
+      "html": "concepts/namespace-eon.html",
+      "figure": "figures/concepts/namespace-eon.svg",
+      "sources": [
+        {
+          "path": "commands/v1/catalog.json",
+          "sha256": "0dc8778495e2d95455397abf9db20fe59f8f327bf1f67960f37a8dc033d0df9d"
+        },
+        {
+          "path": "commands/v1/contracts.json",
+          "sha256": "44387cc737dc4917432111f679f3f0a50c01a28d9e2847dbb441fdd944cac1b1"
+        },
+        {
+          "path": "ourd/egcf/catalog.py",
+          "sha256": "bc066ded9880925d6ff716a60278eb42cbc71ec7ff9245829bb2a9e71332190e"
+        }
+      ],
+      "related": [
+        "draft",
+        "validate",
+        "compile",
+        "simulate",
+        "authorise"
+      ]
+    },
+    {
+      "slug": "namespace-evidence",
+      "title": "Evidence Command Namespace",
+      "category": "Semantic Command Namespaces",
+      "definition": "The evidence semantic command namespace groups the governed operations collect, classify, compare, graph, export, confidence, conflicts, and history.",
+      "thesis": "The Evidence namespace should preserve semantic intent, typed inputs, capability requirements, and evidence policy instead of becoming an alias for arbitrary shell execution.",
+      "html": "concepts/namespace-evidence.html",
+      "figure": "figures/concepts/namespace-evidence.svg",
+      "sources": [
+        {
+          "path": "commands/v1/catalog.json",
+          "sha256": "0dc8778495e2d95455397abf9db20fe59f8f327bf1f67960f37a8dc033d0df9d"
+        },
+        {
+          "path": "commands/v1/contracts.json",
+          "sha256": "44387cc737dc4917432111f679f3f0a50c01a28d9e2847dbb441fdd944cac1b1"
+        },
+        {
+          "path": "ourd/egcf/catalog.py",
+          "sha256": "bc066ded9880925d6ff716a60278eb42cbc71ec7ff9245829bb2a9e71332190e"
+        }
+      ],
+      "related": [
+        "collect",
+        "classify",
+        "compare",
+        "graph",
+        "export"
+      ]
+    },
+    {
+      "slug": "namespace-experiment",
+      "title": "Experiment Command Namespace",
+      "category": "Semantic Command Namespaces",
+      "definition": "The experiment semantic command namespace groups the governed operations design, ofat, factorial, covering, benchmark, analyse, repeat, and compare.",
+      "thesis": "The Experiment namespace should preserve semantic intent, typed inputs, capability requirements, and evidence policy instead of becoming an alias for arbitrary shell execution.",
+      "html": "concepts/namespace-experiment.html",
+      "figure": "figures/concepts/namespace-experiment.svg",
+      "sources": [
+        {
+          "path": "commands/v1/catalog.json",
+          "sha256": "0dc8778495e2d95455397abf9db20fe59f8f327bf1f67960f37a8dc033d0df9d"
+        },
+        {
+          "path": "commands/v1/contracts.json",
+          "sha256": "44387cc737dc4917432111f679f3f0a50c01a28d9e2847dbb441fdd944cac1b1"
+        },
+        {
+          "path": "ourd/egcf/catalog.py",
+          "sha256": "bc066ded9880925d6ff716a60278eb42cbc71ec7ff9245829bb2a9e71332190e"
+        }
+      ],
+      "related": [
+        "design",
+        "ofat",
+        "factorial",
+        "covering",
+        "benchmark"
+      ]
+    },
+    {
+      "slug": "namespace-geometry",
+      "title": "Geometry Command Namespace",
+      "category": "Semantic Command Namespaces",
+      "definition": "The geometry semantic command namespace groups the governed operations analyse, fit, and optimise.",
+      "thesis": "The Geometry namespace should preserve semantic intent, typed inputs, capability requirements, and evidence policy instead of becoming an alias for arbitrary shell execution.",
+      "html": "concepts/namespace-geometry.html",
+      "figure": "figures/concepts/namespace-geometry.svg",
+      "sources": [
+        {
+          "path": "commands/v1/catalog.json",
+          "sha256": "0dc8778495e2d95455397abf9db20fe59f8f327bf1f67960f37a8dc033d0df9d"
+        },
+        {
+          "path": "commands/v1/contracts.json",
+          "sha256": "44387cc737dc4917432111f679f3f0a50c01a28d9e2847dbb441fdd944cac1b1"
+        },
+        {
+          "path": "ourd/egcf/catalog.py",
+          "sha256": "bc066ded9880925d6ff716a60278eb42cbc71ec7ff9245829bb2a9e71332190e"
+        }
+      ],
+      "related": [
+        "analyse",
+        "fit",
+        "optimise"
+      ]
+    },
+    {
+      "slug": "namespace-grammar",
+      "title": "Grammar Command Namespace",
+      "category": "Semantic Command Namespaces",
+      "definition": "The grammar semantic command namespace groups the governed operations parse, transform, compare, and verify.",
+      "thesis": "The Grammar namespace should preserve semantic intent, typed inputs, capability requirements, and evidence policy instead of becoming an alias for arbitrary shell execution.",
+      "html": "concepts/namespace-grammar.html",
+      "figure": "figures/concepts/namespace-grammar.svg",
+      "sources": [
+        {
+          "path": "commands/v1/catalog.json",
+          "sha256": "0dc8778495e2d95455397abf9db20fe59f8f327bf1f67960f37a8dc033d0df9d"
+        },
+        {
+          "path": "commands/v1/contracts.json",
+          "sha256": "44387cc737dc4917432111f679f3f0a50c01a28d9e2847dbb441fdd944cac1b1"
+        },
+        {
+          "path": "ourd/egcf/catalog.py",
+          "sha256": "bc066ded9880925d6ff716a60278eb42cbc71ec7ff9245829bb2a9e71332190e"
+        }
+      ],
+      "related": [
+        "parse",
+        "transform",
+        "compare",
+        "verify"
+      ]
+    },
+    {
+      "slug": "namespace-hrt",
+      "title": "HRT Command Namespace",
+      "category": "Semantic Command Namespaces",
+      "definition": "The hrt semantic command namespace groups the governed operations interpret, assumptions, ambiguity, clarify, claims, provenance, summary, and explain.",
+      "thesis": "The HRT namespace should preserve semantic intent, typed inputs, capability requirements, and evidence policy instead of becoming an alias for arbitrary shell execution.",
+      "html": "concepts/namespace-hrt.html",
+      "figure": "figures/concepts/namespace-hrt.svg",
+      "sources": [
+        {
+          "path": "commands/v1/catalog.json",
+          "sha256": "0dc8778495e2d95455397abf9db20fe59f8f327bf1f67960f37a8dc033d0df9d"
+        },
+        {
+          "path": "commands/v1/contracts.json",
+          "sha256": "44387cc737dc4917432111f679f3f0a50c01a28d9e2847dbb441fdd944cac1b1"
+        },
+        {
+          "path": "ourd/egcf/catalog.py",
+          "sha256": "bc066ded9880925d6ff716a60278eb42cbc71ec7ff9245829bb2a9e71332190e"
+        }
+      ],
+      "related": [
+        "interpret",
+        "assumptions",
+        "ambiguity",
+        "clarify",
+        "claims"
+      ]
+    },
+    {
+      "slug": "namespace-ieps",
+      "title": "IEPS Command Namespace",
+      "category": "Semantic Command Namespaces",
+      "definition": "The ieps semantic command namespace groups the governed operations generate, coverage, oracle, counterexamples, uniqueness, mutation, shrink, qualify, and gate.",
+      "thesis": "The IEPS namespace should preserve semantic intent, typed inputs, capability requirements, and evidence policy instead of becoming an alias for arbitrary shell execution.",
+      "html": "concepts/namespace-ieps.html",
+      "figure": "figures/concepts/namespace-ieps.svg",
+      "sources": [
+        {
+          "path": "commands/v1/catalog.json",
+          "sha256": "0dc8778495e2d95455397abf9db20fe59f8f327bf1f67960f37a8dc033d0df9d"
+        },
+        {
+          "path": "commands/v1/contracts.json",
+          "sha256": "44387cc737dc4917432111f679f3f0a50c01a28d9e2847dbb441fdd944cac1b1"
+        },
+        {
+          "path": "ourd/egcf/catalog.py",
+          "sha256": "bc066ded9880925d6ff716a60278eb42cbc71ec7ff9245829bb2a9e71332190e"
+        }
+      ],
+      "related": [
+        "generate",
+        "coverage",
+        "oracle",
+        "counterexamples",
+        "uniqueness"
+      ]
+    },
+    {
+      "slug": "namespace-iurm",
+      "title": "IURM Command Namespace",
+      "category": "Semantic Command Namespaces",
+      "definition": "The iurm semantic command namespace groups the governed operations dimensions, baseline, vary, screen, interactions, sensitivity, mvd, and optimise.",
+      "thesis": "The IURM namespace should preserve semantic intent, typed inputs, capability requirements, and evidence policy instead of becoming an alias for arbitrary shell execution.",
+      "html": "concepts/namespace-iurm.html",
+      "figure": "figures/concepts/namespace-iurm.svg",
+      "sources": [
+        {
+          "path": "commands/v1/catalog.json",
+          "sha256": "0dc8778495e2d95455397abf9db20fe59f8f327bf1f67960f37a8dc033d0df9d"
+        },
+        {
+          "path": "commands/v1/contracts.json",
+          "sha256": "44387cc737dc4917432111f679f3f0a50c01a28d9e2847dbb441fdd944cac1b1"
+        },
+        {
+          "path": "ourd/egcf/catalog.py",
+          "sha256": "bc066ded9880925d6ff716a60278eb42cbc71ec7ff9245829bb2a9e71332190e"
+        }
+      ],
+      "related": [
+        "dimensions",
+        "baseline",
+        "vary",
+        "screen",
+        "interactions"
+      ]
+    },
+    {
+      "slug": "namespace-invariant",
+      "title": "Invariant Command Namespace",
+      "category": "Semantic Command Namespaces",
+      "definition": "The invariant semantic command namespace groups the governed operations discover, register, validate, compare, conflicts, and supersede.",
+      "thesis": "The Invariant namespace should preserve semantic intent, typed inputs, capability requirements, and evidence policy instead of becoming an alias for arbitrary shell execution.",
+      "html": "concepts/namespace-invariant.html",
+      "figure": "figures/concepts/namespace-invariant.svg",
+      "sources": [
+        {
+          "path": "commands/v1/catalog.json",
+          "sha256": "0dc8778495e2d95455397abf9db20fe59f8f327bf1f67960f37a8dc033d0df9d"
+        },
+        {
+          "path": "commands/v1/contracts.json",
+          "sha256": "44387cc737dc4917432111f679f3f0a50c01a28d9e2847dbb441fdd944cac1b1"
+        },
+        {
+          "path": "ourd/egcf/catalog.py",
+          "sha256": "bc066ded9880925d6ff716a60278eb42cbc71ec7ff9245829bb2a9e71332190e"
+        }
+      ],
+      "related": [
+        "discover",
+        "register",
+        "validate",
+        "compare",
+        "conflicts"
+      ]
+    },
+    {
+      "slug": "namespace-ourd",
+      "title": "OURD Command Namespace",
+      "category": "Semantic Command Namespaces",
+      "definition": "The ourd semantic command namespace groups the governed operations model, objects, relations, boundaries, dependencies, impact, trace, scope, exclusions, and graph.",
+      "thesis": "The OURD namespace should preserve semantic intent, typed inputs, capability requirements, and evidence policy instead of becoming an alias for arbitrary shell execution.",
+      "html": "concepts/namespace-ourd.html",
+      "figure": "figures/concepts/namespace-ourd.svg",
+      "sources": [
+        {
+          "path": "commands/v1/catalog.json",
+          "sha256": "0dc8778495e2d95455397abf9db20fe59f8f327bf1f67960f37a8dc033d0df9d"
+        },
+        {
+          "path": "commands/v1/contracts.json",
+          "sha256": "44387cc737dc4917432111f679f3f0a50c01a28d9e2847dbb441fdd944cac1b1"
+        },
+        {
+          "path": "ourd/egcf/catalog.py",
+          "sha256": "bc066ded9880925d6ff716a60278eb42cbc71ec7ff9245829bb2a9e71332190e"
+        }
+      ],
+      "related": [
+        "model",
+        "objects",
+        "relations",
+        "boundaries",
+        "dependencies"
+      ]
+    },
+    {
+      "slug": "namespace-performance",
+      "title": "Performance Command Namespace",
+      "category": "Semantic Command Namespaces",
+      "definition": "The performance semantic command namespace groups the governed operations profile, benchmark, hotspots, regression, memory, gpu, and io.",
+      "thesis": "The Performance namespace should preserve semantic intent, typed inputs, capability requirements, and evidence policy instead of becoming an alias for arbitrary shell execution.",
+      "html": "concepts/namespace-performance.html",
+      "figure": "figures/concepts/namespace-performance.svg",
+      "sources": [
+        {
+          "path": "commands/v1/catalog.json",
+          "sha256": "0dc8778495e2d95455397abf9db20fe59f8f327bf1f67960f37a8dc033d0df9d"
+        },
+        {
+          "path": "commands/v1/contracts.json",
+          "sha256": "44387cc737dc4917432111f679f3f0a50c01a28d9e2847dbb441fdd944cac1b1"
+        },
+        {
+          "path": "ourd/egcf/catalog.py",
+          "sha256": "bc066ded9880925d6ff716a60278eb42cbc71ec7ff9245829bb2a9e71332190e"
+        }
+      ],
+      "related": [
+        "profile",
+        "benchmark",
+        "hotspots",
+        "regression",
+        "memory"
+      ]
+    },
+    {
+      "slug": "namespace-physics",
+      "title": "Physics Command Namespace",
+      "category": "Semantic Command Namespaces",
+      "definition": "The physics semantic command namespace groups the governed operations simulate.",
+      "thesis": "The Physics namespace should preserve semantic intent, typed inputs, capability requirements, and evidence policy instead of becoming an alias for arbitrary shell execution.",
+      "html": "concepts/namespace-physics.html",
+      "figure": "figures/concepts/namespace-physics.svg",
+      "sources": [
+        {
+          "path": "commands/v1/catalog.json",
+          "sha256": "0dc8778495e2d95455397abf9db20fe59f8f327bf1f67960f37a8dc033d0df9d"
+        },
+        {
+          "path": "commands/v1/contracts.json",
+          "sha256": "44387cc737dc4917432111f679f3f0a50c01a28d9e2847dbb441fdd944cac1b1"
+        },
+        {
+          "path": "ourd/egcf/catalog.py",
+          "sha256": "bc066ded9880925d6ff716a60278eb42cbc71ec7ff9245829bb2a9e71332190e"
+        }
+      ],
+      "related": [
+        "simulate"
+      ]
+    },
+    {
+      "slug": "namespace-repo",
+      "title": "Repo Command Namespace",
+      "category": "Semantic Command Namespaces",
+      "definition": "The repo semantic command namespace groups the governed operations graph, symbols, ownership, history, evolution, metrics, hotspots, and timeline.",
+      "thesis": "The Repo namespace should preserve semantic intent, typed inputs, capability requirements, and evidence policy instead of becoming an alias for arbitrary shell execution.",
+      "html": "concepts/namespace-repo.html",
+      "figure": "figures/concepts/namespace-repo.svg",
+      "sources": [
+        {
+          "path": "commands/v1/catalog.json",
+          "sha256": "0dc8778495e2d95455397abf9db20fe59f8f327bf1f67960f37a8dc033d0df9d"
+        },
+        {
+          "path": "commands/v1/contracts.json",
+          "sha256": "44387cc737dc4917432111f679f3f0a50c01a28d9e2847dbb441fdd944cac1b1"
+        },
+        {
+          "path": "ourd/egcf/catalog.py",
+          "sha256": "bc066ded9880925d6ff716a60278eb42cbc71ec7ff9245829bb2a9e71332190e"
+        }
+      ],
+      "related": [
+        "graph",
+        "symbols",
+        "ownership",
+        "history",
+        "evolution"
+      ]
+    },
+    {
+      "slug": "namespace-robotics",
+      "title": "Robotics Command Namespace",
+      "category": "Semantic Command Namespaces",
+      "definition": "The robotics semantic command namespace groups the governed operations plan, and verify.",
+      "thesis": "The Robotics namespace should preserve semantic intent, typed inputs, capability requirements, and evidence policy instead of becoming an alias for arbitrary shell execution.",
+      "html": "concepts/namespace-robotics.html",
+      "figure": "figures/concepts/namespace-robotics.svg",
+      "sources": [
+        {
+          "path": "commands/v1/catalog.json",
+          "sha256": "0dc8778495e2d95455397abf9db20fe59f8f327bf1f67960f37a8dc033d0df9d"
+        },
+        {
+          "path": "commands/v1/contracts.json",
+          "sha256": "44387cc737dc4917432111f679f3f0a50c01a28d9e2847dbb441fdd944cac1b1"
+        },
+        {
+          "path": "ourd/egcf/catalog.py",
+          "sha256": "bc066ded9880925d6ff716a60278eb42cbc71ec7ff9245829bb2a9e71332190e"
+        }
+      ],
+      "related": [
+        "plan",
+        "verify"
+      ]
+    },
+    {
+      "slug": "namespace-security",
+      "title": "Security Command Namespace",
+      "category": "Semantic Command Namespaces",
+      "definition": "The security semantic command namespace groups the governed operations threat-model, taint, sast, secrets, permissions, provenance, sbom, and audit.",
+      "thesis": "The Security namespace should preserve semantic intent, typed inputs, capability requirements, and evidence policy instead of becoming an alias for arbitrary shell execution.",
+      "html": "concepts/namespace-security.html",
+      "figure": "figures/concepts/namespace-security.svg",
+      "sources": [
+        {
+          "path": "commands/v1/catalog.json",
+          "sha256": "0dc8778495e2d95455397abf9db20fe59f8f327bf1f67960f37a8dc033d0df9d"
+        },
+        {
+          "path": "commands/v1/contracts.json",
+          "sha256": "44387cc737dc4917432111f679f3f0a50c01a28d9e2847dbb441fdd944cac1b1"
+        },
+        {
+          "path": "ourd/egcf/catalog.py",
+          "sha256": "bc066ded9880925d6ff716a60278eb42cbc71ec7ff9245829bb2a9e71332190e"
+        }
+      ],
+      "related": [
+        "threat-model",
+        "taint",
+        "sast",
+        "secrets",
+        "permissions"
+      ]
+    },
+    {
+      "slug": "namespace-simulate",
+      "title": "Simulate Command Namespace",
+      "category": "Semantic Command Namespaces",
+      "definition": "The simulate semantic command namespace groups the governed operations worktree, migration, dependency, api, hardware, filesystem, network, chaos, and rollback.",
+      "thesis": "The Simulate namespace should preserve semantic intent, typed inputs, capability requirements, and evidence policy instead of becoming an alias for arbitrary shell execution.",
+      "html": "concepts/namespace-simulate.html",
+      "figure": "figures/concepts/namespace-simulate.svg",
+      "sources": [
+        {
+          "path": "commands/v1/catalog.json",
+          "sha256": "0dc8778495e2d95455397abf9db20fe59f8f327bf1f67960f37a8dc033d0df9d"
+        },
+        {
+          "path": "commands/v1/contracts.json",
+          "sha256": "44387cc737dc4917432111f679f3f0a50c01a28d9e2847dbb441fdd944cac1b1"
+        },
+        {
+          "path": "ourd/egcf/catalog.py",
+          "sha256": "bc066ded9880925d6ff716a60278eb42cbc71ec7ff9245829bb2a9e71332190e"
+        }
+      ],
+      "related": [
+        "worktree",
+        "migration",
+        "dependency",
+        "api",
+        "hardware"
+      ]
+    },
+    {
+      "slug": "namespace-verify",
+      "title": "Verify Command Namespace",
+      "category": "Semantic Command Namespaces",
+      "definition": "The verify semantic command namespace groups the governed operations unit, integration, property, fuzz, mutation, differential, metamorphic, regression, performance, and security.",
+      "thesis": "The Verify namespace should preserve semantic intent, typed inputs, capability requirements, and evidence policy instead of becoming an alias for arbitrary shell execution.",
+      "html": "concepts/namespace-verify.html",
+      "figure": "figures/concepts/namespace-verify.svg",
+      "sources": [
+        {
+          "path": "commands/v1/catalog.json",
+          "sha256": "0dc8778495e2d95455397abf9db20fe59f8f327bf1f67960f37a8dc033d0df9d"
+        },
+        {
+          "path": "commands/v1/contracts.json",
+          "sha256": "44387cc737dc4917432111f679f3f0a50c01a28d9e2847dbb441fdd944cac1b1"
+        },
+        {
+          "path": "ourd/egcf/catalog.py",
+          "sha256": "bc066ded9880925d6ff716a60278eb42cbc71ec7ff9245829bb2a9e71332190e"
+        }
+      ],
+      "related": [
+        "unit",
+        "integration",
+        "property",
+        "fuzz",
+        "mutation"
+      ]
+    },
+    {
+      "slug": "namespace-vision",
+      "title": "Vision Command Namespace",
+      "category": "Semantic Command Namespaces",
+      "definition": "The vision semantic command namespace groups the governed operations detect, segment, and track.",
+      "thesis": "The Vision namespace should preserve semantic intent, typed inputs, capability requirements, and evidence policy instead of becoming an alias for arbitrary shell execution.",
+      "html": "concepts/namespace-vision.html",
+      "figure": "figures/concepts/namespace-vision.svg",
+      "sources": [
+        {
+          "path": "commands/v1/catalog.json",
+          "sha256": "0dc8778495e2d95455397abf9db20fe59f8f327bf1f67960f37a8dc033d0df9d"
+        },
+        {
+          "path": "commands/v1/contracts.json",
+          "sha256": "44387cc737dc4917432111f679f3f0a50c01a28d9e2847dbb441fdd944cac1b1"
+        },
+        {
+          "path": "ourd/egcf/catalog.py",
+          "sha256": "bc066ded9880925d6ff716a60278eb42cbc71ec7ff9245829bb2a9e71332190e"
+        }
+      ],
+      "related": [
+        "detect",
+        "segment",
+        "track"
+      ]
+    },
+    {
+      "slug": "namespace-workflow",
+      "title": "Workflow Command Namespace",
+      "category": "Semantic Command Namespaces",
+      "definition": "The workflow semantic command namespace groups the governed operations create, compile, execute, pause, resume, replay, branch, merge, and monitor.",
+      "thesis": "The Workflow namespace should preserve semantic intent, typed inputs, capability requirements, and evidence policy instead of becoming an alias for arbitrary shell execution.",
+      "html": "concepts/namespace-workflow.html",
+      "figure": "figures/concepts/namespace-workflow.svg",
+      "sources": [
+        {
+          "path": "commands/v1/catalog.json",
+          "sha256": "0dc8778495e2d95455397abf9db20fe59f8f327bf1f67960f37a8dc033d0df9d"
+        },
+        {
+          "path": "commands/v1/contracts.json",
+          "sha256": "44387cc737dc4917432111f679f3f0a50c01a28d9e2847dbb441fdd944cac1b1"
+        },
+        {
+          "path": "ourd/egcf/catalog.py",
+          "sha256": "bc066ded9880925d6ff716a60278eb42cbc71ec7ff9245829bb2a9e71332190e"
+        }
+      ],
+      "related": [
+        "create",
+        "compile",
+        "execute",
+        "pause",
+        "resume"
+      ]
+    }
+  ],
+  "governed_loop": {
+    "pipeline": [
+      "HRTv1",
+      "OURD",
+      "IURMv1.1.1",
+      "EONv1",
+      "Evidence Gate",
+      "Action",
+      "CFEL"
+    ],
+    "figure": "figures/governed-loop.svg",
+    "thesis": "The agent is an uncertainty-reduction machine whose reasoning remains separate from mutation authority."
+  },
+  "references": [
+    {
+      "id": "R1",
+      "title": "Software Architecture in Practice, 4th Edition",
+      "authors": "Len Bass, Paul Clements, and Rick Kazman",
+      "url": "https://www.sei.cmu.edu/library/software-architecture-in-practice-fourth-edition/",
+      "summary": "The textbook treats architecture as the disciplined management of quality attributes, trade-offs, lifecycle change, and organizational value."
+    },
+    {
+      "id": "R2",
+      "title": "NIST SP 800-160 Vol. 1 Rev. 1: Engineering Trustworthy Secure Systems",
+      "authors": "Ron Ross, Mark Winstead, and Michael McEvilley",
+      "url": "https://csrc.nist.gov/pubs/sp/800/160/v1/r1/final",
+      "summary": "NIST frames trustworthiness as a whole-system engineering concern that must be addressed through requirements, architecture, implementation, verification, validation, and lifecycle evidence."
+    },
+    {
+      "id": "R3",
+      "title": "NIST SP 800-218: Secure Software Development Framework 1.1",
+      "authors": "Murugiah Souppaya, Karen Scarfone, and Donna Dodson",
+      "url": "https://csrc.nist.gov/pubs/sp/800/218/final",
+      "summary": "The Secure Software Development Framework recommends integrating secure practices into the development lifecycle and using a shared vocabulary for producers, acquirers, and reviewers."
+    },
+    {
+      "id": "R4",
+      "title": "RFC 2119 and BCP 14 requirement language",
+      "authors": "Scott Bradner and the IETF",
+      "url": "https://www.rfc-editor.org/info/rfc2119/",
+      "summary": "The RFC distinguishes absolute requirements, recommendations, and optional behaviour so readers can tell policy force from ordinary emphasis."
+    },
+    {
+      "id": "R5",
+      "title": "Engineering a Safer World: Systems Thinking Applied to Safety",
+      "authors": "Nancy G. Leveson",
+      "url": "https://mitpress.mit.edu/9780262016629/engineering-a-safer-world/",
+      "summary": "Leveson argues that complex software-intensive systems should be understood through interacting controls, constraints, feedback, and sociotechnical context rather than through isolated component failure alone."
+    },
+    {
+      "id": "R6",
+      "title": "Design and Analysis of Experiments, 10th Edition",
+      "authors": "Douglas C. Montgomery",
+      "url": "https://uat.store.wiley.com/en-us/design-and-analysis-of-experiments-10th-edition-p-9781119492443R150",
+      "summary": "Montgomery presents experimental design as a disciplined way to vary factors, measure responses, discover interactions, and draw objective engineering conclusions."
+    },
+    {
+      "id": "R7",
+      "title": "The Protection of Information in Computer Systems",
+      "authors": "Jerome H. Saltzer and Michael D. Schroeder",
+      "url": "https://ieeexplore.ieee.org/document/1451869",
+      "summary": "The classic protection principles include least privilege, fail-safe defaults, complete mediation, economy of mechanism, and explicit design rather than secrecy."
+    }
+  ],
+  "glossary": {
+    "ADR": "Architecture Decision Record: a short document that records a significant design choice, its context, and its consequences.",
+    "API": "Application Programming Interface: a defined way for software components to request services from one another.",
+    "C0": "Capability class 0: observation only; it may inspect information but cannot create proposals or change the workspace.",
+    "C1": "Capability class 1: analysis and internal proposal creation without ordinary workspace mutation.",
+    "C2": "Capability class 2: simulation in a disposable, synthetic, or otherwise isolated environment.",
+    "C3": "Capability class 3: local workspace mutation through the governed EON execution boundary with exact authority and approval.",
+    "C4": "Capability class 4: mutation of an external system; EGCFv1 currently fails closed for this class.",
+    "C5": "Capability class 5: critical or destructive mutation; EGCFv1 currently fails closed for this class.",
+    "C0-C5": "The full capability-class ladder, from observation-only C0 through critical or destructive C5 operations.",
+    "C2-C5": "Capability classes 2 through 5: simulation, local mutation, external mutation, and critical or destructive mutation.",
+    "C3-C5": "The mutation-capable classes: governed local mutation, external mutation, and critical or destructive mutation.",
+    "CAD": "Computer-Aided Design: software and data used to create or analyse engineered geometry.",
+    "CFEL": "Collision, Failure, Evidence, and Learning feedback: the project loop that records meaningful failures and prevents unchanged blind retries.",
+    "CLI": "Command-Line Interface: a text-based way to operate software by entering commands.",
+    "DAG": "Directed Acyclic Graph: a one-way network with no cycles, often used to represent workflows and dependencies.",
+    "EGCF": "Evidence-Governed Command Fabric: the semantic command layer that compiles intent into typed, content-addressed, policy-checked workflow plans.",
+    "EON": "Execution and Operational Nexus: the governed boundary that binds authority, evidence, approval, exact targets, commands, and rollback before execution.",
+    "GIF": "Graphics Interchange Format: a bitmap image format that can contain simple animation.",
+    "GLB": "The binary container form of glTF, used to package 3D scenes and assets into one file.",
+    "GLTF": "GL Transmission Format: a standard format for transmitting 3D scenes and models.",
+    "GPU": "Graphics Processing Unit: a processor designed for highly parallel work such as graphics and machine-learning calculations.",
+    "GUI": "Graphical User Interface: windows, controls, and visual feedback through which a person operates the system.",
+    "HRT": "Human-Readable Task interpretation: the project layer that turns a request into explicit claims, assumptions, ambiguities, scope, and provenance.",
+    "HTML": "HyperText Markup Language: the structural language used to describe web pages.",
+    "HTTP": "Hypertext Transfer Protocol: the request-and-response protocol commonly used by web clients and servers.",
+    "ID": "Identifier: a value used to name and distinguish one object from another.",
+    "IEPS": "Invariant and Evidence Production System: the project namespace for generating coverage, oracles, counterexamples, mutations, and qualification evidence.",
+    "IURM": "Invariant-Uncertainty-Response Modeling: the project method for defining dimensions, baselines, controlled variations, interactions, sensitivity, and minimum viable designs.",
+    "JPEG": "Joint Photographic Experts Group image: a compressed bitmap format commonly used for photographs.",
+    "JSON": "JavaScript Object Notation: a text format for structured data made from objects, arrays, strings, numbers, booleans, and null values.",
+    "JSONL": "JSON Lines: a log-friendly format with one complete JSON value on each line.",
+    "L0": "Evidence or risk level 0: the lowest project level, normally suitable for observation or automatic handling.",
+    "L1": "Evidence or risk level 1: a bounded level that requires stronger policy and evidence than simple observation.",
+    "L2": "Evidence or risk level 2: a higher-impact level requiring grounded evidence, counterexamples, and explicit human review unless exact authority says otherwise.",
+    "L0-L2": "The project evidence or risk ladder from low-impact observation through higher-impact work requiring stronger evidence and review.",
+    "LRU": "Least Recently Used: a cache policy that removes the items that have gone unused for the longest time.",
+    "MCP": "Model Context Protocol: a protocol for connecting AI applications to tools and structured external context.",
+    "MVD": "Minimum Viable Design: the smallest design that still satisfies the declared constraints and learning objective.",
+    "OBJ": "Wavefront OBJ: a text-based file format for polygonal 3D geometry.",
+    "OFAT": "One Factor At a Time: an experiment strategy that varies one input while holding the others steady.",
+    "OURD": "Object-Universe-Relation-Dependency modeling: the project layer that identifies system objects, their boundaries, relations, dependencies, impacts, exclusions, and scope.",
+    "PEP": "Python Enhancement Proposal: a design document used to propose and explain changes to Python.",
+    "PLY": "Polygon File Format: a format for storing 3D meshes and point-cloud attributes.",
+    "PNG": "Portable Network Graphics: a lossless bitmap image format with transparency support.",
+    "PTY": "Pseudo-terminal: a software endpoint that behaves like a terminal so another program can control interactive command-line processes.",
+    "RFC": "Request for Comments: a published technical specification or best-current-practice document in the Internet standards process.",
+    "SDK": "Software Development Kit: libraries, tools, examples, and documentation used to build software against a platform.",
+    "SHA-256": "Secure Hash Algorithm 256-bit: a function that produces a fixed-size digest used here to identify and verify exact content.",
+    "SQL": "Structured Query Language: a language for storing, querying, and updating relational data.",
+    "SQLite": "A compact relational database engine stored in a local file rather than a separate database server.",
+    "SSDF": "Secure Software Development Framework: NIST guidance for integrating secure practices into the software lifecycle.",
+    "STL": "Stereolithography file format: a widely used representation of triangulated 3D surfaces.",
+    "SVG": "Scalable Vector Graphics: XML-based vector artwork that can remain sharp at any size and can be manipulated with JavaScript.",
+    "TCP": "Transmission Control Protocol: a reliable ordered transport protocol used by many network applications.",
+    "UI": "User Interface: the controls and information through which a person interacts with a system.",
+    "URL": "Uniform Resource Locator: the address used to locate a resource such as a web page or file.",
+    "X11": "The X Window System protocol commonly used to display graphical Linux applications.",
+    "COUNT": "A configuration field that limits or reports how many items are involved.",
+    "KEY": "A configuration field or lookup name used to select a value.",
+    "MODEL": "A configuration field that names the language or reasoning model to use.",
+    "SECONDS": "A duration field measured in seconds.",
+    "TOKENS": "A limit expressed in model tokens, which are small units of text processed by a language model."
+  }
+}

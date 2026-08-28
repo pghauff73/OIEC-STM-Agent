@@ -1,0 +1,352 @@
+{
+  "algorithm_definition_id": "algorithm-definition:sha256:a601e0df9528a44cb205ff9cae3025ea6a316a03afe58ac5c9bd0506d2ff3cf7",
+  "algorithm_id": "reference.babcs.bounded-integrator@1",
+  "analysis": {
+    "candidate_methods": [
+      "ab2",
+      "backward_euler",
+      "bdf2",
+      "explicit_euler",
+      "heun",
+      "rk23",
+      "trapezoidal"
+    ],
+    "configuration_controls": [
+      "rollout_mode",
+      "candidate_method",
+      "absolute_tolerance",
+      "relative_tolerance",
+      "algebraic_residual_cap",
+      "full_residual_cap",
+      "predictor_reference_cap",
+      "embedded_error_cap",
+      "deferred_reference_bound_cap",
+      "anchor_reference_cap",
+      "anchor_embedded_error_cap",
+      "energy_absolute_tolerance",
+      "energy_relative_tolerance",
+      "energy_injection_cap",
+      "target_contraction",
+      "contraction_rate",
+      "minimum_correction_gain",
+      "maximum_correction_gain",
+      "stiffness_limit",
+      "jacobian_safety_factor",
+      "maximum_step_ratio",
+      "reference_interval_steps",
+      "anchor_interval_steps",
+      "anchor_substeps",
+      "minimum_anchor_substeps",
+      "adaptive_anchor_refinement",
+      "minimum_step",
+      "maximum_rejections",
+      "reference_method",
+      "startup_method",
+      "reference_uncertainty_mode",
+      "implicit_settings"
+    ],
+    "control_layers": [
+      "candidate integrator prediction",
+      "algebraic projection",
+      "implicit reference authority",
+      "contractive correction",
+      "residual, error, energy, and amplification gates",
+      "periodic independent replay anchor",
+      "event-safe history reset",
+      "stiffness and failure fallback to implicit authority"
+    ],
+    "focused_validation": {
+      "command": "PYTHONPATH=src /usr/bin/python3 -m unittest tests.test_babcs tests.test_bound_model tests.test_integrator_boundaries",
+      "duration_seconds": 0.492653,
+      "output_tail": "....................................\n----------------------------------------------------------------------\nRan 36 tests in 0.427s\n\nOK",
+      "returncode": 0,
+      "success": true,
+      "test_count": 36
+    },
+    "limitations": [
+      "the repository states that BAB-CS is not a production sparse SPICE replacement",
+      "trajectory accuracy is not claimed indefinitely for unstable, chaotic, discontinuous, or neutrally oscillating circuits",
+      "the captured worktree is dirty, so the content bundle rather than Git HEAD is the authoritative implementation snapshot",
+      "focused unit tests do not establish complete release qualification, external equivalence, or certification"
+    ],
+    "oiec_mapping": {
+      "boundary_determination": "Circuit topology, rollout mode, event boundaries, source snapshot, and configured safety caps define where a step is admissible.",
+      "cfel": "Step rejection, residual failures, anchor discrepancy, stiffness, and uncertainty metrics revise the next step or transfer authority.",
+      "dimension_limiting": "Candidate method, step size, reference interval, anchor refinement, linear backend, and bounded retry count constrain active numerical complexity.",
+      "eon": "A simulation configuration and exact circuit case determine one reproducible integration action.",
+      "iurm": "Candidate/reference and dual-resolution comparisons isolate controlled numerical variations."
+    },
+    "public_api": [
+      "BABCSConfig",
+      "BoundedAdamsBashforthIntegrator",
+      "BoundedIntegrator",
+      "CANDIDATE_METHODS",
+      "Capacitor",
+      "Circuit",
+      "Constant",
+      "CurrentSource",
+      "DerivativeIntervalFunction",
+      "Diode",
+      "Inductor",
+      "PiecewiseLinear",
+      "Pulse",
+      "Resistor",
+      "RootFindingError",
+      "RootIteration",
+      "RootResult",
+      "RootSettings",
+      "SimulationResult",
+      "Simulator",
+      "Sine",
+      "Switch",
+      "VoltageSource",
+      "__version__",
+      "bisection",
+      "bounded_newton_raphson",
+      "interval_newton",
+      "newton_raphson",
+      "ridders",
+      "secant"
+    ],
+    "snapshot": {
+      "bundle_digest": "b85f1faa728fc39292f45dacabeb0a86d23e644f70004df362acad0400748e8a",
+      "bundle_size": 409600,
+      "captured_at": "2026-08-28T04:15:02.514235Z",
+      "dirty": true,
+      "dirty_path_count": 374,
+      "dirty_paths": [
+        "README.md",
+        "src/babcs/bounded.py",
+        "src/babcs/io.py"
+      ],
+      "files": [
+        [
+          "IMPLEMENTATION_PLAN.md",
+          "b37e303622693e2233f5419d39d796cff4745cd8c055aa3b4adcc5f50c6ace12",
+          2423
+        ],
+        [
+          "LICENSE",
+          "3f3d9e0024b1921b067d6f7f88deb4a60cbe7a78e76c64e3f1d7fc3b779b9d04",
+          16726
+        ],
+        [
+          "README.md",
+          "7248ac017f214452109f7f20fd29aca915c294b079f2a386a607e5fcd97dd4d5",
+          20946
+        ],
+        [
+          "pyproject.toml",
+          "2dea92d424c04faa881046cba03a3f7ed7006019eaca44bdea67371d1dbacc31",
+          455
+        ],
+        [
+          "src/babcs/__init__.py",
+          "864b3561480f3e50269fb35ffafe7411b042863afced1677a340cc081bd590f2",
+          1349
+        ],
+        [
+          "src/babcs/__main__.py",
+          "0f7d54f3fbb1f79a85eb8110f11793db99da6f3c61ee979de5abe9a1b5f3fdb3",
+          49
+        ],
+        [
+          "src/babcs/_klu.py",
+          "175b8f012987b119716fe34605b5b42df5cb6c0b61a69539a1eee4822df72a78",
+          17498
+        ],
+        [
+          "src/babcs/_project.py",
+          "eeb09af8fa06c40d32b1f236c9b6d0ab40ae8991804c3c5e1ead7b867bfc29ec",
+          699
+        ],
+        [
+          "src/babcs/bounded.py",
+          "634c693d40210f2bb8f10309d9b3e7ce565519efb8ca51712e9a959229a702d3",
+          56882
+        ],
+        [
+          "src/babcs/candidates.py",
+          "2d048d78da7ae1ee15104582638c2a92f46a9e419923428b479181794c3f1409",
+          13317
+        ],
+        [
+          "src/babcs/cli.py",
+          "6ea0d6bc31a233239f53a71bf3650424a58c45400d01e78847efb6e58ab30b1f",
+          3418
+        ],
+        [
+          "src/babcs/integrators.py",
+          "b623e4b5901c898abdc2838ebb022fb500ce18b74376b204284e37a525392e83",
+          30637
+        ],
+        [
+          "src/babcs/io.py",
+          "6753483ed83bd91fb6a87e176b40f6450b766f8684de11554ed6168d9d9139e6",
+          14279
+        ],
+        [
+          "src/babcs/linalg.py",
+          "9014775ebe76090c2611f8ae59a9093b9343c8026d9f62209d45cbbaaa9772c6",
+          31293
+        ],
+        [
+          "src/babcs/model.py",
+          "4e6aaa0a1ef3137550feb371d47dac3e5904ba29a1507cc51781668baf9e8016",
+          125502
+        ],
+        [
+          "src/babcs/rootfinding.py",
+          "d1bf32d198e8585911c0acc2f204272f4d3988b68a11990a73c964e8ea07ecc4",
+          34966
+        ],
+        [
+          "src/babcs/simulator.py",
+          "6d7799f5b715dba83eba59c14aa0fdd9969d82b7042afb993ecc179ec8a4707d",
+          8705
+        ],
+        [
+          "src/babcs/waveforms.py",
+          "de20d553df17af5a16dfb18156e8ba03ff22d5973ceea1a6150896623e4aa2a9",
+          8003
+        ]
+      ],
+      "git_head": "0b8ef0b4e9caaea46859dd01c1f2f5e599db2ee2",
+      "manifest_digest": "38917e71db6b3944e0994d8fcf51f25c298c4e0fc8588441f5eb4298d41ab936",
+      "repository": "Bounded-Authority-Based-Circuit-Simulation",
+      "unrelated_dirty_path_count": 371,
+      "version": "1.1.0"
+    },
+    "source_metrics": {
+      "classes": 62,
+      "dataclasses": 8,
+      "functions": 219,
+      "python_modules": 14,
+      "source_bytes": 387147
+    },
+    "store": {
+      "algorithm_definition_id": "algorithm-definition:sha256:a601e0df9528a44cb205ff9cae3025ea6a316a03afe58ac5c9bd0506d2ff3cf7",
+      "algorithm_id": "reference.babcs.bounded-integrator@1",
+      "source_bundle_artifact_id": "artifact:sha256:d2b5e6be142370f20c0dd350ea24a5c2698cde6819e662ae81935d9a741be440",
+      "source_bundle_path": "artifacts/sha256/b8/b85f1faa728fc39292f45dacabeb0a86d23e644f70004df362acad0400748e8a",
+      "source_bundle_sha256": "b85f1faa728fc39292f45dacabeb0a86d23e644f70004df362acad0400748e8a"
+    },
+    "strengths": [
+      "separates provisional candidate state from independently refreshed implicit authority",
+      "uses categorical fail-closed gates for residual, contraction, stiffness, event, and minimum-step failures",
+      "records per-step evidence and supports deterministic dense execution by default",
+      "keeps rollout modes explicit and provides no unanchored candidate-only production mode"
+    ]
+  },
+  "analysis_evidence_id": "egcf-evidence:sha256:e0ba3bf9c25e4e5653058e56c057593d45de5431ed29552b649bcc7f456a480d",
+  "snapshot": {
+    "bundle_digest": "b85f1faa728fc39292f45dacabeb0a86d23e644f70004df362acad0400748e8a",
+    "bundle_size": 409600,
+    "captured_at": "2026-08-28T04:15:02.514235Z",
+    "dirty": true,
+    "dirty_path_count": 374,
+    "dirty_paths": [
+      "README.md",
+      "src/babcs/bounded.py",
+      "src/babcs/io.py"
+    ],
+    "files": [
+      [
+        "IMPLEMENTATION_PLAN.md",
+        "b37e303622693e2233f5419d39d796cff4745cd8c055aa3b4adcc5f50c6ace12",
+        2423
+      ],
+      [
+        "LICENSE",
+        "3f3d9e0024b1921b067d6f7f88deb4a60cbe7a78e76c64e3f1d7fc3b779b9d04",
+        16726
+      ],
+      [
+        "README.md",
+        "7248ac017f214452109f7f20fd29aca915c294b079f2a386a607e5fcd97dd4d5",
+        20946
+      ],
+      [
+        "pyproject.toml",
+        "2dea92d424c04faa881046cba03a3f7ed7006019eaca44bdea67371d1dbacc31",
+        455
+      ],
+      [
+        "src/babcs/__init__.py",
+        "864b3561480f3e50269fb35ffafe7411b042863afced1677a340cc081bd590f2",
+        1349
+      ],
+      [
+        "src/babcs/__main__.py",
+        "0f7d54f3fbb1f79a85eb8110f11793db99da6f3c61ee979de5abe9a1b5f3fdb3",
+        49
+      ],
+      [
+        "src/babcs/_klu.py",
+        "175b8f012987b119716fe34605b5b42df5cb6c0b61a69539a1eee4822df72a78",
+        17498
+      ],
+      [
+        "src/babcs/_project.py",
+        "eeb09af8fa06c40d32b1f236c9b6d0ab40ae8991804c3c5e1ead7b867bfc29ec",
+        699
+      ],
+      [
+        "src/babcs/bounded.py",
+        "634c693d40210f2bb8f10309d9b3e7ce565519efb8ca51712e9a959229a702d3",
+        56882
+      ],
+      [
+        "src/babcs/candidates.py",
+        "2d048d78da7ae1ee15104582638c2a92f46a9e419923428b479181794c3f1409",
+        13317
+      ],
+      [
+        "src/babcs/cli.py",
+        "6ea0d6bc31a233239f53a71bf3650424a58c45400d01e78847efb6e58ab30b1f",
+        3418
+      ],
+      [
+        "src/babcs/integrators.py",
+        "b623e4b5901c898abdc2838ebb022fb500ce18b74376b204284e37a525392e83",
+        30637
+      ],
+      [
+        "src/babcs/io.py",
+        "6753483ed83bd91fb6a87e176b40f6450b766f8684de11554ed6168d9d9139e6",
+        14279
+      ],
+      [
+        "src/babcs/linalg.py",
+        "9014775ebe76090c2611f8ae59a9093b9343c8026d9f62209d45cbbaaa9772c6",
+        31293
+      ],
+      [
+        "src/babcs/model.py",
+        "4e6aaa0a1ef3137550feb371d47dac3e5904ba29a1507cc51781668baf9e8016",
+        125502
+      ],
+      [
+        "src/babcs/rootfinding.py",
+        "d1bf32d198e8585911c0acc2f204272f4d3988b68a11990a73c964e8ea07ecc4",
+        34966
+      ],
+      [
+        "src/babcs/simulator.py",
+        "6d7799f5b715dba83eba59c14aa0fdd9969d82b7042afb993ecc179ec8a4707d",
+        8705
+      ],
+      [
+        "src/babcs/waveforms.py",
+        "de20d553df17af5a16dfb18156e8ba03ff22d5973ceea1a6150896623e4aa2a9",
+        8003
+      ]
+    ],
+    "git_head": "0b8ef0b4e9caaea46859dd01c1f2f5e599db2ee2",
+    "manifest_digest": "38917e71db6b3944e0994d8fcf51f25c298c4e0fc8588441f5eb4298d41ab936",
+    "repository": "Bounded-Authority-Based-Circuit-Simulation",
+    "unrelated_dirty_path_count": 371,
+    "version": "1.1.0"
+  },
+  "source_bundle_artifact_id": "artifact:sha256:d2b5e6be142370f20c0dd350ea24a5c2698cde6819e662ae81935d9a741be440"
+}

@@ -7,10 +7,12 @@ from tests.helpers import RepoFixture
 
 class CliAndToolSchemaTests(unittest.TestCase):
     def test_cli_preserves_repo_contract_and_bounded_provider_defaults(self) -> None:
-        args = build_parser().parse_args(["workspace"])
+        parser = build_parser()
+        args = parser.parse_args(["workspace"])
         self.assertEqual("workspace", args.repo)
         self.assertEqual(0, args.transport_retries)
         self.assertGreaterEqual(args.context_budget, 256)
+        self.assertEqual("oiec-stm-agent", parser.prog)
 
     def test_tool_schemas_are_strict_and_expose_only_staged_writes(self) -> None:
         fixture = RepoFixture()
