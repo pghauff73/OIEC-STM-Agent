@@ -72,10 +72,7 @@ def _set_signature(max_hypotheses: int, hypotheses: Sequence[Hypothesis]) -> str
         {
             "max_hypotheses": int(max_hypotheses),
             "hypotheses": [
-                {
-                    "hypothesis_id": item.hypothesis_id,
-                    "signature": item.signature,
-                }
+                {"hypothesis_id": item.hypothesis_id, "signature": item.signature}
                 for item in sorted(hypotheses, key=lambda value: value.hypothesis_id)
             ],
         }
@@ -122,6 +119,10 @@ def bounded_hypothesis_set(
         item.hypothesis_id: item
         for item in (current.hypotheses if current is not None else ())
     }
+    if len(existing) > bound:
+        raise PolicyError(
+            f"existing hypothesis state ({len(existing)}) exceeds current active bound ({bound})"
+        )
     added: list[str] = []
     for proposal in proposals:
         hypothesis = make_hypothesis(
@@ -184,12 +185,19 @@ def link_hypothesis_evidence(
     artifact = evidence_registry.get(evidence_id)
     if artifact is None:
         raise PolicyError("hypothesis evidence link references unknown grounded evidence")
+    if int(artifact.quality_bp) <= 0:
+        raise PolicyError("zero-quality evidence cannot create hypothesis-resolution progress")
     hypotheses = {item.hypothesis_id: item for item in current.hypotheses}
     hypothesis = hypotheses.get(hypothesis_id)
     if hypothesis is None:
         raise PolicyError("unknown hypothesis_id")
 
     fingerprint = evidence_fingerprint(artifact)
+    if any(item.evidence_fingerprint == fingerprint for item in hypothesis.evidence_links):
+        return current, False
+    if len(hypothesis.evidence_links) >= MAX_EVIDENCE_LINKS_PER_HYPOTHESIS:
+        raise PolicyError("hypothesis evidence-link bound exceeded")
+
     link_material = {
         "hypothesis_id": hypothesis_id,
         "evidence_fingerprint": fingerprint,
@@ -206,14 +214,6 @@ def link_hypothesis_evidence(
         source_snapshot_hash=artifact.source_snapshot_hash,
         signature=stable_hash(link_material),
     )
-    if any(
-        item.evidence_fingerprint == fingerprint and item.relation == relation
-        for item in hypothesis.evidence_links
-    ):
-        return current, False
-    if len(hypothesis.evidence_links) >= MAX_EVIDENCE_LINKS_PER_HYPOTHESIS:
-        raise PolicyError("hypothesis evidence-link bound exceeded")
-
     links = tuple((*hypothesis.evidence_links, link))
     support, conflict, balance, status = _derive_scores(links)
     updated = replace(
