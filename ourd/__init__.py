@@ -3,6 +3,14 @@
 from .agent import OURDAgent
 from .authority import AuthorityManifest
 from .errors import AgentCancelledError, PolicyError
+from .formal_writing import (
+    ArgumentEdge,
+    ArgumentNode,
+    ArgumentTopology,
+    WRITING_PROFILES,
+    profile_dimensions,
+    research_backed_profile,
+)
 from .models import (
     AttemptKey,
     BoundaryState,
@@ -23,6 +31,9 @@ from .workspace import Workspace
 from .egcf import EGCFEngine
 
 __all__ = [
+    "ArgumentEdge",
+    "ArgumentNode",
+    "ArgumentTopology",
     "AuthorityManifest",
     "AgentCancelledError",
     "AttemptKey",
@@ -42,5 +53,8 @@ __all__ = [
     "RuntimeState",
     "SCORE_SCALE",
     "TransactionRecord",
+    "WRITING_PROFILES",
     "Workspace",
+    "profile_dimensions",
+    "research_backed_profile",
 ]

@@ -10,6 +10,7 @@ from typing import Optional, Sequence
 
 from .agent import OURDAgent
 from .authority import save_authority, save_authority_example, scoped_write_authority
+from .formal_writing import WRITING_PROFILES
 from .providers import ProviderConfig
 from .workspace import Workspace
 from .writing import WRITE_COMMAND_CAPABILITIES, writing_task_prompt
@@ -29,6 +30,15 @@ def build_parser() -> argparse.ArgumentParser:
         help=(
             "Enable a human-granted bounded writing session. Requires at least one "
             "--write-path and keeps exact-candidate approval enabled."
+        ),
+    )
+    parser.add_argument(
+        "--writing-profile",
+        default="general",
+        choices=WRITING_PROFILES,
+        help=(
+            "Formal writing profile for --write mode: general, scientific-essay, "
+            "or argumentative-essay."
         ),
     )
     parser.add_argument(
@@ -132,9 +142,10 @@ def _validate_write_args(parser: argparse.ArgumentParser, args: argparse.Namespa
         or args.write_test
         or args.write_allow_l2
         or args.write_retries != 1
+        or args.writing_profile != "general"
     )
     if write_options_used and not args.write:
-        parser.error("--write-path/--write-test/--write-* options require --write")
+        parser.error("--writing-profile/--write-path/--write-test/--write-* options require --write")
     if not args.write:
         return
     if args.authority is not None:
@@ -194,7 +205,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     def bounded_task(text: str) -> str:
         if not args.write:
             return text
-        return writing_task_prompt(text, args.write_path)
+        return writing_task_prompt(text, args.write_path, profile=args.writing_profile)
 
     try:
         with OURDAgent(
@@ -214,9 +225,11 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
                 print(agent.run_task(bounded_task(args.task)))
                 return 0
             mode = "write" if args.write else "read-only"
+            profile = args.writing_profile if args.write else "none"
             print(
                 f"OIEC-STM-Agent | repo={agent.ws.root} | model={agent.model} | "
-                f"authority={agent.state.authority.task_id} | mode={mode}\n"
+                f"authority={agent.state.authority.task_id} | mode={mode} | "
+                f"writing-profile={profile}\n"
                 "Enter a reasoning, writing, or coding task. Ctrl-D / Ctrl-C exits."
             )
             while True:

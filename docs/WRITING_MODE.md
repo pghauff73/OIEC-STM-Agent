@@ -1,6 +1,6 @@
 # OIEC-STM-Agent Writing Mode
 
-OIEC-STM-Agent can already stage text and code through `prepare_write_file`,
+OIEC-STM-Agent can stage text and code through `prepare_write_file`,
 `prepare_replace_text`, and atomic candidate transactions. Writing mode makes
 that capability practical from the CLI without weakening the existing
 OURD/IURM/EON/CFEL governance path.
@@ -30,7 +30,85 @@ that session authority stale. One session should therefore prepare one atomic
 transaction, which may contain many file changes. Start a fresh `--write`
 session for another transaction so it binds to the new workspace snapshot.
 
-## Write a document
+## Formal university writing profiles
+
+Writing mode now supports research-backed formal profiles:
+
+- `general`
+- `scientific-essay`
+- `argumentative-essay`
+
+The research basis and design rationale are documented in
+`docs/FORMAL_WRITING_RESEARCH.md`.
+
+The profiles do not replace an assignment brief, marking rubric, discipline
+conventions, citation rules, or academic-integrity requirements. Those local
+requirements override generic profile defaults.
+
+### Scientific essay
+
+```bash
+oiec-stm-agent . \
+  --write \
+  --write-path essay.md \
+  --writing-profile scientific-essay \
+  --task 'Write a 2000-word scientific essay evaluating the evidence for the proposed mechanism.'
+```
+
+The scientific profile treats an essay as a thesis-driven scientific argument,
+not automatically as an IMRaD laboratory report. It requires the agent to:
+
+- analyse the task, scope and scientific question first;
+- organise the body around claims/mechanisms rather than individual sources;
+- connect claims to evidence, method/provenance and explicit reasoning;
+- compare methodological and evidential quality;
+- distinguish correlation, causation, mechanism, necessity and sufficiency;
+- examine alternative explanations and relevant limitations;
+- calibrate certainty to the strength of evidence;
+- consider reproducibility, replicability and robustness where relevant;
+- avoid fabricated citations, data, quotations, statistics and results.
+
+### Argumentative essay with logic topology
+
+```bash
+oiec-stm-agent . \
+  --write \
+  --write-path essay.md \
+  --writing-profile argumentative-essay \
+  --task 'Write an argumentative essay evaluating whether the proposed policy should be adopted.'
+```
+
+The argumentative profile asks the model to reason through an explicit topology
+before translating it into natural prose:
+
+```text
+Evidence / Premises / Warrants
+            |
+            v
+     Supporting Claims -------- Counterclaim
+            |                       |
+            v                       v
+          Thesis <------------ Rebuttal
+            |
+      Qualifiers / Limits
+            |
+            v
+       Implications
+```
+
+The machine representation is `ArgumentTopology` in `ourd/formal_writing.py`.
+Supported node roles include thesis, claim, premise, evidence, warrant,
+counterclaim, rebuttal, qualifier, limitation and implication. Supported edge
+relations include `supports`, `warrants`, `attacks`, `rebuts`, `qualifies`,
+`limits`, `entails` and `depends_on`.
+
+The positive support graph must be acyclic, so a claim cannot ultimately justify
+itself. Evidence nodes require source references, and material counterclaims
+must receive an explicit rebuttal/response. The prose should remain readable;
+the topology is an internal reasoning scaffold unless formal notation is useful
+for the assignment.
+
+## Write a general document
 
 ```bash
 oiec-stm-agent . \
@@ -106,6 +184,7 @@ human scope grant
   -> OURD problem model
   -> Boundary Determination
   -> Dimension Limiting / IURM
+  -> formal writing / argument topology
   -> staged candidate
   -> EON exact action
   -> evidence gate

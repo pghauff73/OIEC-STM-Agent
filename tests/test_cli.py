@@ -18,6 +18,7 @@ class CliAndToolSchemaTests(unittest.TestCase):
         self.assertEqual("oiec-stm-agent", parser.prog)
         self.assertFalse(args.write)
         self.assertEqual([], args.write_path)
+        self.assertEqual("general", args.writing_profile)
 
     def test_bounded_write_mode_requires_explicit_scope(self) -> None:
         parser = build_parser()
@@ -38,6 +39,36 @@ class CliAndToolSchemaTests(unittest.TestCase):
         _validate_write_args(parser, args)
         self.assertTrue(args.write)
         self.assertEqual(["docs/**", "README.md"], args.write_path)
+
+    def test_formal_profile_requires_write_mode_and_is_forwarded_to_prompt(self) -> None:
+        parser = build_parser()
+        args = parser.parse_args(
+            ["workspace", "--writing-profile", "scientific-essay"]
+        )
+        with self.assertRaises(SystemExit):
+            _validate_write_args(parser, args)
+
+        args = parser.parse_args(
+            [
+                "workspace",
+                "--write",
+                "--write-path",
+                "essay.md",
+                "--writing-profile",
+                "argumentative-essay",
+            ]
+        )
+        _validate_write_args(parser, args)
+        self.assertEqual("argumentative-essay", args.writing_profile)
+
+        prompt = writing_task_prompt(
+            "Write an argumentative essay.",
+            ["essay.md"],
+            profile=args.writing_profile,
+        )
+        self.assertIn("Writing profile: argumentative-essay", prompt)
+        self.assertIn("LOGIC TOPOLOGY PROFILE", prompt)
+        self.assertIn("counterclaim", prompt.lower())
 
     def test_cli_write_authority_is_exact_snapshot_and_not_yolo(self) -> None:
         fixture = RepoFixture()
@@ -69,8 +100,20 @@ class CliAndToolSchemaTests(unittest.TestCase):
         self.assertIn("HUMAN-GRANTED BOUNDED WRITING MODE", prompt)
         self.assertIn("docs/**", prompt)
         self.assertIn("prepare candidate transaction", prompt)
-        self.assertIn("natural, coherent human-readable prose", prompt)
+        self.assertIn("human readability", prompt)
         self.assertIn("Write docs/overview.md", prompt)
+
+    def test_scientific_writing_prompt_embeds_research_backed_dimensions(self) -> None:
+        prompt = writing_task_prompt(
+            "Write a scientific essay on the evidence for a proposed mechanism.",
+            ["essay.md"],
+            profile="scientific-essay",
+        )
+        self.assertIn("SCIENTIFIC ESSAY PROFILE", prompt)
+        self.assertIn("scientific claim calibration", prompt)
+        self.assertIn("causal inference", prompt)
+        self.assertIn("reproducibility", prompt.lower())
+        self.assertIn("never invent references", prompt.lower())
 
     def test_tool_schemas_are_strict_and_expose_only_staged_writes(self) -> None:
         fixture = RepoFixture()
