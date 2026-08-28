@@ -1,12 +1,20 @@
 from __future__ import annotations
 
+import base64
 import json
+import mimetypes
+import re
 import urllib.error
 import urllib.request
+from pathlib import Path
 from typing import Any, Dict, List
 
 from ..errors import ContextBudgetError, ProviderError
 from .base import ProviderConfig
+
+
+IMAGE_REFERENCE_RE = re.compile(r"@img:([0-9a-f]{12,64})\b", re.IGNORECASE)
+MAX_PROVIDER_IMAGE_BYTES = 20 * 1024 * 1024
 
 
 def estimate_tokens(value: Any) -> int:
@@ -51,6 +59,7 @@ class OpenAIResponsesProvider:
             "max_output_tokens": self.config.max_output_tokens,
             "reasoning_effort": self.config.reasoning_effort or "provider_default",
             "max_transport_retries": self.config.max_transport_retries,
+            "visual_asset_root": bool(self.config.visual_asset_root),
         }
         if not self.is_local_ollama:
             result["status"] = "configuration_only"
@@ -109,10 +118,11 @@ class OpenAIResponsesProvider:
                 "provider input exceeds configured context budget: "
                 f"estimated {estimated}, budget {self.config.context_budget_tokens}"
             )
+        expanded_input = self._expand_latest_image_references(input_items)
         kwargs: Dict[str, Any] = {
             "model": self.config.model,
             "instructions": instructions,
-            "input": input_items,
+            "input": expanded_input,
             "tools": tools,
             "max_output_tokens": self.config.max_output_tokens,
         }
@@ -125,6 +135,85 @@ class OpenAIResponsesProvider:
             return self.client.responses.create(**kwargs)
         except Exception as exc:
             raise ProviderError(f"model response failed: {exc}") from exc
+
+    def _expand_latest_image_references(self, input_items: List[Any]) -> List[Any]:
+        """Attach explicitly referenced GUI images to the latest user text item only.
+
+        The chat/event layer keeps the compact @img reference. Expansion happens
+        only at the provider boundary so binary image data is never persisted in
+        the ordinary transcript or OIEC event payloads.
+        """
+
+        root_text = self.config.visual_asset_root.strip()
+        if not root_text:
+            return input_items
+        root = Path(root_text).expanduser().resolve()
+        index_path = root / "index.json"
+        if not index_path.is_file():
+            return input_items
+        try:
+            index = json.loads(index_path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            return input_items
+        if not isinstance(index, dict):
+            return input_items
+        expanded = list(input_items)
+        for item_index in range(len(expanded) - 1, -1, -1):
+            item = expanded[item_index]
+            if not isinstance(item, dict) or item.get("role") != "user":
+                continue
+            text = item.get("content")
+            if not isinstance(text, str):
+                continue
+            digests = IMAGE_REFERENCE_RE.findall(text)
+            if not digests:
+                return expanded
+            references: list[str] = []
+            for digest in digests:
+                prefix = f"@img:{digest.lower()}"
+                matches = [
+                    reference
+                    for reference in index
+                    if isinstance(reference, str) and reference.lower().startswith(prefix)
+                ]
+                if len(matches) == 1 and matches[0] not in references:
+                    references.append(matches[0])
+            if not references:
+                return expanded
+            content: list[dict[str, str]] = [{"type": "input_text", "text": text}]
+            for reference in references:
+                metadata = index.get(reference)
+                if not isinstance(metadata, dict) or metadata.get("kind") != "image":
+                    continue
+                stored = metadata.get("stored_path", "")
+                if not isinstance(stored, str) or not stored:
+                    continue
+                candidate = (root.parent.parent / stored).resolve()
+                try:
+                    candidate.relative_to(root.parent.parent.resolve())
+                except ValueError:
+                    continue
+                if not candidate.is_file():
+                    continue
+                size = candidate.stat().st_size
+                if size <= 0 or size > MAX_PROVIDER_IMAGE_BYTES:
+                    raise ProviderError(
+                        f"referenced image {reference} exceeds provider image bound"
+                    )
+                media_type = str(metadata.get("media_type") or "")
+                if not media_type.startswith("image/"):
+                    media_type = mimetypes.guess_type(candidate.name)[0] or "image/png"
+                encoded = base64.b64encode(candidate.read_bytes()).decode("ascii")
+                content.append(
+                    {
+                        "type": "input_image",
+                        "image_url": f"data:{media_type};base64,{encoded}",
+                    }
+                )
+            if len(content) > 1:
+                expanded[item_index] = {**item, "content": content}
+            return expanded
+        return expanded
 
     def _create_local_response(self, body: Dict[str, Any]) -> Dict[str, Any]:
         request = urllib.request.Request(
