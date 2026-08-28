@@ -19,6 +19,7 @@
 
   const query = (selector, root = document) => root.querySelector(selector);
   const queryAll = (selector, root = document) => Array.from(root.querySelectorAll(selector));
+  let relationalExplorerController = null;
 
   function makeSvgElement(name, attributes = {}) {
     const element = document.createElementNS(SVG_NS, name);
@@ -117,6 +118,260 @@
     if (!search) return;
     filterDocumentationTree("");
     search.addEventListener("input", () => filterDocumentationTree(search.value));
+  }
+
+  function setupRelationalSymbolInspector(preview) {
+    if (!preview) return;
+    const activatePreview = () => {
+      const svgDocument = preview.contentDocument;
+      if (!svgDocument) return;
+      svgDocument.documentElement.dataset.active = "true";
+    };
+    preview.addEventListener("load", activatePreview);
+    if (preview.contentDocument) activatePreview();
+  }
+
+  function renderRelationalRelations(selectedObject, objectsById, childrenByParent) {
+    const container = query("[data-inspector-relations]");
+    if (!container) return;
+    const ports = [];
+    if (selectedObject.parent_id && objectsById.has(selectedObject.parent_id)) {
+      ports.push({
+        direction: "PARENT",
+        object: objectsById.get(selectedObject.parent_id)
+      });
+    }
+    (childrenByParent.get(selectedObject.object_id) || []).forEach((childObject) => {
+      ports.push({ direction: "CHILD", object: childObject });
+    });
+    (selectedObject.related_ids || []).forEach((relatedId) => {
+      if (objectsById.has(relatedId)) {
+        ports.push({ direction: "RELATED", object: objectsById.get(relatedId) });
+      }
+    });
+    container.replaceChildren();
+    if (!ports.length) {
+      const empty = document.createElement("p");
+      empty.textContent = "NO ADDITIONAL RELATION PORTS";
+      container.appendChild(empty);
+      return;
+    }
+    ports.slice(0, 18).forEach((port) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "relation-port";
+      button.dataset.relationalSelect = port.object.object_id;
+      const direction = document.createElement("span");
+      direction.textContent = port.direction;
+      const title = document.createElement("strong");
+      title.textContent = port.object.title;
+      button.append(direction, title);
+      button.addEventListener("click", () => {
+        relationalExplorerController?.selectObject(port.object.object_id, true);
+      });
+      container.appendChild(button);
+    });
+  }
+
+  function setupRelationalObjectExplorer() {
+    const explorer = query(".relational-explorer");
+    const records = Array.isArray(window.RELATIONAL_OBJECTS) ? window.RELATIONAL_OBJECTS : [];
+    if (!explorer || !records.length) return;
+
+    const objectsById = new Map(records.map((record) => [record.object_id, record]));
+    const childrenByParent = new Map();
+    records.forEach((record) => {
+      if (!childrenByParent.has(record.parent_id)) childrenByParent.set(record.parent_id, []);
+      childrenByParent.get(record.parent_id).push(record);
+    });
+    childrenByParent.forEach((children) => {
+      children.sort((left, right) => left.title.localeCompare(right.title));
+    });
+
+    const nodes = queryAll("[data-relational-object]", explorer).filter((node) =>
+      node.classList.contains("relational-node")
+    );
+    const nodeById = new Map(nodes.map((node) => [node.dataset.relationalObject, node]));
+    const search = query("#relational-search", explorer);
+    const filters = queryAll("[data-relational-filter]", explorer);
+    const status = query(".relational-search-status", explorer);
+    const preview = query("#relational-symbol-preview", explorer);
+    const inspectorTitle = query("[data-inspector-title]", explorer);
+    const inspectorDescription = query("[data-inspector-description]", explorer);
+    const inspectorId = query("[data-inspector-id]", explorer);
+    const inspectorKind = query("[data-inspector-kind]", explorer);
+    const inspectorRelation = query("[data-inspector-relation]", explorer);
+    const inspectorSource = query("[data-inspector-source]", explorer);
+    const inspectorOpen = query("[data-inspector-open]", explorer);
+    let activeKind = "all";
+    let selectedId = records.find((record) => record.kind === "root")?.object_id || records[0].object_id;
+
+    const ancestorsFor = (objectId) => {
+      const ancestors = new Set();
+      let current = objectsById.get(objectId);
+      while (current?.parent_id && objectsById.has(current.parent_id)) {
+        ancestors.add(current.parent_id);
+        current = objectsById.get(current.parent_id);
+      }
+      return ancestors;
+    };
+
+    const relationIdsFor = (record) => {
+      const relationIds = new Set(record.related_ids || []);
+      if (record.parent_id) relationIds.add(record.parent_id);
+      (childrenByParent.get(record.object_id) || []).forEach((childObject) => {
+        relationIds.add(childObject.object_id);
+      });
+      return relationIds;
+    };
+
+    const expandAncestors = (objectId) => {
+      ancestorsFor(objectId).forEach((ancestorId) => {
+        const ancestorNode = nodeById.get(ancestorId);
+        if (!ancestorNode?.classList.contains("relational-branch")) return;
+        ancestorNode.classList.add("is-expanded");
+        const button = query(".relational-select", ancestorNode);
+        button?.setAttribute("aria-expanded", "true");
+      });
+    };
+
+    const updateInspector = (record) => {
+      if (inspectorTitle) inspectorTitle.textContent = record.title;
+      if (inspectorDescription) inspectorDescription.textContent = record.description;
+      if (inspectorId) inspectorId.textContent = record.object_id;
+      if (inspectorKind) inspectorKind.textContent = record.kind.toUpperCase();
+      if (inspectorRelation) inspectorRelation.textContent = record.relation;
+      if (inspectorSource) inspectorSource.textContent = record.source_key;
+      if (inspectorOpen) inspectorOpen.href = record.href;
+      if (preview) {
+        preview.removeAttribute("data");
+        preview.data = record.symbol;
+        const fallback = query("a", preview);
+        if (fallback) {
+          fallback.href = record.symbol;
+          fallback.textContent = `Open ${record.title} symbol`;
+        }
+      }
+      renderRelationalRelations(record, objectsById, childrenByParent);
+    };
+
+    const selectObject = (objectId, scrollToNode = false) => {
+      const record = objectsById.get(objectId);
+      if (!record) return;
+      selectedId = objectId;
+      const relationIds = relationIdsFor(record);
+      nodes.forEach((node) => {
+        const nodeId = node.dataset.relationalObject;
+        node.classList.toggle("is-selected", nodeId === objectId);
+        node.classList.toggle("is-related", relationIds.has(nodeId));
+      });
+      expandAncestors(objectId);
+      updateInspector(record);
+      if (scrollToNode) {
+        const targetNode = nodeById.get(objectId);
+        if (targetNode) targetNode.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    };
+
+    const render = () => {
+      const term = search?.value.trim().toLowerCase() || "";
+      const directMatches = new Set();
+      records.forEach((record) => {
+        const kindMatches = activeKind === "all" || record.kind === activeKind;
+        const haystack = `${record.title} ${record.description} ${record.kind} ${record.relation} ${record.source_key}`.toLowerCase();
+        if (kindMatches && (!term || haystack.includes(term))) directMatches.add(record.object_id);
+      });
+      const visibleIds = new Set(directMatches);
+      directMatches.forEach((objectId) => {
+        ancestorsFor(objectId).forEach((ancestorId) => visibleIds.add(ancestorId));
+      });
+      nodes.forEach((node) => {
+        node.hidden = !visibleIds.has(node.dataset.relationalObject);
+      });
+      queryAll(".relational-tree-zone", explorer).forEach((zone) => {
+        zone.hidden = !queryAll(".relational-node", zone).some((node) => !node.hidden);
+      });
+      if (term || activeKind !== "all") {
+        visibleIds.forEach((objectId) => expandAncestors(objectId));
+        const conceptZone = query(".relational-concept-zone", explorer);
+        if (conceptZone && queryAll('.relational-node[data-relational-kind="concept"]', conceptZone).some((node) => !node.hidden)) {
+          conceptZone.open = true;
+        }
+      }
+      filters.forEach((button) => {
+        button.setAttribute("aria-pressed", button.dataset.relationalFilter === activeKind ? "true" : "false");
+      });
+      if (status) {
+        const suffix = activeKind === "all" ? "" : ` / ${activeKind.toUpperCase()}`;
+        status.textContent = `${directMatches.size} OBJECT${directMatches.size === 1 ? "" : "S"} ONLINE${suffix}`;
+      }
+    };
+
+    const applyFilter = (kind) => {
+      activeKind = objectsById.size && (kind === "all" || records.some((record) => record.kind === kind)) ? kind : "all";
+      render();
+      explorer.scrollIntoView({ behavior: "smooth", block: "start" });
+    };
+
+    relationalExplorerController = { selectObject, applyFilter, render };
+    queryAll("[data-relational-select]", explorer).forEach((button) => {
+      button.addEventListener("click", () => {
+        const objectId = button.dataset.relationalSelect;
+        const node = nodeById.get(objectId);
+        if (node?.classList.contains("relational-branch")) {
+          const expanded = node.classList.toggle("is-expanded");
+          button.setAttribute("aria-expanded", expanded ? "true" : "false");
+        }
+        selectObject(objectId);
+      });
+    });
+    filters.forEach((button) => {
+      button.addEventListener("click", () => applyFilter(button.dataset.relationalFilter));
+    });
+    search?.addEventListener("input", render);
+    queryAll("[data-relational-jump]").forEach((button) => {
+      button.addEventListener("click", () => {
+        activeKind = "all";
+        if (search) search.value = "";
+        render();
+        selectObject(button.dataset.relationalJump, true);
+      });
+    });
+    window.addEventListener("relational-filter-request", (event) => {
+      applyFilter(event.detail?.kind || "all");
+    });
+    setupRelationalSymbolInspector(preview);
+    render();
+    selectObject(selectedId);
+  }
+
+  function setupRelationalTopology() {
+    const topologyMap = query("object.relational-topology-map");
+    if (!topologyMap) return;
+    const activateTopology = () => {
+      const svgDocument = topologyMap.contentDocument;
+      if (!svgDocument) return;
+      const kindNodes = Array.from(svgDocument.querySelectorAll("[data-relational-kind]"));
+      const activateKind = (kindNode) => {
+        kindNodes.forEach((node) => node.classList.toggle("active", node === kindNode));
+        window.dispatchEvent(
+          new CustomEvent("relational-filter-request", {
+            detail: { kind: kindNode.dataset.relationalKind || "all" }
+          })
+        );
+      };
+      kindNodes.forEach((kindNode) => {
+        kindNode.addEventListener("click", () => activateKind(kindNode));
+        kindNode.addEventListener("keydown", (event) => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            activateKind(kindNode);
+          }
+        });
+      });
+    };
+    topologyMap.addEventListener("load", activateTopology);
+    if (topologyMap.contentDocument) activateTopology();
   }
 
   function setupRandomModule() {
@@ -521,6 +776,15 @@
 
   function setupKeyboardShortcuts() {
     window.addEventListener("keydown", (event) => {
+      const target = event.target;
+      const isTyping = target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement;
+      if (event.key === "/" && !isTyping) {
+        const relationalSearch = query("#relational-search");
+        if (relationalSearch) {
+          event.preventDefault();
+          relationalSearch.focus();
+        }
+      }
       if (event.key === "Escape" && document.body.classList.contains("focus-mode")) {
         document.body.classList.remove("focus-mode");
         sessionStorage.setItem("ourd-docs-focus", "false");
@@ -535,6 +799,8 @@
     setupReadingProgress();
     setupTreeToggles();
     setupIndexSearch();
+    setupRelationalObjectExplorer();
+    setupRelationalTopology();
     setupRandomModule();
     setupTocSearch();
     setupScrollSpy();

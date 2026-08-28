@@ -193,6 +193,20 @@ class Document:
     sections: tuple[Section, ...]
 
 
+@dataclass(frozen=True)
+class RelationalObject:
+    object_id: str
+    kind: str
+    title: str
+    description: str
+    parent_id: str
+    relation: str
+    href: str
+    source_key: str
+    symbol_path: str
+    related_ids: tuple[str, ...] = ()
+
+
 def slugify(value: str) -> str:
     value = re.sub(r"<[^>]+>", "", value)
     value = re.sub(r"[`*_]", "", value)
@@ -970,39 +984,427 @@ def category_for(document: Document) -> str:
     return "Lifecycle and Migration"
 
 
-def render_tree(documents: Iterable[Document]) -> str:
-    top_level = [doc for doc in documents if len(doc.relative_path.parts) == 1]
-    nested: dict[str, list[Document]] = {}
-    for doc in documents:
-        if len(doc.relative_path.parts) > 1:
-            nested.setdefault(doc.relative_path.parts[0], []).append(doc)
-    items = []
-    for doc in top_level:
-        items.append(render_tree_document(doc))
-    for folder, folder_docs in sorted(nested.items()):
-        children = "".join(render_tree_document(doc) for doc in folder_docs)
-        items.append(
-            f'<li class="tree-folder"><button type="button" class="tree-toggle" aria-expanded="true">'
-            f'<span class="tree-icon">▾</span>{html.escape(folder)}/</button><ul>{children}</ul></li>'
+def relational_object_id(kind: str, source_key: str) -> str:
+    digest = hashlib.sha256(f"{kind}\0{source_key}".encode("utf-8")).hexdigest()[:12]
+    readable = slugify(source_key)[:42].rstrip("-") or kind
+    return f"rel-{kind}-{readable}-{digest}"
+
+
+def relational_symbol_path(object_id: str) -> str:
+    return f"figures/relational-objects/{object_id}.svg"
+
+
+def build_relational_objects(
+    documents: tuple[Document, ...],
+    concepts: tuple[Concept, ...],
+) -> tuple[RelationalObject, ...]:
+    root_id = relational_object_id("root", "docs/index.html")
+    categories = sorted({category_for(document) for document in documents})
+    folders = sorted(
+        {
+            document.relative_path.parts[0]
+            for document in documents
+            if len(document.relative_path.parts) > 1
+        }
+    )
+    category_ids = {
+        category: relational_object_id("category", category)
+        for category in categories
+    }
+    folder_ids = {
+        folder: relational_object_id("folder", folder)
+        for folder in folders
+    }
+    document_ids = {
+        document.relative_path.as_posix(): relational_object_id(
+            "document", document.relative_path.as_posix()
         )
-    return f'<ul class="docs-tree">{"".join(items)}</ul>'
+        for document in documents
+    }
+    heading_ids = {
+        (document.relative_path.as_posix(), section.slug): relational_object_id(
+            "heading", f"{document.relative_path.as_posix()}#{section.slug}"
+        )
+        for document in documents
+        for section in document.sections
+    }
+    concept_ids = {
+        concept.slug: relational_object_id("concept", concept.slug)
+        for concept in concepts
+    }
+    concept_name_ids: dict[str, str] = {}
+    for concept in concepts:
+        concept_name_ids[concept.slug.casefold()] = concept_ids[concept.slug]
+        concept_name_ids[concept.title.casefold()] = concept_ids[concept.slug]
+        concept_name_ids[concept.title.split(":", 1)[0].strip().casefold()] = concept_ids[
+            concept.slug
+        ]
+
+    objects: list[RelationalObject] = [
+        RelationalObject(
+            object_id=root_id,
+            kind="root",
+            title="OIEC-STM Documentation System",
+            description=(
+                "The invariant root of the generated documentation universe and the "
+                "canonical parent for architecture domains, source folders, and concepts."
+            ),
+            parent_id="",
+            relation="root",
+            href="index.html",
+            source_key="docs/index.html",
+            symbol_path=relational_symbol_path(root_id),
+        )
+    ]
+
+    for category in categories:
+        category_id = category_ids[category]
+        member_count = sum(category_for(document) == category for document in documents)
+        objects.append(
+            RelationalObject(
+                object_id=category_id,
+                kind="category",
+                title=category,
+                description=f"Architecture domain containing {member_count} source documents.",
+                parent_id=root_id,
+                relation="partitions",
+                href=f"#category-{slugify(category)}",
+                source_key=category,
+                symbol_path=relational_symbol_path(category_id),
+            )
+        )
+
+    for folder in folders:
+        folder_id = folder_ids[folder]
+        member_ids = tuple(
+            document_ids[document.relative_path.as_posix()]
+            for document in documents
+            if document.relative_path.parts[0] == folder
+        )
+        objects.append(
+            RelationalObject(
+                object_id=folder_id,
+                kind="folder",
+                title=f"{folder}/",
+                description=f"Source folder indexing {len(member_ids)} generated documents.",
+                parent_id=root_id,
+                relation="indexes-source",
+                href="#source-folders",
+                source_key=folder,
+                symbol_path=relational_symbol_path(folder_id),
+                related_ids=member_ids,
+            )
+        )
+
+    for document in documents:
+        source_key = document.relative_path.as_posix()
+        document_id = document_ids[source_key]
+        related_ids = ()
+        if len(document.relative_path.parts) > 1:
+            related_ids = (folder_ids[document.relative_path.parts[0]],)
+        objects.append(
+            RelationalObject(
+                object_id=document_id,
+                kind="document",
+                title=document.title,
+                description=(
+                    f"Generated learning document with {len(document.sections)} heading "
+                    f"objects in the {category_for(document)} domain."
+                ),
+                parent_id=category_ids[category_for(document)],
+                relation="contains-document",
+                href=document.relative_path.with_suffix(".html").as_posix(),
+                source_key=source_key,
+                symbol_path=relational_symbol_path(document_id),
+                related_ids=related_ids,
+            )
+        )
+        for section in document.sections:
+            heading_id = heading_ids[(source_key, section.slug)]
+            related_concepts = []
+            for token in section_concepts(section):
+                matched_id = concept_name_ids.get(token.casefold())
+                if matched_id and matched_id not in related_concepts:
+                    related_concepts.append(matched_id)
+            objects.append(
+                RelationalObject(
+                    object_id=heading_id,
+                    kind="heading",
+                    title=section.title,
+                    description=(
+                        f"Level {section.level} learning object derived from heading "
+                        f"{section.ordinal} in {source_key}."
+                    ),
+                    parent_id=document_id,
+                    relation="decomposes-into",
+                    href=f"{document.relative_path.with_suffix('.html').as_posix()}#{section.slug}",
+                    source_key=f"{source_key}#{section.slug}",
+                    symbol_path=relational_symbol_path(heading_id),
+                    related_ids=tuple(related_concepts),
+                )
+            )
+
+    for concept in concepts:
+        concept_id = concept_ids[concept.slug]
+        related_ids = []
+        for related in concept.related:
+            matched_id = concept_name_ids.get(related.casefold())
+            if matched_id and matched_id != concept_id and matched_id not in related_ids:
+                related_ids.append(matched_id)
+        objects.append(
+            RelationalObject(
+                object_id=concept_id,
+                kind="concept",
+                title=concept.title,
+                description=concept.definition,
+                parent_id=root_id,
+                relation="defines-concept",
+                href=f"concepts/{concept.slug}.html",
+                source_key=concept.slug,
+                symbol_path=relational_symbol_path(concept_id),
+                related_ids=tuple(related_ids),
+            )
+        )
+
+    return tuple(objects)
 
 
-def render_tree_document(document: Document) -> str:
-    target = document.relative_path.with_suffix(".html").as_posix()
-    category = category_for(document)
-    keywords = " ".join(section.title for section in document.sections)
+def relational_record(relational_object: RelationalObject) -> dict[str, object]:
+    return {
+        "object_id": relational_object.object_id,
+        "kind": relational_object.kind,
+        "title": relational_object.title,
+        "description": relational_object.description,
+        "parent_id": relational_object.parent_id,
+        "relation": relational_object.relation,
+        "href": relational_object.href,
+        "source_key": relational_object.source_key,
+        "symbol": relational_object.symbol_path,
+        "related_ids": list(relational_object.related_ids),
+    }
+
+
+def validate_relational_objects(relational_objects: tuple[RelationalObject, ...]) -> None:
+    if not relational_objects:
+        raise ValueError("relational object universe must not be empty")
+    object_ids = [relational_object.object_id for relational_object in relational_objects]
+    symbol_paths = [relational_object.symbol_path for relational_object in relational_objects]
+    if len(object_ids) != len(set(object_ids)):
+        raise ValueError("relational object IDs must be unique")
+    if len(symbol_paths) != len(set(symbol_paths)):
+        raise ValueError("relational symbol paths must be unique")
+    objects_by_id = {
+        relational_object.object_id: relational_object
+        for relational_object in relational_objects
+    }
+    roots = [
+        relational_object
+        for relational_object in relational_objects
+        if relational_object.kind == "root"
+    ]
+    if len(roots) != 1 or roots[0].parent_id:
+        raise ValueError("relational universe requires exactly one parentless root")
+    for relational_object in relational_objects:
+        if relational_object.kind != "root" and relational_object.parent_id not in objects_by_id:
+            raise ValueError(
+                f"unresolved parent for relational object {relational_object.object_id}"
+            )
+        if relational_object.object_id in relational_object.related_ids:
+            raise ValueError(
+                f"self-related relational object {relational_object.object_id}"
+            )
+        missing_related = set(relational_object.related_ids) - set(objects_by_id)
+        if missing_related:
+            raise ValueError(
+                f"unresolved related objects for {relational_object.object_id}: "
+                f"{sorted(missing_related)!r}"
+            )
+
+
+def relational_symbol_markup(relational_object: RelationalObject) -> str:
+    sprite_reference = html.escape(
+        f"figures/relational-symbols.svg#{relational_object.object_id}",
+        quote=True,
+    )
+    title = html.escape(relational_object.title, quote=True)
     return (
-        f'<li class="tree-document" data-search="{html.escape((document.title + " " + category + " " + keywords).lower(), quote=True)}">'
-        f'<a href="{html.escape(target)}"><span class="file-icon">HTML</span><span><strong>{html.escape(document.title)}</strong>'
-        f'<small>{html.escape(document.relative_path.as_posix())} · {len(document.sections)} modules · {category}</small></span></a></li>'
+        f'<svg class="relational-symbol" viewBox="0 0 96 96" aria-hidden="true">'
+        f'<use href="{sprite_reference}"></use></svg>'
+        f'<span class="visually-hidden">Symbol for {title}</span>'
     )
 
 
-def index_template(documents: tuple[Document, ...], concepts: tuple[Concept, ...], build_date: str) -> str:
+def relational_object_row(
+    relational_object: RelationalObject,
+    children: str = "",
+    *,
+    expanded: bool = False,
+) -> str:
+    search_text = " ".join(
+        (
+            relational_object.title,
+            relational_object.description,
+            relational_object.kind,
+            relational_object.relation,
+            relational_object.source_key,
+        )
+    ).casefold()
+    child_markup = f'<ul class="relational-children">{children}</ul>' if children else ""
+    branch_class = " relational-branch" if children else " relational-leaf"
+    expanded_class = " is-expanded" if children and expanded else ""
+    expanded_attribute = (
+        f' aria-expanded="{"true" if expanded else "false"}"'
+        if children
+        else ""
+    )
+    return (
+        f'<li class="relational-node{branch_class}{expanded_class}" '
+        f'data-relational-object="{html.escape(relational_object.object_id, quote=True)}" '
+        f'data-relational-kind="{html.escape(relational_object.kind, quote=True)}" '
+        f'data-search="{html.escape(search_text, quote=True)}">'
+        f'<div class="relational-row">'
+        f'<button type="button" class="relational-select" '
+        f'data-relational-select="{html.escape(relational_object.object_id, quote=True)}" '
+        f'{expanded_attribute} aria-controls="relational-object-inspector">'
+        f'{relational_symbol_markup(relational_object)}'
+        f'<span class="relational-row-copy"><strong>{html.escape(relational_object.title)}</strong>'
+        f'<small>{html.escape(relational_object.kind.upper())} · '
+        f'{html.escape(relational_object.relation)}</small></span></button>'
+        f'<a class="relational-open" href="{html.escape(relational_object.href, quote=True)}" '
+        f'aria-label="Open {html.escape(relational_object.title, quote=True)}">OPEN</a>'
+        f'</div>{child_markup}</li>'
+    )
+
+
+def render_relational_explorer(relational_objects: tuple[RelationalObject, ...]) -> str:
+    objects_by_id = {
+        relational_object.object_id: relational_object
+        for relational_object in relational_objects
+    }
+    children_by_parent: dict[str, list[RelationalObject]] = {}
+    for relational_object in relational_objects:
+        children_by_parent.setdefault(relational_object.parent_id, []).append(
+            relational_object
+        )
+    for children in children_by_parent.values():
+        children.sort(key=lambda item: (item.kind, item.title.casefold(), item.object_id))
+
+    root = next(
+        relational_object
+        for relational_object in relational_objects
+        if relational_object.kind == "root"
+    )
+    categories = sorted(
+        (item for item in relational_objects if item.kind == "category"),
+        key=lambda item: item.title.casefold(),
+    )
+    folders = sorted(
+        (item for item in relational_objects if item.kind == "folder"),
+        key=lambda item: item.title.casefold(),
+    )
+    concepts = sorted(
+        (item for item in relational_objects if item.kind == "concept"),
+        key=lambda item: item.title.casefold(),
+    )
+
+    category_rows = []
+    for category in categories:
+        document_rows = []
+        for document in children_by_parent.get(category.object_id, []):
+            heading_rows = "".join(
+                relational_object_row(heading)
+                for heading in children_by_parent.get(document.object_id, [])
+            )
+            document_rows.append(
+                relational_object_row(document, heading_rows, expanded=False)
+            )
+        category_rows.append(
+            relational_object_row(category, "".join(document_rows), expanded=True)
+        )
+
+    folder_rows = "".join(relational_object_row(folder) for folder in folders)
+    concept_rows = "".join(relational_object_row(concept) for concept in concepts)
+    kind_counts = {
+        kind: sum(item.kind == kind for item in relational_objects)
+        for kind in ("root", "category", "folder", "document", "heading", "concept")
+    }
+    filter_buttons = "".join(
+        f'<button type="button" data-relational-filter="{kind}" aria-pressed="false">'
+        f'{kind.upper()} <span>{count}</span></button>'
+        for kind, count in kind_counts.items()
+        if kind != "root"
+    )
+    root_record = relational_record(root)
+    root_relations = len(children_by_parent.get(root.object_id, []))
+    return f"""
+<section class="relational-explorer" id="documentation-tree" aria-labelledby="relational-explorer-title">
+  <div class="relational-explorer-heading">
+    <div>
+      <p class="terminal-label">INVARIANT RELATIONAL OBJECT BUS</p>
+      <h2 id="relational-explorer-title">Navigate the architecture as objects and relations.</h2>
+      <p>Every row has a stable identity, a canonical parent edge, a deterministic SVG symbol, and a manifest record. Select an object to inspect its evidence-bearing position in the tree.</p>
+    </div>
+    <div class="relational-root-chip" data-relational-object="{html.escape(root.object_id, quote=True)}">
+      {relational_symbol_markup(root)}
+      <span><strong>{len(relational_objects)} OBJECTS</strong><small>{root_relations} root relations · zero inferred authority</small></span>
+    </div>
+  </div>
+  <div class="relational-controls" role="search">
+    <label><span>SEARCH OBJECT UNIVERSE</span><input id="relational-search" type="search" placeholder="authority, replay, GUI, evidence..." autocomplete="off"></label>
+    <div class="relational-kind-filters" aria-label="Filter relational objects by kind">
+      <button type="button" data-relational-filter="all" aria-pressed="true">ALL <span>{len(relational_objects)}</span></button>
+      {filter_buttons}
+    </div>
+    <p class="relational-search-status" role="status" aria-live="polite">{len(relational_objects)} OBJECTS ONLINE</p>
+  </div>
+  <div class="relational-workspace">
+    <div class="relational-tree-panel" aria-label="Documentation relational tree">
+      <section class="relational-tree-zone">
+        <div class="relational-zone-label"><span>01</span><h3>Architecture domains</h3><small>category → document → heading</small></div>
+        <ul class="relational-tree">{''.join(category_rows)}</ul>
+      </section>
+      <section class="relational-tree-zone" id="source-folders">
+        <div class="relational-zone-label"><span>02</span><h3>Source folders</h3><small>folder ↔ document index relations</small></div>
+        <ul class="relational-tree relational-folder-grid">{folder_rows}</ul>
+      </section>
+      <details class="relational-tree-zone relational-concept-zone">
+        <summary><span>03</span><strong>Concept mesh</strong><small>{len(concepts)} concepts with explicit semantic links</small></summary>
+        <ul class="relational-tree relational-concept-grid">{concept_rows}</ul>
+      </details>
+    </div>
+    <aside class="relational-inspector" id="relational-object-inspector" aria-live="polite">
+      <div class="inspector-scanline" aria-hidden="true"></div>
+      <p class="terminal-label">SELECTED OBJECT</p>
+      <object class="relational-symbol-preview" id="relational-symbol-preview" type="image/svg+xml" data="{html.escape(root.symbol_path, quote=True)}"><a href="{html.escape(root.symbol_path, quote=True)}">Open root object symbol</a></object>
+      <div class="inspector-kind" data-inspector-kind>{html.escape(root.kind.upper())}</div>
+      <h3 data-inspector-title>{html.escape(root.title)}</h3>
+      <p data-inspector-description>{html.escape(root.description)}</p>
+      <dl class="inspector-facts">
+        <div><dt>Object ID</dt><dd><code data-inspector-id>{html.escape(root.object_id)}</code></dd></div>
+        <div><dt>Relation</dt><dd data-inspector-relation>{html.escape(root.relation)}</dd></div>
+        <div><dt>Source key</dt><dd data-inspector-source>{html.escape(root.source_key)}</dd></div>
+      </dl>
+      <div class="inspector-relations">
+        <h4>RELATION PORTS</h4>
+        <div data-inspector-relations></div>
+      </div>
+      <a class="primary-action inspector-open" data-inspector-open href="{html.escape(root.href, quote=True)}">OPEN OBJECT</a>
+    </aside>
+  </div>
+  <script type="application/json" id="relational-root-record">{html.escape(json.dumps(root_record, sort_keys=True), quote=False)}</script>
+</section>
+"""
+
+
+def index_template(
+    documents: tuple[Document, ...],
+    concepts: tuple[Concept, ...],
+    relational_objects: tuple[RelationalObject, ...],
+    build_date: str,
+) -> str:
     heading_count = sum(len(document.sections) for document in documents)
     total_paragraphs = (heading_count + len(concepts)) * 25
-    total_svg_figures = len(documents) + len(concepts) + 3
+    total_svg_figures = len(documents) + len(concepts) + len(relational_objects) + 5
     manifest = [
         {
             "title": document.title,
@@ -1018,18 +1420,33 @@ def index_template(documents: tuple[Document, ...], concepts: tuple[Concept, ...
     ]
     category_cards = []
     categories = sorted({category_for(document) for document in documents})
+    category_objects = {
+        relational_object.title: relational_object
+        for relational_object in relational_objects
+        if relational_object.kind == "category"
+    }
     for category in categories:
         members = [document for document in documents if category_for(document) == category]
+        category_object = category_objects[category]
         category_cards.append(
-            f'<article class="category-card" data-category="{html.escape(category.lower(), quote=True)}">'
-            f'<span>{len(members):02d}</span><h3>{html.escape(category)}</h3>'
-            f'<p>{sum(len(document.sections) for document in members)} learning modules derived from {len(members)} source documents.</p></article>'
+            f'<button type="button" class="category-card" '
+            f'data-category="{html.escape(category.lower(), quote=True)}" '
+            f'data-relational-jump="{html.escape(category_object.object_id, quote=True)}">'
+            f'{relational_symbol_markup(category_object)}'
+            f'<span class="category-count">{len(members):02d}</span><h3>{html.escape(category)}</h3>'
+            f'<p>{sum(len(document.sections) for document in members)} heading objects across {len(members)} source documents.</p>'
+            f'<small>TRACE DOMAIN →</small></button>'
         )
     references = "".join(
         f'<li><a href="{html.escape(reference["url"])}" rel="noreferrer">{html.escape(reference["title"])}</a>'
         f'<p>{html.escape(reference["summary"])}</p></li>'
         for reference in REFERENCE_LIBRARY
     )
+    relational_json = json.dumps(
+        [relational_record(relational_object) for relational_object in relational_objects],
+        ensure_ascii=False,
+        separators=(",", ":"),
+    ).replace("</", "<\\/")
     return f"""<!doctype html>
 <html lang="en">
 <head>
@@ -1043,28 +1460,26 @@ def index_template(documents: tuple[Document, ...], concepts: tuple[Concept, ...
   <div class="scanline-overlay" aria-hidden="true"></div>
   <header class="site-header">
     <a class="brand" href="index.html"><span class="brand-mark">OS</span><span><strong>OIEC-STM ARCHITECT ACADEMY</strong><small>docs/index.html</small></span></a>
-    <nav class="header-actions"><button type="button" data-action="focus-mode">FOCUS</button><a href="../README.md">PROJECT README</a></nav>
+    <div class="header-telemetry" aria-label="Documentation status"><span>STATE <b>BOUNDED</b></span><span>OBJECTS <b>{len(relational_objects):03d}</b></span><span>BUILD <b>{html.escape(build_date)}</b></span></div>
+    <nav class="header-actions"><a href="#documentation-tree">OBJECT BUS</a><button type="button" data-action="focus-mode">FOCUS</button><a href="../README.md">README</a></nav>
   </header>
   <main class="index-main">
 {governed_loop_hero(len(concepts), build_date).lstrip()}
-    <section class="index-metrics" aria-label="Site metrics">
-      <article><span>{len(documents):02d}</span><p>Markdown sources</p></article>
-      <article><span>{heading_count:03d}</span><p>heading lessons</p></article>
-      <article><span>{len(concepts):03d}</span><p>unique concepts</p></article>
-      <article><span>{total_paragraphs:,}</span><p>argument paragraphs</p></article>
-      <article><span>{total_svg_figures:03d}</span><p>SVG figures</p></article>
+    <section class="index-command-rail" aria-label="Documentation system telemetry">
+      <article><span>01</span><div><strong>{len(documents):02d}</strong><small>Markdown sources</small></div></article>
+      <article><span>02</span><div><strong>{heading_count:03d}</strong><small>heading objects</small></div></article>
+      <article><span>03</span><div><strong>{len(concepts):03d}</strong><small>concept objects</small></div></article>
+      <article><span>04</span><div><strong>{len(relational_objects):03d}</strong><small>relational symbols</small></div></article>
+      <article><span>05</span><div><strong>{total_svg_figures:03d}</strong><small>SVG artifacts</small></div></article>
+      <article><span>06</span><div><strong>{total_paragraphs:,}</strong><small>argument paragraphs</small></div></article>
     </section>
-    <section class="index-overview-panel">
-      <div><p class="terminal-label">DOCUMENTATION ARCHITECTURE BUS</p><h2>Every Markdown heading becomes a testable lesson.</h2><p>The original Markdown remains the source of record. Each generated page adds one titled introduction, three untitled body sections, and one untitled conclusion; every section contains an introduction paragraph, three body paragraphs, and a conclusion paragraph.</p><div class="hero-actions"><a class="primary-action" href="#documentation-tree">OPEN DOC TREE</a><button type="button" data-action="random-module">RANDOM MODULE</button></div></div>
-      <object class="index-map" type="image/svg+xml" data="figures/index-architecture.svg"><a href="figures/index-architecture.svg">Open the architecture overview SVG</a></object>
+    <section class="relational-topology-panel">
+      <div class="topology-copy"><p class="terminal-label">RELATIONAL TOPOLOGY / LIVE MAP</p><h2>The tree is an inspectable system, not a decorative menu.</h2><p>The original Markdown remains the source of record. Categories partition documents, documents decompose into headings, folders index source placement, and concepts create explicit semantic cross-links. Every represented object receives a deterministic SVG identity.</p><div class="hero-actions"><a class="primary-action" href="#documentation-tree">ENTER OBJECT BUS</a><button type="button" data-action="random-module">RANDOM MODULE</button><a href="figures/relational-topology.svg">OPEN SVG MAP</a></div></div>
+      <figure><object class="relational-topology-map" type="image/svg+xml" data="figures/relational-topology.svg"><a href="figures/relational-topology.svg">Open the relational topology SVG</a></object><figcaption>SELECT A KIND NODE TO FILTER THE OBJECT BUS.</figcaption></figure>
     </section>
-    <section class="concept-atlas-callout"><div><p class="terminal-label">{len(concepts)} SOURCE-DERIVED CONCEPTS</p><h2>Search the full OIEC-STM-Agent concept atlas.</h2><p>The atlas derives concepts from the governed loop, every semantic command namespace, and every public runtime, record, adapter, persistence, authority, provider, service, and refusal type under <code>ourd/</code>.</p><a class="primary-action" href="concepts/index.html">OPEN CONCEPT ATLAS</a></div><object class="atlas-preview" type="image/svg+xml" data="figures/concept-atlas.svg"><a href="figures/concept-atlas.svg">Open the concept atlas SVG</a></object></section>
-    <section class="category-grid">{''.join(category_cards)}</section>
-    <section class="tree-shell" id="documentation-tree">
-      <div class="tree-heading"><div><p class="terminal-label">/DOCS/ HTML TREE</p><h2>Documentation directory</h2><p>Filter by concept, source file, heading, or architecture category.</p></div><label>SEARCH<input id="docs-search" type="search" placeholder="EGCF, replay, authority..."></label></div>
-      {render_tree(documents)}
-      <p class="search-status" role="status" aria-live="polite"></p>
-    </section>
+    <section class="category-grid" aria-label="Architecture domains">{''.join(category_cards)}</section>
+{render_relational_explorer(relational_objects).lstrip()}
+    <section class="concept-atlas-callout"><div><p class="terminal-label">{len(concepts)} SOURCE-DERIVED CONCEPTS</p><h2>Open the long-form concept atlas.</h2><p>The object bus is optimized for topology and navigation. The concept atlas provides the corresponding essays, source provenance, interactive figures, and textbook lenses for every source-derived concept.</p><a class="primary-action" href="concepts/index.html">OPEN CONCEPT ATLAS</a></div><object class="atlas-preview" type="image/svg+xml" data="figures/concept-atlas.svg"><a href="figures/concept-atlas.svg">Open the concept atlas SVG</a></object></section>
     <section class="learning-method">
       <div><p class="terminal-label">READING PROTOCOL</p><h2>How to learn from the site</h2></div>
       <ol><li><strong>Orient.</strong> Read the plain-language introduction and glossary.</li><li><strong>Challenge.</strong> Compare the thesis with the source evidence and counterargument.</li><li><strong>Trace.</strong> Use the SVG nodes to follow claim, evidence, boundary, and decision.</li><li><strong>Test.</strong> Turn one documented claim into a falsifiable architecture check.</li></ol>
@@ -1073,6 +1488,7 @@ def index_template(documents: tuple[Document, ...], concepts: tuple[Concept, ...
   </main>
   <div class="pixel-crew" aria-hidden="true"></div>
   <script>window.DOCS_MANIFEST = {json.dumps(manifest, ensure_ascii=False)};</script>
+  <script>window.RELATIONAL_OBJECTS = {relational_json};</script>
   <script src="assets/site.js" defer></script>
 </body>
 </html>
@@ -1302,6 +1718,149 @@ svg{{background:#fbf8ff;font-family:'Courier New',monospace}}.grid{{stroke:#eadf
 </style><defs><pattern id="grid" width="24" height="24" patternUnits="userSpaceOnUse"><path class="grid" d="M24 0L0 0 0 24" fill="none"/></pattern></defs><rect width="100%" height="100%" fill="url(#grid)"/><g>{''.join(edges)}</g><g class="core"><rect x="430" y="255" width="280" height="120" rx="4"/><text class="core-title" x="472" y="306">DOCS/INDEX.HTML</text><text class="core-sub" x="476" y="338">SYSTEMS ARCHITECT BUS</text></g><g>{''.join(nodes)}</g></svg>"""
 
 
+RELATIONAL_KIND_STYLES = {
+    "root": ("#2a0648", "#39e7ff", "RT"),
+    "category": ("#4b117a", "#ff2fc3", "CT"),
+    "folder": ("#6a1aa5", "#fff36a", "FD"),
+    "document": ("#7c2bc0", "#54f0a8", "DC"),
+    "heading": ("#9a3bd6", "#ffffff", "HD"),
+    "concept": ("#38115d", "#d4a9ff", "CP"),
+}
+
+
+def relational_symbol_shape(kind: str, fill: str, accent: str) -> str:
+    if kind == "root":
+        return (
+            f'<path d="M48 10 76 24 86 52 68 80 28 80 10 52 20 24Z" fill="{fill}" stroke="{accent}" stroke-width="4" />'
+            f'<rect x="31" y="31" width="34" height="34" fill="#ffffff" stroke="{accent}" stroke-width="4" />'
+            f'<path d="M48 10V31M86 52H65M48 65V80M10 52H31" stroke="{accent}" stroke-width="4" />'
+        )
+    if kind == "category":
+        return (
+            f'<path d="M16 20H80V76H16Z" fill="{fill}" stroke="{accent}" stroke-width="4" />'
+            f'<path d="M24 30H72M24 48H64M24 66H54" stroke="#ffffff" stroke-width="5" />'
+            f'<rect x="10" y="38" width="8" height="20" fill="{accent}" /><rect x="78" y="38" width="8" height="20" fill="{accent}" />'
+        )
+    if kind == "folder":
+        return (
+            f'<path d="M12 28H39L47 20H84V76H12Z" fill="{fill}" stroke="{accent}" stroke-width="4" />'
+            f'<path d="M20 42H76V68H20Z" fill="#ffffff" stroke="{accent}" stroke-width="3" />'
+        )
+    if kind == "document":
+        return (
+            f'<path d="M22 10H61L78 27V86H22Z" fill="#ffffff" stroke="{fill}" stroke-width="5" />'
+            f'<path d="M61 10V28H78" fill="{accent}" stroke="{fill}" stroke-width="4" />'
+            f'<path d="M32 42H68M32 55H68M32 68H58" stroke="{fill}" stroke-width="4" />'
+        )
+    if kind == "heading":
+        return (
+            f'<path d="M48 9 86 48 48 87 10 48Z" fill="{fill}" stroke="{accent}" stroke-width="4" />'
+            f'<path d="M29 38H67M29 49H67M38 60H58" stroke="#ffffff" stroke-width="4" />'
+        )
+    return (
+        f'<circle cx="48" cy="48" r="28" fill="{fill}" stroke="{accent}" stroke-width="4" />'
+        f'<ellipse cx="48" cy="48" rx="42" ry="17" fill="none" stroke="{accent}" stroke-width="3" />'
+        f'<circle cx="18" cy="48" r="6" fill="#ffffff" /><circle cx="73" cy="35" r="6" fill="#ffffff" />'
+    )
+
+
+def relational_symbol_svg(relational_object: RelationalObject) -> str:
+    fill, accent, kind_code = RELATIONAL_KIND_STYLES[relational_object.kind]
+    digest = hashlib.sha256(relational_object.object_id.encode("utf-8")).digest()
+    fingerprint_cells = []
+    for cell_index in range(16):
+        column = cell_index % 4
+        row = cell_index // 4
+        enabled = digest[cell_index] % 2 == 1
+        fingerprint_cells.append(
+            f'<rect x="{70 + column * 5}" y="{72 + row * 5}" width="4" height="4" '
+            f'fill="{accent if enabled else "#d9c1ef"}" />'
+        )
+    metadata = html.escape(
+        json.dumps(relational_record(relational_object), sort_keys=True, ensure_ascii=False),
+        quote=False,
+    )
+    shape = relational_symbol_shape(relational_object.kind, fill, accent)
+    return f"""<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 96 96" role="img" data-object-id="{html.escape(relational_object.object_id, quote=True)}" data-object-kind="{html.escape(relational_object.kind, quote=True)}">
+<title>{html.escape(relational_object.title)}</title><desc>{html.escape(relational_object.description)} Relation: {html.escape(relational_object.relation)}.</desc><metadata>{metadata}</metadata>
+<style>svg{{background:#fbf8ff}}[data-symbol-core]{{transform-origin:48px 48px;transition:transform 160ms ease,filter 160ms ease}}svg[data-active="true"] [data-symbol-core]{{transform:scale(1.05);filter:drop-shadow(0 0 6px {accent})}}@media(prefers-reduced-motion:reduce){{[data-symbol-core]{{transition:none}}}}</style>
+<g id="object-symbol" data-symbol-core="true">{shape}<rect x="4" y="4" width="25" height="16" fill="#ffffff" stroke="{fill}" stroke-width="2" /><text x="16.5" y="16" fill="{fill}" font-family="Courier New,monospace" font-size="9" font-weight="700" text-anchor="middle">{kind_code}</text>{''.join(fingerprint_cells)}</g>
+</svg>"""
+
+
+def relational_symbol_sprite_svg(
+    relational_objects: tuple[RelationalObject, ...],
+) -> str:
+    symbols = []
+    for relational_object in relational_objects:
+        fill, accent, kind_code = RELATIONAL_KIND_STYLES[relational_object.kind]
+        digest = hashlib.sha256(relational_object.object_id.encode("utf-8")).digest()
+        fingerprint_cells = []
+        for cell_index in range(16):
+            column = cell_index % 4
+            row = cell_index // 4
+            enabled = digest[cell_index] % 2 == 1
+            fingerprint_cells.append(
+                f'<rect x="{70 + column * 5}" y="{72 + row * 5}" width="4" height="4" '
+                f'fill="{accent if enabled else "#d9c1ef"}" />'
+            )
+        shape = relational_symbol_shape(relational_object.kind, fill, accent)
+        symbols.append(
+            f'<symbol id="{html.escape(relational_object.object_id, quote=True)}" '
+            f'viewBox="0 0 96 96">'
+            f'<title>{html.escape(relational_object.title)}</title>'
+            f'<desc>{html.escape(relational_object.description)}</desc>'
+            f'<g data-symbol-core="true">{shape}'
+            f'<rect x="4" y="4" width="25" height="16" fill="#ffffff" '
+            f'stroke="{fill}" stroke-width="2" />'
+            f'<text x="16.5" y="16" fill="{fill}" font-family="Courier New,monospace" '
+            f'font-size="9" font-weight="700" text-anchor="middle">{kind_code}</text>'
+            f'{"".join(fingerprint_cells)}</g></symbol>'
+        )
+    return f"""<svg xmlns="http://www.w3.org/2000/svg" role="img">
+<title>OIEC-STM relational object symbol sprite</title>
+<desc>Deterministic reusable symbols for every invariant relational object in the documentation tree.</desc>
+<defs>{''.join(symbols)}</defs>
+</svg>"""
+
+
+def relational_topology_svg(relational_objects: tuple[RelationalObject, ...]) -> str:
+    kind_order = ("category", "folder", "document", "heading", "concept")
+    positions = {
+        "category": (155, 115),
+        "folder": (505, 72),
+        "document": (850, 145),
+        "heading": (790, 455),
+        "concept": (210, 465),
+    }
+    center_x, center_y = 560, 320
+    edges = []
+    nodes = []
+    for kind in kind_order:
+        position_x, position_y = positions[kind]
+        count = sum(item.kind == kind for item in relational_objects)
+        fill, accent, kind_code = RELATIONAL_KIND_STYLES[kind]
+        edges.append(
+            f'<path class="topology-edge" d="M {center_x} {center_y} L {position_x + 120} {position_y + 60}" />'
+        )
+        nodes.append(
+            f'<g class="topology-kind" data-relational-kind="{kind}" tabindex="0" role="button" aria-label="Filter to {kind} objects">'
+            f'<rect x="{position_x}" y="{position_y}" width="240" height="120" fill="#ffffff" stroke="{fill}" stroke-width="4" />'
+            f'<rect x="{position_x + 16}" y="{position_y + 18}" width="48" height="48" fill="{fill}" stroke="{accent}" stroke-width="3" />'
+            f'<text x="{position_x + 40}" y="{position_y + 49}" text-anchor="middle" fill="#ffffff" font-size="15" font-weight="700">{kind_code}</text>'
+            f'<text x="{position_x + 78}" y="{position_y + 42}" fill="#2a0648" font-size="15" font-weight="700">{kind.upper()}</text>'
+            f'<text x="{position_x + 78}" y="{position_y + 65}" fill="#6a1aa5" font-size="12">{count:03d} OBJECTS</text>'
+            f'<path d="M {position_x + 18} {position_y + 88} H {position_x + 220}" stroke="{accent}" stroke-width="3" stroke-dasharray="8 6" />'
+            f'<title>{count} {kind} relational objects</title></g>'
+        )
+    return f"""<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="650" viewBox="0 0 1120 650" role="img">
+<title>OIEC-STM documentation relational topology</title><desc>Interactive map of category, folder, document, heading, and concept objects connected to the documentation root.</desc>
+<style>svg{{background:#170326;font-family:'Courier New',monospace}}.grid{{stroke:#4b117a;stroke-width:1}}.topology-edge{{fill:none;stroke:#b65cff;stroke-width:4;stroke-dasharray:10 10;animation:signal 2.2s linear infinite}}.topology-kind{{cursor:pointer;outline:none}}.topology-kind rect{{transition:160ms ease;filter:drop-shadow(7px 7px 0 #4b117a)}}.topology-kind:hover rect,.topology-kind:focus rect,.topology-kind.active rect{{stroke:#39e7ff;filter:drop-shadow(7px 7px 0 #ff2fc3)}}.root-core rect{{fill:#ffffff;stroke:#39e7ff;stroke-width:5;filter:drop-shadow(10px 10px 0 #ff2fc3)}}@keyframes signal{{to{{stroke-dashoffset:-40}}}}@media(prefers-reduced-motion:reduce){{.topology-edge{{animation:none}}}}</style>
+<defs><pattern id="topology-grid" width="24" height="24" patternUnits="userSpaceOnUse"><path class="grid" d="M24 0H0V24" fill="none" /></pattern></defs><rect width="100%" height="100%" fill="url(#topology-grid)" />
+<g>{''.join(edges)}</g><g class="root-core"><rect x="410" y="250" width="300" height="140" /><text x="560" y="300" text-anchor="middle" fill="#2a0648" font-size="22" font-weight="700">OIEC-STM OBJECT BUS</text><text x="560" y="332" text-anchor="middle" fill="#6a1aa5" font-size="13">{len(relational_objects):03d} INVARIANT OBJECTS</text><text x="560" y="362" text-anchor="middle" fill="#ff2fc3" font-size="11">SELECT A KIND TO FILTER</text></g><g>{''.join(nodes)}</g>
+</svg>"""
+
+
 def write_text(path: Path, content: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(content.rstrip() + "\n", encoding="utf-8")
@@ -1314,6 +1873,8 @@ def build(build_date: str) -> tuple[tuple[Document, ...], tuple[Concept, ...]]:
         raise SystemExit("No Markdown files found under docs/")
     if not concepts:
         raise SystemExit("No OIEC-STM-Agent concepts discovered")
+    relational_objects = build_relational_objects(documents, concepts)
+    validate_relational_objects(relational_objects)
 
     figures_root = DOCS_ROOT / "figures"
     for index, document in enumerate(documents):
@@ -1340,11 +1901,53 @@ def build(build_date: str) -> tuple[tuple[Document, ...], tuple[Concept, ...]]:
         )
         write_text(concept_figures_root / f"{concept.slug}.svg", concept_svg(concept))
 
+    relational_figures_root = figures_root / "relational-objects"
+    relational_figures_root.mkdir(parents=True, exist_ok=True)
+    for stale_path in relational_figures_root.glob("*.svg"):
+        stale_path.unlink()
+    for relational_object in relational_objects:
+        write_text(
+            DOCS_ROOT / relational_object.symbol_path,
+            relational_symbol_svg(relational_object),
+        )
+
     write_text(concepts_root / "index.html", concept_atlas_template(concepts, build_date))
-    write_text(DOCS_ROOT / "index.html", index_template(documents, concepts, build_date))
+    write_text(
+        DOCS_ROOT / "index.html",
+        index_template(documents, concepts, relational_objects, build_date),
+    )
     write_text(figures_root / "index-architecture.svg", index_svg(documents))
     write_text(figures_root / "governed-loop.svg", governed_loop_svg())
     write_text(figures_root / "concept-atlas.svg", concept_atlas_svg(concepts))
+    write_text(
+        figures_root / "relational-symbols.svg",
+        relational_symbol_sprite_svg(relational_objects),
+    )
+    write_text(
+        figures_root / "relational-topology.svg",
+        relational_topology_svg(relational_objects),
+    )
+
+    relational_relations = []
+    for relational_object in relational_objects:
+        if relational_object.parent_id:
+            relational_relations.append(
+                {
+                    "source_id": relational_object.object_id,
+                    "target_id": relational_object.parent_id,
+                    "relation": relational_object.relation,
+                    "canonical": True,
+                }
+            )
+        for related_id in relational_object.related_ids:
+            relational_relations.append(
+                {
+                    "source_id": relational_object.object_id,
+                    "target_id": related_id,
+                    "relation": "related-to",
+                    "canonical": False,
+                }
+            )
 
     manifest = {
         "build_date": build_date,
@@ -1382,6 +1985,22 @@ def build(build_date: str) -> tuple[tuple[Document, ...], tuple[Concept, ...]]:
             }
             for concept in concepts
         ],
+        "relational_objects": [
+            relational_record(relational_object)
+            for relational_object in relational_objects
+        ],
+        "relational_relations": relational_relations,
+        "relational_summary": {
+            "object_count": len(relational_objects),
+            "relation_count": len(relational_relations),
+            "symbol_count": len(relational_objects),
+            "kinds": {
+                kind: sum(item.kind == kind for item in relational_objects)
+                for kind in RELATIONAL_KIND_STYLES
+            },
+            "sprite_figure": "figures/relational-symbols.svg",
+            "topology_figure": "figures/relational-topology.svg",
+        },
         "governed_loop": {
             "pipeline": ["HRTv1", "OURD", "IURMv1.1.1", "EONv1", "Evidence Gate", "Action", "CFEL"],
             "figure": "figures/governed-loop.svg",
@@ -1403,13 +2022,15 @@ def main() -> int:
     )
     args = parser.parse_args()
     documents, concepts = build(args.date)
+    relational_objects = build_relational_objects(documents, concepts)
     heading_count = sum(len(document.sections) for document in documents)
     paragraph_count = (heading_count + len(concepts)) * 25
-    svg_count = len(documents) + len(concepts) + 3
+    svg_count = len(documents) + len(concepts) + len(relational_objects) + 5
     html_count = len(documents) + len(concepts) + 2
     print(
         f"Built {html_count} HTML pages, {svg_count} SVG figures, and {paragraph_count} "
-        f"essay paragraphs from {heading_count} Markdown headings and {len(concepts)} concepts."
+        f"essay paragraphs from {heading_count} Markdown headings and {len(concepts)} "
+        f"concepts with {len(relational_objects)} relational objects."
     )
     return 0
 
