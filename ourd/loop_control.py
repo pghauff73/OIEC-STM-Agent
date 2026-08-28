@@ -26,11 +26,7 @@ _VOLATILE_KEYS = {
 
 
 def _semantic_value(value: Any, *, key: str = "") -> Any:
-    """Project model-supplied material into a bounded semantic identity.
-
-    Runtime-generated IDs are deliberately removed. The model cannot escape a
-    repeat detector merely by receiving a new UUID/event/evidence identifier.
-    """
+    """Project model-supplied material into a bounded semantic identity."""
 
     if key in _VOLATILE_KEYS or key.endswith("_id"):
         return "<identity>"
@@ -56,10 +52,7 @@ def _semantic_value(value: Any, *, key: str = "") -> Any:
 
 def semantic_step_signature(calls: Sequence[tuple[str, Mapping[str, Any]]]) -> str:
     material = [
-        {
-            "name": str(name),
-            "args": _semantic_value(dict(arguments)),
-        }
+        {"name": str(name), "args": _semantic_value(dict(arguments))}
         for name, arguments in calls
     ]
     return stable_hash(material)
@@ -83,8 +76,6 @@ def _evidence_atom(artifact: Any) -> str:
 
 
 def _collision_atom(collision: Any) -> str:
-    # Do not trust UUID/fingerprint identity here. Equivalent failures should
-    # collapse even if they were emitted by a fresh model call/action identity.
     return stable_hash(
         {
             "expected": _semantic_value(collision.expected),
@@ -152,7 +143,6 @@ def _control_atoms(state: RuntimeState) -> tuple[str, ...]:
                     "required_tests": sorted(set(action.required_tests)),
                     "varied_dimensions": sorted(set(action.varied_dimensions)),
                     "use_limit": int(action.use_limit),
-                    # use_count is bookkeeping, not epistemic/goal progress.
                 }
             )
         )
@@ -205,8 +195,7 @@ def _control_atoms(state: RuntimeState) -> tuple[str, ...]:
                     "status_rank": transaction_rank.get(record.status, 0),
                     "applied_snapshot_hash": record.applied_snapshot_hash,
                     "verification_evidence": _stable_evidence_refs(
-                        state,
-                        record.verification_evidence_ids,
+                        state, record.verification_evidence_ids
                     ),
                 }
             )
@@ -220,16 +209,53 @@ def _control_atoms(state: RuntimeState) -> tuple[str, ...]:
     return tuple(sorted(set(atoms)))
 
 
+def _hypothesis_atoms(state: RuntimeState) -> tuple[tuple[str, ...], tuple[str, ...]]:
+    definitions: list[str] = []
+    evidence_links: list[str] = []
+    if state.hypothesis_state is None:
+        return (), ()
+    for hypothesis in state.hypothesis_state.hypotheses:
+        definitions.append(
+            stable_hash(
+                {
+                    "hypothesis_id": hypothesis.hypothesis_id,
+                    "proposition": hypothesis.proposition,
+                    "model_prior_bp": hypothesis.model_prior_bp,
+                    "assumptions": hypothesis.assumptions,
+                    "predictions": hypothesis.predictions,
+                    "falsifiers": hypothesis.falsifiers,
+                    "verification_status": hypothesis.verification_status,
+                }
+            )
+        )
+        for link in hypothesis.evidence_links:
+            evidence_links.append(
+                stable_hash(
+                    {
+                        "hypothesis_id": hypothesis.hypothesis_id,
+                        "evidence_fingerprint": link.evidence_fingerprint,
+                        "relation": link.relation,
+                        "quality_bp": link.quality_bp,
+                        "source_snapshot_hash": link.source_snapshot_hash,
+                        "relation_epistemic_status": link.relation_epistemic_status,
+                    }
+                )
+            )
+    return tuple(sorted(set(definitions))), tuple(sorted(set(evidence_links)))
+
+
 @dataclass(frozen=True)
 class VerifiedProjection:
-    """Deterministic system projection, never populated by model prose."""
+    """Deterministic system projection, never populated directly by model prose."""
 
     workspace_snapshot_hash: str
     evidence_atoms: tuple[str, ...]
     collision_atoms: tuple[str, ...]
     control_atoms: tuple[str, ...]
-    boundary_uncertainty_bp: int
-    signature: str
+    hypothesis_definition_atoms: tuple[str, ...] = ()
+    hypothesis_evidence_atoms: tuple[str, ...] = ()
+    boundary_uncertainty_bp: int = 0
+    signature: str = ""
 
 
 @dataclass(frozen=True)
@@ -246,12 +272,14 @@ class TransitionAssessment:
     new_evidence_count: int
     new_collision_count: int
     new_control_count: int
+    new_hypothesis_definition_count: int
+    new_hypothesis_evidence_count: int
+    control_only: bool
+    control_only_streak: int
+    max_control_only_progress: int
 
     def to_dict(self) -> dict[str, Any]:
-        return {
-            **asdict(self),
-            "certificate": asdict(self.certificate),
-        }
+        return {**asdict(self), "certificate": asdict(self.certificate)}
 
 
 def verified_projection(state: RuntimeState, workspace_snapshot_hash: str) -> VerifiedProjection:
@@ -262,6 +290,7 @@ def verified_projection(state: RuntimeState, workspace_snapshot_hash: str) -> Ve
         sorted({_collision_atom(collision) for collision in state.collisions})
     )
     control_atoms = _control_atoms(state)
+    hypothesis_definitions, hypothesis_evidence = _hypothesis_atoms(state)
     boundary_uncertainty = (
         int(state.boundary_state.boundary_uncertainty_bp)
         if state.boundary_state is not None
@@ -272,6 +301,8 @@ def verified_projection(state: RuntimeState, workspace_snapshot_hash: str) -> Ve
         "evidence_atoms": evidence_atoms,
         "collision_atoms": collision_atoms,
         "control_atoms": control_atoms,
+        "hypothesis_definition_atoms": hypothesis_definitions,
+        "hypothesis_evidence_atoms": hypothesis_evidence,
         "boundary_uncertainty_bp": boundary_uncertainty,
     }
     return VerifiedProjection(
@@ -279,17 +310,28 @@ def verified_projection(state: RuntimeState, workspace_snapshot_hash: str) -> Ve
         evidence_atoms=evidence_atoms,
         collision_atoms=collision_atoms,
         control_atoms=control_atoms,
+        hypothesis_definition_atoms=hypothesis_definitions,
+        hypothesis_evidence_atoms=hypothesis_evidence,
         boundary_uncertainty_bp=boundary_uncertainty,
         signature=stable_hash(material),
     )
 
 
 class LoopProgressController:
-    """Mandatory system-side progress and bounded semantic-cycle controller."""
+    """Mandatory progress, control-budget and bounded semantic-cycle controller."""
 
-    def __init__(self, *, window: int = 12, max_period: int = 4) -> None:
+    def __init__(
+        self,
+        *,
+        window: int = 12,
+        max_period: int = 4,
+        max_control_only_progress: int = 2,
+        initial_control_only_streak: int = 0,
+    ) -> None:
         self.window = max(4, min(int(window), 64))
         self.max_period = max(1, min(int(max_period), self.window // 2))
+        self.max_control_only_progress = max(0, min(int(max_control_only_progress), 16))
+        self.control_only_streak = max(0, int(initial_control_only_streak))
         self._steps: list[str] = []
         self._states: list[str] = []
         self._assessments: list[TransitionAssessment] = []
@@ -308,29 +350,67 @@ class LoopProgressController:
         new_evidence = set(after.evidence_atoms) - set(before.evidence_atoms)
         new_collisions = set(after.collision_atoms) - set(before.collision_atoms)
         new_control = set(after.control_atoms) - set(before.control_atoms)
+        new_hypothesis_definitions = (
+            set(after.hypothesis_definition_atoms) - set(before.hypothesis_definition_atoms)
+        )
+        new_hypothesis_evidence = (
+            set(after.hypothesis_evidence_atoms) - set(before.hypothesis_evidence_atoms)
+        )
 
         evidence_count = len(new_evidence)
         collision_count = len(new_collisions)
         control_count = len(new_control)
+        hypothesis_definition_count = len(new_hypothesis_definitions)
+        hypothesis_evidence_count = len(new_hypothesis_evidence)
         evidence_gain_bp = min(
             SCORE_SCALE,
             (evidence_count * 1_000) + (collision_count * 500),
         )
+        hypothesis_resolution_bp = min(SCORE_SCALE, hypothesis_evidence_count * 1_000)
         boundary_reduction = (
             int(before.boundary_uncertainty_bp) - int(after.boundary_uncertainty_bp)
         )
-        goal_improvement_bp = 100 if control_count else 0
+        has_epistemic_progress = bool(
+            evidence_count
+            or collision_count
+            or hypothesis_evidence_count
+            or boundary_reduction >= 100
+        )
+        has_control_progress = bool(control_count or hypothesis_definition_count)
+        control_only = bool(has_control_progress and not has_epistemic_progress)
 
         certificate = certify_progress(
             evidence_gain_bp=evidence_gain_bp,
             uncertainty_reduction_bp=0,
-            goal_improvement_bp=goal_improvement_bp,
+            goal_improvement_bp=0,
             residual_risk_reduction_bp=0,
             boundary_uncertainty_reduction_bp=boundary_reduction,
             expected_information_gain_bp=0,
             novel_evidence=bool(evidence_count or collision_count),
             novel_experiment=False,
             terminal=terminal,
+        )
+        reasons = set(certificate.reasons)
+        accepted = bool(certificate.accepted)
+        if hypothesis_resolution_bp > 0:
+            reasons.add("hypothesis_resolution")
+            accepted = True
+        if terminal:
+            self.control_only_streak = 0
+        elif control_only:
+            self.control_only_streak += 1
+            if self.control_only_streak <= self.max_control_only_progress:
+                reasons.add("bounded_control_progress")
+                accepted = True
+        elif has_epistemic_progress:
+            self.control_only_streak = 0
+
+        certificate = replace(
+            certificate,
+            hypothesis_resolution_bp=hypothesis_resolution_bp,
+            accepted=accepted,
+            reasons=tuple(sorted(reasons)),
+            signature="",
         )
         certificate = replace(
             certificate,
@@ -344,6 +424,8 @@ class LoopProgressController:
                     "before": before.signature,
                     "after": after.signature,
                     "step": step_signature,
+                    "control_only_streak": self.control_only_streak,
+                    "max_control_only_progress": self.max_control_only_progress,
                 }
             ),
         )
@@ -358,11 +440,20 @@ class LoopProgressController:
             allowed = True
             terminal_state = "SOLUTION_OR_MODEL_FINAL"
             reason = "terminal response recorded; model output remains unverified unless evidence supports it"
+        elif control_only and self.control_only_streak > self.max_control_only_progress:
+            allowed = False
+            certificate = replace(certificate, accepted=False)
+            cycle_kind = "CONTROL_ONLY_BUDGET_EXHAUSTED"
+            terminal_state = "CYCLE_STOP"
+            reason = (
+                f"control-only progress streak {self.control_only_streak} exceeded bounded allowance "
+                f"{self.max_control_only_progress}; new verified evidence or hypothesis discrimination is required"
+            )
         elif not certificate.accepted:
             allowed = False
             cycle_kind = "NO_VERIFIED_PROGRESS"
             terminal_state = "CYCLE_STOP"
-            reason = "nonterminal autonomous step produced no novel verified evidence or governed state progress"
+            reason = "nonterminal autonomous step produced no verified epistemic or bounded control progress"
         else:
             recent_states = self._states[-self.window :]
             if after.signature in recent_states and after.signature != before.signature:
@@ -373,8 +464,6 @@ class LoopProgressController:
             else:
                 candidate_steps = [*self._steps[-self.window :], step_signature]
                 candidate_assessments = [*self._assessments[-self.window :]]
-                # Detect repeated semantic periods only when the repeated block is
-                # control/collision-driven rather than accumulating new positive evidence.
                 for candidate_period in range(1, self.max_period + 1):
                     if len(candidate_steps) < candidate_period * 2:
                         continue
@@ -384,14 +473,25 @@ class LoopProgressController:
                     ):
                         continue
                     comparison = candidate_assessments[-(2 * candidate_period - 1) :]
-                    comparison_evidence = sum(item.new_evidence_count for item in comparison)
-                    if evidence_count + comparison_evidence == 0:
+                    comparison_epistemic = sum(
+                        item.new_evidence_count
+                        + item.new_collision_count
+                        + item.new_hypothesis_evidence_count
+                        for item in comparison
+                    )
+                    if (
+                        evidence_count
+                        + collision_count
+                        + hypothesis_evidence_count
+                        + comparison_epistemic
+                        == 0
+                    ):
                         allowed = False
                         cycle_kind = "SEMANTIC_PERIODIC_CYCLE"
                         period = candidate_period
                         terminal_state = "CYCLE_STOP"
                         reason = (
-                            "semantic tool/action pattern repeated without new positive verified evidence"
+                            "semantic tool/action pattern repeated without new positive verified epistemic evidence"
                         )
                         break
 
@@ -408,6 +508,11 @@ class LoopProgressController:
             new_evidence_count=evidence_count,
             new_collision_count=collision_count,
             new_control_count=control_count,
+            new_hypothesis_definition_count=hypothesis_definition_count,
+            new_hypothesis_evidence_count=hypothesis_evidence_count,
+            control_only=control_only,
+            control_only_streak=self.control_only_streak,
+            max_control_only_progress=self.max_control_only_progress,
         )
         self._steps.append(step_signature)
         self._states.append(after.signature)
@@ -424,8 +529,6 @@ def model_belief_record(
     output_text: str,
     calls: Sequence[tuple[str, Mapping[str, Any]]],
 ) -> dict[str, Any]:
-    """Audit record for model belief/proposals without promoting them to facts."""
-
     text = output_text or ""
     step_signature = semantic_step_signature(calls)
     return {
@@ -435,5 +538,5 @@ def model_belief_record(
         "output_text_length": len(text),
         "proposed_tool_names": [name for name, _ in calls],
         "semantic_step_signature": step_signature,
-        "note": "model prose, confidence, assumptions, and tool proposals are not verified system facts",
+        "note": "model prose, confidence, assumptions, hypotheses and tool proposals are not verified system facts",
     }
