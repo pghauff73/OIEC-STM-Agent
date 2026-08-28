@@ -3,7 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any, Callable, Dict, Mapping, Sequence
 
-from ourd.agent import OURDAgent
+from ourd.production_agent import ProductionOURDAgent as OURDAgent
 from ourd.egcf.engine import EGCFEngine
 from ourd.providers import ProviderConfig
 from ourd.workspace import Workspace

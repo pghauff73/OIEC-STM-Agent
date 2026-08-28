@@ -11,6 +11,14 @@ from .formal_writing import (
     profile_dimensions,
     research_backed_profile,
 )
+from .loop_control import (
+    LoopProgressController,
+    TransitionAssessment,
+    VerifiedProjection,
+    model_belief_record,
+    semantic_step_signature,
+    verified_projection,
+)
 from .models import (
     AttemptKey,
     BoundaryState,
@@ -27,6 +35,7 @@ from .models import (
     TransactionRecord,
 )
 from .oiec import BoundedTransitionKernel
+from .production_agent import ProductionOURDAgent
 from .workspace import Workspace
 from .egcf import EGCFEngine
 
@@ -47,14 +56,21 @@ __all__ = [
     "FiniteEvidenceState",
     "GateDecision",
     "GovernanceRecord",
+    "LoopProgressController",
     "OURDAgent",
     "PolicyError",
+    "ProductionOURDAgent",
     "ProgressCertificate",
     "RuntimeState",
     "SCORE_SCALE",
     "TransactionRecord",
+    "TransitionAssessment",
+    "VerifiedProjection",
     "WRITING_PROFILES",
     "Workspace",
+    "model_belief_record",
     "profile_dimensions",
     "research_backed_profile",
+    "semantic_step_signature",
+    "verified_projection",
 ]
