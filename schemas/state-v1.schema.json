@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/ourd/state-v1.schema.json",
+  "title": "OURD Runtime State v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "authority",
+    "governance",
+    "pending_action",
+    "last_gate",
+    "changed_files",
+    "evidence_registry",
+    "transactions",
+    "collisions",
+    "failed_attempts",
+    "active_transaction_id",
+    "event_head"
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "authority": {"type": "object"},
+    "governance": {"type": "object"},
+    "pending_action": {"type": ["object", "null"]},
+    "last_gate": {"type": ["object", "null"]},
+    "changed_files": {"type": "array", "items": {"type": "string"}},
+    "evidence_registry": {"type": "object"},
+    "transactions": {"type": "object"},
+    "collisions": {"type": "array", "items": {"type": "object"}},
+    "failed_attempts": {"type": "object", "additionalProperties": {"type": "integer", "minimum": 0}},
+    "active_transaction_id": {"type": "string"},
+    "event_head": {"type": "string", "pattern": "^$|^[a-f0-9]{64}$"}
+  }
+}

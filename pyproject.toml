@@ -1,0 +1,19 @@
+[project]
+name = "ourd-coding-agent"
+version = "0.3.1"
+description = "A governed Codex-like coding agent using OURD, IURM, EON and HRT principles"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.optional-dependencies]
+openai = ["openai>=1.0.0"]
+
+[project.scripts]
+ourd-agent = "ourd.cli:main"
+egcf = "ourd.egcf.cli:main"
+ourd-gui = "ourd_gui.app:main"
+
+[build-system]
+requires = []
+build-backend = "tools.build_backend"
+backend-path = ["."]

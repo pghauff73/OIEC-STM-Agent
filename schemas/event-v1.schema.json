@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/ourd/event-v1.schema.json",
+  "title": "OURD Append-only Event v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "event_id",
+    "timestamp",
+    "previous_hash",
+    "event_type",
+    "payload_hash",
+    "run_id",
+    "action_id",
+    "transaction_id",
+    "payload",
+    "event_hash"
+  ],
+  "properties": {
+    "event_id": {"type": "string", "minLength": 1},
+    "timestamp": {"type": "string", "minLength": 1},
+    "previous_hash": {"type": "string", "pattern": "^$|^[a-f0-9]{64}$"},
+    "event_type": {"type": "string", "minLength": 1},
+    "payload_hash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "run_id": {"type": "string"},
+    "action_id": {"type": "string"},
+    "transaction_id": {"type": "string"},
+    "payload": {},
+    "event_hash": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  }
+}

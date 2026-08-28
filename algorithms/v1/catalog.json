@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "authority": "ourd.egcf.registry.AlgorithmRegistry.bootstrap",
+  "description": "Each exact command version receives a content-addressed built-in algorithm definition and contextual qualification record.",
+  "implementation_kinds": {
+    "builtin": "Read-only or internal semantic operation",
+    "simulation": "C2 operation with mandatory simulated result labeling",
+    "eon": "C3 workspace mutation through OURDAgent EON and TransactionManager only"
+  },
+  "selection_order": [
+    "qualification strength",
+    "invariant compatibility",
+    "expected correctness",
+    "rollback quality",
+    "evidence freshness",
+    "deterministic performance fit",
+    "resource cost",
+    "stable algorithm ID"
+  ],
+  "floating_versions_allowed": false,
+  "direct_command_callbacks_allowed": false
+}
