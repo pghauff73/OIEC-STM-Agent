@@ -84,38 +84,6 @@ All OIEC control quantities use integer basis points from `0` to `10000`.
 These values are deterministic telemetry and cannot lower the existing L0/L1/L2
 risk floor.
 
-## Formal University Writing
-
-OIEC-STM-Agent includes research-backed formal writing profiles for university
-work. Use `--writing-profile scientific-essay` for a scientific essay or
-`--writing-profile argumentative-essay` for an argumentative essay with an
-explicit logic topology.
-
-The scientific profile treats an essay as a thesis-driven scientific argument
-unless the assignment explicitly requires a report/IMRaD genre. It separates
-claim, evidence, method/provenance, reasoning, alternative explanations,
-limitations, uncertainty, causal strength, and reproducibility considerations.
-
-The argumentative profile builds a directed `ArgumentTopology` with thesis,
-claims, premises, evidence, warrants, counterclaims, rebuttals, qualifiers,
-limitations, and implications. Positive support must be acyclic; evidence nodes
-must carry source references; and material counterclaims require a response.
-Linked premises may share an `inference_id`, while inference modes can be marked
-as deductive, inductive, abductive, causal, analogical, authority, or defeasible.
-
-Example:
-
-```bash
-oiec-stm-agent . \
-  --write \
-  --write-path essay.md \
-  --writing-profile scientific-essay \
-  --task 'Write a scientific essay evaluating the evidence for the proposed mechanism.'
-```
-
-See `docs/WRITING_MODE.md` and `docs/FORMAL_WRITING_RESEARCH.md` for the full
-writing workflow and research basis.
-
 ## Install
 
 Python 3.10 or newer is required.
@@ -301,8 +269,9 @@ events, selection semantics, safety, testing, migrations, and current limits.
 
 ## EGCFv1 Semantic Command Fabric
 
-Version `0.3.1` adds the Evidence Governed Command Fabric as a separate `egcf`
-entry point above the existing OURD/EON primitives:
+Version `0.4.0` publishes the OIEC-STM-Agent name and OIEC-STMv1.2 bounded
+transition layer. The Evidence Governed Command Fabric remains available as the
+separate `egcf` entry point above the existing OURD/EON primitives:
 
 ```text
 Intent
@@ -479,33 +448,66 @@ The internal directory contains:
 - `.ourd-agent/lock`: one-writer lock.
 
 If `state.json` is invalid JSON or differs from the latest valid state event, it
-is rebuilt from the event chain. A broken event hash, payload hash, or previous
-hash is a hard failure; the agent does not silently continue from a corrupted
-history.
-
-## Current Limits
-
-This is a governed application layer, **not an OS sandbox**. It does not provide
-seccomp, containers, namespaces, network isolation, or hypervisor isolation.
-Those controls should be supplied externally for hostile-code execution.
-
-The command capability set is intentionally small. Extend it by adding a strict
-parser plus tests rather than widening to arbitrary shell execution.
-
-The default model loop does not certify a release, merge branches, push commits,
-or deploy. Those remain explicit external operations.
+is rebuilt from the event chain. Runtime schema 1 is migrated to schema 2 by
+appending a new hash-chained state snapshot; historical events are never
+rewritten. A broken event hash chain or unknown runtime schema fails closed.
 
 ## Validation
 
-Run the deterministic validation bundle:
+Run deterministic validation:
 
 ```bash
 python3 tools/validate.py
 ```
 
-The validator runs syntax compilation and the full `unittest` suite. Live model
-checks are optional and must be explicitly enabled.
+Run deterministic validation plus the optional live Qwen read-only tool loop:
 
-## License
+```bash
+python3 tools/validate.py --live-ollama
+```
 
-See `LICENSE`.
+Validation writes a JSON evidence report under `.ourd-agent/evidence/` unless
+`--no-report` is supplied. Live-model success is reported separately and cannot
+override deterministic failures.
+
+## Claim-to-Test Matrix
+
+| Enforcement claim | Primary proof |
+| --- | --- |
+| Canonical paths and internal-state protection | `tests/test_workspace.py` |
+| External authority and risk floors | `tests/test_authority.py`, `tests/test_policy.py` |
+| Exact action, grounded gates, limits, expiry | `tests/test_actions.py` |
+| Atomic apply, multi-file recovery, mode rollback | `tests/test_actions.py` |
+| State restoration, chain validation, locking, redaction | `tests/test_persistence.py` |
+| Non-stateful tool loop and direct Ollama transport | `tests/test_provider.py` |
+| CLI contract and strict tool schemas | `tests/test_cli.py` |
+| Empty reads and escaping-symlink listing | `tests/test_reads.py` |
+| Versioned schema artifacts | `tests/test_schemas.py` |
+
+## Current Limitations
+
+1. There is no OS, container, network, seccomp, namespace, or hypervisor
+   sandbox. Run untrusted repositories in a separate sandbox.
+2. Command capabilities are intentionally narrow and must be extended in code
+   with adversarial tests.
+3. Evidence artifacts are grounded to actual tool results, but semantic mapping
+   from an artifact to an invariant remains model-proposed and should be reviewed
+   for high-impact work.
+4. Atomic multi-file application is implemented as ordered atomic file replaces
+   plus complete rollback on failure; it is not a filesystem-wide atomic commit.
+5. The event log is tamper-evident, not cryptographically signed by an external
+   authority.
+6. Exact human identity and signature verification are represented in the
+   authority record but not integrated with an external identity provider.
+7. Certification, commit, push, deployment, and release remain external human or
+   governance actions.
+8. Provider transport retries default to zero and are capped at five. Mutation
+   retries are separately constrained by exact action identity, evidence
+   revision, risk, and authority.
+9. The GUI uses Tkinter and bounded native previews. JPEG, GLTF, GLB, live
+   OpenGL geometry, unrestricted PTY behavior, and remote model lifecycle
+   control are not enabled in this candidate.
+
+The implementation state remains a governed candidate until its exact source
+hashes, deterministic validation report, optional live-model evidence, rollback
+evidence, and unresolved risks are reviewed by a human authority.
