@@ -52,6 +52,7 @@ jobs:
           python -m unittest \
             tests.test_authority \
             tests.test_cli \
+            tests.test_hypotheses \
             tests.test_loop_control \
             tests.test_production_agent \
             tests.test_oiec \
