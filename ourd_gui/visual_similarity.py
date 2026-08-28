@@ -11,9 +11,9 @@ from typing import Any, Mapping, Sequence
 from .visual_models import MeshData, normalize_vertices, rotate_point
 
 try:
-    from PIL import Image, ImageChops, ImageDraw, ImageFilter, ImageOps
+    from PIL import Image, ImageDraw, ImageFilter, ImageOps
 except ImportError:  # pragma: no cover - optional visual dependency
-    Image = ImageChops = ImageDraw = ImageFilter = ImageOps = None  # type: ignore[assignment]
+    Image = ImageDraw = ImageFilter = ImageOps = None  # type: ignore[assignment]
 
 
 SCORE_SCALE = 10_000
@@ -89,6 +89,7 @@ class ThreeViewReport:
     orientation: str
     yaw_radians: float
     pitch_radians: float
+    method: str
     profile: str
     generated_views: Mapping[str, str]
     reference_views: Mapping[str, str]
@@ -101,6 +102,7 @@ class ThreeViewReport:
             "orientation": self.orientation,
             "yaw_radians": self.yaw_radians,
             "pitch_radians": self.pitch_radians,
+            "method": self.method,
             "profile": self.profile,
             "generated_views": dict(self.generated_views),
             "reference_views": dict(self.reference_views),
@@ -113,6 +115,7 @@ class ThreeViewReport:
 class ViewClassificationReport:
     mesh: str
     orientation: str
+    method: str
     profile: str
     scores: Mapping[str, Mapping[str, int]]
     assignment: Mapping[str, str]
@@ -153,7 +156,11 @@ def _open_grayscale(source: Path | Any):
 
 def _edge_image(image):
     edge = image.filter(ImageFilter.FIND_EDGES)
-    return edge.point(lambda value: 255 if value >= 28 else 0, mode="1").convert("L")
+    edge = edge.point(lambda value: 255 if value >= 28 else 0, mode="L")
+    if edge.width > 4 and edge.height > 4:
+        draw = ImageDraw.Draw(edge)
+        draw.rectangle((0, 0, edge.width - 1, edge.height - 1), outline=0, width=2)
+    return edge
 
 
 def _contain(image, size: int):
@@ -177,8 +184,6 @@ def prepare_image(source: Path | Any, *, size: int = DEFAULT_COMPARE_SIZE, prepr
         return image.resize((size, size), Image.Resampling.LANCZOS)
     if preprocess == "edge-fit":
         edges = _edge_image(image)
-        # edge map is white where structure is present, so getbbox yields the
-        # structural extent. Ignore pathological tiny boxes.
         bbox = edges.getbbox()
         if bbox is not None and (bbox[2] - bbox[0]) >= 4 and (bbox[3] - bbox[1]) >= 4:
             image = image.crop(bbox)
@@ -422,14 +427,11 @@ def render_mesh_view(
     maximum_x = max(point[0] for point in projected)
     minimum_y = min(point[1] for point in projected)
     maximum_y = max(point[1] for point in projected)
-    extent_x = maximum_x - minimum_x
-    extent_y = maximum_y - minimum_y
-    extent = max(extent_x, extent_y, 1e-9)
+    extent = max(maximum_x - minimum_x, maximum_y - minimum_y, 1e-9)
     padding = max(8, int(size * 0.06))
     scale = (size - 2 * padding) / extent
     center_x = (minimum_x + maximum_x) / 2.0
     center_y = (minimum_y + maximum_y) / 2.0
-
     screen = [
         (
             size / 2.0 + (x - center_x) * scale,
@@ -471,6 +473,7 @@ def match_three_views(
     orientation: str = "world",
     yaw: float = 0.0,
     pitch: float = 0.0,
+    method: str = "all",
     profile: str = "shape",
     preprocess: str = "edge-fit",
     size: int = DEFAULT_COMPARE_SIZE,
@@ -486,7 +489,7 @@ def match_three_views(
             reference_sources[view],
             left_name=generated_names.get(view, f"generated:{view}"),
             right_name=reference_names.get(view, f"reference:{view}"),
-            method="all",
+            method=method,
             profile=profile,
             preprocess=preprocess,
             size=size,
@@ -497,6 +500,7 @@ def match_three_views(
         orientation=orientation,
         yaw_radians=float(yaw),
         pitch_radians=float(pitch),
+        method=method,
         profile=profile,
         generated_views=dict(generated_names),
         reference_views=dict(reference_names),
@@ -513,6 +517,7 @@ def classify_images_to_three_views(
     orientation: str = "world",
     yaw: float = 0.0,
     pitch: float = 0.0,
+    method: str = "all",
     profile: str = "shape",
     preprocess: str = "edge-fit",
     size: int = DEFAULT_COMPARE_SIZE,
@@ -531,7 +536,7 @@ def classify_images_to_three_views(
                 source,
                 left_name=f"generated:{view}",
                 right_name=reference,
-                method="all",
+                method=method,
                 profile=profile,
                 preprocess=preprocess,
                 size=size,
@@ -540,37 +545,38 @@ def classify_images_to_three_views(
 
     references = list(sorted(candidates))
     views = tuple(VIEW_AXES)
-    assignment: dict[str, str] = {}
+    best_score = -1
+    best_assignment: dict[str, str] = {}
     if len(references) >= 3:
-        best_score = -1
-        best_assignment: dict[str, str] = {}
         for chosen in itertools.permutations(references, 3):
             total = sum(scores[reference][view] for view, reference in zip(views, chosen))
-            if total > best_score or (
-                total == best_score and tuple(chosen) < tuple(best_assignment.get(view, "") for view in views)
-            ):
+            candidate_assignment = {view: reference for view, reference in zip(views, chosen)}
+            signature = tuple(candidate_assignment[view] for view in views)
+            best_signature = tuple(best_assignment.get(view, "") for view in views)
+            if total > best_score or (total == best_score and signature < best_signature):
                 best_score = total
-                best_assignment = {view: reference for view, reference in zip(views, chosen)}
-        assignment = best_assignment
-        aggregate = int(round(best_score / 3.0)) if best_score >= 0 else 0
+                best_assignment = candidate_assignment
+        divisor = 3
     else:
-        for reference in references:
-            view = max(views, key=lambda candidate_view: (scores[reference][candidate_view], candidate_view))
-            assignment[reference] = view
-        aggregate = int(
-            round(
-                sum(scores[reference][view] for reference, view in assignment.items())
-                / max(1, len(assignment))
-            )
-        )
-    assigned_references = set(assignment.values()) if len(references) >= 3 else set(assignment)
+        for chosen_views in itertools.permutations(views, len(references)):
+            total = sum(scores[reference][view] for reference, view in zip(references, chosen_views))
+            candidate_assignment = {view: reference for reference, view in zip(references, chosen_views)}
+            signature = tuple(sorted(candidate_assignment.items()))
+            best_signature = tuple(sorted(best_assignment.items()))
+            if total > best_score or (total == best_score and signature < best_signature):
+                best_score = total
+                best_assignment = candidate_assignment
+        divisor = len(references)
+    aggregate = int(round(best_score / max(1, divisor))) if best_score >= 0 else 0
+    assigned_references = set(best_assignment.values())
     unassigned = tuple(reference for reference in references if reference not in assigned_references)
     return ViewClassificationReport(
         mesh=mesh_name,
         orientation=orientation,
+        method=method,
         profile=profile,
         scores=scores,
-        assignment=assignment,
+        assignment=best_assignment,
         aggregate_bp=aggregate,
         unassigned=unassigned,
     )
