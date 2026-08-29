@@ -1,4 +1,4 @@
-"""Public facade for SAA-11 controlled adaptation, lineage and experiments."""
+"""Public facade for SAA-11 controlled adaptation, lineage, evolution and experiments."""
 
 from .algebra.adaptation_lineage import (
     ADAPTATION_LINEAGE_VERSION,
@@ -33,23 +33,52 @@ from .algebra.algorithm_experiment import (
     make_variant_observation,
     qualify_ab_experiment,
 )
+from .algebra.experiment_aggregation import (
+    EXPERIMENT_AGGREGATION_VERSION,
+    MAX_AGGREGATED_EXPERIMENTS,
+    AggregatedMetricEvidence,
+    RepeatedExperimentAggregate,
+    aggregate_repeated_experiments,
+)
+from .algebra.multistep_evolution import (
+    MAX_EVOLUTION_STEPS,
+    MULTISTEP_EVOLUTION_VERSION,
+    EvolutionStepDescriptor,
+    EvolutionStepQualification,
+    MultiStepEvolutionAssessment,
+    MultiStepEvolutionPlan,
+    assess_multistep_evolution,
+    make_multistep_evolution_plan,
+    qualify_evolution_step,
+)
 from .adaptation_store import (
     ADAPTATION_STORE_SCHEMA_VERSION,
     ADAPTATION_STORE_VERSION,
     AdaptationLineageStore,
+)
+from .improvement_store import (
+    IMPROVEMENT_STORE_SCHEMA_VERSION,
+    IMPROVEMENT_STORE_VERSION,
+    ImprovementLoopStore,
 )
 
 __all__ = [
     "ALGORITHM_ADAPTATION_VERSION",
     "ADAPTATION_LINEAGE_VERSION",
     "ALGORITHM_EXPERIMENT_VERSION",
+    "EXPERIMENT_AGGREGATION_VERSION",
+    "MULTISTEP_EVOLUTION_VERSION",
     "ADAPTATION_STORE_VERSION",
     "ADAPTATION_STORE_SCHEMA_VERSION",
+    "IMPROVEMENT_STORE_VERSION",
+    "IMPROVEMENT_STORE_SCHEMA_VERSION",
     "ALLOWED_ADAPTATION_DIMENSIONS",
     "MAX_ADAPTATION_STEPS",
     "MAX_LINEAGE_DEPTH",
     "MAX_EXPERIMENT_METRICS",
     "MAX_EXPERIMENT_TRIALS",
+    "MAX_AGGREGATED_EXPERIMENTS",
+    "MAX_EVOLUTION_STEPS",
     "METRIC_DIRECTIONS",
     "AdaptationStep",
     "AdaptedAlgorithmCandidate",
@@ -61,7 +90,14 @@ __all__ = [
     "AlgorithmVariantObservation",
     "ExperimentMetricComparison",
     "ExperimentMetricSpec",
+    "AggregatedMetricEvidence",
+    "RepeatedExperimentAggregate",
+    "EvolutionStepDescriptor",
+    "EvolutionStepQualification",
+    "MultiStepEvolutionAssessment",
+    "MultiStepEvolutionPlan",
     "AdaptationLineageStore",
+    "ImprovementLoopStore",
     "build_controlled_adaptation_plan",
     "create_adapted_candidate",
     "adapted_candidate_ref",
@@ -70,4 +106,8 @@ __all__ = [
     "make_ab_experiment_design",
     "make_variant_observation",
     "qualify_ab_experiment",
+    "aggregate_repeated_experiments",
+    "make_multistep_evolution_plan",
+    "qualify_evolution_step",
+    "assess_multistep_evolution",
 ]
