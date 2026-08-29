@@ -101,12 +101,18 @@ class AlgorithmTransferAssessment:
 def _concept_equivalent(left: SemanticConcept, right: SemanticConcept, ontology: Any | None) -> bool:
     if left.concept_signature == right.concept_signature:
         return True
-    if ontology is None or not hasattr(ontology, "concepts_equivalent"):
+    if ontology is None or not hasattr(ontology, "meanings_equivalent"):
         return False
-    try:
-        return bool(ontology.concepts_equivalent(left.concept_signature, right.concept_signature))
-    except Exception:
-        return False
+    left_terms = (left.canonical_name, left.meaning, *left.aliases)
+    right_terms = (right.canonical_name, right.meaning, *right.aliases)
+    for a in left_terms:
+        for b in right_terms:
+            try:
+                if ontology.meanings_equivalent(a, b):
+                    return True
+            except Exception:
+                continue
+    return False
 
 
 def assess_algorithm_transfer(
