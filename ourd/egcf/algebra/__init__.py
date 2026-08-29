@@ -1,5 +1,17 @@
 """Searchable Algebra of Algorithms canonicalization layers."""
 
+from .dynamics import (
+    DYNAMICS_VERSION,
+    LINEAR_DOMAINS,
+    MAX_POLYNOMIAL_DEGREE,
+    MAX_STATE_ORDER,
+    CanonicalLinearDynamics,
+    LinearStateSpace,
+    LinearTransferFunction,
+    canonicalize_state_space,
+    canonicalize_transfer_function,
+    dynamic_algorithm_signature,
+)
 from .graph import CANONICALIZER_VERSION, canonicalize_structure, validate_structure
 from .ir import canonicalize_many, canonicalize_mapping, operand_from_mapping, structure_from_mapping
 from .models import (
@@ -39,8 +51,15 @@ __all__ = [
     "BOUND_KINDS",
     "CANONICALIZER_VERSION",
     "CanonicalAlgorithmIR",
+    "CanonicalLinearDynamics",
     "ControlEdgeSpec",
+    "DYNAMICS_VERSION",
     "EXACT_BOUND_KINDS",
+    "LINEAR_DOMAINS",
+    "LinearStateSpace",
+    "LinearTransferFunction",
+    "MAX_POLYNOMIAL_DEGREE",
+    "MAX_STATE_ORDER",
     "NORMALIZER_VERSION",
     "NormalizationBinding",
     "NormalizationContract",
@@ -54,10 +73,13 @@ __all__ = [
     "build_normalization_contract",
     "canonicalize_many",
     "canonicalize_mapping",
+    "canonicalize_state_space",
     "canonicalize_structure",
+    "canonicalize_transfer_function",
     "denormalize_role",
     "denormalize_time",
     "denormalize_value",
+    "dynamic_algorithm_signature",
     "normalize_primitive",
     "normalize_role",
     "normalize_time",
