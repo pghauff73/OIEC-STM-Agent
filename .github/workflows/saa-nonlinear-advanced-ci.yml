@@ -42,7 +42,25 @@ jobs:
             ourd/egcf/algebra/nonlinear_geometry.py \
             ourd/egcf/algebra/nonlinear_control.py \
             ourd/egcf/nonlinear_store.py \
-            ourd/egcf/nonlinear_store_api.py
+            ourd/egcf/nonlinear_store_api.py \
+            ourd/egcf/nonlinear.py
+
+      - name: Import public nonlinear facade
+        run: |
+          python - <<'PY'
+          import ourd.egcf.nonlinear as nonlinear
+          required = (
+              "GovernedJetEvidence",
+              "SemanticStabilityAssessment",
+              "NonlinearCanonicalStore",
+              "ExactPolynomialShear",
+              "DifferentialGeometryAssessment",
+              "RepresentativeControlAssessment",
+          )
+          for name in required:
+              assert hasattr(nonlinear, name), name
+          print("public nonlinear facade OK")
+          PY
 
       - name: Run SAA nonlinear qualification suites
         run: |
