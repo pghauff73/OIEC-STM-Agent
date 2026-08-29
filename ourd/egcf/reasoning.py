@@ -1,4 +1,4 @@
-"""Public facade for SAA-8 reasoning algorithms, topology equivalence and semantic state gates."""
+"""Public facade for the bounded SAA reasoning stack."""
 
 from .algebra.reasoning import (
     MAX_REASONING_CANONICAL_PERMUTATIONS,
@@ -15,12 +15,38 @@ from .algebra.reasoning import (
     ReasoningTerminationSpec,
     canonicalize_reasoning_algorithm,
 )
+from .algebra.reasoning_composition import (
+    REASONING_COMPOSITION_VERSION,
+    CanonicalReasoningComposition,
+    ReasoningCompositionAssessment,
+    assess_reasoning_composition,
+    compose_reasoning_algorithms,
+)
 from .algebra.reasoning_equivalence import (
     REASONING_EQUIVALENCE_VERSION,
     ReasoningEquivalenceAssessment,
     ReasoningTopologyDelta,
     compare_reasoning_algorithms,
     reasoning_topology_delta,
+)
+from .algebra.reasoning_fit import (
+    MAX_REASONING_RETRIEVAL_RESULTS,
+    REASONING_FIT_VERSION,
+    ReasoningFitAssessment,
+    ReasoningRetrievalResult,
+    ReasoningTaskRequirements,
+    evaluate_reasoning_fit,
+    retrieve_reasoning_algorithms,
+)
+from .algebra.reasoning_outcome import (
+    FALSIFIER_RESULTS,
+    REASONING_OUTCOME_VERSION,
+    ReasoningExecutionOutcome,
+    ReasoningOutcomeQualification,
+    make_reasoning_execution_outcome,
+    qualify_reasoning_outcome,
+    reasoning_evidence_requirements,
+    reasoning_falsifiers,
 )
 from .algebra.reasoning_semantics import (
     REASONING_GOVERNANCE_SUBSYSTEMS,
@@ -34,34 +60,66 @@ from .algebra.reasoning_semantics import (
     assess_reasoning_state_semantics,
     propagate_reasoning_semantic_issues,
 )
+from .reasoning_store import (
+    REASONING_STORE_SCHEMA_VERSION,
+    REASONING_STORE_VERSION,
+    CanonicalReasoningStore,
+    ReasoningStoreAdmission,
+    ReasoningStoreLookup,
+)
 
 __all__ = [
+    "FALSIFIER_RESULTS",
     "MAX_REASONING_CANONICAL_PERMUTATIONS",
     "MAX_REASONING_EDGES",
     "MAX_REASONING_NODES",
+    "MAX_REASONING_RETRIEVAL_RESULTS",
     "MAX_REASONING_STEPS",
     "REASONING_ALGEBRA_VERSION",
+    "REASONING_COMPOSITION_VERSION",
     "REASONING_EDGE_RELATIONS",
     "REASONING_EQUIVALENCE_VERSION",
+    "REASONING_FIT_VERSION",
     "REASONING_GOVERNANCE_SUBSYSTEMS",
     "REASONING_OPERATORS",
+    "REASONING_OUTCOME_VERSION",
     "REASONING_SEMANTIC_VERSION",
+    "REASONING_STORE_SCHEMA_VERSION",
+    "REASONING_STORE_VERSION",
     "CanonicalReasoningAlgorithm",
+    "CanonicalReasoningComposition",
+    "CanonicalReasoningStore",
     "ReasoningAlgorithmSpec",
+    "ReasoningCompositionAssessment",
     "ReasoningEdgeSpec",
     "ReasoningEquivalenceAssessment",
+    "ReasoningExecutionOutcome",
+    "ReasoningFitAssessment",
     "ReasoningNodeSpec",
+    "ReasoningOutcomeQualification",
+    "ReasoningRetrievalResult",
     "ReasoningSemanticAssessment",
     "ReasoningSemanticDirective",
     "ReasoningSemanticIssue",
     "ReasoningStateDependency",
     "ReasoningStateDimension",
     "ReasoningStateModel",
+    "ReasoningStoreAdmission",
+    "ReasoningStoreLookup",
+    "ReasoningTaskRequirements",
     "ReasoningTerminationSpec",
     "ReasoningTopologyDelta",
+    "assess_reasoning_composition",
     "assess_reasoning_state_semantics",
     "canonicalize_reasoning_algorithm",
     "compare_reasoning_algorithms",
+    "compose_reasoning_algorithms",
+    "evaluate_reasoning_fit",
+    "make_reasoning_execution_outcome",
     "propagate_reasoning_semantic_issues",
+    "qualify_reasoning_outcome",
+    "reasoning_evidence_requirements",
+    "reasoning_falsifiers",
     "reasoning_topology_delta",
+    "retrieve_reasoning_algorithms",
 ]
