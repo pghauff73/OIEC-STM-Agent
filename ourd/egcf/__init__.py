@@ -1,5 +1,22 @@
 """Evidence Governed Command Fabric v1."""
 
+from .algebra import (
+    AlgorithmNodeSpec,
+    AlgorithmStructureSpec,
+    CANONICALIZER_VERSION,
+    CanonicalAlgorithmIR,
+    ControlEdgeSpec,
+    OperandRef,
+    PortSpec,
+    PrimitiveSpec,
+    StateSpec,
+    canonicalize_mapping,
+    canonicalize_structure,
+    normalize_primitive,
+    primitive_names,
+    structure_from_mapping,
+    validate_structure,
+)
 from .context import Budget, CommandContext
 from .engine import EGCFEngine
 from .errors import EGCFError
@@ -35,10 +52,14 @@ from .store import EGCFStore
 
 __all__ = [
     "AlgorithmDefinition",
+    "AlgorithmNodeSpec",
+    "AlgorithmStructureSpec",
     "ApprovalRecord",
     "ArtifactRecord",
     "AssuranceCase",
     "Budget",
+    "CANONICALIZER_VERSION",
+    "CanonicalAlgorithmIR",
     "CapabilityGrant",
     "CapabilitySpec",
     "ClaimRecord",
@@ -47,6 +68,7 @@ __all__ = [
     "CommandInvocation",
     "CompiledWorkflow",
     "ConfidenceAssessment",
+    "ControlEdgeSpec",
     "DecisionRecord",
     "EGCFError",
     "EGCFEngine",
@@ -58,13 +80,23 @@ __all__ = [
     "FailureRecord",
     "IntentRecord",
     "InvariantRecord",
+    "OperandRef",
+    "PortSpec",
+    "PrimitiveSpec",
     "QualificationRecord",
     "RollbackRecord",
     "SelectionDecision",
+    "StateSpec",
     "SupersedenceRecord",
     "WorkflowDefinition",
     "WorkflowNode",
     "canonical_json",
+    "canonicalize_mapping",
+    "canonicalize_structure",
+    "normalize_primitive",
+    "primitive_names",
     "sha256_json",
+    "structure_from_mapping",
     "typed_id",
+    "validate_structure",
 ]
