@@ -38,7 +38,7 @@ jobs:
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v7
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: "${{ matrix.python-version }}"
           cache: pip
           cache-dependency-path: pyproject.toml
 
@@ -58,6 +58,7 @@ jobs:
             tests.test_saa_ir \
             tests.test_saa_normalization \
             tests.test_saa_dynamics \
+            tests.test_saa_mimo \
             tests.test_oiec \
             tests.test_policy \
             tests.test_provider \
