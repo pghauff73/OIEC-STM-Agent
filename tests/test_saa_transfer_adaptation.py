@@ -11,6 +11,7 @@ from ourd.egcf.retrieval import (
     UnifiedProblemRequirements,
     UnifiedRetrievalDecision,
     assess_algorithm_transfer,
+    explain_algorithm_transfer,
     explain_unified_retrieval,
 )
 from ourd.egcf.semantics import LENGTH, TIME, make_semantic_concept
@@ -167,6 +168,17 @@ class SAA103ExplanationTests(unittest.TestCase):
         self.assertTrue(explanation.selected_reasons)
         self.assertFalse(explanation.fit_gap_dimensions)
 
+    def test_transfer_explanation_isolates_changed_dynamics(self):
+        speed = concept("speed", "translational speed")
+        assessment = assess_algorithm_transfer(
+            "canonical-algorithm:fixture",
+            contract("road", speed, dynamics="1"),
+            contract("air", speed, dynamics="3"),
+        )
+        explanation = explain_algorithm_transfer(assessment)
+        self.assertEqual("EXPLAINED_TRANSFER_REQUALIFICATION_DELTA", explanation.status)
+        self.assertEqual(("DYNAMICS_CONTRACT",), explanation.fit_gap_dimensions)
+
 
 class SAA11AdaptationTests(unittest.TestCase):
     def test_fit_delta_becomes_one_dimension_at_a_time_plan(self):
@@ -183,6 +195,22 @@ class SAA11AdaptationTests(unittest.TestCase):
         self.assertFalse(plan.canonical_reuse_eligible)
         self.assertEqual(len(plan.steps), len(explanation.counterfactual_changes))
         self.assertTrue(all(step.dimension for step in plan.steps))
+
+    def test_transfer_delta_flows_directly_into_adaptation_plan(self):
+        speed = concept("speed", "translational speed")
+        assessment = assess_algorithm_transfer(
+            "canonical-algorithm:fixture",
+            contract("road", speed, dynamics="1"),
+            contract("air", speed, dynamics="3"),
+        )
+        explanation = explain_algorithm_transfer(assessment)
+        plan = build_controlled_adaptation_plan(
+            explanation,
+            selected_mathematical_algorithm_id="canonical-algorithm:fixture",
+        )
+        self.assertEqual(1, len(plan.steps))
+        self.assertEqual("DYNAMICS_CONTRACT", plan.steps[0].dimension)
+        self.assertEqual("canonical-algorithm:fixture", plan.steps[0].base_algorithm_id)
 
     def test_adapted_candidate_is_new_unqualified_identity(self):
         requirements, decision = unified_decision(
