@@ -1,0 +1,65 @@
+name: SAA reasoning operational qualification
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: saa-reasoning-operational-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  reasoning-operational:
+    name: SAA-8.3-8.6 / Python ${{ matrix.python-version }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version:
+          - "3.10"
+          - "3.12"
+          - "3.13"
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v7
+        with:
+          python-version: "${{ matrix.python-version }}"
+
+      - name: Compile reasoning operational stack
+        run: |
+          python -m py_compile \
+            ourd/egcf/algebra/reasoning_outcome.py \
+            ourd/egcf/algebra/reasoning_fit.py \
+            ourd/egcf/algebra/reasoning_composition.py \
+            ourd/egcf/reasoning_store.py \
+            ourd/egcf/reasoning.py
+
+      - name: Import public reasoning facade
+        run: |
+          python - <<'PY'
+          import ourd.egcf.reasoning as reasoning
+          required = (
+              "CanonicalReasoningStore",
+              "ReasoningOutcomeQualification",
+              "ReasoningTaskRequirements",
+              "CanonicalReasoningComposition",
+          )
+          for name in required:
+              assert hasattr(reasoning, name), name
+          print("public SAA-8.3-8.6 reasoning facade OK")
+          PY
+
+      - name: Run reasoning qualification suites
+        run: |
+          python -m unittest \
+            tests.test_saa_reasoning \
+            tests.test_saa_reasoning_operational \
+            -v
