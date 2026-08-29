@@ -60,6 +60,7 @@ jobs:
             tests.test_saa_dynamics \
             tests.test_saa_mimo \
             tests.test_saa_representative \
+            tests.test_saa_semantic \
             tests.test_oiec \
             tests.test_policy \
             tests.test_provider \
