@@ -1,4 +1,4 @@
-"""Searchable Algebra of Algorithms structural canonicalization layer."""
+"""Searchable Algebra of Algorithms canonicalization layers."""
 
 from .graph import CANONICALIZER_VERSION, canonicalize_structure, validate_structure
 from .ir import canonicalize_many, canonicalize_mapping, operand_from_mapping, structure_from_mapping
@@ -12,25 +12,61 @@ from .models import (
     StateSpec,
     attribute_items,
 )
+from .normalize import (
+    BOUND_KINDS,
+    EXACT_BOUND_KINDS,
+    NORMALIZER_VERSION,
+    NormalizationBinding,
+    NormalizationContract,
+    NumericBound,
+    TimeNormalization,
+    build_normalization_contract,
+    denormalize_role,
+    denormalize_time,
+    denormalize_value,
+    normalize_role,
+    normalize_time,
+    normalize_value,
+    normalized_algorithm_signature,
+    numeric_bound,
+    time_normalization,
+)
 from .primitives import PrimitiveSpec, normalize_primitive, primitive_names
 
 __all__ = [
     "AlgorithmNodeSpec",
     "AlgorithmStructureSpec",
+    "BOUND_KINDS",
     "CANONICALIZER_VERSION",
     "CanonicalAlgorithmIR",
     "ControlEdgeSpec",
+    "EXACT_BOUND_KINDS",
+    "NORMALIZER_VERSION",
+    "NormalizationBinding",
+    "NormalizationContract",
+    "NumericBound",
     "OperandRef",
     "PortSpec",
     "PrimitiveSpec",
     "StateSpec",
+    "TimeNormalization",
     "attribute_items",
+    "build_normalization_contract",
     "canonicalize_many",
     "canonicalize_mapping",
     "canonicalize_structure",
+    "denormalize_role",
+    "denormalize_time",
+    "denormalize_value",
     "normalize_primitive",
+    "normalize_role",
+    "normalize_time",
+    "normalize_value",
+    "normalized_algorithm_signature",
+    "numeric_bound",
     "operand_from_mapping",
     "primitive_names",
     "structure_from_mapping",
+    "time_normalization",
     "validate_structure",
 ]
