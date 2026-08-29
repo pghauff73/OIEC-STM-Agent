@@ -1,10 +1,11 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Mapping, Tuple
+from typing import Any, Tuple
 
 from ..errors import EGCFError
 from ..ids import sha256_json
+from .algorithm_transfer import AlgorithmTransferAssessment
 from .unified_retrieval import UnifiedProblemRequirements, UnifiedRetrievalDecision
 
 
@@ -53,6 +54,86 @@ class RetrievalExplanation:
             "fit_gap_dimensions": list(self.fit_gap_dimensions),
             "explanation_signature": self.explanation_signature,
         }
+
+
+def _finalize(
+    *,
+    decision_signature: str,
+    status: str,
+    selected: list[str],
+    rejected: list[str],
+    changes: list[CounterfactualFitChange],
+    dimensions: set[str],
+    extra_payload: Any,
+) -> RetrievalExplanation:
+    payload = {
+        "version": RETRIEVAL_EXPLANATION_VERSION,
+        "decision_signature": decision_signature,
+        "status": status,
+        "selected_reasons": selected,
+        "rejected_reasons": rejected,
+        "counterfactual_changes": [item.to_dict() for item in changes],
+        "fit_gap_dimensions": sorted(dimensions),
+        "source": extra_payload,
+    }
+    return RetrievalExplanation(
+        schema_version=1,
+        explanation_version=RETRIEVAL_EXPLANATION_VERSION,
+        decision_signature=decision_signature,
+        status=status,
+        selected_reasons=tuple(selected),
+        rejected_reasons=tuple(rejected),
+        counterfactual_changes=tuple(changes),
+        fit_gap_dimensions=tuple(sorted(dimensions)),
+        explanation_signature=sha256_json(payload),
+    )
+
+
+def explain_algorithm_transfer(assessment: AlgorithmTransferAssessment) -> RetrievalExplanation:
+    if not isinstance(assessment, AlgorithmTransferAssessment):
+        raise EGCFError("SAA-10.3 transfer explanation requires AlgorithmTransferAssessment")
+    selected: list[str] = []
+    rejected: list[str] = []
+    changes: list[CounterfactualFitChange] = []
+    dimensions: set[str] = set()
+    if assessment.transfer_without_requalification:
+        selected.append("source algorithm transfer preserves semantic, boundary, invariant, dynamics and evidence contracts")
+        status = "EXPLAINED_EXACT_TRANSFER"
+    elif assessment.blocking_gaps:
+        rejected.extend(assessment.blocking_gaps)
+        dimensions.add("SEMANTIC_TRANSFER_CONTRACT")
+        changes.append(
+            CounterfactualFitChange(
+                "MATHEMATICAL_ALGORITHM",
+                "SEMANTIC_TRANSFER_CONTRACT",
+                "; ".join(assessment.blocking_gaps),
+                "resolve and independently qualify semantic equivalence before transfer",
+                False,
+            )
+        )
+        status = "EXPLAINED_BLOCKED_TRANSFER"
+    else:
+        status = "EXPLAINED_TRANSFER_REQUALIFICATION_DELTA"
+    for dimension in assessment.adaptation_gaps:
+        dimensions.add(dimension)
+        changes.append(
+            CounterfactualFitChange(
+                "MATHEMATICAL_ALGORITHM",
+                dimension,
+                f"source and target {dimension.casefold()} differ",
+                "adapt only this contract dimension and requalify in the target domain",
+                True,
+            )
+        )
+    return _finalize(
+        decision_signature=assessment.assessment_signature,
+        status=status,
+        selected=selected,
+        rejected=rejected,
+        changes=changes,
+        dimensions=dimensions,
+        extra_payload=assessment.to_dict(),
+    )
 
 
 def explain_unified_retrieval(
@@ -136,24 +217,12 @@ def explain_unified_retrieval(
         status = "EXPLAINED_PARTIAL_FIT_WITH_DELTA"
     else:
         status = "EXPLAINED_CONFIRMED_RETRIEVAL_GAP"
-    payload = {
-        "version": RETRIEVAL_EXPLANATION_VERSION,
-        "decision_signature": decision.decision_signature,
-        "problem": task.to_dict(),
-        "status": status,
-        "selected_reasons": selected,
-        "rejected_reasons": rejected,
-        "counterfactual_changes": [item.to_dict() for item in changes],
-        "fit_gap_dimensions": sorted(dimensions),
-    }
-    return RetrievalExplanation(
-        schema_version=1,
-        explanation_version=RETRIEVAL_EXPLANATION_VERSION,
+    return _finalize(
         decision_signature=decision.decision_signature,
         status=status,
-        selected_reasons=tuple(selected),
-        rejected_reasons=tuple(rejected),
-        counterfactual_changes=tuple(changes),
-        fit_gap_dimensions=tuple(sorted(dimensions)),
-        explanation_signature=sha256_json(payload),
+        selected=selected,
+        rejected=rejected,
+        changes=changes,
+        dimensions=dimensions,
+        extra_payload={"problem": task.to_dict(), "decision": decision.to_dict()},
     )
