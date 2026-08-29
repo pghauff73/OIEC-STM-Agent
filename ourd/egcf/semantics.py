@@ -44,11 +44,8 @@ from .algebra.semantic_units import (
     physical_semantic_relation,
     physical_unit,
 )
-from .semantic_ontology import (
-    SEMANTIC_ONTOLOGY_SCHEMA_VERSION,
-    SEMANTIC_ONTOLOGY_VERSION,
-    SemanticOntologyStore,
-)
+from .semantic_ontology import SEMANTIC_ONTOLOGY_SCHEMA_VERSION, SEMANTIC_ONTOLOGY_VERSION
+from .semantic_ontology_grounded import SemanticOntologyStore
 
 __all__ = [
     "ALIGNMENT_RELATIONS",
