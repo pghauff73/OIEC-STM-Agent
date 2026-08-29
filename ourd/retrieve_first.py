@@ -3,12 +3,11 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, Tuple
 
+from .egcf.algebra.retrieval_explanation import explain_unified_retrieval
 from .egcf.algebra.unified_retrieval import (
     UnifiedProblemRequirements,
-    UnifiedRetrievalDecision,
     retrieve_unified_solution,
 )
-from .egcf.errors import EGCFError
 from .egcf.ids import sha256_json
 
 
@@ -28,6 +27,8 @@ class RetrieveFirstReceipt:
     selected_mathematical_algorithm_id: str | None
     selected_reasoning_id: str | None
     retrieval_decision_signature: str
+    explanation_signature: str
+    fit_gap_dimensions: Tuple[str, ...]
     guidance: Tuple[str, ...]
     receipt_signature: str
 
@@ -44,6 +45,8 @@ class RetrieveFirstReceipt:
             "selected_mathematical_algorithm_id": self.selected_mathematical_algorithm_id,
             "selected_reasoning_id": self.selected_reasoning_id,
             "retrieval_decision_signature": self.retrieval_decision_signature,
+            "explanation_signature": self.explanation_signature,
+            "fit_gap_dimensions": list(self.fit_gap_dimensions),
             "guidance": list(self.guidance),
             "receipt_signature": self.receipt_signature,
         }
@@ -89,6 +92,8 @@ class RetrieveFirstController:
                 selected_mathematical_algorithm_id=None,
                 selected_reasoning_id=None,
                 retrieval_decision_signature="",
+                explanation_signature="",
+                fit_gap_dimensions=(),
                 guidance=(
                     "Required canonical stores are unavailable. Do not claim that novelty search has been completed.",
                 ),
@@ -101,6 +106,7 @@ class RetrieveFirstController:
             task,
             ontology=self.ontology,
         )
+        explanation = explain_unified_retrieval(decision, task)
         missing = decision.missing_components
         if decision.required_components_satisfied:
             status = "REUSE_QUALIFIED_KNOWN_SOLUTION"
@@ -115,6 +121,7 @@ class RetrieveFirstController:
             adaptation_allowed = True
             guidance = (
                 "Reuse the qualified component that fits and generate or adapt only the explicitly missing component(s).",
+                "Use the system-verified fit-gap dimensions as the adaptation boundary.",
                 "Any adapted or newly composed algorithm remains unqualified until it passes the applicable evidence gates.",
             )
         else:
@@ -123,12 +130,14 @@ class RetrieveFirstController:
             adaptation_allowed = True
             guidance = (
                 "Qualified canonical stores were searched and no eligible known solution was found for the required components.",
-                "Novel generation is allowed only inside the confirmed missing scope and must be qualified before canonical reuse.",
+                "Novel generation is allowed only inside the confirmed missing scope and fit-gap dimensions and must be qualified before canonical reuse.",
             )
         payload = {
             "version": RETRIEVE_FIRST_VERSION,
             "problem_signature": decision.problem_signature,
             "retrieval_decision_signature": decision.decision_signature,
+            "explanation_signature": explanation.explanation_signature,
+            "fit_gap_dimensions": list(explanation.fit_gap_dimensions),
             "status": status,
             "generation_allowed": generation_allowed,
             "adaptation_allowed": adaptation_allowed,
@@ -148,6 +157,8 @@ class RetrieveFirstController:
             selected_mathematical_algorithm_id=decision.selected_mathematical_algorithm_id,
             selected_reasoning_id=decision.selected_reasoning_id,
             retrieval_decision_signature=decision.decision_signature,
+            explanation_signature=explanation.explanation_signature,
+            fit_gap_dimensions=explanation.fit_gap_dimensions,
             guidance=guidance,
             receipt_signature=sha256_json(payload),
         )
