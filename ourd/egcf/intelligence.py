@@ -42,6 +42,11 @@ from .algebra.oiec_bench_gate import (
     make_oiec_bench_profile,
     qualify_oiec_bench_gate,
 )
+from .algebra.promotion_governance import (
+    PROMOTION_GOVERNANCE_VERSION,
+    CanonicalPromotionGovernanceAssessment,
+    assess_canonical_promotion_governance,
+)
 from .improvement_store import (
     IMPROVEMENT_STORE_SCHEMA_VERSION,
     IMPROVEMENT_STORE_VERSION,
@@ -61,6 +66,7 @@ __all__ = [
     "OIEC_BENCH_GATE_VERSION",
     "KNOWLEDGE_INTEGRITY_VERSION",
     "IMPROVEMENT_SCHEDULING_VERSION",
+    "PROMOTION_GOVERNANCE_VERSION",
     "KNOWLEDGE_GOVERNANCE_STORE_VERSION",
     "KNOWLEDGE_GOVERNANCE_STORE_SCHEMA_VERSION",
     "FAILURE_CLASSES",
@@ -81,6 +87,7 @@ __all__ = [
     "ImprovementSchedulingPolicy",
     "ImprovementScheduleEntry",
     "ImprovementSchedule",
+    "CanonicalPromotionGovernanceAssessment",
     "KnowledgeGovernanceStore",
     "evaluate_intelligence_improvement_loop",
     "make_failure_observation",
@@ -92,4 +99,5 @@ __all__ = [
     "assess_integrity_trajectory",
     "make_improvement_opportunity",
     "schedule_improvements",
+    "assess_canonical_promotion_governance",
 ]
