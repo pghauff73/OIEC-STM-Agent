@@ -93,6 +93,15 @@ from .algebra import (
     structure_from_mapping,
     validate_structure,
 )
+from .canonical_store import (
+    CANONICAL_STORE_SCHEMA_VERSION,
+    CANONICAL_STORE_VERSION,
+    RELATION_TYPES,
+    AlgorithmRelationRecord,
+    CanonicalAdmissionResult,
+    CanonicalLookupResult,
+)
+from .canonical_store_api import CanonicalAlgorithmStore
 from .context import Budget, CommandContext
 from .engine import EGCFEngine
 from .errors import EGCFError
@@ -129,6 +138,7 @@ from .store import EGCFStore
 __all__ = [
     "AlgorithmDefinition",
     "AlgorithmNodeSpec",
+    "AlgorithmRelationRecord",
     "AlgorithmStructureSpec",
     "ApprovalRecord",
     "ArtifactRecord",
@@ -137,9 +147,14 @@ __all__ = [
     "Budget",
     "CANONICALIZER_VERSION",
     "CANONICAL_REPRESENTATIVE_VERSION",
+    "CANONICAL_STORE_SCHEMA_VERSION",
+    "CANONICAL_STORE_VERSION",
     "CONTINUOUS_ALGEBRAIC_PROBES",
+    "CanonicalAdmissionResult",
     "CanonicalAlgorithmIR",
+    "CanonicalAlgorithmStore",
     "CanonicalLinearDynamics",
+    "CanonicalLookupResult",
     "CanonicalMIMOCoupling",
     "CanonicalRepresentativeAlgorithmForm",
     "CanonicalRepresentativeInput",
@@ -192,6 +207,7 @@ __all__ = [
     "PortSpec",
     "PrimitiveSpec",
     "QualificationRecord",
+    "RELATION_TYPES",
     "REPRESENTATION_VERSION",
     "REPRESENTATIVE_BOUND_POLICY",
     "RationalChannel",
