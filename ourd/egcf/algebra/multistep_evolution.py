@@ -125,6 +125,7 @@ class MultiStepEvolutionAssessment:
     evolution_version: str
     plan_signature: str
     final_candidate_ref: str
+    qualification_signatures: Tuple[str, ...]
     qualified_step_count: int
     total_step_count: int
     invariant_preservation_complete: bool
@@ -139,6 +140,7 @@ class MultiStepEvolutionAssessment:
             "evolution_version": self.evolution_version,
             "plan_signature": self.plan_signature,
             "final_candidate_ref": self.final_candidate_ref,
+            "qualification_signatures": list(self.qualification_signatures),
             "qualified_step_count": self.qualified_step_count,
             "total_step_count": self.total_step_count,
             "invariant_preservation_complete": self.invariant_preservation_complete,
@@ -304,13 +306,14 @@ def assess_multistep_evolution(
             blocking.append(f"{step.candidate_ref}: {item.status}")
         else:
             qualified += 1
+    qualification_signatures = tuple(sorted(item.qualification_signature for item in qualifications))
     complete = qualified == len(plan.steps) and not blocking
     status = "MULTISTEP_EVOLUTION_QUALIFIED" if complete else "MULTISTEP_EVOLUTION_BLOCKED"
     payload = {
         "version": MULTISTEP_EVOLUTION_VERSION,
         "plan_signature": plan.plan_signature,
         "final_candidate_ref": plan.final_candidate_ref,
-        "qualification_signatures": sorted(item.qualification_signature for item in qualifications),
+        "qualification_signatures": list(qualification_signatures),
         "qualified_step_count": qualified,
         "total_step_count": len(plan.steps),
         "blocking_steps": blocking,
@@ -321,6 +324,7 @@ def assess_multistep_evolution(
         evolution_version=MULTISTEP_EVOLUTION_VERSION,
         plan_signature=plan.plan_signature,
         final_candidate_ref=plan.final_candidate_ref,
+        qualification_signatures=qualification_signatures,
         qualified_step_count=qualified,
         total_step_count=len(plan.steps),
         invariant_preservation_complete=complete,
