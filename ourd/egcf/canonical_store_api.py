@@ -1,15 +1,16 @@
 from __future__ import annotations
 
 import json
-from typing import Any
+from typing import Any, Sequence
 
 from ..persistence import atomic_write_text
 from .canonical_store import CanonicalAlgorithmStore as _CanonicalAlgorithmStore
+from .errors import EGCFError
 from .ids import canonical_json
 
 
 class CanonicalAlgorithmStore(_CanonicalAlgorithmStore):
-    """Public SAA canonical store with rebuild-safe source-bound anchor metadata."""
+    """Public SAA canonical store with rebuild-safe metadata and strict semantic evidence relevance."""
 
     def _persist_canonical(
         self,
@@ -37,7 +38,7 @@ class CanonicalAlgorithmStore(_CanonicalAlgorithmStore):
         if path.exists():
             existing = json.loads(path.read_text(encoding="utf-8"))
             if canonical_json(existing) != canonical_json(envelope):
-                raise ValueError(f"immutable canonical-store collision at {path}")
+                raise EGCFError(f"immutable canonical-store collision at {path}")
         else:
             atomic_write_text(path, serialized)
         with self._connect() as connection:
@@ -62,3 +63,45 @@ class CanonicalAlgorithmStore(_CanonicalAlgorithmStore):
                     created_at,
                 ),
             )
+
+    def _verify_semantic_proof(
+        self,
+        form: Any,
+        issues: Sequence[Any],
+        candidates: Sequence[Any],
+        resolutions: Sequence[Any],
+    ) -> str:
+        proof_signature = super()._verify_semantic_proof(
+            form, issues, candidates, resolutions
+        )
+        if form.representative_input_count == 0:
+            return proof_signature
+        issue_by_id = {issue.issue_id: issue for issue in issues}
+        candidate_by_id = {candidate.candidate_id: candidate for candidate in candidates}
+        for resolution in resolutions:
+            issue = issue_by_id.get(resolution.issue_id)
+            candidate = candidate_by_id.get(resolution.candidate_id)
+            if issue is None or candidate is None:
+                raise EGCFError("semantic proof relevance cannot resolve issue/candidate")
+            for evidence_id in resolution.evidence_ids:
+                artifact = self._grounded_evidence(evidence_id)
+                if artifact.category != "semantic-grounding":
+                    raise EGCFError("canonical semantic evidence must use semantic-grounding category")
+                if (
+                    artifact.subject_id not in {issue.issue_id, candidate.candidate_id}
+                    and issue.issue_id not in artifact.claim_ids
+                ):
+                    raise EGCFError(
+                        "canonical semantic evidence is grounded but not relevant to the resolved meaning"
+                    )
+            for falsifier_result in resolution.falsifier_results:
+                if falsifier_result.evidence_id:
+                    artifact = self._grounded_evidence(falsifier_result.evidence_id)
+                    if artifact.category != "semantic-grounding":
+                        raise EGCFError("semantic falsifier evidence must use semantic-grounding category")
+                    if (
+                        artifact.subject_id not in {issue.issue_id, candidate.candidate_id}
+                        and issue.issue_id not in artifact.claim_ids
+                    ):
+                        raise EGCFError("semantic falsifier evidence is unrelated to the semantic issue")
+        return proof_signature
