@@ -1,0 +1,52 @@
+name: SAA advanced nonlinear qualification
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: saa-nonlinear-advanced-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  advanced-nonlinear:
+    name: SAA-7.2-7.7 / Python ${{ matrix.python-version }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version:
+          - "3.10"
+          - "3.12"
+          - "3.13"
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v7
+        with:
+          python-version: "${{ matrix.python-version }}"
+
+      - name: Compile advanced nonlinear stack
+        run: |
+          python -m py_compile \
+            ourd/egcf/algebra/nonlinear_evidence.py \
+            ourd/egcf/algebra/nonlinear_stability.py \
+            ourd/egcf/algebra/nonlinear_transforms.py \
+            ourd/egcf/algebra/nonlinear_geometry.py \
+            ourd/egcf/algebra/nonlinear_control.py \
+            ourd/egcf/nonlinear_store.py \
+            ourd/egcf/nonlinear_store_api.py
+
+      - name: Run SAA nonlinear qualification suites
+        run: |
+          python -m unittest \
+            tests.test_saa_nonlinear \
+            tests.test_saa_nonlinear_advanced \
+            -v
