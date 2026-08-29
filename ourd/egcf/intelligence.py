@@ -55,8 +55,8 @@ from .improvement_store import (
 from .knowledge_governance_store import (
     KNOWLEDGE_GOVERNANCE_STORE_SCHEMA_VERSION,
     KNOWLEDGE_GOVERNANCE_STORE_VERSION,
-    KnowledgeGovernanceStore,
 )
+from .knowledge_governance_store_grounded import KnowledgeGovernanceStore
 
 __all__ = [
     "INTELLIGENCE_LOOP_VERSION",
