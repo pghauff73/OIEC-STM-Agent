@@ -210,6 +210,10 @@ def _node_intrinsic(node: ReasoningNodeSpec) -> dict[str, Any]:
     }
 
 
+def _topology_intrinsic(node: ReasoningNodeSpec) -> dict[str, Any]:
+    return {"operator": _operator(node.operator)}
+
+
 def _validate(spec: ReasoningAlgorithmSpec) -> tuple[dict[str, ReasoningNodeSpec], Tuple[ReasoningEdgeSpec, ...]]:
     if not isinstance(spec, ReasoningAlgorithmSpec):
         raise EGCFError("SAA-8 requires ReasoningAlgorithmSpec")
@@ -247,22 +251,31 @@ def _validate(spec: ReasoningAlgorithmSpec) -> tuple[dict[str, ReasoningNodeSpec
     return by_id, tuple(normalized_edges)
 
 
-def _refined_colors(
-    by_id: Mapping[str, ReasoningNodeSpec],
+def _refined_colors_from_intrinsic(
+    intrinsic: Mapping[str, Mapping[str, Any]],
     edges: Sequence[ReasoningEdgeSpec],
+    *,
+    include_condition: bool,
 ) -> dict[str, str]:
-    intrinsic = {node_id: _node_intrinsic(node) for node_id, node in by_id.items()}
     colors = {node_id: sha256_json(payload) for node_id, payload in intrinsic.items()}
-    for _ in range(len(by_id) + 1):
+    for _ in range(len(intrinsic) + 1):
         updated: dict[str, str] = {}
-        for node_id in sorted(by_id):
+        for node_id in sorted(intrinsic):
             incoming = sorted(
-                (edge.relation, edge.condition, colors[edge.source])
+                (
+                    edge.relation,
+                    edge.condition if include_condition else "",
+                    colors[edge.source],
+                )
                 for edge in edges
                 if edge.target == node_id
             )
             outgoing = sorted(
-                (edge.relation, edge.condition, colors[edge.target])
+                (
+                    edge.relation,
+                    edge.condition if include_condition else "",
+                    colors[edge.target],
+                )
                 for edge in edges
                 if edge.source == node_id
             )
@@ -277,6 +290,17 @@ def _refined_colors(
             break
         colors = updated
     return colors
+
+
+def _refined_colors(
+    by_id: Mapping[str, ReasoningNodeSpec],
+    edges: Sequence[ReasoningEdgeSpec],
+) -> dict[str, str]:
+    return _refined_colors_from_intrinsic(
+        {node_id: _node_intrinsic(node) for node_id, node in by_id.items()},
+        edges,
+        include_condition=True,
+    )
 
 
 def _permutation_budget(groups: Sequence[Sequence[str]]) -> int:
@@ -311,6 +335,82 @@ def _serialization_for_order(
     return nodes, canonical_edges, serialized
 
 
+def _topology_serialization_for_order(
+    order: Sequence[str],
+    by_id: Mapping[str, ReasoningNodeSpec],
+    edges: Sequence[ReasoningEdgeSpec],
+) -> str:
+    position = {node_id: index for index, node_id in enumerate(order)}
+    nodes = [_topology_intrinsic(by_id[node_id]) for node_id in order]
+    canonical_edges = sorted(
+        (
+            {
+                "source": position[edge.source],
+                "target": position[edge.target],
+                "relation": edge.relation,
+            }
+            for edge in edges
+        ),
+        key=lambda item: (item["source"], item["target"], item["relation"]),
+    )
+    return canonical_json({"nodes": nodes, "edges": canonical_edges})
+
+
+def _canonical_topology_signature(
+    by_id: Mapping[str, ReasoningNodeSpec],
+    edges: Sequence[ReasoningEdgeSpec],
+    *,
+    termination_kind: str,
+) -> tuple[str, bool, int]:
+    topology_intrinsic = {
+        node_id: _topology_intrinsic(node)
+        for node_id, node in by_id.items()
+    }
+    colors = _refined_colors_from_intrinsic(
+        topology_intrinsic,
+        edges,
+        include_condition=False,
+    )
+    grouped: dict[str, list[str]] = {}
+    for node_id, color in colors.items():
+        grouped.setdefault(color, []).append(node_id)
+    groups = [grouped[color] for color in sorted(grouped)]
+    budget = _permutation_budget(groups)
+    evaluated = 0
+    if budget <= MAX_REASONING_CANONICAL_PERMUTATIONS:
+        best_serialized: str | None = None
+        for choice in product(*(tuple(permutations(sorted(group))) for group in groups)):
+            order = tuple(node_id for group_order in choice for node_id in group_order)
+            serialized = _topology_serialization_for_order(order, by_id, edges)
+            evaluated += 1
+            if best_serialized is None or serialized < best_serialized:
+                best_serialized = serialized
+        assert best_serialized is not None
+        payload = {
+            "version": REASONING_ALGEBRA_VERSION,
+            "graph": best_serialized,
+            "termination_kind": termination_kind,
+        }
+        return sha256_json(payload), True, evaluated
+    order = tuple(
+        sorted(
+            by_id,
+            key=lambda node_id: (
+                colors[node_id],
+                canonical_json(topology_intrinsic[node_id]),
+                node_id,
+            ),
+        )
+    )
+    payload = {
+        "version": REASONING_ALGEBRA_VERSION,
+        "graph": _topology_serialization_for_order(order, by_id, edges),
+        "termination_kind": termination_kind,
+        "source_node_ids": list(order),
+    }
+    return sha256_json(payload), False, 0
+
+
 def canonicalize_reasoning_algorithm(
     spec: ReasoningAlgorithmSpec,
 ) -> CanonicalReasoningAlgorithm:
@@ -335,7 +435,7 @@ def canonicalize_reasoning_algorithm(
         assert best is not None
         canonical_nodes = tuple(best[1])
         canonical_edges = tuple(best[2])
-        strength = "EXACT_BOUNDED_GRAPH_CANONICALIZATION"
+        semantic_exact = True
         source_binding: list[str] = []
     else:
         order = tuple(
@@ -351,31 +451,31 @@ def canonicalize_reasoning_algorithm(
         nodes, canonical_edges, _ = _serialization_for_order(order, by_id, edges)
         canonical_nodes = tuple(nodes)
         canonical_edges = tuple(canonical_edges)
-        strength = "CONSERVATIVE_RENAMING_BOUND"
+        semantic_exact = False
         source_binding = list(order)
         warnings.append(
-            "Reasoning graph symmetry exceeded the exact permutation budget. Source node IDs remain conservatively bound to avoid false equivalence."
+            "Reasoning graph symmetry exceeded the exact semantic permutation budget. Source node IDs remain conservatively bound to avoid false equivalence."
         )
     termination = {
         "kind": _text(spec.termination.kind),
         "predicate": _text(spec.termination.predicate),
         "max_steps": int(spec.termination.max_steps),
     }
-    topology_payload = {
-        "version": REASONING_ALGEBRA_VERSION,
-        "operators": [node["operator"] for node in canonical_nodes],
-        "edges": [
-            {
-                "source": edge["source"],
-                "target": edge["target"],
-                "relation": edge["relation"],
-            }
-            for edge in canonical_edges
-        ],
-        "termination_kind": termination["kind"],
-        "source_binding": source_binding,
-    }
-    topology_signature = sha256_json(topology_payload)
+    topology_signature, topology_exact, topology_evaluated = _canonical_topology_signature(
+        by_id,
+        edges,
+        termination_kind=termination["kind"],
+    )
+    evaluated += topology_evaluated
+    if not topology_exact:
+        warnings.append(
+            "Reasoning operator topology exceeded the exact topology permutation budget. Topology identity is conservatively source-bound."
+        )
+    strength = (
+        "EXACT_BOUNDED_GRAPH_CANONICALIZATION"
+        if semantic_exact and topology_exact
+        else "CONSERVATIVE_RENAMING_BOUND"
+    )
     input_semantics = _texts(spec.inputs)
     output_semantics = _texts(spec.outputs)
     invariants = _texts(spec.invariants)
