@@ -37,9 +37,9 @@ A non-finite, zero-width, or inverted interval fails closed.
 
 SAA-2 intentionally maintains two hashes.
 
-`contract_hash` is the audit identity. It includes the actual minima, maxima, units, provenance, and characteristic time. Two different source coordinate systems therefore have different audit hashes.
+`contract_hash` is the audit identity. It includes the actual minima, maxima, source data-type spelling, units, provenance, and characteristic time. Two different source coordinate systems therefore have different audit hashes.
 
-`canonical_signature` describes the normalized coordinate system. It includes port role, position, source data type, shape, target interval `[0,1]`, affine-transform semantics, and exact/approximate strength. It deliberately excludes source offset, scale, unit, and provenance text.
+`canonical_signature` describes the normalized interface coordinate system. It includes port role, position, canonical scalar type, shape, target interval `[0,1]`, affine-transform semantics, and exact/approximate strength. It deliberately excludes source offset, scale, unit, and provenance text. Equivalent continuous scalar aliases such as `scalar`, `number`, `float`, and `real` map to one canonical scalar class; integer coordinates remain a separate canonical class.
 
 Consequently two exact affine coordinate systems such as metres and millimetres can have different audit identities but the same canonical normalization identity.
 
@@ -85,7 +85,9 @@ The signature binds:
 - SAA-1 canonicalizer version, structural hash, and structural strength;
 - SAA-2 normalizer version, canonical normalization signature, and normalization strength.
 
-Thus source renaming and exact affine rescaling can preserve a normalized structural identity, while a real structural change still changes the combined signature.
+Its claim scope is explicitly `STRUCTURE_PLUS_INTERFACE_COORDINATES_ONLY`. Source renaming and changes to declared exact affine interface ranges can preserve this identity when the SAA-1 structural form itself is unchanged.
+
+SAA-2 does **not** yet rewrite internal constants or algebraic expressions into normalized coordinates. For example, proving that `y = 2x` under one set of bounds is dynamically identical to `y = x` under another requires the later expression/dynamic canonicalization stages. SAA-2 must not be used to make that claim by itself.
 
 ## Fail-closed invariants
 
@@ -100,9 +102,10 @@ SAA-2 enforces the following invariants:
 7. Approximate bounds are never promoted to exact normalization.
 8. Canonical signature and audit identity are separate.
 9. Normalizer version participates in both identities.
+10. Invalid roles and unsupported data types fail closed.
 
 ## Non-claims
 
-SAA-2 does not establish that two algorithms are dynamically equivalent. Matching normalized structural signatures establishes only that the SAA-1 structures match and their numerical interfaces have compatible canonical 0–1 coordinate contracts at the recorded strength.
+SAA-2 does not establish that two algorithms are dynamically equivalent. Matching normalized structural/interface signatures establishes only that the SAA-1 structures match and their numerical interfaces have compatible canonical 0–1 coordinate contracts at the recorded strength.
 
-State-space reduction, transfer forms, input/output coupling, MIMO invariant forms, and nonlinear Taylor jets remain later SAA milestones.
+State-space reduction, transfer forms, input/output coupling, MIMO invariant forms, internal equation normalization, and nonlinear Taylor jets remain later SAA milestones.
