@@ -1,5 +1,14 @@
-"""Public facade for SAA-11 controlled algorithm adaptation."""
+"""Public facade for SAA-11 controlled adaptation, lineage and experiments."""
 
+from .algebra.adaptation_lineage import (
+    ADAPTATION_LINEAGE_VERSION,
+    MAX_LINEAGE_DEPTH,
+    AdaptationLineageEdge,
+    AdaptationPromotionRecord,
+    adapted_candidate_ref,
+    make_adaptation_lineage_edge,
+    make_adaptation_promotion,
+)
 from .algebra.algorithm_adaptation import (
     ALGORITHM_ADAPTATION_VERSION,
     ALLOWED_ADAPTATION_DIMENSIONS,
@@ -10,14 +19,55 @@ from .algebra.algorithm_adaptation import (
     build_controlled_adaptation_plan,
     create_adapted_candidate,
 )
+from .algebra.algorithm_experiment import (
+    ALGORITHM_EXPERIMENT_VERSION,
+    MAX_EXPERIMENT_METRICS,
+    MAX_EXPERIMENT_TRIALS,
+    METRIC_DIRECTIONS,
+    AlgorithmABExperimentDesign,
+    AlgorithmABExperimentResult,
+    AlgorithmVariantObservation,
+    ExperimentMetricComparison,
+    ExperimentMetricSpec,
+    make_ab_experiment_design,
+    make_variant_observation,
+    qualify_ab_experiment,
+)
+from .adaptation_store import (
+    ADAPTATION_STORE_SCHEMA_VERSION,
+    ADAPTATION_STORE_VERSION,
+    AdaptationLineageStore,
+)
 
 __all__ = [
     "ALGORITHM_ADAPTATION_VERSION",
+    "ADAPTATION_LINEAGE_VERSION",
+    "ALGORITHM_EXPERIMENT_VERSION",
+    "ADAPTATION_STORE_VERSION",
+    "ADAPTATION_STORE_SCHEMA_VERSION",
     "ALLOWED_ADAPTATION_DIMENSIONS",
     "MAX_ADAPTATION_STEPS",
+    "MAX_LINEAGE_DEPTH",
+    "MAX_EXPERIMENT_METRICS",
+    "MAX_EXPERIMENT_TRIALS",
+    "METRIC_DIRECTIONS",
     "AdaptationStep",
     "AdaptedAlgorithmCandidate",
     "ControlledAdaptationPlan",
+    "AdaptationLineageEdge",
+    "AdaptationPromotionRecord",
+    "AlgorithmABExperimentDesign",
+    "AlgorithmABExperimentResult",
+    "AlgorithmVariantObservation",
+    "ExperimentMetricComparison",
+    "ExperimentMetricSpec",
+    "AdaptationLineageStore",
     "build_controlled_adaptation_plan",
     "create_adapted_candidate",
+    "adapted_candidate_ref",
+    "make_adaptation_lineage_edge",
+    "make_adaptation_promotion",
+    "make_ab_experiment_design",
+    "make_variant_observation",
+    "qualify_ab_experiment",
 ]
