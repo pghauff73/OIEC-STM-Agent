@@ -57,6 +57,7 @@ jobs:
             tests.test_production_agent \
             tests.test_saa_ir \
             tests.test_saa_normalization \
+            tests.test_saa_dynamics \
             tests.test_oiec \
             tests.test_policy \
             tests.test_provider \
