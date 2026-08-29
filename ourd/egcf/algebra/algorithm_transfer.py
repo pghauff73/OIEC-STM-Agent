@@ -19,6 +19,13 @@ def _texts(values: Sequence[Any]) -> Tuple[str, ...]:
     return tuple(sorted({_text(value) for value in values if _text(value)}))
 
 
+def _sha(value: str, label: str) -> str:
+    digest = str(value).strip().lower()
+    if len(digest) != 64 or any(c not in "0123456789abcdef" for c in digest):
+        raise EGCFError(f"{label} must be SHA-256")
+    return digest
+
+
 @dataclass(frozen=True)
 class AlgorithmDomainContract:
     domain: str
@@ -27,17 +34,17 @@ class AlgorithmDomainContract:
     boundary_signatures: Tuple[str, ...]
     dynamics_signature: str
     evidence_requirements: Tuple[str, ...] = ()
+    qualification_evidence_signatures: Tuple[str, ...] = ()
+    evidence_scope_signature: str = ""
 
     def canonical(self) -> "AlgorithmDomainContract":
         concepts = tuple(sorted(self.input_concepts, key=lambda item: item.concept_signature))
         if any(not isinstance(item, SemanticConcept) or not item.canonical_eligible for item in concepts):
             raise EGCFError("SAA-10.2 requires canonically resolved transfer concepts")
-        dynamics = str(self.dynamics_signature).strip().lower()
-        if len(dynamics) != 64 or any(c not in "0123456789abcdef" for c in dynamics):
-            raise EGCFError("SAA-10.2 dynamics signature must be SHA-256")
-        boundaries = tuple(sorted(str(value).strip().lower() for value in self.boundary_signatures))
-        if any(len(value) != 64 or any(c not in "0123456789abcdef" for c in value) for value in boundaries):
-            raise EGCFError("SAA-10.2 boundary signatures must be SHA-256")
+        dynamics = _sha(self.dynamics_signature, "SAA-10.2 dynamics signature")
+        boundaries = tuple(sorted(_sha(value, "SAA-10.2 boundary signature") for value in self.boundary_signatures))
+        evidence = tuple(sorted(_sha(value, "SAA-10.2 qualification evidence signature") for value in self.qualification_evidence_signatures))
+        scope = _sha(self.evidence_scope_signature, "SAA-10.2 evidence scope signature") if self.evidence_scope_signature else ""
         return AlgorithmDomainContract(
             domain=_text(self.domain),
             input_concepts=concepts,
@@ -45,6 +52,8 @@ class AlgorithmDomainContract:
             boundary_signatures=boundaries,
             dynamics_signature=dynamics,
             evidence_requirements=_texts(self.evidence_requirements),
+            qualification_evidence_signatures=evidence,
+            evidence_scope_signature=scope,
         )
 
     def to_dict(self) -> dict[str, Any]:
@@ -55,6 +64,8 @@ class AlgorithmDomainContract:
             "boundary_signatures": list(self.boundary_signatures),
             "dynamics_signature": self.dynamics_signature,
             "evidence_requirements": list(self.evidence_requirements),
+            "qualification_evidence_signatures": list(self.qualification_evidence_signatures),
+            "evidence_scope_signature": self.evidence_scope_signature,
         }
 
 
@@ -131,7 +142,12 @@ def assess_algorithm_transfer(
     boundary_match = src.boundary_signatures == dst.boundary_signatures
     invariant_match = set(src.invariants).issubset(set(dst.invariants))
     dynamics_match = src.dynamics_signature == dst.dynamics_signature
-    evidence_match = set(src.evidence_requirements).issubset(set(dst.evidence_requirements))
+    evidence_requirements_match = set(src.evidence_requirements).issubset(set(dst.evidence_requirements))
+    evidence_signatures_match = bool(src.qualification_evidence_signatures) and set(src.qualification_evidence_signatures).issubset(
+        set(dst.qualification_evidence_signatures)
+    )
+    evidence_scope_match = bool(src.evidence_scope_signature) and src.evidence_scope_signature == dst.evidence_scope_signature
+    evidence_match = evidence_requirements_match and evidence_signatures_match and evidence_scope_match
 
     blockers: list[str] = []
     adaptation: list[str] = []
@@ -162,7 +178,9 @@ def assess_algorithm_transfer(
         "boundary_match": boundary_match,
         "invariant_match": invariant_match,
         "dynamics_match": dynamics_match,
-        "evidence_match": evidence_match,
+        "evidence_requirements_match": evidence_requirements_match,
+        "evidence_signatures_match": evidence_signatures_match,
+        "evidence_scope_match": evidence_scope_match,
         "status": status,
         "blocking_gaps": blockers,
         "adaptation_gaps": adaptation,
