@@ -6,6 +6,7 @@ from typing import Any, Iterable, Mapping, Sequence, Tuple
 
 from ..errors import EGCFError
 from ..ids import sha256_json
+from .graph import validate_structure
 from .models import AlgorithmStructureSpec, CanonicalAlgorithmIR
 
 
@@ -18,7 +19,14 @@ BOUND_KINDS = {
     "APPROXIMATE_BOUND",
 }
 EXACT_BOUND_KINDS = {"EXACT_BOUND", "DOMAIN_BOUND"}
-NUMERIC_DATA_TYPES = {"scalar", "number", "float", "real", "int", "integer"}
+NUMERIC_DATA_TYPE_CLASSES = {
+    "scalar": "CONTINUOUS_SCALAR",
+    "number": "CONTINUOUS_SCALAR",
+    "float": "CONTINUOUS_SCALAR",
+    "real": "CONTINUOUS_SCALAR",
+    "int": "INTEGER_SCALAR",
+    "integer": "INTEGER_SCALAR",
+}
 ROLE_ORDER = {"INPUT": 0, "PARAMETER": 1, "STATE": 2, "OUTPUT": 3}
 
 
@@ -26,6 +34,8 @@ def _finite(value: float, label: str) -> float:
     number = float(value)
     if not math.isfinite(number):
         raise EGCFError(f"{label} must be finite")
+    if number == 0.0:
+        number = 0.0
     return number
 
 
@@ -109,16 +119,22 @@ class NormalizationBinding:
             raise EGCFError("normalization binding position cannot be negative")
         data_type = str(self.data_type).strip().lower()
         shape = tuple(int(value) for value in self.shape)
-        if data_type not in NUMERIC_DATA_TYPES:
+        if data_type not in NUMERIC_DATA_TYPE_CLASSES:
             raise EGCFError(
                 f"SAA-2 supports scalar numeric coordinates only, not {self.data_type!r}"
             )
         if shape:
             raise EGCFError("SAA-2 scalar normalization does not yet support shaped/vector ports")
+        if not isinstance(self.bound, NumericBound):
+            raise EGCFError("normalization binding requires a NumericBound")
         object.__setattr__(self, "role", role)
         object.__setattr__(self, "position", int(self.position))
         object.__setattr__(self, "data_type", data_type)
         object.__setattr__(self, "shape", shape)
+
+    @property
+    def canonical_data_type(self) -> str:
+        return NUMERIC_DATA_TYPE_CLASSES[self.data_type]
 
     @property
     def strength(self) -> str:
@@ -128,7 +144,8 @@ class NormalizationBinding:
         return {
             "role": self.role,
             "position": self.position,
-            "data_type": self.data_type,
+            "source_data_type": self.data_type,
+            "canonical_data_type": self.canonical_data_type,
             "shape": list(self.shape),
             "bound": self.bound.audit_payload(),
         }
@@ -137,7 +154,7 @@ class NormalizationBinding:
         return {
             "role": self.role,
             "position": self.position,
-            "data_type": self.data_type,
+            "data_type": self.canonical_data_type,
             "shape": list(self.shape),
             "normalization": self.bound.canonical_payload(),
         }
@@ -198,6 +215,8 @@ class NormalizationContract:
 
     def binding(self, role: str, position: int) -> NormalizationBinding:
         role = str(role).strip().upper()
+        if role not in ROLE_ORDER:
+            raise EGCFError(f"unsupported normalization role: {role!r}")
         for item in self.bindings:
             if item.role == role and item.position == int(position):
                 return item
@@ -304,7 +323,10 @@ def _coerce_bound_map(
 ) -> dict[int, NumericBound]:
     result: dict[int, NumericBound] = {}
     for raw_position, value in (values or {}).items():
-        position = int(raw_position)
+        try:
+            position = int(raw_position)
+        except (TypeError, ValueError) as exc:
+            raise EGCFError(f"invalid normalization position: {raw_position!r}") from exc
         if position < 0:
             raise EGCFError("normalization positions cannot be negative")
         if position in result:
@@ -338,7 +360,10 @@ def _build_role_bindings(
     ]
 
 
-def _contract_strength(bindings: Sequence[NormalizationBinding], time: TimeNormalization | None) -> str:
+def _contract_strength(
+    bindings: Sequence[NormalizationBinding],
+    time: TimeNormalization | None,
+) -> str:
     strengths = {item.strength for item in bindings}
     if time is not None:
         strengths.add(time.strength)
@@ -358,6 +383,7 @@ def build_normalization_contract(
     output_bounds: Mapping[int, NumericBound | Mapping[str, Any] | Sequence[Any]] | None = None,
     time: TimeNormalization | Mapping[str, Any] | float | int | None = None,
 ) -> NormalizationContract:
+    validate_structure(spec)
     role_inputs = {
         "INPUT": (spec.inputs, _coerce_bound_map(input_bounds)),
         "PARAMETER": (spec.parameters, _coerce_bound_map(parameter_bounds)),
@@ -406,16 +432,22 @@ def build_normalization_contract(
     )
 
 
+def _role_bindings(contract: NormalizationContract, role: str) -> list[NormalizationBinding]:
+    normalized_role = str(role).strip().upper()
+    if normalized_role not in ROLE_ORDER:
+        raise EGCFError(f"unsupported normalization role: {role!r}")
+    return [item for item in contract.bindings if item.role == normalized_role]
+
+
 def normalize_role(
     contract: NormalizationContract,
     role: str,
     values: Sequence[float],
 ) -> Tuple[float, ...]:
-    role = str(role).strip().upper()
-    bindings = [item for item in contract.bindings if item.role == role]
+    bindings = _role_bindings(contract, role)
     if len(values) != len(bindings):
         raise EGCFError(
-            f"normalization {role} value count {len(values)} does not match {len(bindings)} bindings"
+            f"normalization value count {len(values)} does not match {len(bindings)} bindings"
         )
     return tuple(
         normalize_value(binding.bound, value)
@@ -428,11 +460,10 @@ def denormalize_role(
     role: str,
     values: Sequence[float],
 ) -> Tuple[float, ...]:
-    role = str(role).strip().upper()
-    bindings = [item for item in contract.bindings if item.role == role]
+    bindings = _role_bindings(contract, role)
     if len(values) != len(bindings):
         raise EGCFError(
-            f"denormalization {role} value count {len(values)} does not match {len(bindings)} bindings"
+            f"denormalization value count {len(values)} does not match {len(bindings)} bindings"
         )
     return tuple(
         denormalize_value(binding.bound, value)
@@ -444,9 +475,12 @@ def normalized_algorithm_signature(
     structural_ir: CanonicalAlgorithmIR,
     contract: NormalizationContract,
 ) -> str:
+    """Bind SAA-1 structure to SAA-2 interface coordinates without dynamic claims."""
+
     return sha256_json(
         {
-            "signature_version": "saa-structural-normalized-v1",
+            "signature_version": "saa-structural-interface-normalized-v1",
+            "claim_scope": "STRUCTURE_PLUS_INTERFACE_COORDINATES_ONLY",
             "structural": {
                 "canonicalizer_version": structural_ir.canonicalizer_version,
                 "hash": structural_ir.structural_hash,
