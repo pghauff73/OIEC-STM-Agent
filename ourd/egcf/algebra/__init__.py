@@ -70,9 +70,8 @@ from .representative import (
     RepresentativeInputCandidate,
     RepresentativeInputSearch,
     TransformAdmissibility,
-    assess_mimo_representation,
-    discover_representative_inputs,
 )
+from .representative_zero import assess_mimo_representation, discover_representative_inputs
 
 __all__ = [
     "AlgorithmNodeSpec",
