@@ -6,9 +6,6 @@ from pathlib import Path
 
 from ourd.egcf.models import EvidenceArtifact
 from ourd.egcf.semantics import (
-    JOULE if False else LENGTH,
-)
-from ourd.egcf.semantics import (
     LENGTH,
     MASS,
     TIME,
