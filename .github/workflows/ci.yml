@@ -67,6 +67,7 @@ jobs:
             tests.test_saa_reasoning_operational \
             tests.test_saa_transfer_adaptation \
             tests.test_saa_adaptation_lineage_experiments \
+            tests.test_saa_closed_improvement_loop \
             tests.test_oiec \
             tests.test_policy \
             tests.test_provider \
