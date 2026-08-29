@@ -1,0 +1,77 @@
+name: SAA semantic ontology and unified retrieval qualification
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: saa-semantic-retrieval-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  semantic-retrieval:
+    name: SAA-9.1-10.1 / Python ${{ matrix.python-version }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version:
+          - "3.10"
+          - "3.12"
+          - "3.13"
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v7
+        with:
+          python-version: "${{ matrix.python-version }}"
+
+      - name: Compile semantic and retrieval stack
+        run: |
+          python -m py_compile \
+            ourd/egcf/algebra/semantic_units.py \
+            ourd/egcf/algebra/semantic_revision.py \
+            ourd/egcf/algebra/semantic_alignment.py \
+            ourd/egcf/algebra/unified_retrieval.py \
+            ourd/egcf/semantic_ontology.py \
+            ourd/egcf/semantic_ontology_grounded.py \
+            ourd/egcf/semantics.py \
+            ourd/egcf/retrieval.py \
+            ourd/retrieve_first.py \
+            ourd/retrieve_first_agent.py
+
+      - name: Import public facades
+        run: |
+          python - <<'PY'
+          import ourd.egcf.semantics as semantics
+          import ourd.egcf.retrieval as retrieval
+          from ourd.retrieve_first import RetrieveFirstController
+          from ourd.retrieve_first_agent import RetrieveFirstProductionOURDAgent
+
+          for name in (
+              "SemanticConcept",
+              "SemanticOntologyStore",
+              "SemanticRequalification",
+              "SemanticAlignmentAssessment",
+          ):
+              assert hasattr(semantics, name), name
+          for name in ("UnifiedProblemRequirements", "UnifiedRetrievalDecision"):
+              assert hasattr(retrieval, name), name
+          assert RetrieveFirstController
+          assert RetrieveFirstProductionOURDAgent
+          print("public SAA-9/10 facades OK")
+          PY
+
+      - name: Run semantic and retrieval qualification suites
+        run: |
+          python -m unittest \
+            tests.test_saa_semantic_ontology \
+            tests.test_saa_unified_retrieval \
+            -v
