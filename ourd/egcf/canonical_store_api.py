@@ -1,10 +1,11 @@
 from __future__ import annotations
 
+import json
 from typing import Any
 
+from ..persistence import atomic_write_text
 from .canonical_store import CanonicalAlgorithmStore as _CanonicalAlgorithmStore
 from .ids import canonical_json
-from .persistence_compat import canonical_atomic_write
 
 
 class CanonicalAlgorithmStore(_CanonicalAlgorithmStore):
@@ -31,7 +32,14 @@ class CanonicalAlgorithmStore(_CanonicalAlgorithmStore):
             "canonical_algorithm_signature": form.canonical_algorithm_signature,
             "payload": canonical_payload,
         }
-        canonical_atomic_write(path, envelope)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        serialized = json.dumps(envelope, indent=2, sort_keys=True, ensure_ascii=False) + "\n"
+        if path.exists():
+            existing = json.loads(path.read_text(encoding="utf-8"))
+            if canonical_json(existing) != canonical_json(envelope):
+                raise ValueError(f"immutable canonical-store collision at {path}")
+        else:
+            atomic_write_text(path, serialized)
         with self._connect() as connection:
             connection.execute(
                 "INSERT OR IGNORE INTO canonical_algorithms("
