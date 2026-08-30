@@ -1,0 +1,53 @@
+name: SAA repository brain feeding qualification
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: saa-repository-brain-feed-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  repository-brain-feed:
+    name: SAA repository brain feed / Python ${{ matrix.python-version }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version:
+          - "3.10"
+          - "3.12"
+          - "3.13"
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v7
+        with:
+          python-version: "${{ matrix.python-version }}"
+
+      - name: Compile repository brain-feed stack
+        run: |
+          python -m py_compile \
+            ourd/entrypoint.py \
+            ourd/brain_dispatch.py \
+            ourd/repo_brain_cli.py \
+            ourd/egcf/repository_brain_feed.py \
+            tests/test_saa_repository_brain_feed.py
+
+      - name: Verify installed-style repository brain CLI
+        run: |
+          python -m ourd.entrypoint brain --help
+          python -m ourd.entrypoint brain repo --help
+          python -m ourd.entrypoint brain feed-repo --help
+
+      - name: Run repository brain-feed qualification suite
+        run: |
+          python -m unittest tests.test_saa_repository_brain_feed -v
