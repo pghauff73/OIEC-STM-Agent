@@ -3,9 +3,18 @@ from __future__ import annotations
 from dataclasses import asdict, dataclass, field
 from typing import Any, Dict, List, Optional, Tuple
 
+from .constants import SCORE_SCALE
+from .reasoning.models import (
+    CandidateSet,
+    Hypothesis as ReasoningHypothesis,
+    HypothesisSet as ReasoningHypothesisSet,
+    HypothesisUpdateRecord as ReasoningHypothesisUpdateRecord,
+    ReasoningCertificate,
+    ReasoningProblem,
+    ReasoningTopology,
+)
 
 RISK_ORDER = {"L0": 0, "L1": 1, "L2": 2}
-SCORE_SCALE = 10_000
 HYPOTHESIS_STATUSES = {
     "ACTIVE",
     "SUPPORTED_BY_LINKED_EVIDENCE",
@@ -140,6 +149,8 @@ class EONAction:
     use_limit: int = 1
     use_count: int = 0
     varied_dimensions: List[str] = field(default_factory=list)
+    reasoning_certificate_signature: str = ""
+    reasoning_winning_path_id: str = ""
 
     def __post_init__(self) -> None:
         self.varied_dimensions = list(
@@ -461,7 +472,7 @@ class ProgressCertificate:
 
 @dataclass
 class RuntimeState:
-    schema_version: int = 2
+    schema_version: int = 4
     authority: AuthorityManifest = field(default_factory=AuthorityManifest)
     governance: GovernanceRecord = field(default_factory=GovernanceRecord)
     pending_action: Optional[EONAction] = None
@@ -478,15 +489,64 @@ class RuntimeState:
     last_progress: Optional[ProgressCertificate] = None
     transition_index: int = 0
     control_only_progress_streak: int = 0
+    reasoning_problem: Optional[ReasoningProblem] = None
+    reasoning_hypothesis_state: Optional[ReasoningHypothesisSet] = None
+    reasoning_hypothesis_updates: List[ReasoningHypothesisUpdateRecord] = field(
+        default_factory=list
+    )
+    reasoning_hypothesis_pool: Dict[str, ReasoningHypothesis] = field(default_factory=dict)
+    reasoning_topology: Optional[ReasoningTopology] = None
+    reasoning_candidates: Optional[CandidateSet] = None
+    last_reasoning_certificate: Optional[ReasoningCertificate] = None
+    reasoning_transition_index: int = 0
     active_transaction_id: str = ""
     event_head: str = ""
 
     def __post_init__(self) -> None:
         if int(self.control_only_progress_streak) < 0:
             raise ValueError("control-only progress streak cannot be negative")
+        if int(self.reasoning_transition_index) < 0:
+            raise ValueError("reasoning transition index cannot be negative")
 
     def to_dict(self) -> Dict[str, Any]:
         return asdict(self)
+
+    def set_reasoning_hypothesis_state(
+        self,
+        hypothesis_state: Optional[ReasoningHypothesisSet],
+    ) -> None:
+        self.reasoning_hypothesis_state = hypothesis_state
+        self.reasoning_hypothesis_pool = (
+            {}
+            if hypothesis_state is None
+            else {
+                hypothesis.hypothesis_id: hypothesis
+                for hypothesis in hypothesis_state.hypotheses
+            }
+        )
+
+    def validate_reasoning_hypothesis_projection(self) -> None:
+        if self.reasoning_hypothesis_state is None:
+            if self.reasoning_hypothesis_pool:
+                raise ValueError(
+                    "reasoning hypothesis pool exists without authoritative state"
+                )
+            return
+        expected = {
+            hypothesis.hypothesis_id: hypothesis
+            for hypothesis in self.reasoning_hypothesis_state.hypotheses
+        }
+        if self.reasoning_hypothesis_pool != expected:
+            raise ValueError(
+                "reasoning hypothesis pool conflicts with authoritative state"
+            )
+        update_ids = [record.update_id for record in self.reasoning_hypothesis_updates]
+        if len(update_ids) != len(set(update_ids)):
+            raise ValueError("reasoning hypothesis update IDs must be unique")
+        if set(self.reasoning_hypothesis_state.update_ids) - set(update_ids):
+            raise ValueError(
+                "reasoning hypothesis state references a missing update record"
+            )
 
     @classmethod
     def from_dict(cls, payload: Dict[str, Any]) -> "RuntimeState":
@@ -499,6 +559,11 @@ class RuntimeState:
         finite_evidence_payload = payload.get("finite_evidence")
         hypothesis_payload = payload.get("hypothesis_state")
         progress_payload = payload.get("last_progress")
+        reasoning_problem_payload = payload.get("reasoning_problem")
+        reasoning_hypothesis_state_payload = payload.get("reasoning_hypothesis_state")
+        reasoning_topology_payload = payload.get("reasoning_topology")
+        reasoning_candidates_payload = payload.get("reasoning_candidates")
+        reasoning_certificate_payload = payload.get("last_reasoning_certificate")
         evidence = {
             key: EvidenceArtifact(**value)
             for key, value in payload.get("evidence_registry", {}).items()
@@ -552,6 +617,40 @@ class RuntimeState:
             ),
             transition_index=int(payload.get("transition_index", 0)),
             control_only_progress_streak=int(payload.get("control_only_progress_streak", 0)),
+            reasoning_problem=(
+                ReasoningProblem.from_dict(reasoning_problem_payload)
+                if reasoning_problem_payload
+                else None
+            ),
+            reasoning_hypothesis_state=(
+                ReasoningHypothesisSet.from_dict(reasoning_hypothesis_state_payload)
+                if reasoning_hypothesis_state_payload
+                else None
+            ),
+            reasoning_hypothesis_updates=[
+                ReasoningHypothesisUpdateRecord.from_dict(value)
+                for value in payload.get("reasoning_hypothesis_updates", [])
+            ],
+            reasoning_hypothesis_pool={
+                str(key): ReasoningHypothesis.from_dict(value)
+                for key, value in payload.get("reasoning_hypothesis_pool", {}).items()
+            },
+            reasoning_topology=(
+                ReasoningTopology.from_dict(reasoning_topology_payload)
+                if reasoning_topology_payload
+                else None
+            ),
+            reasoning_candidates=(
+                CandidateSet.from_dict(reasoning_candidates_payload)
+                if reasoning_candidates_payload
+                else None
+            ),
+            last_reasoning_certificate=(
+                ReasoningCertificate.from_dict(reasoning_certificate_payload)
+                if reasoning_certificate_payload
+                else None
+            ),
+            reasoning_transition_index=int(payload.get("reasoning_transition_index", 0)),
             active_transaction_id=str(payload.get("active_transaction_id", "")),
             event_head=str(payload.get("event_head", "")),
         )

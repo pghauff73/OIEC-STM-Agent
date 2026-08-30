@@ -2874,6 +2874,172 @@ body[data-page="index"].focus-mode .index-references {
   display: none;
 }
 
+.essay-logic-topology {
+  margin: 1.25rem 0 1.75rem;
+  padding: 1rem;
+  overflow-x: auto;
+  border: 3px solid var(--purple-700);
+  background: linear-gradient(135deg, #180329 0%, #32075c 100%);
+  box-shadow: 8px 8px 0 var(--purple-200);
+}
+
+.essay-logic-topology figcaption {
+  margin-bottom: 0.85rem;
+  color: #f8efff;
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+.essay-logic-topology figcaption span {
+  display: inline-block;
+  margin-right: 0.75rem;
+  color: var(--cyan);
+  font-weight: 900;
+  letter-spacing: 0.12em;
+}
+
+.logic-stage-list,
+.logic-stage-list ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.logic-stage-list {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(10rem, 1fr));
+  gap: 0.7rem;
+  min-width: 54rem;
+}
+
+.logic-stage {
+  position: relative;
+  padding: 0.65rem;
+  border: 2px solid #9d57d8;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.logic-stage:not(:last-child)::after {
+  content: "▶";
+  position: absolute;
+  z-index: 2;
+  top: 0.6rem;
+  right: -0.75rem;
+  color: var(--pink);
+  font-size: 0.9rem;
+}
+
+.logic-stage > strong {
+  display: block;
+  margin-bottom: 0.55rem;
+  color: #fff;
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.logic-stage ol {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.logic-stage button {
+  display: grid;
+  grid-template-columns: 1.7rem 1fr;
+  gap: 0.35rem;
+  width: 100%;
+  min-height: 2.5rem;
+  padding: 0.38rem;
+  border: 1px solid #d7b4f4;
+  background: #fbf8ff;
+  color: #2a0648;
+  font: inherit;
+  font-size: 0.66rem;
+  line-height: 1.25;
+  text-align: left;
+  cursor: pointer;
+}
+
+.logic-stage button span {
+  display: grid;
+  place-items: center;
+  background: var(--purple-700);
+  color: #fff;
+  font-weight: 900;
+}
+
+.logic-stage button:hover,
+.logic-stage button:focus-visible,
+.logic-stage button.is-active {
+  border-color: var(--cyan);
+  background: #f2dcff;
+  box-shadow: 3px 3px 0 var(--pink);
+  outline: none;
+}
+
+.logic-stage button.is-logic-complete {
+  border-color: #71f3ff;
+  background: #e9fbff;
+  color: #2a0648;
+}
+
+.logic-stage button.is-logic-complete span {
+  background: #13778a;
+}
+
+.essay-block p[data-logic-node] {
+  scroll-margin-top: 8rem;
+  transition: background 140ms ease, box-shadow 140ms ease, transform 140ms ease;
+}
+
+.essay-block p[data-logic-node].is-logic-active {
+  background: #f5e7ff;
+  box-shadow: inset 5px 0 0 var(--pink), 5px 5px 0 var(--purple-200);
+  transform: translateX(2px);
+}
+
+.essay-block p[data-logic-node].is-logic-complete {
+  box-shadow: inset 3px 0 0 #71dbe8;
+}
+
+.paragraph-topic {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.7rem;
+  margin-bottom: 0.55rem;
+  color: var(--purple-700);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.paragraph-topic strong {
+  color: var(--pink-dark);
+}
+
+.paragraph-topic span::before {
+  content: "→ ";
+  color: var(--purple-500);
+}
+
+@media (max-width: 720px) {
+  .essay-logic-topology {
+    margin-inline: -0.2rem;
+    padding: 0.75rem;
+  }
+
+  .logic-stage-list {
+    grid-template-columns: repeat(5, minmax(9rem, 1fr));
+    min-width: 49rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .essay-block p[data-logic-node] {
+    transition: none;
+  }
+}
+
 @media (max-width: 1320px) {
   .header-telemetry {
     display: none;

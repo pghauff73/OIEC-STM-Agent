@@ -29,6 +29,8 @@ class GuiAppTests(unittest.TestCase):
                 "120",
                 "--transport-retries",
                 "2",
+                "--max-reasoning-samples",
+                "12",
                 "--max-steps",
                 "24",
                 "--smoke-test",
@@ -44,6 +46,7 @@ class GuiAppTests(unittest.TestCase):
         self.assertEqual(4096, args.max_output_tokens)
         self.assertEqual(120, args.timeout_seconds)
         self.assertEqual(2, args.transport_retries)
+        self.assertEqual(12, args.max_reasoning_samples)
         self.assertEqual(24, args.max_steps)
 
 

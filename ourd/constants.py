@@ -1,0 +1,4 @@
+SCORE_SCALE = 10_000
+
+
+__all__ = ["SCORE_SCALE"]

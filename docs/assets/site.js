@@ -374,6 +374,48 @@
     if (topologyMap.contentDocument) activateTopology();
   }
 
+  function setupEssayLogicMaps() {
+    queryAll("[data-essay-logic-map]").forEach((map) => {
+      const buttons = queryAll("[data-logic-target]", map);
+      const paragraphs = buttons
+        .map((button) => document.getElementById(button.dataset.logicTarget))
+        .filter(Boolean);
+      const activate = (targetId, scroll = false) => {
+        const activeButton = buttons.find((button) => button.dataset.logicTarget === targetId);
+        const activeOrder = Number(activeButton?.dataset.logicOrder || 0);
+        map.dataset.activeLogicNode = activeButton?.dataset.logicNode || "";
+        buttons.forEach((button) => {
+          const active = button.dataset.logicTarget === targetId;
+          const complete = Number(button.dataset.logicOrder || 0) < activeOrder;
+          button.classList.toggle("is-active", active);
+          button.classList.toggle("is-logic-complete", complete);
+          button.setAttribute("aria-pressed", active ? "true" : "false");
+          if (active) button.setAttribute("aria-current", "step");
+          else button.removeAttribute("aria-current");
+        });
+        paragraphs.forEach((paragraph) => {
+          const complete = Number(paragraph.dataset.logicOrder || 0) < activeOrder;
+          paragraph.classList.toggle("is-logic-active", paragraph.id === targetId);
+          paragraph.classList.toggle("is-logic-complete", complete);
+        });
+        const target = document.getElementById(targetId);
+        if (scroll && target) {
+          target.scrollIntoView({ behavior: "smooth", block: "center" });
+          target.focus({ preventScroll: true });
+        }
+      };
+      buttons.forEach((button) => {
+        button.setAttribute("aria-pressed", "false");
+        button.addEventListener("click", () => activate(button.dataset.logicTarget, true));
+        button.addEventListener("focus", () => activate(button.dataset.logicTarget));
+      });
+      paragraphs.forEach((paragraph) => {
+        paragraph.tabIndex = 0;
+        paragraph.addEventListener("focus", () => activate(paragraph.id));
+      });
+    });
+  }
+
   function setupRandomModule() {
     const button = query('[data-action="random-module"]');
     if (!button || !Array.isArray(window.DOCS_MANIFEST) || !window.DOCS_MANIFEST.length) return;
@@ -801,6 +843,7 @@
     setupIndexSearch();
     setupRelationalObjectExplorer();
     setupRelationalTopology();
+    setupEssayLogicMaps();
     setupRandomModule();
     setupTocSearch();
     setupScrollSpy();

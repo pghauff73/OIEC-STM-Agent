@@ -1,7 +1,7 @@
 [project]
 name = "oiec-stm-agent"
-version = "0.4.0"
-description = "A deterministic governed coding agent using OIEC-STM, OURD, IURM, EON, and CFEL"
+version = "0.7.0"
+description = "A deterministic governed coding agent using OIEC-STM, OIEC-SR, OURD, IURM, EON, and CFEL"
 requires-python = ">=3.10"
 dependencies = []
 

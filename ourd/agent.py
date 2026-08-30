@@ -28,6 +28,7 @@ from .oiec import BoundedTransitionKernel, PreparedTransition
 from .persistence import StateStore, atomic_write_text, canonical_json, redact
 from .policy import PolicyEngine
 from .providers import ModelProvider, OpenAIResponsesProvider, ProviderConfig
+from .reasoning import SuperReasoningKernel
 from .transactions import TransactionManager
 from .workspace import Workspace
 
@@ -57,6 +58,7 @@ class OURDAgent:
         self.max_steps = max_steps
         self.policy = PolicyEngine()
         self.oiec = BoundedTransitionKernel()
+        self.super_reasoning = SuperReasoningKernel()
         self._last_oiec_prepared: Optional[PreparedTransition] = None
         self.state_dir = self.ws.root / self.ws.internal_name
         self.store = StateStore(self.state_dir)
@@ -118,6 +120,7 @@ class OURDAgent:
                 context_budget_tokens=int(os.getenv("OURD_CONTEXT_BUDGET", "6000")),
                 timeout_seconds=float(os.getenv("OURD_TIMEOUT_SECONDS", "600")),
                 max_transport_retries=int(os.getenv("OURD_TRANSPORT_RETRIES", "0")),
+                max_reasoning_samples=int(os.getenv("OURD_MAX_REASONING_SAMPLES", "16")),
             )
         )
         self.model = self.provider_config.model
@@ -166,6 +169,46 @@ class OURDAgent:
                     raise StateError("pending action references a missing transaction")
                 if transaction.action_id and transaction.action_id != action.action_id:
                     raise StateError("pending action conflicts with transaction action identity")
+        if any(
+            key != hypothesis.hypothesis_id
+            for key, hypothesis in self.state.reasoning_hypothesis_pool.items()
+        ):
+            raise StateError("hypothesis pool key conflicts with hypothesis identity")
+        try:
+            self.state.validate_reasoning_hypothesis_projection()
+        except ValueError as exc:
+            raise StateError(str(exc)) from exc
+        if self.state.reasoning_hypothesis_state is not None:
+            if self.state.reasoning_problem is None:
+                raise StateError("hypothesis state requires a reasoning problem")
+            if (
+                self.state.reasoning_hypothesis_state.problem_id
+                != self.state.reasoning_problem.problem_id
+            ):
+                raise StateError("hypothesis state conflicts with the reasoning problem")
+        if self.state.reasoning_candidates is not None:
+            if self.state.reasoning_problem is None:
+                raise StateError("reasoning candidates require a reasoning problem")
+            if self.state.reasoning_candidates.problem_id != self.state.reasoning_problem.problem_id:
+                raise StateError("reasoning candidates conflict with the reasoning problem")
+        if self.state.last_reasoning_certificate is not None:
+            certificate = self.state.last_reasoning_certificate
+            if self.state.reasoning_problem is None or self.state.reasoning_topology is None:
+                raise StateError("reasoning certificate requires problem and topology projections")
+            if certificate.problem_hash != self.state.reasoning_problem.signature:
+                raise StateError("reasoning certificate problem hash is stale")
+            if certificate.reasoning_topology_hash != self.state.reasoning_topology.signature:
+                raise StateError("reasoning certificate topology hash is stale")
+            try:
+                self.super_reasoning.require_problem_integrity(self.state.reasoning_problem)
+                self.super_reasoning.require_topology_integrity(self.state.reasoning_topology)
+                self.super_reasoning.require_certificate_integrity(certificate)
+                if self.state.reasoning_candidates is not None:
+                    self.super_reasoning.require_candidate_integrity(
+                        self.state.reasoning_candidates
+                    )
+            except PolicyError as exc:
+                raise StateError(str(exc)) from exc
 
     def trace(self, event: str, payload: Any) -> Dict[str, Any]:
         action_id = self.state.pending_action.action_id if self.state.pending_action else ""
@@ -494,9 +537,163 @@ class OURDAgent:
         self.state.finite_evidence = None
         self.state.last_progress = None
         self.state.transition_index = 0
+        self.state.reasoning_problem = None
+        self.state.set_reasoning_hypothesis_state(None)
+        self.state.reasoning_hypothesis_updates = []
+        self.state.reasoning_topology = None
+        self.state.reasoning_candidates = None
+        self.state.last_reasoning_certificate = None
+        self.state.reasoning_transition_index = 0
         self.trace("governance_established", asdict(record))
         self.save_state()
         return {"ok": True, "governance": asdict(record)}
+
+    def run_super_reasoning(
+        self,
+        *,
+        statement: str,
+        goal: str,
+        hypotheses: List[Dict[str, Any]],
+        evidence_ids: Optional[List[str]] = None,
+        uncertainty_bp: int = 0,
+        difficulty_bp: int = 0,
+        mutually_exclusive_hypotheses: bool = False,
+        cancel_check: Optional[Callable[[], bool]] = None,
+    ) -> Dict[str, Any]:
+        self.require_governance()
+        if self.state.pending_action is not None:
+            raise PolicyError("super reasoning must run before proposing an EON action")
+        self._require_not_cancelled(cancel_check)
+        selected_evidence_ids = sorted(set(evidence_ids or ()))
+        current_snapshot = self.ws.snapshot_hash()
+        for evidence_id in selected_evidence_ids:
+            artifact = self.state.evidence_registry.get(evidence_id)
+            if artifact is None:
+                raise PolicyError(f"unknown reasoning evidence artifact: {evidence_id}")
+            if (
+                artifact.source_snapshot_hash
+                and artifact.source_snapshot_hash != current_snapshot
+            ):
+                raise PolicyError("reasoning evidence source snapshot is stale")
+        boundary = self.oiec.derive_boundary(
+            runtime=self.state,
+            source_snapshot_hash=current_snapshot,
+        )
+        dimension_budget = self.oiec.derive_dimension_budget(
+            boundary=boundary,
+            authority=self.state.authority,
+        )
+        problem = self.super_reasoning.create_problem(
+            statement=statement,
+            goal=goal,
+            source_snapshot_hash=current_snapshot,
+            boundary_signature=boundary.signature,
+            dimension_signature=dimension_budget.signature,
+            evidence_ids=selected_evidence_ids,
+            uncertainty_bp=int(uncertainty_bp),
+            difficulty_bp=int(difficulty_bp),
+            mutually_exclusive_hypotheses=bool(mutually_exclusive_hypotheses),
+        )
+        hypothesis_state = self.super_reasoning.build_hypothesis_state(
+            hypotheses,
+            problem_id=problem.problem_id,
+            max_hypotheses=dimension_budget.max_active_hypotheses,
+            mutually_exclusive=problem.mutually_exclusive_hypotheses,
+        )
+        hypothesis_pool = hypothesis_state.hypotheses
+        previous_certificate = (
+            self.state.last_reasoning_certificate
+            if self.state.reasoning_problem is not None
+            and self.state.reasoning_problem.signature == problem.signature
+            else None
+        )
+        previous_candidates = (
+            self.state.reasoning_candidates if previous_certificate is not None else None
+        )
+        self.trace(
+            "reasoning_episode_started",
+            {
+                "problem_id": problem.problem_id,
+                "problem_hash": problem.signature,
+                "hypothesis_ids": [item.hypothesis_id for item in hypothesis_pool],
+                "hypothesis_state_signature": hypothesis_state.signature,
+                "boundary_signature": boundary.signature,
+                "dimension_signature": dimension_budget.signature,
+            },
+        )
+        self.state.reasoning_problem = problem
+        self.state.set_reasoning_hypothesis_state(hypothesis_state)
+        self.state.reasoning_hypothesis_updates = []
+        self.state.reasoning_topology = None
+        self.state.reasoning_candidates = None
+        self.state.last_reasoning_certificate = None
+        self._require_not_cancelled(cancel_check)
+        provider = self._provider()
+        try:
+            preflight = provider.preflight()
+            self.trace("reasoning_provider_preflight", preflight)
+            active, reasoning_budget, candidates, topology, certificate = self.super_reasoning.run(
+                provider=provider,
+                problem=problem,
+                hypotheses=hypothesis_state,
+                dimension_budget=dimension_budget,
+                declared_evidence_ids=selected_evidence_ids,
+                previous_certificate=previous_certificate,
+                previous_candidates=previous_candidates,
+            )
+        except (ContextBudgetError, ProviderError) as exc:
+            record_collision(
+                self.state,
+                action_id="",
+                expected="bounded proposer, verifier, falsifier, and synthesizer responses",
+                observed=str(exc),
+                objects=["provider", problem.problem_id],
+                boundary="super reasoning provider",
+                active_dimension="reasoning_search",
+                frozen_dimensions=["authority", "governance", "boundary", "dimension budget"],
+                evidence_ids=selected_evidence_ids,
+                disposition="blocked pending revised structured reasoning response",
+                severity_bp=5_000,
+            )
+            self.save_state()
+            raise
+        self._require_not_cancelled(cancel_check)
+        self.state.boundary_state = boundary
+        self.state.dimension_budget = dimension_budget
+        self.state.reasoning_problem = problem
+        active_state = self.super_reasoning.build_hypothesis_state(
+            active,
+            problem_id=problem.problem_id,
+            max_hypotheses=hypothesis_state.max_hypotheses,
+            mutually_exclusive=hypothesis_state.mutually_exclusive,
+        )
+        self.state.set_reasoning_hypothesis_state(active_state)
+        self.state.reasoning_topology = topology
+        self.state.reasoning_candidates = candidates
+        self.state.last_reasoning_certificate = certificate
+        self.state.reasoning_transition_index += 1
+        self.trace(
+            "reasoning_episode_completed",
+            {
+                "problem_id": problem.problem_id,
+                "hypothesis_state_signature": active_state.signature,
+                "budget": asdict(reasoning_budget),
+                "candidate_set": asdict(candidates),
+                "topology_signature": topology.signature,
+                "certificate": asdict(certificate),
+            },
+        )
+        self.save_state()
+        return {
+            "ok": certificate.decision == "ACCEPT",
+            "problem": asdict(problem),
+            "budget": asdict(reasoning_budget),
+            "hypotheses": [asdict(item) for item in active],
+            "hypothesis_state": asdict(active_state),
+            "candidate_set": asdict(candidates),
+            "topology": asdict(topology),
+            "certificate": asdict(certificate),
+        }
 
     def prepare_write_file(self, path: str, content: str) -> Dict[str, Any]:
         self.require_governance()
@@ -647,6 +844,36 @@ class OURDAgent:
             authority=self.state.authority,
         )
         self.policy.require_oiec_dimension_action(budget, varied_dimensions)
+        reasoning_certificate_signature = ""
+        reasoning_winning_path_id = ""
+        if self.state.reasoning_problem is not None:
+            certificate = self.state.last_reasoning_certificate
+            candidates = self.state.reasoning_candidates
+            topology = self.state.reasoning_topology
+            if certificate is None or certificate.decision != "ACCEPT":
+                raise PolicyError("active SR episode lacks an accepted reasoning certificate")
+            self.super_reasoning.require_problem_integrity(self.state.reasoning_problem)
+            self.super_reasoning.require_certificate_integrity(certificate)
+            if self.state.reasoning_problem.source_snapshot_hash != source_snapshot_hash:
+                raise PolicyError("active SR problem source snapshot is stale")
+            if certificate.problem_hash != self.state.reasoning_problem.signature:
+                raise PolicyError("active SR certificate problem hash is stale")
+            if certificate.boundary_signature != boundary.signature:
+                raise PolicyError("active SR certificate boundary is stale")
+            if certificate.dimension_signature != budget.signature:
+                raise PolicyError("active SR certificate dimension budget is stale")
+            if topology is None or certificate.reasoning_topology_hash != topology.signature:
+                raise PolicyError("active SR certificate topology is stale")
+            self.super_reasoning.require_topology_integrity(topology)
+            if (
+                candidates is None
+                or not certificate.winning_candidate_id
+                or certificate.winning_candidate_id != candidates.selected_path_id
+            ):
+                raise PolicyError("active SR certificate lacks its exact winning candidate")
+            self.super_reasoning.require_candidate_integrity(candidates)
+            reasoning_certificate_signature = certificate.signature
+            reasoning_winning_path_id = certificate.winning_candidate_id
         material = {
             "summary": args["summary"],
             "operation": args["operation"],
@@ -670,6 +897,8 @@ class OURDAgent:
             "use_limit": use_limit,
             "use_count": 0,
             "varied_dimensions": varied_dimensions,
+            "reasoning_certificate_signature": reasoning_certificate_signature,
+            "reasoning_winning_path_id": reasoning_winning_path_id,
         }
         action = EONAction(action_id=sha256_json(material), **material)
         self.state.pending_action = action

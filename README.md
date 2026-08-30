@@ -5,10 +5,21 @@ governance, and transaction boundary:
 
 **HRTv1 → OURD → IURMv1.1.1 → EONv1 → Evidence Gate → Action → CFEL feedback**
 
+When a task benefits from explicit hypothesis comparison, the optional
+super-reasoning path is:
+
+**HRTv1 → OURD → OIEC boundary/dimension projection → OIEC-SR → IURMv1.1.1 → EONv1 → Evidence Gate → Action → CFEL feedback**
+
 The model may inspect, reason, propose, generate candidate patches, and analyze
 failures. It cannot grant itself mutation authority, lower deterministic risk,
 approve its own unsupported evidence, write internal evidence, or certify a
 release.
+
+The dependency-ordered program for integrating and completing every accepted
+implementation is `COMPLETE_IMPLEMENTATION_STRATEGY.md`. It covers current
+source recovery, upstream integration, OIEC-SR completion, direct llama.cpp
+Qwen3.8 support, documentation regeneration, qualification, exact-hash approval,
+merge, and release.
 
 ## What Is Enforced
 
@@ -83,6 +94,64 @@ has no subprocess or repository-write method. EON, the evidence gate,
 All OIEC control quantities use integer basis points from `0` to `10000`.
 These values are deterministic telemetry and cannot lower the existing L0/L1/L2
 risk floor.
+
+## OIEC-SR v1.0 Super Reasoning
+
+OIEC-SR is an additive, bounded reasoning layer. It does not replace OURD,
+IURM, EON, CFEL, the evidence registry, or the mutation executor. It converts a
+governed `ReasoningProblem` and explicit `Hypothesis` pool into independently
+proposed, verified, and falsified candidate paths, then emits a deterministic
+`ReasoningCertificate`.
+
+The canonical records are `ReasoningProblem`, `Hypothesis`, `HypothesisSet`,
+`HypothesisUpdateRecord`, `ReasoningNode`, `ReasoningEdge`,
+`ReasoningTopology`, `ReasoningStep`, `ReasoningPath`, `VerifierReport`,
+`FalsifierReport`, `CandidateSet`, `ReasoningMetrics`, `ReasoningCertificate`,
+and `ReasoningBudget`. `SuperReasoningKernel` owns the pure orchestration.
+
+The default search uses four independent perspectives: causal/mechanistic,
+counterexample-first, formal derivation, and evidence synthesis. Candidate
+count is adapted to recorded uncertainty, difficulty, and disagreement but is
+always capped by OIEC dimensions and the provider's
+`max_reasoning_samples`. Each candidate receives a step-level verifier report;
+the top two verifier-ranked candidates receive separate falsifier reports.
+Selection then uses fixed-point scores and lexical path IDs as the final
+tie-break.
+
+Only structured artifacts are requested from providers: claims, premises,
+declared evidence IDs, checks, assumptions, counterexamples, and conclusions.
+The system neither requests nor persists hidden chain-of-thought. Provider
+self-confidence cannot override verifier, falsifier, evidence, topology, or
+budget results.
+
+`ReasoningTopology` schema v2 makes each inference edge content-addressed and
+assigns it an explicit deductive, inductive, abductive, causal, analogical,
+probabilistic, authority, defeasible, constraint, or computational mode.
+Evidence nodes must belong to the declared finite evidence universe. Material
+conclusions must trace through positive acyclic edges to evidence, an
+observation, a validated problem premise, or an explicit assumption;
+assumption-only conclusions remain hypothetical. Contradiction, falsification,
+undercut, and rebuttal edges never count as positive support, and disconnected
+reasoning branches fail closed.
+
+`OURDAgent.run_super_reasoning()` requires established governance, the exact
+current source snapshot, declared evidence IDs, and no pending EON action. It
+persists the bounded problem, hypotheses, candidate set, topology, and
+certificate in RuntimeState schema v4. `ReasoningHypothesisSet` is the signed
+immutable owner; `reasoning_hypothesis_pool` remains a derived compatibility
+projection. The separate production `hypothesis_state` keeps its existing
+epistemic-loop contract. Every
+fixed-point evidence or CFEL belief change is bound to an immutable
+`HypothesisUpdateRecord`. A current accepted certificate may be
+bound into a later EON action; stale, tampered, unresolved, or no-value
+certificates fail closed. Existing callers that do not start a reasoning
+episode continue through the baseline path unchanged.
+
+CFEL collisions can weaken or falsify matching hypotheses without deleting
+previous support evidence. Collision identities and belief updates are
+content-addressed so identical projected inputs replay identically. Repeating
+different wording without measurable evidence, uncertainty, contradiction, or
+confidence improvement produces `STOP_NO_VALUE`, not a new permission to act.
 
 ## Install
 
@@ -269,9 +338,11 @@ events, selection semantics, safety, testing, migrations, and current limits.
 
 ## EGCFv1 Semantic Command Fabric
 
-Version `0.4.0` publishes the OIEC-STM-Agent name and OIEC-STMv1.2 bounded
-transition layer. The Evidence Governed Command Fabric remains available as the
-separate `egcf` entry point above the existing OURD/EON primitives:
+Version `0.7.0` adds grounded ReasoningTopology schema v2 on top of the
+first-class bounded hypothesis state and RuntimeState schema v4 foundation under the
+OIEC-STM-Agent name and OIEC-STMv1.2 bounded-transition layer. The Evidence
+Governed Command Fabric remains available as the separate `egcf` entry point
+above the existing OURD/EON primitives:
 
 ```text
 Intent

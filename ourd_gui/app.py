@@ -76,6 +76,11 @@ def build_parser() -> argparse.ArgumentParser:
         default=int(os.getenv("OURD_TRANSPORT_RETRIES", "0")),
     )
     parser.add_argument(
+        "--max-reasoning-samples",
+        type=int,
+        default=int(os.getenv("OURD_MAX_REASONING_SAMPLES", "16")),
+    )
+    parser.add_argument(
         "--max-steps",
         type=int,
         default=80,
@@ -105,6 +110,7 @@ class OURDWorkbench(tk.Tk):
         max_output_tokens: int = 2048,
         timeout_seconds: float = 600.0,
         transport_retries: int = 0,
+        max_reasoning_samples: int = 16,
         max_steps: int = 80,
     ) -> None:
         initialization_started = time.perf_counter()
@@ -134,6 +140,7 @@ class OURDWorkbench(tk.Tk):
                 context_budget_tokens=max(256, context_budget),
                 timeout_seconds=max(1.0, timeout_seconds),
                 max_transport_retries=max(0, min(transport_retries, 5)),
+                max_reasoning_samples=max(1, min(max_reasoning_samples, 64)),
             ),
             max_agent_steps=max(1, max_steps),
         )
@@ -790,6 +797,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             max_output_tokens=args.max_output_tokens,
             timeout_seconds=args.timeout_seconds,
             transport_retries=args.transport_retries,
+            max_reasoning_samples=args.max_reasoning_samples,
             max_steps=args.max_steps,
         )
     except Exception as exc:

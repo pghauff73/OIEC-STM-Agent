@@ -7,7 +7,7 @@ import re
 import urllib.error
 import urllib.request
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Mapping
 
 from ..errors import ContextBudgetError, ProviderError
 from .base import ProviderConfig
@@ -60,6 +60,7 @@ class OpenAIResponsesProvider:
             "reasoning_effort": self.config.reasoning_effort or "provider_default",
             "max_transport_retries": self.config.max_transport_retries,
             "visual_asset_root": bool(self.config.visual_asset_root),
+            "max_reasoning_samples": self.config.max_reasoning_samples,
         }
         if not self.is_local_ollama:
             result["status"] = "configuration_only"
@@ -135,6 +136,38 @@ class OpenAIResponsesProvider:
             return self.client.responses.create(**kwargs)
         except Exception as exc:
             raise ProviderError(f"model response failed: {exc}") from exc
+
+    def create_responses(
+        self,
+        *,
+        requests: List[Mapping[str, Any]],
+        max_responses: int,
+    ) -> List[Any]:
+        hard_cap = min(
+            max(1, int(max_responses)),
+            max(1, int(self.config.max_reasoning_samples)),
+        )
+        if not requests:
+            raise ProviderError("multi-response request must be non-empty")
+        if len(requests) > hard_cap:
+            raise ProviderError(
+                f"multi-response request exceeds configured sample cap: {len(requests)} > {hard_cap}"
+            )
+        responses = []
+        for request in requests:
+            try:
+                responses.append(
+                    self.create_response(
+                        instructions=str(request.get("instructions", "")),
+                        input_items=list(request.get("input_items", [])),
+                        tools=list(request.get("tools", [])),
+                    )
+                )
+            except (ContextBudgetError, ProviderError) as exc:
+                responses.append(
+                    {"type": "reasoning_error", "error": f"{type(exc).__name__}: {exc}"}
+                )
+        return responses
 
     def _expand_latest_image_references(self, input_items: List[Any]) -> List[Any]:
         """Attach explicitly referenced GUI images to the latest user text item only.

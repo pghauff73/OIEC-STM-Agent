@@ -655,7 +655,7 @@ class KernelPropertyTests(OIECFixture):
 
 
 class PersistenceMigrationTests(OIECFixture):
-    def test_runtime_v1_migrates_to_v2(self) -> None:
+    def test_runtime_v1_migrates_to_v4(self) -> None:
         state_dir = self.fixture.root / ".ourd-agent"
         state_dir.mkdir()
         v1 = RuntimeState(authority=self.authority, governance=self.runtime.governance).to_dict()
@@ -666,17 +666,25 @@ class PersistenceMigrationTests(OIECFixture):
             "finite_evidence",
             "last_progress",
             "transition_index",
+            "reasoning_problem",
+            "reasoning_hypothesis_pool",
+            "reasoning_hypothesis_state",
+            "reasoning_hypothesis_updates",
+            "reasoning_topology",
+            "reasoning_candidates",
+            "last_reasoning_certificate",
+            "reasoning_transition_index",
         ):
             v1.pop(key, None)
         (state_dir / "state.json").write_text(json.dumps(v1), encoding="utf-8")
         store = StateStore(state_dir)
         try:
             migrated = store.load()
-            self.assertEqual(2, migrated.schema_version)
+            self.assertEqual(4, migrated.schema_version)
             events = list(EventStore(state_dir / "events.jsonl").events())
             self.assertEqual(1, len(events))
             self.assertEqual(
-                {"from_schema": 1, "to_schema": 2},
+                {"from_schema": 1, "to_schema": 4},
                 events[0]["payload"]["migration"],
             )
         finally:

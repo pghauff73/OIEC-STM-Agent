@@ -124,6 +124,12 @@ def build_parser() -> argparse.ArgumentParser:
         default=int(os.getenv("OURD_TRANSPORT_RETRIES", "0")),
         help="Bounded provider transport retries; defaults to zero",
     )
+    parser.add_argument(
+        "--max-reasoning-samples",
+        type=int,
+        default=int(os.getenv("OURD_MAX_REASONING_SAMPLES", "16")),
+        help="Hard cap for one OIEC-SR multi-response episode",
+    )
     parser.add_argument("--preflight", action="store_true", help="Check provider/model readiness")
     parser.add_argument("--snapshot", action="store_true", help="Print the current workspace snapshot hash")
     parser.add_argument(
@@ -183,6 +189,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         context_budget_tokens=max(256, args.context_budget),
         timeout_seconds=max(1.0, args.timeout_seconds),
         max_transport_retries=max(0, min(args.transport_retries, 5)),
+        max_reasoning_samples=max(1, min(args.max_reasoning_samples, 64)),
     )
 
     temporary_authority: Optional[tempfile.TemporaryDirectory[str]] = None

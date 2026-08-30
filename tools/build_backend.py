@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import base64
 import csv
+import gzip
 import hashlib
 import io
 import os
@@ -163,20 +164,36 @@ def build_sdist(
         *sorted((ROOT / "tools").glob("*.py")),
         *[
             path
-            for directory in ("algorithms", "commands", "schemas", "workflows", "docs")
+            for directory in (
+                "algorithms",
+                "benchmarks",
+                "commands",
+                "schemas",
+                "workflows",
+                "docs",
+            )
             for path in sorted((ROOT / directory).rglob("*"))
             if path.is_file()
         ],
     ]
     destination.parent.mkdir(parents=True, exist_ok=True)
-    with tarfile.open(destination, "w:gz", format=tarfile.PAX_FORMAT) as archive:
-        for path in included:
-            info = archive.gettarinfo(str(path), arcname=f"{prefix}/{path.relative_to(ROOT)}")
-            info.mtime = 0
-            info.uid = 0
-            info.gid = 0
-            info.uname = ""
-            info.gname = ""
-            with path.open("rb") as handle:
-                archive.addfile(info, handle)
+    with destination.open("wb") as destination_handle:
+        with gzip.GzipFile(fileobj=destination_handle, mode="wb", mtime=0) as gzip_handle:
+            with tarfile.open(
+                fileobj=gzip_handle,
+                mode="w",
+                format=tarfile.PAX_FORMAT,
+            ) as archive:
+                for path in included:
+                    info = archive.gettarinfo(
+                        str(path),
+                        arcname=f"{prefix}/{path.relative_to(ROOT)}",
+                    )
+                    info.mtime = 0
+                    info.uid = 0
+                    info.gid = 0
+                    info.uname = ""
+                    info.gname = ""
+                    with path.open("rb") as handle:
+                        archive.addfile(info, handle)
     return filename
