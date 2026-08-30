@@ -1,0 +1,15 @@
+{
+  "opportunity_id": "parser-precedence",
+  "kind": "FAILURE_PATTERN",
+  "source_signature": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "objective": "Investigate repeated parser precedence failure",
+  "evidence_value_bp": 9000,
+  "expected_impact_bp": 8500,
+  "uncertainty_reduction_bp": 8000,
+  "cost_bp": 2500,
+  "risk_bp": 1500,
+  "evidence_ids": [
+    "evidence-artifact:sha256:<digest>"
+  ],
+  "blocked_reasons": []
+}
