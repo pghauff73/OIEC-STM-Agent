@@ -1,6 +1,6 @@
 # SAA Repository Brain Feeding CLI
 
-`oiec-stm-agent brain repo` converts an arbitrary local source repository into bounded SAA brain-feed material without executing the repository.
+`oiec-stm-agent brain feed repo` converts an arbitrary local source repository into bounded SAA brain-feed material without executing the repository.
 
 The repository scanner is intentionally **static and read-only**. It never imports project modules, runs tests, invokes build scripts, installs dependencies, or treats the presence of code as proof that the code is correct.
 
@@ -44,13 +44,13 @@ canonical algorithm admission
 Feed another repository into the current OIEC workspace:
 
 ```bash
-oiec-stm-agent brain repo /path/to/source-repository --repo .
+oiec-stm-agent brain feed repo /path/to/source-repository --repo .
 ```
 
 Show detailed extraction information:
 
 ```bash
-oiec-stm-agent brain repo /path/to/source-repository \
+oiec-stm-agent brain feed repo /path/to/source-repository \
   --repo . \
   --verbose
 ```
@@ -58,7 +58,7 @@ oiec-stm-agent brain repo /path/to/source-repository \
 Machine-readable output:
 
 ```bash
-oiec-stm-agent brain repo /path/to/source-repository \
+oiec-stm-agent brain feed repo /path/to/source-repository \
   --repo . \
   --json
 ```
@@ -66,14 +66,15 @@ oiec-stm-agent brain repo /path/to/source-repository \
 Scan only, without changing SAA state:
 
 ```bash
-oiec-stm-agent brain repo /path/to/source-repository \
+oiec-stm-agent brain feed repo /path/to/source-repository \
   --scan-only \
   --json
 ```
 
-`feed-repo` is an alias:
+`repo` and `feed-repo` remain compatibility aliases:
 
 ```bash
+oiec-stm-agent brain repo /path/to/source-repository --repo .
 oiec-stm-agent brain feed-repo /path/to/source-repository --repo .
 ```
 
@@ -241,7 +242,7 @@ It still requires semantic and evidence qualification before it can govern canon
 Disable invariant extraction with:
 
 ```bash
-oiec-stm-agent brain repo SOURCE --no-invariants
+oiec-stm-agent brain feed repo SOURCE --no-invariants
 ```
 
 ## Documentation
@@ -251,13 +252,13 @@ README files, Markdown, reStructuredText, plain text and other text/source files
 Disable documentation-only files:
 
 ```bash
-oiec-stm-agent brain repo SOURCE --no-docs
+oiec-stm-agent brain feed repo SOURCE --no-docs
 ```
 
 Ignore unknown text formats:
 
 ```bash
-oiec-stm-agent brain repo SOURCE --no-unknown-text
+oiec-stm-agent brain feed repo SOURCE --no-unknown-text
 ```
 
 ## Include and exclude paths
@@ -265,7 +266,7 @@ oiec-stm-agent brain repo SOURCE --no-unknown-text
 Only inspect matching paths:
 
 ```bash
-oiec-stm-agent brain repo SOURCE \
+oiec-stm-agent brain feed repo SOURCE \
   --include 'src/**' \
   --include 'tests/**'
 ```
@@ -273,7 +274,7 @@ oiec-stm-agent brain repo SOURCE \
 Exclude generated or irrelevant paths:
 
 ```bash
-oiec-stm-agent brain repo SOURCE \
+oiec-stm-agent brain feed repo SOURCE \
   --exclude 'examples/generated/**' \
   --exclude 'third_party/**'
 ```
@@ -287,13 +288,13 @@ Symlinks are not followed.
 List known language identifiers:
 
 ```bash
-oiec-stm-agent brain repo --list-languages
+oiec-stm-agent brain feed repo --list-languages
 ```
 
 Filter a mixed repository:
 
 ```bash
-oiec-stm-agent brain repo SOURCE \
+oiec-stm-agent brain feed repo SOURCE \
   --language Python \
   --language Rust
 ```
@@ -315,7 +316,7 @@ max feed items/batch   4096
 Override explicitly:
 
 ```bash
-oiec-stm-agent brain repo SOURCE \
+oiec-stm-agent brain feed repo SOURCE \
   --max-files 5000 \
   --max-total-bytes 268435456 \
   --max-file-bytes 4194304 \
@@ -329,7 +330,7 @@ Large repository plans are automatically split into multiple ordinary brain-feed
 The repository scanner can be used only as an extractor.
 
 ```bash
-oiec-stm-agent brain repo SOURCE \
+oiec-stm-agent brain feed repo SOURCE \
   --scan-only \
   --emit-manifests ./generated-feed
 ```
@@ -345,7 +346,7 @@ This is useful when human review of the extracted knowledge episode is desired b
 ## Strict mode
 
 ```bash
-oiec-stm-agent brain repo SOURCE --repo . --strict
+oiec-stm-agent brain feed repo SOURCE --repo . --strict
 ```
 
 Strict mode returns non-zero when:
@@ -361,7 +362,7 @@ A repository may feed itself:
 
 ```bash
 cd OIEC-STM-Agent
-oiec-stm-agent brain repo . --repo .
+oiec-stm-agent brain feed repo . --repo .
 ```
 
 `.ourd-agent` is excluded from repository scanning, so writing brain state does not recursively become new source material on the next scan.

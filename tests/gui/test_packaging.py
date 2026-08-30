@@ -24,9 +24,9 @@ class GuiPackagingTests(unittest.TestCase):
                     name for name in names if name.endswith(".dist-info/entry_points.txt")
                 )
                 entry_points = archive.read(entry_points_name).decode("utf-8")
-        self.assertIn("oiec-stm-agent = ourd.cli:main", entry_points)
+        self.assertIn("oiec-stm-agent = ourd.entrypoint:main", entry_points)
         self.assertIn("oiec-stm-gui = ourd_gui.app:main", entry_points)
-        self.assertIn("ourd-agent = ourd.cli:main", entry_points)
+        self.assertIn("ourd-agent = ourd.entrypoint:main", entry_points)
         self.assertIn("ourd-gui = ourd_gui.app:main", entry_points)
 
     def test_sdist_contains_reasoning_benchmark_harness_and_baseline(self) -> None:

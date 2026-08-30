@@ -257,6 +257,23 @@ class LoopControlTests(unittest.TestCase):
         self.assertEqual("SEMANTIC_PERIODIC_CYCLE", second.cycle_kind)
         self.assertEqual(1, second.period)
 
+    def test_bounded_for_style_iterations_accept_distinct_verified_pages(self) -> None:
+        controller = LoopProgressController(max_period=2)
+        before = self.projection("page-0")
+        for index in range(1, 7):
+            after = self.projection(
+                f"page-{index}",
+                evidence=tuple(f"page:{page}" for page in range(1, index + 1)),
+            )
+            assessment = controller.assess(
+                before=before,
+                after=after,
+                step_signature=f"list-files-offset-{(index - 1) * 100}",
+            )
+            self.assertTrue(assessment.allowed)
+            self.assertEqual(1, assessment.new_evidence_count)
+            before = after
+
     def test_terminal_response_always_gets_certificate_but_not_fact_status(self) -> None:
         projection = self.projection("same")
         assessment = LoopProgressController(initial_control_only_streak=2).assess(

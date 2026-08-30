@@ -2,11 +2,13 @@ from __future__ import annotations
 
 import json
 import unittest
+from pathlib import Path
 from types import SimpleNamespace
 
-from ourd.errors import StateError
+from ourd.errors import ContextBudgetError, StateError
 from ourd.production_agent import ProductionOURDAgent
 from ourd.providers.base import ProviderConfig
+from ourd.providers.openai_responses import estimate_tokens
 from tests.helpers import RepoFixture
 
 
@@ -90,7 +92,162 @@ class HypothesisChurnProvider:
         )
 
 
+class PaginatedListProvider:
+    def __init__(self) -> None:
+        self.config = ProviderConfig(model="paginated-list")
+        self.calls = 0
+
+    def preflight(self):
+        return {"status": "ready", "model": "paginated-list"}
+
+    @staticmethod
+    def latest_result(input_items):
+        for item in reversed(input_items):
+            if isinstance(item, dict) and item.get("type") == "function_call_output":
+                return json.loads(item["output"])
+        return None
+
+    def create_response(self, *, instructions, input_items, tools):
+        self.calls += 1
+        previous = self.latest_result(input_items)
+        if previous is not None and not previous["has_more"]:
+            return SimpleNamespace(
+                output=[
+                    SimpleNamespace(
+                        type="message",
+                        content=[SimpleNamespace(type="output_text", text="Inventory complete.")],
+                    )
+                ],
+                output_text="Inventory complete.",
+            )
+        offset = 0 if previous is None else previous["next_offset"]
+        return SimpleNamespace(
+            output=[
+                SimpleNamespace(
+                    type="function_call",
+                    name="list_files",
+                    arguments=json.dumps(
+                        {
+                            "path": ".",
+                            "max_depth": 2,
+                            "offset": offset,
+                            "max_results": 2,
+                        }
+                    ),
+                    call_id=f"page-{self.calls}",
+                )
+            ],
+            output_text="",
+        )
+
+
+class NamedFileDiscussionProvider:
+    def __init__(self) -> None:
+        self.config = ProviderConfig(
+            model="named-file-discussion",
+            context_budget_tokens=6000,
+        )
+        self.calls = 0
+        self.first_tool_names: set[str] = set()
+        self.second_tool_names: set[str] = set()
+        self.second_request_tokens = 0
+        self.recovered_content = ""
+
+    def preflight(self):
+        return {"status": "ready", "model": "named-file-discussion"}
+
+    def create_response(self, *, instructions, input_items, tools):
+        self.calls += 1
+        tool_names = {tool["name"] for tool in tools}
+        if self.calls == 1:
+            self.first_tool_names = tool_names
+            return SimpleNamespace(
+                output=[
+                    SimpleNamespace(
+                        type="function_call",
+                        name="read_file",
+                        arguments=json.dumps(
+                            {
+                                "path": "ourd/formal_writing.py",
+                                "start_line": 1,
+                                "end_line": 2000,
+                            }
+                        ),
+                        call_id="named-file-read",
+                    )
+                ],
+                output_text="",
+            )
+
+        self.second_tool_names = tool_names
+        self.second_request_tokens = estimate_tokens(
+            {"instructions": instructions, "input": input_items, "tools": tools}
+        )
+        if self.second_request_tokens > self.config.context_budget_tokens:
+            raise ContextBudgetError("named-file source was not retained within budget")
+        latest_output = next(
+            item
+            for item in reversed(input_items)
+            if isinstance(item, dict) and item.get("type") == "function_call_output"
+        )
+        self.recovered_content = json.loads(latest_output["output"])["content"]
+        return SimpleNamespace(
+            output=[
+                SimpleNamespace(
+                    type="message",
+                    content=[
+                        SimpleNamespace(
+                            type="output_text",
+                            text="Formal-writing discussion complete.",
+                        )
+                    ],
+                )
+            ],
+            output_text="Formal-writing discussion complete.",
+        )
+
+
 class ProductionAgentTests(unittest.TestCase):
+    def test_named_file_discussion_retains_complete_source_within_context_budget(self) -> None:
+        fixture = RepoFixture()
+        fixture.write(
+            "ourd/formal_writing.py",
+            (Path(__file__).parents[1] / "ourd" / "formal_writing.py").read_text(
+                encoding="utf-8"
+            ),
+        )
+        try:
+            provider = NamedFileDiscussionProvider()
+            with ProductionOURDAgent(fixture.root, provider=provider) as agent:
+                result = agent.run_task("Discuss ourd/formal_writing.py")
+            events = [
+                json.loads(line)
+                for line in (fixture.root / ".ourd-agent" / "events.jsonl")
+                .read_text(encoding="utf-8")
+                .splitlines()
+            ]
+            context_modes = [
+                event["payload"]["tool_context_mode"]
+                for event in events
+                if event["event_type"] == "model_request"
+            ]
+            self.assertEqual("Formal-writing discussion complete.", result)
+            self.assertEqual(2, provider.calls)
+            self.assertEqual(["full", "named_file_read"], context_modes)
+            self.assertIn("prepare_write_file", provider.first_tool_names)
+            self.assertEqual(
+                {"list_files", "read_file", "search_text"},
+                provider.second_tool_names,
+            )
+            self.assertLessEqual(
+                provider.second_request_tokens,
+                provider.config.context_budget_tokens,
+            )
+            self.assertIn("class ArgumentTopology", provider.recovered_content)
+            self.assertIn("def profile_dimensions", provider.recovered_content)
+        finally:
+            fixture.close()
+
     def test_terminal_model_output_is_labelled_unverified_and_certified_transition(self) -> None:
         fixture = RepoFixture()
         try:
@@ -127,6 +284,24 @@ class ProductionAgentTests(unittest.TestCase):
                 self.assertTrue(
                     any(collision.disposition == "CYCLE_STOP" for collision in agent.state.collisions)
                 )
+        finally:
+            fixture.close()
+
+    def test_paginated_file_loop_advances_until_terminal_response(self) -> None:
+        fixture = RepoFixture()
+        fixture.write("alpha.txt", "alpha\n")
+        fixture.write("beta.txt", "beta\n")
+        fixture.write("gamma.txt", "gamma\n")
+        try:
+            provider = PaginatedListProvider()
+            with ProductionOURDAgent(
+                fixture.root,
+                provider=provider,
+                max_steps=6,
+            ) as agent:
+                result = agent.run_task("Inventory every file with a bounded loop")
+            self.assertEqual("Inventory complete.", result)
+            self.assertEqual(3, provider.calls)
         finally:
             fixture.close()
 
@@ -195,6 +370,11 @@ class ProductionAgentTests(unittest.TestCase):
             self.assertIn("MODEL BELIEF/PROPOSAL", instructions)
             self.assertIn("UNVERIFIED_PROPOSITION", instructions)
             self.assertIn("cannot self-certify progress", instructions)
+            self.assertIn("Bounded for-style iteration", instructions)
+            self.assertIn("names an exact repository-relative file path", instructions)
+            self.assertIn("cannot prove that a named file is absent", instructions)
+            self.assertIn("start_line=1 and end_line=2000", instructions)
+            self.assertIn("narrows the next model request", instructions)
             self.assertIn("propose_hypotheses", tool_names)
             self.assertIn("link_hypothesis_evidence", tool_names)
             self.assertIn("list_hypotheses", tool_names)

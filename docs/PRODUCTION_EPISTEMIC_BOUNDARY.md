@@ -123,6 +123,37 @@ SEMANTIC_PERIODIC_CYCLE -> CYCLE_STOP
 
 This prevents a model from evading loop detection by changing call IDs, evidence UUIDs or superficial wording.
 
+**Bounded `for`-style iteration.** Finite traversal is supported through system-owned cursors rather than a
+model-declared exemption from cycle detection:
+
+- `list_files` returns `next_offset` and `has_more`;
+- `read_file` returns `next_start_line` and `has_more`;
+- each continuation must use the exact returned cursor; and
+- iteration stops when `has_more` is false or the agent step budget is reached.
+
+Different pages and chunks create content-addressed observations, so productive
+iterations receive progress certificates. Repeating a cursor, reading the same
+chunk again, or advancing beyond the terminal cursor does not manufacture
+progress and remains subject to `CYCLE_STOP`.
+
+Exact named paths take precedence over broad discovery. If a task names a file
+such as `ourd/formal_writing.py`, the agent must call `read_file` on that exact
+path before relying on `list_files` or `search_text`. Empty discovery roots are
+normalized to the workspace root, while bounded or truncated discovery output
+is never evidence that a named file is absent. For a named file that fits within
+2,000 lines, one complete read is preferred over many small reads. The following
+read-only model step exposes only `list_files`, `read_file`, and `search_text`,
+preserving the complete verified source under the configured context budget
+without granting any new authority.
+
+The interactive CLI also accepts `/loop COUNT TASK` for a human-bounded sequence
+of governed chat turns. `COUNT` is restricted to `1..32`, while `{index}` and
+`{count}` expand in each task. Every iteration passes through the same authority,
+evidence, OIEC progress, step-budget and cycle controls as an ordinary chat turn.
+The exact response `ICPI_LOOP_COMPLETE` may stop the loop early, but it cannot
+grant authority, certify model output, or convert repeated unchanged work into
+verified progress.
+
 ## Stop behavior
 
 A blocked loop creates:

@@ -6,8 +6,9 @@ import json
 import os
 import sys
 import tempfile
+from dataclasses import dataclass
 from pathlib import Path
-from typing import Optional, Sequence
+from typing import Any, Callable, Optional, Sequence
 
 from .production_agent import ProductionOURDAgent as OURDAgent
 from .authority import save_authority, save_authority_example, scoped_write_authority
@@ -15,6 +16,76 @@ from .formal_writing import WRITING_PROFILES
 from .providers import ProviderConfig
 from .workspace import Workspace
 from .writing import WRITE_COMMAND_CAPABILITIES, writing_task_prompt
+
+
+MAX_LOOP_ITERATIONS = 32
+LOOP_COMPLETE_SENTINEL = "ICPI_LOOP_COMPLETE"
+LOOP_USAGE = "usage: /loop COUNT TASK"
+
+
+@dataclass(frozen=True)
+class LoopCommand:
+    iterations: int
+    task: str
+
+    def prompt(self, index: int) -> str:
+        expanded_task = self.task.replace("{index}", str(index)).replace(
+            "{count}", str(self.iterations)
+        )
+        return (
+            f"ICPI bounded CLI loop iteration {index} of {self.iterations}. "
+            "Normal authority, evidence, OIEC progress, and cycle controls remain active. "
+            f"If the overall loop objective is complete, respond exactly {LOOP_COMPLETE_SENTINEL}.\n\n"
+            f"{expanded_task}"
+        )
+
+
+@dataclass(frozen=True)
+class LoopResult:
+    requested_iterations: int
+    completed_iterations: int
+    stop_reason: str
+
+
+def parse_loop_command(text: str) -> Optional[LoopCommand]:
+    parts = text.strip().split(maxsplit=2)
+    if not parts or parts[0].casefold() != "/loop":
+        return None
+    if len(parts) != 3 or not parts[2].strip():
+        raise ValueError(LOOP_USAGE)
+    try:
+        iterations = int(parts[1])
+    except ValueError as exc:
+        raise ValueError("loop count must be an integer") from exc
+    if not 1 <= iterations <= MAX_LOOP_ITERATIONS:
+        raise ValueError(
+            f"loop count must be between 1 and {MAX_LOOP_ITERATIONS}"
+        )
+    return LoopCommand(iterations=iterations, task=parts[2].strip())
+
+
+def run_loop_command(
+    agent: Any,
+    command: LoopCommand,
+    bounded_task: Callable[[str], str],
+    emit: Callable[[str], None] = print,
+) -> LoopResult:
+    for index in range(1, command.iterations + 1):
+        emit(f"[loop {index}/{command.iterations}]")
+        response = agent.run_chat_turn(bounded_task(command.prompt(index)))
+        if response.strip() == LOOP_COMPLETE_SENTINEL:
+            emit(f"[loop completed at {index}/{command.iterations}]")
+            return LoopResult(
+                requested_iterations=command.iterations,
+                completed_iterations=index,
+                stop_reason="completion_sentinel",
+            )
+        emit(response)
+    return LoopResult(
+        requested_iterations=command.iterations,
+        completed_iterations=command.iterations,
+        stop_reason="iteration_limit",
+    )
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -244,7 +315,8 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
                 f"OIEC-STM-Agent | repo={agent.ws.root} | model={agent.model} | "
                 f"authority={agent.state.authority.task_id} | mode={mode} | "
                 f"writing-profile={profile}\n"
-                "Enter a reasoning, writing, or coding task. Ctrl-D / Ctrl-C exits."
+                "Enter a reasoning, writing, or coding task. /help lists local commands. "
+                "Ctrl-D / Ctrl-C exits."
             )
             while True:
                 try:
@@ -262,9 +334,25 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
                     continue
                 if task == "/help":
                     print(
-                        "Commands: /new clears chat context, /exit exits. "
-                        "Other input runs a governed reasoning/writing/coding turn."
+                        "Commands:\n"
+                        "  /new                 Clear chat context.\n"
+                        f"  /loop COUNT TASK     Run TASK 1-{MAX_LOOP_ITERATIONS} times; "
+                        "supports {index} and {count}.\n"
+                        "  /exit, /quit         Exit the session.\n"
+                        f"A loop stops early only when the model responds exactly "
+                        f"{LOOP_COMPLETE_SENTINEL}. Every iteration remains governed."
                     )
+                    continue
+                try:
+                    loop_command = parse_loop_command(task)
+                except ValueError as exc:
+                    print(f"loop error: {exc}", file=os.sys.stderr)
+                    continue
+                if loop_command is not None:
+                    try:
+                        run_loop_command(agent, loop_command, bounded_task)
+                    except Exception as exc:
+                        print(f"agent error: {exc}", file=os.sys.stderr)
                     continue
                 try:
                     print(agent.run_chat_turn(bounded_task(task)))

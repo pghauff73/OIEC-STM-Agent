@@ -18,7 +18,7 @@ from .egcf.repository_brain_feed import (
 from .egcf.store import EGCFStore
 
 
-PROGRAM = "oiec-stm-agent brain repo"
+PROGRAM = "oiec-stm-agent brain feed repo"
 
 
 def _positive_int(value: str) -> int:
@@ -31,9 +31,9 @@ def _positive_int(value: str) -> int:
     return parsed
 
 
-def build_parser() -> argparse.ArgumentParser:
+def build_parser(*, prog: str = PROGRAM) -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        prog=PROGRAM,
+        prog=prog,
         description=(
             "Statically digest arbitrary repository code into SAA brain-feed evidence and candidates. "
             "The scanner never imports, executes, builds, or tests source code and never directly admits canonical algorithms."
@@ -161,8 +161,12 @@ def _human_summary(result: dict[str, Any], *, verbose: bool) -> None:
                 )
 
 
-def main(argv: Optional[Sequence[str]] = None) -> int:
-    parser = build_parser()
+def main(
+    argv: Optional[Sequence[str]] = None,
+    *,
+    prog: str = PROGRAM,
+) -> int:
+    parser = build_parser(prog=prog)
     args = parser.parse_args(argv)
     try:
         if args.list_languages:

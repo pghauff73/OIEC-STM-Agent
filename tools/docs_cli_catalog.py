@@ -55,8 +55,8 @@ class ProviderRecipe:
 
 
 PROGRAMS = (
-    CLIProgram("agent", "oiec-stm-agent", "ourd.cli:main", "Start the bounded agent CLI.", ""),
-    CLIProgram("agent-alias", "ourd-agent", "ourd.cli:main", "Alias of the main agent CLI.", "agent"),
+    CLIProgram("agent", "oiec-stm-agent", "ourd.entrypoint:main", "Start the bounded agent CLI.", ""),
+    CLIProgram("agent-alias", "ourd-agent", "ourd.entrypoint:main", "Alias of the main agent CLI.", "agent"),
     CLIProgram("egcf", "egcf", "ourd.egcf.cli:main", "Compile and run evidence-governed semantic commands.", ""),
     CLIProgram("gui", "oiec-stm-gui", "ourd_gui.app:main", "Start the graphical engineering workbench.", ""),
     CLIProgram("gui-alias", "ourd-gui", "ourd_gui.app:main", "Alias of the graphical workbench entry point.", "gui"),

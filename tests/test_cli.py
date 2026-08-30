@@ -1,14 +1,157 @@
+import io
 import unittest
+from contextlib import redirect_stdout
+from types import SimpleNamespace
+from unittest import mock
 
 from ourd import OURDAgent
 from ourd.authority import scoped_write_authority
-from ourd.cli import _validate_write_args, build_parser
+from ourd.cli import (
+    LOOP_COMPLETE_SENTINEL,
+    MAX_LOOP_ITERATIONS,
+    _validate_write_args,
+    build_parser,
+    main as cli_main,
+    parse_loop_command,
+    run_loop_command,
+)
 from ourd.workspace import Workspace
 from ourd.writing import writing_task_prompt
 from tests.helpers import RepoFixture
 
 
 class CliAndToolSchemaTests(unittest.TestCase):
+    def test_loop_command_parses_bounded_count_and_placeholders(self) -> None:
+        command = parse_loop_command(
+            "/LoOp 3 Inspect repository page {index} of {count}"
+        )
+        self.assertIsNotNone(command)
+        assert command is not None
+        self.assertEqual(3, command.iterations)
+        prompt = command.prompt(2)
+        self.assertIn("iteration 2 of 3", prompt)
+        self.assertIn("Inspect repository page 2 of 3", prompt)
+        self.assertIn(LOOP_COMPLETE_SENTINEL, prompt)
+        self.assertIn("cycle controls remain active", prompt)
+
+    def test_loop_parser_ignores_ordinary_tasks_and_rejects_invalid_bounds(self) -> None:
+        self.assertIsNone(parse_loop_command("Inspect the repository"))
+        invalid_commands = (
+            "/loop",
+            "/loop 2",
+            "/loop many inspect",
+            "/loop 0 inspect",
+            f"/loop {MAX_LOOP_ITERATIONS + 1} inspect",
+        )
+        for text in invalid_commands:
+            with self.subTest(text=text), self.assertRaises(ValueError):
+                parse_loop_command(text)
+
+    def test_loop_runner_stops_on_exact_completion_sentinel(self) -> None:
+        class FakeAgent:
+            def __init__(self) -> None:
+                self.responses = ["first result", LOOP_COMPLETE_SENTINEL, "unused"]
+                self.prompts: list[str] = []
+
+            def run_chat_turn(self, prompt: str) -> str:
+                self.prompts.append(prompt)
+                return self.responses.pop(0)
+
+        agent = FakeAgent()
+        command = parse_loop_command("/loop 3 Inspect page {index}/{count}")
+        assert command is not None
+        emitted: list[str] = []
+        result = run_loop_command(
+            agent,
+            command,
+            lambda prompt: f"bounded::{prompt}",
+            emitted.append,
+        )
+        self.assertEqual(2, len(agent.prompts))
+        self.assertIn("bounded::ICPI bounded CLI loop iteration 1 of 3", agent.prompts[0])
+        self.assertIn("Inspect page 2/3", agent.prompts[1])
+        self.assertEqual("completion_sentinel", result.stop_reason)
+        self.assertEqual(2, result.completed_iterations)
+        self.assertNotIn(LOOP_COMPLETE_SENTINEL, emitted)
+        self.assertEqual("[loop completed at 2/3]", emitted[-1])
+
+    def test_loop_runner_stops_at_iteration_limit_and_propagates_errors(self) -> None:
+        class FakeAgent:
+            def __init__(self, fail_at: int = 0) -> None:
+                self.fail_at = fail_at
+                self.calls = 0
+
+            def run_chat_turn(self, prompt: str) -> str:
+                self.calls += 1
+                if self.calls == self.fail_at:
+                    raise RuntimeError("provider failure")
+                return f"result {self.calls}"
+
+        command = parse_loop_command("/loop 3 Inspect")
+        assert command is not None
+        complete_agent = FakeAgent()
+        result = run_loop_command(
+            complete_agent,
+            command,
+            lambda prompt: prompt,
+            lambda output: None,
+        )
+        self.assertEqual(3, complete_agent.calls)
+        self.assertEqual("iteration_limit", result.stop_reason)
+        self.assertEqual(3, result.completed_iterations)
+
+        failing_agent = FakeAgent(fail_at=2)
+        with self.assertRaisesRegex(RuntimeError, "provider failure"):
+            run_loop_command(
+                failing_agent,
+                command,
+                lambda prompt: prompt,
+                lambda output: None,
+            )
+        self.assertEqual(2, failing_agent.calls)
+
+    def test_interactive_cli_dispatches_loop_through_chat_turns(self) -> None:
+        fixture = RepoFixture()
+        try:
+            class FakeAgent:
+                def __init__(self) -> None:
+                    self.ws = SimpleNamespace(root=fixture.root)
+                    self.model = "test-model"
+                    self.state = SimpleNamespace(
+                        authority=SimpleNamespace(task_id="test-authority")
+                    )
+                    self.prompts: list[str] = []
+
+                def __enter__(self) -> "FakeAgent":
+                    return self
+
+                def __exit__(self, exc_type, exc, traceback) -> None:
+                    return None
+
+                def run_chat_turn(self, prompt: str) -> str:
+                    self.prompts.append(prompt)
+                    return f"result {len(self.prompts)}"
+
+            agent = FakeAgent()
+            output = io.StringIO()
+            with (
+                mock.patch("ourd.cli.OURDAgent", return_value=agent),
+                mock.patch(
+                    "builtins.input",
+                    side_effect=["/loop 2 Inspect {index}/{count}", "/exit"],
+                ),
+                redirect_stdout(output),
+            ):
+                status = cli_main([str(fixture.root)])
+            self.assertEqual(0, status)
+            self.assertEqual(2, len(agent.prompts))
+            self.assertIn("Inspect 1/2", agent.prompts[0])
+            self.assertIn("Inspect 2/2", agent.prompts[1])
+            self.assertIn("[loop 1/2]", output.getvalue())
+            self.assertIn("result 2", output.getvalue())
+        finally:
+            fixture.close()
+
     def test_cli_preserves_repo_contract_and_bounded_provider_defaults(self) -> None:
         parser = build_parser()
         args = parser.parse_args(["workspace"])
@@ -131,6 +274,9 @@ class CliAndToolSchemaTests(unittest.TestCase):
             )
             eon = next(tool for tool in tools if tool["name"] == "propose_eon_action")
             self.assertIn("commands", eon["parameters"]["required"])
+            list_files = next(tool for tool in tools if tool["name"] == "list_files")
+            self.assertIn("offset", list_files["parameters"]["properties"])
+            self.assertIn("max_results", list_files["parameters"]["properties"])
         finally:
             fixture.close()
 

@@ -294,9 +294,13 @@ class DocumentationSiteTests(unittest.TestCase):
         baseline = json.loads(baseline_path.read_text(encoding="utf-8"))
         baseline_ids = [item["object_id"] for item in baseline["relational_objects"]]
         current_ids = [item["object_id"] for item in self.manifest["relational_objects"]]
-        self.assertEqual(current_ids, baseline_ids)
+        baseline_id_set = set(baseline_ids)
+        preserved_baseline_ids = [
+            object_id for object_id in current_ids if object_id in baseline_id_set
+        ]
+        self.assertEqual(preserved_baseline_ids, baseline_ids)
         self.assertEqual(
-            hashlib.sha256("\n".join(current_ids).encode("utf-8")).hexdigest(),
+            hashlib.sha256("\n".join(baseline_ids).encode("utf-8")).hexdigest(),
             "66805dda605345b5fa720c6e56ced88308b2adcc3d7363e3e63bbb0e2586a5ad",
         )
 

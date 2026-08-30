@@ -45,6 +45,7 @@ jobs:
       - name: Verify installed-style repository brain CLI
         run: |
           python -m ourd.entrypoint brain --help
+          python -m ourd.entrypoint brain feed repo --help
           python -m ourd.entrypoint brain repo --help
           python -m ourd.entrypoint brain feed-repo --help
 

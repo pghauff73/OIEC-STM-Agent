@@ -162,6 +162,35 @@ class SAARepositoryBrainFeedTests(unittest.TestCase):
         self.assertIn("repo", output.getvalue())
         self.assertIn("static", output.getvalue().casefold())
 
+    def test_nested_brain_feed_repo_dispatch_scans_repository(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            source = self._make_repo(root)
+            output = io.StringIO()
+            with redirect_stdout(output):
+                status = entrypoint_main(
+                    ["brain", "feed", "repo", str(source), "--scan-only", "--json"]
+                )
+            self.assertEqual(0, status)
+            payload = json.loads(output.getvalue())
+            self.assertTrue(payload["scan_only"])
+            self.assertEqual(3, payload["scan"]["file_count"])
+            self.assertEqual(0, payload["canonical_algorithm_admissions"])
+
+    def test_repository_feed_help_preserves_invoked_command_name(self):
+        commands = (
+            (["brain", "feed", "repo", "--help"], "oiec-stm-agent brain feed repo"),
+            (["brain", "repo", "--help"], "oiec-stm-agent brain repo"),
+            (["brain", "feed-repo", "--help"], "oiec-stm-agent brain feed-repo"),
+        )
+        for arguments, expected_program in commands:
+            with self.subTest(arguments=arguments):
+                output = io.StringIO()
+                with self.assertRaises(SystemExit) as raised, redirect_stdout(output):
+                    entrypoint_main(arguments)
+                self.assertEqual(0, raised.exception.code)
+                self.assertIn(f"usage: {expected_program}", output.getvalue())
+
 
 if __name__ == "__main__":
     unittest.main()

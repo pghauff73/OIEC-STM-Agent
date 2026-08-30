@@ -40,6 +40,8 @@ class ProductionOURDAgent(BaseOURDAgent):
             + "- You cannot self-certify progress. The runtime computes a ProgressCertificate from verified before/after state.\n"
             + f"- At most {self.max_control_only_progress} consecutive control-only transitions are allowed; hypothesis/governance/action churn must then produce new evidence or hypothesis discrimination.\n"
             + "- Equivalent observations are content-deduplicated; new UUIDs, call IDs, evidence IDs or wording do not create progress.\n"
+            + "- Bounded for-style iteration is allowed through system-owned cursors: advance list_files with next_offset and read_file with next_start_line until has_more is false.\n"
+            + "- A loop cursor must advance monotonically. Repeating the same page, line range or unchanged observation is not a new iteration and will be stopped.\n"
             + "- If the controller reports CYCLE_STOP, stop. Do not rephrase the same attempt to evade the loop boundary."
         )
 
@@ -319,6 +321,7 @@ class ProductionOURDAgent(BaseOURDAgent):
             },
         )
         input_items: List[Any] = [*history, {"role": "user", "content": task}]
+        named_file_read = False
         controller = LoopProgressController(
             max_control_only_progress=self.max_control_only_progress,
             initial_control_only_streak=self.state.control_only_progress_streak,
@@ -327,7 +330,7 @@ class ProductionOURDAgent(BaseOURDAgent):
         for step in range(1, self.max_steps + 1):
             self._require_not_cancelled(cancel_check)
             print(f"[agent step {step}]", file=os.sys.stderr)
-            tools = self.tool_specs()
+            tools = self._tools_for_model_context(named_file_read=named_file_read)
             instructions = self.instructions()
             self.trace(
                 "model_request",
@@ -342,6 +345,9 @@ class ProductionOURDAgent(BaseOURDAgent):
                     "max_transport_retries": self.provider_config.max_transport_retries,
                     "history_message_count": len(history),
                     "epistemic_status": "REQUESTING_MODEL_BELIEF",
+                    "tool_context_mode": (
+                        "named_file_read" if named_file_read else "full"
+                    ),
                 },
             )
             try:
@@ -453,6 +459,11 @@ class ProductionOURDAgent(BaseOURDAgent):
                     self.save_state()
                 else:
                     result = self.dispatch(self._get(call, "name", ""), parsed)
+                    if self._get(call, "name", "") == "read_file":
+                        named_file_read = named_file_read or self._is_named_file_read(
+                            task,
+                            result,
+                        )
                 input_items.append(
                     {
                         "type": "function_call_output",

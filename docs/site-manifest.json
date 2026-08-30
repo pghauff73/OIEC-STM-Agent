@@ -2,7 +2,7 @@
   "schema_version": 2,
   "build_date": "2026-08-30",
   "documentation_version": "0.7.0",
-  "source_snapshot_sha256": "4443b6b05d4a168b90d1926725734c11729f0587bb91ec2a468d2c4a62397057",
+  "source_snapshot_sha256": "fbf1697f650ec67c29519ee324c09ae8721efb3f6423d7f3e681cf1ea189a9db",
   "content_kinds": [
     "tutorial",
     "task-guide",
@@ -899,7 +899,7 @@
       "source": "PRODUCTION_EPISTEMIC_BOUNDARY.md",
       "html": "PRODUCTION_EPISTEMIC_BOUNDARY.html",
       "figure": "figures/PRODUCTION_EPISTEMIC_BOUNDARY.svg",
-      "source_sha256": "48f3d694dd7b494173b48e0ef1aa1fb7971976817ab37f93bf9d3b459b867c69",
+      "source_sha256": "6ea03bd436a6d9e84fb3a53eadcb27b59ec8cf9f1065db798d6d61ad983d9799",
       "headings": [
         {
           "title": "Production Epistemic Boundary and Loop Control",
@@ -1337,6 +1337,124 @@
           "title": "SAA-13: higher-order reasoning ecology",
           "slug": "saa-13-higher-order-reasoning-ecology",
           "level": 3
+        }
+      ]
+    },
+    {
+      "title": "SAA-12.4 Improvement Scheduling CLI",
+      "source": "SAA_12_4_IMPROVEMENT_CLI.md",
+      "html": "SAA_12_4_IMPROVEMENT_CLI.html",
+      "figure": "figures/SAA_12_4_IMPROVEMENT_CLI.svg",
+      "source_sha256": "eadbc2c94e37de3d035d78d16a720c5eac2106719dbdfa6043cc01f4513cfe1f",
+      "headings": [
+        {
+          "title": "SAA-12.4 Improvement Scheduling CLI",
+          "slug": "saa-12-4-improvement-scheduling-cli",
+          "level": 1
+        },
+        {
+          "title": "Mental model",
+          "slug": "mental-model",
+          "level": 2
+        },
+        {
+          "title": "Basis points",
+          "slug": "basis-points",
+          "level": 2
+        },
+        {
+          "title": "1. Register an opportunity",
+          "slug": "1-register-an-opportunity",
+          "level": 2
+        },
+        {
+          "title": "Meaning of the scores",
+          "slug": "meaning-of-the-scores",
+          "level": 3
+        },
+        {
+          "title": "Register from JSON",
+          "slug": "register-from-json",
+          "level": 3
+        },
+        {
+          "title": "2. List opportunities",
+          "slug": "2-list-opportunities",
+          "level": 2
+        },
+        {
+          "title": "3. Preview a schedule",
+          "slug": "3-preview-a-schedule",
+          "level": 2
+        },
+        {
+          "title": "4. Record the schedule",
+          "slug": "4-record-the-schedule",
+          "level": 2
+        },
+        {
+          "title": "5. Restrict scheduling to selected opportunity kinds",
+          "slug": "5-restrict-scheduling-to-selected-opportunity-kinds",
+          "level": 2
+        },
+        {
+          "title": "6. JSON scheduling for automation",
+          "slug": "6-json-scheduling-for-automation",
+          "level": 2
+        },
+        {
+          "title": "7. Inspect schedule history",
+          "slug": "7-inspect-schedule-history",
+          "level": 2
+        },
+        {
+          "title": "Example workflow",
+          "slug": "example-workflow",
+          "level": 2
+        },
+        {
+          "title": "Safety invariant",
+          "slug": "safety-invariant",
+          "level": 2
+        }
+      ]
+    },
+    {
+      "title": "SAA-12.4 Improvement CLI Quickstart",
+      "source": "SAA_12_4_IMPROVEMENT_CLI_QUICKSTART.md",
+      "html": "SAA_12_4_IMPROVEMENT_CLI_QUICKSTART.html",
+      "figure": "figures/SAA_12_4_IMPROVEMENT_CLI_QUICKSTART.svg",
+      "source_sha256": "cf621b343a34fda815f1641289e9361b6d82ad97aa31d2e3b5a19669c3fb526c",
+      "headings": [
+        {
+          "title": "SAA-12.4 Improvement CLI Quickstart",
+          "slug": "saa-12-4-improvement-cli-quickstart",
+          "level": 1
+        },
+        {
+          "title": "1. Register an evidence-grounded opportunity",
+          "slug": "1-register-an-evidence-grounded-opportunity",
+          "level": 1
+        },
+        {
+          "title": "2. Inspect all known opportunities",
+          "slug": "2-inspect-all-known-opportunities",
+          "level": 1
+        },
+        {
+          "title": "3. Preview a bounded schedule",
+          "slug": "3-preview-a-bounded-schedule",
+          "level": 1
+        },
+        {
+          "title": "4. Persist the reviewed schedule",
+          "slug": "4-persist-the-reviewed-schedule",
+          "level": 1
+        },
+        {
+          "title": "5. Inspect schedule history",
+          "slug": "5-inspect-schedule-history",
+          "level": 1
         }
       ]
     },
@@ -3103,6 +3221,189 @@
       ]
     },
     {
+      "title": "SAA Batch Brain Feeding CLI",
+      "source": "SAA_BATCH_BRAIN_FEEDING_CLI.md",
+      "html": "SAA_BATCH_BRAIN_FEEDING_CLI.html",
+      "figure": "figures/SAA_BATCH_BRAIN_FEEDING_CLI.svg",
+      "source_sha256": "054aa2256f41d2c108e6e7d39ff9485d559553bb3d992e023a21f570b5018bf1",
+      "headings": [
+        {
+          "title": "SAA Batch Brain Feeding CLI",
+          "slug": "saa-batch-brain-feeding-cli",
+          "level": 1
+        },
+        {
+          "title": "Commands",
+          "slug": "commands",
+          "level": 2
+        },
+        {
+          "title": "First batch",
+          "slug": "first-batch",
+          "level": 2
+        },
+        {
+          "title": "Manifest format",
+          "slug": "manifest-format",
+          "level": 2
+        },
+        {
+          "title": "Supported feed kinds",
+          "slug": "supported-feed-kinds",
+          "level": 2
+        },
+        {
+          "title": "Grounded measurement example",
+          "slug": "grounded-measurement-example",
+          "level": 2
+        },
+        {
+          "title": "Semantic concept example",
+          "slug": "semantic-concept-example",
+          "level": 2
+        },
+        {
+          "title": "Algorithm candidate example",
+          "slug": "algorithm-candidate-example",
+          "level": 2
+        },
+        {
+          "title": "Failure example",
+          "slug": "failure-example",
+          "level": 2
+        },
+        {
+          "title": "Feed a directory",
+          "slug": "feed-a-directory",
+          "level": 2
+        },
+        {
+          "title": "Strict mode",
+          "slug": "strict-mode",
+          "level": 2
+        },
+        {
+          "title": "Validation only",
+          "slug": "validation-only",
+          "level": 2
+        },
+        {
+          "title": "Inspect the brain-feed ledger",
+          "slug": "inspect-the-brain-feed-ledger",
+          "level": 2
+        },
+        {
+          "title": "Inspect quarantine",
+          "slug": "inspect-quarantine",
+          "level": 2
+        },
+        {
+          "title": "Deduplication",
+          "slug": "deduplication",
+          "level": 2
+        },
+        {
+          "title": "Persistent layout",
+          "slug": "persistent-layout",
+          "level": 2
+        },
+        {
+          "title": "Brain-feeding model",
+          "slug": "brain-feeding-model",
+          "level": 2
+        }
+      ]
+    },
+    {
+      "title": "SAA Repository Brain Feeding CLI",
+      "source": "SAA_REPOSITORY_BRAIN_FEEDING_CLI.md",
+      "html": "SAA_REPOSITORY_BRAIN_FEEDING_CLI.html",
+      "figure": "figures/SAA_REPOSITORY_BRAIN_FEEDING_CLI.svg",
+      "source_sha256": "41296ac830eca441e2079ec9c3921b542a566c1ba7df430befff53dac9d36ed2",
+      "headings": [
+        {
+          "title": "SAA Repository Brain Feeding CLI",
+          "slug": "saa-repository-brain-feeding-cli",
+          "level": 1
+        },
+        {
+          "title": "Quick start",
+          "slug": "quick-start",
+          "level": 2
+        },
+        {
+          "title": "What happens to source code",
+          "slug": "what-happens-to-source-code",
+          "level": 2
+        },
+        {
+          "title": "Algorithm extraction",
+          "slug": "algorithm-extraction",
+          "level": 2
+        },
+        {
+          "title": "Python extraction",
+          "slug": "python-extraction",
+          "level": 2
+        },
+        {
+          "title": "Other languages",
+          "slug": "other-languages",
+          "level": 2
+        },
+        {
+          "title": "Tests become experiment candidates",
+          "slug": "tests-become-experiment-candidates",
+          "level": 2
+        },
+        {
+          "title": "Assertions become invariant candidates",
+          "slug": "assertions-become-invariant-candidates",
+          "level": 2
+        },
+        {
+          "title": "Documentation",
+          "slug": "documentation",
+          "level": 2
+        },
+        {
+          "title": "Include and exclude paths",
+          "slug": "include-and-exclude-paths",
+          "level": 2
+        },
+        {
+          "title": "Language filtering",
+          "slug": "language-filtering",
+          "level": 2
+        },
+        {
+          "title": "Bounds",
+          "slug": "bounds",
+          "level": 2
+        },
+        {
+          "title": "Emit ordinary brain-feed manifests",
+          "slug": "emit-ordinary-brain-feed-manifests",
+          "level": 2
+        },
+        {
+          "title": "Strict mode",
+          "slug": "strict-mode",
+          "level": 2
+        },
+        {
+          "title": "Self-feeding",
+          "slug": "self-feeding",
+          "level": 2
+        },
+        {
+          "title": "How this connects to the SAA mathematical brain",
+          "slug": "how-this-connects-to-the-saa-mathematical-brain",
+          "level": 2
+        }
+      ]
+    },
+    {
       "title": "OIEC-STM-Agent Visual Matching",
       "source": "VISUAL_MATCHING.md",
       "html": "VISUAL_MATCHING.html",
@@ -4803,6 +5104,226 @@
         "documentation_status": "Implemented",
         "status_evidence": [
           "ourd/oiec.py"
+        ],
+        "authorship": "source-derived"
+      }
+    },
+    {
+      "slug": "type-brainfeedbatchreceipt",
+      "title": "Brain Feed Batch Receipt",
+      "category": "Agent Runtime",
+      "definition": "A public OURD runtime concept that owns or represents brain feed batch receipt behaviour in ourd/egcf/algebra/brain_feed.py.",
+      "thesis": "Brain Feed Batch Receipt should keep agent coordination subordinate to authority, evidence, and recoverable execution.",
+      "html": "concepts/type-brainfeedbatchreceipt.html",
+      "figure": "figures/concepts/type-brainfeedbatchreceipt.svg",
+      "sources": [
+        {
+          "path": "ourd/egcf/algebra/brain_feed.py",
+          "sha256": "77df3f9062a4e4f5715390c73764a587689a73abaf700f77ac7bded218f889d3"
+        }
+      ],
+      "related": [
+        "EGCF",
+        "Evidence",
+        "Authority",
+        "Replay"
+      ],
+      "teaching": {
+        "concept_id": "type-brainfeedbatchreceipt",
+        "full_name": "Brain Feed Batch Receipt",
+        "short_meaning": "A public OURD runtime concept that owns or represents brain feed batch receipt behaviour in ourd/egcf/algebra/brain_feed.py.",
+        "why_it_exists": "Brain Feed Batch Receipt should keep agent coordination subordinate to authority, evidence, and recoverable execution.",
+        "everyday_analogy": "A labeled station in a careful workshop: it owns one responsibility and hands a checkable result to the next station.",
+        "oiec_example": "OIEC uses Brain Feed Batch Receipt for its declared responsibility while preserving source and evidence links.",
+        "inputs": "Typed requests, repository state, policy context, and linked canonical records.",
+        "outputs": "A reviewable Brain Feed Batch Receipt result that can feed the next governed step.",
+        "misconception": "Brain Feed Batch Receipt does not grant new authority or certify success merely because a record exists.",
+        "diagram": "figures/concepts/type-brainfeedbatchreceipt.svg",
+        "formal_novice": "In plain terms, A public OURD runtime concept that owns or represents brain feed batch receipt behaviour in ourd/egcf/algebra/brain_feed.py.",
+        "formal_intermediate": "Inputs are constrained by the concept controls described in the technical record, and outputs remain reviewable rather than self-authorizing.",
+        "formal_expert": "The expert contract is the source-bound 25-paragraph concept essay, typed implementation references, invariants, and manifest relations generated for type-brainfeedbatchreceipt.",
+        "related_concepts": [
+          "EGCF",
+          "Evidence",
+          "Authority",
+          "Replay"
+        ],
+        "prerequisites": [
+          "evidence-gate"
+        ],
+        "cli_examples": [],
+        "failure_example": "If Brain Feed Batch Receipt receives stale, incomplete, contradictory, or unauthorized inputs, the safe result is an explicit unresolved or refused outcome rather than silent continuation.",
+        "source_links": [
+          "ourd/egcf/algebra/brain_feed.py"
+        ],
+        "documentation_status": "Implemented",
+        "status_evidence": [
+          "ourd/egcf/algebra/brain_feed.py"
+        ],
+        "authorship": "source-derived"
+      }
+    },
+    {
+      "slug": "type-brainfeeddisposition",
+      "title": "Brain Feed Disposition",
+      "category": "Agent Runtime",
+      "definition": "A public OURD runtime concept that owns or represents brain feed disposition behaviour in ourd/egcf/algebra/brain_feed.py.",
+      "thesis": "Brain Feed Disposition should keep agent coordination subordinate to authority, evidence, and recoverable execution.",
+      "html": "concepts/type-brainfeeddisposition.html",
+      "figure": "figures/concepts/type-brainfeeddisposition.svg",
+      "sources": [
+        {
+          "path": "ourd/egcf/algebra/brain_feed.py",
+          "sha256": "77df3f9062a4e4f5715390c73764a587689a73abaf700f77ac7bded218f889d3"
+        }
+      ],
+      "related": [
+        "EGCF",
+        "Evidence",
+        "Authority",
+        "Replay"
+      ],
+      "teaching": {
+        "concept_id": "type-brainfeeddisposition",
+        "full_name": "Brain Feed Disposition",
+        "short_meaning": "A public OURD runtime concept that owns or represents brain feed disposition behaviour in ourd/egcf/algebra/brain_feed.py.",
+        "why_it_exists": "Brain Feed Disposition should keep agent coordination subordinate to authority, evidence, and recoverable execution.",
+        "everyday_analogy": "A labeled station in a careful workshop: it owns one responsibility and hands a checkable result to the next station.",
+        "oiec_example": "OIEC uses Brain Feed Disposition for its declared responsibility while preserving source and evidence links.",
+        "inputs": "Typed requests, repository state, policy context, and linked canonical records.",
+        "outputs": "A reviewable Brain Feed Disposition result that can feed the next governed step.",
+        "misconception": "Brain Feed Disposition does not grant new authority or certify success merely because a record exists.",
+        "diagram": "figures/concepts/type-brainfeeddisposition.svg",
+        "formal_novice": "In plain terms, A public OURD runtime concept that owns or represents brain feed disposition behaviour in ourd/egcf/algebra/brain_feed.py.",
+        "formal_intermediate": "Inputs are constrained by the concept controls described in the technical record, and outputs remain reviewable rather than self-authorizing.",
+        "formal_expert": "The expert contract is the source-bound 25-paragraph concept essay, typed implementation references, invariants, and manifest relations generated for type-brainfeeddisposition.",
+        "related_concepts": [
+          "EGCF",
+          "Evidence",
+          "Authority",
+          "Replay"
+        ],
+        "prerequisites": [
+          "evidence-gate"
+        ],
+        "cli_examples": [],
+        "failure_example": "If Brain Feed Disposition receives stale, incomplete, contradictory, or unauthorized inputs, the safe result is an explicit unresolved or refused outcome rather than silent continuation.",
+        "source_links": [
+          "ourd/egcf/algebra/brain_feed.py"
+        ],
+        "documentation_status": "Implemented",
+        "status_evidence": [
+          "ourd/egcf/algebra/brain_feed.py"
+        ],
+        "authorship": "source-derived"
+      }
+    },
+    {
+      "slug": "type-brainfeeditem",
+      "title": "Brain Feed Item",
+      "category": "Agent Runtime",
+      "definition": "A public OURD runtime concept that owns or represents brain feed item behaviour in ourd/egcf/algebra/brain_feed.py.",
+      "thesis": "Brain Feed Item should keep agent coordination subordinate to authority, evidence, and recoverable execution.",
+      "html": "concepts/type-brainfeeditem.html",
+      "figure": "figures/concepts/type-brainfeeditem.svg",
+      "sources": [
+        {
+          "path": "ourd/egcf/algebra/brain_feed.py",
+          "sha256": "77df3f9062a4e4f5715390c73764a587689a73abaf700f77ac7bded218f889d3"
+        }
+      ],
+      "related": [
+        "EGCF",
+        "Evidence",
+        "Authority",
+        "Replay"
+      ],
+      "teaching": {
+        "concept_id": "type-brainfeeditem",
+        "full_name": "Brain Feed Item",
+        "short_meaning": "A public OURD runtime concept that owns or represents brain feed item behaviour in ourd/egcf/algebra/brain_feed.py.",
+        "why_it_exists": "Brain Feed Item should keep agent coordination subordinate to authority, evidence, and recoverable execution.",
+        "everyday_analogy": "A labeled station in a careful workshop: it owns one responsibility and hands a checkable result to the next station.",
+        "oiec_example": "OIEC uses Brain Feed Item for its declared responsibility while preserving source and evidence links.",
+        "inputs": "Typed requests, repository state, policy context, and linked canonical records.",
+        "outputs": "A reviewable Brain Feed Item result that can feed the next governed step.",
+        "misconception": "Brain Feed Item does not grant new authority or certify success merely because a record exists.",
+        "diagram": "figures/concepts/type-brainfeeditem.svg",
+        "formal_novice": "In plain terms, A public OURD runtime concept that owns or represents brain feed item behaviour in ourd/egcf/algebra/brain_feed.py.",
+        "formal_intermediate": "Inputs are constrained by the concept controls described in the technical record, and outputs remain reviewable rather than self-authorizing.",
+        "formal_expert": "The expert contract is the source-bound 25-paragraph concept essay, typed implementation references, invariants, and manifest relations generated for type-brainfeeditem.",
+        "related_concepts": [
+          "EGCF",
+          "Evidence",
+          "Authority",
+          "Replay"
+        ],
+        "prerequisites": [
+          "evidence-gate"
+        ],
+        "cli_examples": [],
+        "failure_example": "If Brain Feed Item receives stale, incomplete, contradictory, or unauthorized inputs, the safe result is an explicit unresolved or refused outcome rather than silent continuation.",
+        "source_links": [
+          "ourd/egcf/algebra/brain_feed.py"
+        ],
+        "documentation_status": "Implemented",
+        "status_evidence": [
+          "ourd/egcf/algebra/brain_feed.py"
+        ],
+        "authorship": "source-derived"
+      }
+    },
+    {
+      "slug": "type-brainfeedprocessor",
+      "title": "Brain Feed Processor",
+      "category": "Agent Runtime",
+      "definition": "Routes a bounded batch into evidence, semantic/failure knowledge, or qualification staging.",
+      "thesis": "Brain Feed Processor should keep agent coordination subordinate to authority, evidence, and recoverable execution.",
+      "html": "concepts/type-brainfeedprocessor.html",
+      "figure": "figures/concepts/type-brainfeedprocessor.svg",
+      "sources": [
+        {
+          "path": "ourd/egcf/brain_feed.py",
+          "sha256": "efaeaa9416eef448169f3e21a82890e8e97851588a1ff995ae2f6ea3b4a334f7"
+        }
+      ],
+      "related": [
+        "EGCF",
+        "Evidence",
+        "Authority",
+        "Replay"
+      ],
+      "teaching": {
+        "concept_id": "type-brainfeedprocessor",
+        "full_name": "Brain Feed Processor",
+        "short_meaning": "Routes a bounded batch into evidence, semantic/failure knowledge, or qualification staging.",
+        "why_it_exists": "Brain Feed Processor should keep agent coordination subordinate to authority, evidence, and recoverable execution.",
+        "everyday_analogy": "A labeled station in a careful workshop: it owns one responsibility and hands a checkable result to the next station.",
+        "oiec_example": "OIEC uses Brain Feed Processor for its declared responsibility while preserving source and evidence links.",
+        "inputs": "Typed requests, repository state, policy context, and linked canonical records.",
+        "outputs": "A reviewable Brain Feed Processor result that can feed the next governed step.",
+        "misconception": "Brain Feed Processor does not grant new authority or certify success merely because a record exists.",
+        "diagram": "figures/concepts/type-brainfeedprocessor.svg",
+        "formal_novice": "In plain terms, Routes a bounded batch into evidence, semantic/failure knowledge, or qualification staging.",
+        "formal_intermediate": "Inputs are constrained by the concept controls described in the technical record, and outputs remain reviewable rather than self-authorizing.",
+        "formal_expert": "The expert contract is the source-bound 25-paragraph concept essay, typed implementation references, invariants, and manifest relations generated for type-brainfeedprocessor.",
+        "related_concepts": [
+          "EGCF",
+          "Evidence",
+          "Authority",
+          "Replay"
+        ],
+        "prerequisites": [
+          "evidence-gate"
+        ],
+        "cli_examples": [],
+        "failure_example": "If Brain Feed Processor receives stale, incomplete, contradictory, or unauthorized inputs, the safe result is an explicit unresolved or refused outcome rather than silent continuation.",
+        "source_links": [
+          "ourd/egcf/brain_feed.py"
+        ],
+        "documentation_status": "Implemented",
+        "status_evidence": [
+          "ourd/egcf/brain_feed.py"
         ],
         "authorship": "source-derived"
       }
@@ -7613,6 +8134,61 @@
       }
     },
     {
+      "slug": "type-loopcommand",
+      "title": "Loop Command",
+      "category": "Agent Runtime",
+      "definition": "A public OURD runtime concept that owns or represents loop command behaviour in ourd/cli.py.",
+      "thesis": "Loop Command should keep agent coordination subordinate to authority, evidence, and recoverable execution.",
+      "html": "concepts/type-loopcommand.html",
+      "figure": "figures/concepts/type-loopcommand.svg",
+      "sources": [
+        {
+          "path": "ourd/cli.py",
+          "sha256": "ff25313cfb45f6533e4e85423a173e80f9cbe4b0b390802454458379b5f60bc7"
+        }
+      ],
+      "related": [
+        "EGCF",
+        "Evidence",
+        "Authority",
+        "Replay"
+      ],
+      "teaching": {
+        "concept_id": "type-loopcommand",
+        "full_name": "Loop Command",
+        "short_meaning": "A public OURD runtime concept that owns or represents loop command behaviour in ourd/cli.py.",
+        "why_it_exists": "Loop Command should keep agent coordination subordinate to authority, evidence, and recoverable execution.",
+        "everyday_analogy": "A labeled station in a careful workshop: it owns one responsibility and hands a checkable result to the next station.",
+        "oiec_example": "OIEC uses Loop Command for its declared responsibility while preserving source and evidence links.",
+        "inputs": "Typed requests, repository state, policy context, and linked canonical records.",
+        "outputs": "A reviewable Loop Command result that can feed the next governed step.",
+        "misconception": "Loop Command does not grant new authority or certify success merely because a record exists.",
+        "diagram": "figures/concepts/type-loopcommand.svg",
+        "formal_novice": "In plain terms, A public OURD runtime concept that owns or represents loop command behaviour in ourd/cli.py.",
+        "formal_intermediate": "Inputs are constrained by the concept controls described in the technical record, and outputs remain reviewable rather than self-authorizing.",
+        "formal_expert": "The expert contract is the source-bound 25-paragraph concept essay, typed implementation references, invariants, and manifest relations generated for type-loopcommand.",
+        "related_concepts": [
+          "EGCF",
+          "Evidence",
+          "Authority",
+          "Replay"
+        ],
+        "prerequisites": [
+          "evidence-gate"
+        ],
+        "cli_examples": [],
+        "failure_example": "If Loop Command receives stale, incomplete, contradictory, or unauthorized inputs, the safe result is an explicit unresolved or refused outcome rather than silent continuation.",
+        "source_links": [
+          "ourd/cli.py"
+        ],
+        "documentation_status": "Implemented",
+        "status_evidence": [
+          "ourd/cli.py"
+        ],
+        "authorship": "source-derived"
+      }
+    },
+    {
       "slug": "type-loopprogresscontroller",
       "title": "Loop Progress Controller",
       "category": "Agent Runtime",
@@ -7663,6 +8239,61 @@
         "documentation_status": "Implemented",
         "status_evidence": [
           "ourd/loop_control.py"
+        ],
+        "authorship": "source-derived"
+      }
+    },
+    {
+      "slug": "type-loopresult",
+      "title": "Loop Result",
+      "category": "Agent Runtime",
+      "definition": "A public OURD runtime concept that owns or represents loop result behaviour in ourd/cli.py.",
+      "thesis": "Loop Result should keep agent coordination subordinate to authority, evidence, and recoverable execution.",
+      "html": "concepts/type-loopresult.html",
+      "figure": "figures/concepts/type-loopresult.svg",
+      "sources": [
+        {
+          "path": "ourd/cli.py",
+          "sha256": "ff25313cfb45f6533e4e85423a173e80f9cbe4b0b390802454458379b5f60bc7"
+        }
+      ],
+      "related": [
+        "EGCF",
+        "Evidence",
+        "Authority",
+        "Replay"
+      ],
+      "teaching": {
+        "concept_id": "type-loopresult",
+        "full_name": "Loop Result",
+        "short_meaning": "A public OURD runtime concept that owns or represents loop result behaviour in ourd/cli.py.",
+        "why_it_exists": "Loop Result should keep agent coordination subordinate to authority, evidence, and recoverable execution.",
+        "everyday_analogy": "A labeled station in a careful workshop: it owns one responsibility and hands a checkable result to the next station.",
+        "oiec_example": "OIEC uses Loop Result for its declared responsibility while preserving source and evidence links.",
+        "inputs": "Typed requests, repository state, policy context, and linked canonical records.",
+        "outputs": "A reviewable Loop Result result that can feed the next governed step.",
+        "misconception": "Loop Result does not grant new authority or certify success merely because a record exists.",
+        "diagram": "figures/concepts/type-loopresult.svg",
+        "formal_novice": "In plain terms, A public OURD runtime concept that owns or represents loop result behaviour in ourd/cli.py.",
+        "formal_intermediate": "Inputs are constrained by the concept controls described in the technical record, and outputs remain reviewable rather than self-authorizing.",
+        "formal_expert": "The expert contract is the source-bound 25-paragraph concept essay, typed implementation references, invariants, and manifest relations generated for type-loopresult.",
+        "related_concepts": [
+          "EGCF",
+          "Evidence",
+          "Authority",
+          "Replay"
+        ],
+        "prerequisites": [
+          "evidence-gate"
+        ],
+        "cli_examples": [],
+        "failure_example": "If Loop Result receives stale, incomplete, contradictory, or unauthorized inputs, the safe result is an explicit unresolved or refused outcome rather than silent continuation.",
+        "source_links": [
+          "ourd/cli.py"
+        ],
+        "documentation_status": "Implemented",
+        "status_evidence": [
+          "ourd/cli.py"
         ],
         "authorship": "source-derived"
       }
@@ -8833,7 +9464,7 @@
       "sources": [
         {
           "path": "ourd/agent.py",
-          "sha256": "3cf85bc8b06c0fe7ed3f967a967754fa6218c17036e21e78a2dbf1fde1b5c7de"
+          "sha256": "bdbe286456e5354b0283cc711746bc98305e91955be19af1c76041694ed59a13"
         }
       ],
       "related": [
@@ -9328,7 +9959,7 @@
       "sources": [
         {
           "path": "ourd/production_agent.py",
-          "sha256": "23852bdf6195cf6c0e6fd391f016a50227e11287d7b46ea58aac196bd54eee1e"
+          "sha256": "8cbe1b299e67e82e1a79ca1a0a5a2e5d3a3dfecf3e0fe1d5e41a557d8b03bd5e"
         }
       ],
       "related": [
@@ -10578,6 +11209,226 @@
         "documentation_status": "Implemented",
         "status_evidence": [
           "ourd/egcf/algebra/experiment_aggregation.py"
+        ],
+        "authorship": "source-derived"
+      }
+    },
+    {
+      "slug": "type-repositorybrainfeedplan",
+      "title": "Repository Brain Feed Plan",
+      "category": "Agent Runtime",
+      "definition": "A public OURD runtime concept that owns or represents repository brain feed plan behaviour in ourd/egcf/repository_brain_feed.py.",
+      "thesis": "Repository Brain Feed Plan should keep agent coordination subordinate to authority, evidence, and recoverable execution.",
+      "html": "concepts/type-repositorybrainfeedplan.html",
+      "figure": "figures/concepts/type-repositorybrainfeedplan.svg",
+      "sources": [
+        {
+          "path": "ourd/egcf/repository_brain_feed.py",
+          "sha256": "5a0805818c4fcc5797c9165a98ea5b755c1e65c7f9e7ebb638681eb0e876b529"
+        }
+      ],
+      "related": [
+        "EGCF",
+        "Evidence",
+        "Authority",
+        "Replay"
+      ],
+      "teaching": {
+        "concept_id": "type-repositorybrainfeedplan",
+        "full_name": "Repository Brain Feed Plan",
+        "short_meaning": "A public OURD runtime concept that owns or represents repository brain feed plan behaviour in ourd/egcf/repository_brain_feed.py.",
+        "why_it_exists": "Repository Brain Feed Plan should keep agent coordination subordinate to authority, evidence, and recoverable execution.",
+        "everyday_analogy": "A labeled station in a careful workshop: it owns one responsibility and hands a checkable result to the next station.",
+        "oiec_example": "OIEC uses Repository Brain Feed Plan for its declared responsibility while preserving source and evidence links.",
+        "inputs": "Typed requests, repository state, policy context, and linked canonical records.",
+        "outputs": "A reviewable Repository Brain Feed Plan result that can feed the next governed step.",
+        "misconception": "Repository Brain Feed Plan does not grant new authority or certify success merely because a record exists.",
+        "diagram": "figures/concepts/type-repositorybrainfeedplan.svg",
+        "formal_novice": "In plain terms, A public OURD runtime concept that owns or represents repository brain feed plan behaviour in ourd/egcf/repository_brain_feed.py.",
+        "formal_intermediate": "Inputs are constrained by the concept controls described in the technical record, and outputs remain reviewable rather than self-authorizing.",
+        "formal_expert": "The expert contract is the source-bound 25-paragraph concept essay, typed implementation references, invariants, and manifest relations generated for type-repositorybrainfeedplan.",
+        "related_concepts": [
+          "EGCF",
+          "Evidence",
+          "Authority",
+          "Replay"
+        ],
+        "prerequisites": [
+          "evidence-gate"
+        ],
+        "cli_examples": [],
+        "failure_example": "If Repository Brain Feed Plan receives stale, incomplete, contradictory, or unauthorized inputs, the safe result is an explicit unresolved or refused outcome rather than silent continuation.",
+        "source_links": [
+          "ourd/egcf/repository_brain_feed.py"
+        ],
+        "documentation_status": "Implemented",
+        "status_evidence": [
+          "ourd/egcf/repository_brain_feed.py"
+        ],
+        "authorship": "source-derived"
+      }
+    },
+    {
+      "slug": "type-repositoryscanpolicy",
+      "title": "Repository Scan Policy",
+      "category": "Agent Runtime",
+      "definition": "A public OURD runtime concept that owns or represents repository scan policy behaviour in ourd/egcf/repository_brain_feed.py.",
+      "thesis": "Repository Scan Policy should keep agent coordination subordinate to authority, evidence, and recoverable execution.",
+      "html": "concepts/type-repositoryscanpolicy.html",
+      "figure": "figures/concepts/type-repositoryscanpolicy.svg",
+      "sources": [
+        {
+          "path": "ourd/egcf/repository_brain_feed.py",
+          "sha256": "5a0805818c4fcc5797c9165a98ea5b755c1e65c7f9e7ebb638681eb0e876b529"
+        }
+      ],
+      "related": [
+        "EGCF",
+        "Evidence",
+        "Authority",
+        "Replay"
+      ],
+      "teaching": {
+        "concept_id": "type-repositoryscanpolicy",
+        "full_name": "Repository Scan Policy",
+        "short_meaning": "A public OURD runtime concept that owns or represents repository scan policy behaviour in ourd/egcf/repository_brain_feed.py.",
+        "why_it_exists": "Repository Scan Policy should keep agent coordination subordinate to authority, evidence, and recoverable execution.",
+        "everyday_analogy": "A labeled station in a careful workshop: it owns one responsibility and hands a checkable result to the next station.",
+        "oiec_example": "OIEC uses Repository Scan Policy for its declared responsibility while preserving source and evidence links.",
+        "inputs": "Typed requests, repository state, policy context, and linked canonical records.",
+        "outputs": "A reviewable Repository Scan Policy result that can feed the next governed step.",
+        "misconception": "Repository Scan Policy does not grant new authority or certify success merely because a record exists.",
+        "diagram": "figures/concepts/type-repositoryscanpolicy.svg",
+        "formal_novice": "In plain terms, A public OURD runtime concept that owns or represents repository scan policy behaviour in ourd/egcf/repository_brain_feed.py.",
+        "formal_intermediate": "Inputs are constrained by the concept controls described in the technical record, and outputs remain reviewable rather than self-authorizing.",
+        "formal_expert": "The expert contract is the source-bound 25-paragraph concept essay, typed implementation references, invariants, and manifest relations generated for type-repositoryscanpolicy.",
+        "related_concepts": [
+          "EGCF",
+          "Evidence",
+          "Authority",
+          "Replay"
+        ],
+        "prerequisites": [
+          "evidence-gate"
+        ],
+        "cli_examples": [],
+        "failure_example": "If Repository Scan Policy receives stale, incomplete, contradictory, or unauthorized inputs, the safe result is an explicit unresolved or refused outcome rather than silent continuation.",
+        "source_links": [
+          "ourd/egcf/repository_brain_feed.py"
+        ],
+        "documentation_status": "Implemented",
+        "status_evidence": [
+          "ourd/egcf/repository_brain_feed.py"
+        ],
+        "authorship": "source-derived"
+      }
+    },
+    {
+      "slug": "type-repositorysourcefile",
+      "title": "Repository Source File",
+      "category": "Agent Runtime",
+      "definition": "A public OURD runtime concept that owns or represents repository source file behaviour in ourd/egcf/repository_brain_feed.py.",
+      "thesis": "Repository Source File should keep agent coordination subordinate to authority, evidence, and recoverable execution.",
+      "html": "concepts/type-repositorysourcefile.html",
+      "figure": "figures/concepts/type-repositorysourcefile.svg",
+      "sources": [
+        {
+          "path": "ourd/egcf/repository_brain_feed.py",
+          "sha256": "5a0805818c4fcc5797c9165a98ea5b755c1e65c7f9e7ebb638681eb0e876b529"
+        }
+      ],
+      "related": [
+        "EGCF",
+        "Evidence",
+        "Authority",
+        "Replay"
+      ],
+      "teaching": {
+        "concept_id": "type-repositorysourcefile",
+        "full_name": "Repository Source File",
+        "short_meaning": "A public OURD runtime concept that owns or represents repository source file behaviour in ourd/egcf/repository_brain_feed.py.",
+        "why_it_exists": "Repository Source File should keep agent coordination subordinate to authority, evidence, and recoverable execution.",
+        "everyday_analogy": "A labeled station in a careful workshop: it owns one responsibility and hands a checkable result to the next station.",
+        "oiec_example": "OIEC uses Repository Source File for its declared responsibility while preserving source and evidence links.",
+        "inputs": "Typed requests, repository state, policy context, and linked canonical records.",
+        "outputs": "A reviewable Repository Source File result that can feed the next governed step.",
+        "misconception": "Repository Source File does not grant new authority or certify success merely because a record exists.",
+        "diagram": "figures/concepts/type-repositorysourcefile.svg",
+        "formal_novice": "In plain terms, A public OURD runtime concept that owns or represents repository source file behaviour in ourd/egcf/repository_brain_feed.py.",
+        "formal_intermediate": "Inputs are constrained by the concept controls described in the technical record, and outputs remain reviewable rather than self-authorizing.",
+        "formal_expert": "The expert contract is the source-bound 25-paragraph concept essay, typed implementation references, invariants, and manifest relations generated for type-repositorysourcefile.",
+        "related_concepts": [
+          "EGCF",
+          "Evidence",
+          "Authority",
+          "Replay"
+        ],
+        "prerequisites": [
+          "evidence-gate"
+        ],
+        "cli_examples": [],
+        "failure_example": "If Repository Source File receives stale, incomplete, contradictory, or unauthorized inputs, the safe result is an explicit unresolved or refused outcome rather than silent continuation.",
+        "source_links": [
+          "ourd/egcf/repository_brain_feed.py"
+        ],
+        "documentation_status": "Implemented",
+        "status_evidence": [
+          "ourd/egcf/repository_brain_feed.py"
+        ],
+        "authorship": "source-derived"
+      }
+    },
+    {
+      "slug": "type-repositorysymbol",
+      "title": "Repository Symbol",
+      "category": "Agent Runtime",
+      "definition": "A public OURD runtime concept that owns or represents repository symbol behaviour in ourd/egcf/repository_brain_feed.py.",
+      "thesis": "Repository Symbol should keep agent coordination subordinate to authority, evidence, and recoverable execution.",
+      "html": "concepts/type-repositorysymbol.html",
+      "figure": "figures/concepts/type-repositorysymbol.svg",
+      "sources": [
+        {
+          "path": "ourd/egcf/repository_brain_feed.py",
+          "sha256": "5a0805818c4fcc5797c9165a98ea5b755c1e65c7f9e7ebb638681eb0e876b529"
+        }
+      ],
+      "related": [
+        "EGCF",
+        "Evidence",
+        "Authority",
+        "Replay"
+      ],
+      "teaching": {
+        "concept_id": "type-repositorysymbol",
+        "full_name": "Repository Symbol",
+        "short_meaning": "A public OURD runtime concept that owns or represents repository symbol behaviour in ourd/egcf/repository_brain_feed.py.",
+        "why_it_exists": "Repository Symbol should keep agent coordination subordinate to authority, evidence, and recoverable execution.",
+        "everyday_analogy": "A labeled station in a careful workshop: it owns one responsibility and hands a checkable result to the next station.",
+        "oiec_example": "OIEC uses Repository Symbol for its declared responsibility while preserving source and evidence links.",
+        "inputs": "Typed requests, repository state, policy context, and linked canonical records.",
+        "outputs": "A reviewable Repository Symbol result that can feed the next governed step.",
+        "misconception": "Repository Symbol does not grant new authority or certify success merely because a record exists.",
+        "diagram": "figures/concepts/type-repositorysymbol.svg",
+        "formal_novice": "In plain terms, A public OURD runtime concept that owns or represents repository symbol behaviour in ourd/egcf/repository_brain_feed.py.",
+        "formal_intermediate": "Inputs are constrained by the concept controls described in the technical record, and outputs remain reviewable rather than self-authorizing.",
+        "formal_expert": "The expert contract is the source-bound 25-paragraph concept essay, typed implementation references, invariants, and manifest relations generated for type-repositorysymbol.",
+        "related_concepts": [
+          "EGCF",
+          "Evidence",
+          "Authority",
+          "Replay"
+        ],
+        "prerequisites": [
+          "evidence-gate"
+        ],
+        "cli_examples": [],
+        "failure_example": "If Repository Symbol receives stale, incomplete, contradictory, or unauthorized inputs, the safe result is an explicit unresolved or refused outcome rather than silent continuation.",
+        "source_links": [
+          "ourd/egcf/repository_brain_feed.py"
+        ],
+        "documentation_status": "Implemented",
+        "status_evidence": [
+          "ourd/egcf/repository_brain_feed.py"
         ],
         "authorship": "source-derived"
       }
@@ -17599,7 +18450,7 @@
       "sources": [
         {
           "path": "README.md",
-          "sha256": "9a5302e76c8563fcda90158b3364ade62225f47e7fc645becf8e00edd20a4a60"
+          "sha256": "8c847114b0b92625f04e706a6b9b675bb7e89d46924ac50dc494663d2ffe0c30"
         },
         {
           "path": "IMPLEMENTATION_PLAN.md",
@@ -17674,7 +18525,7 @@
       "sources": [
         {
           "path": "README.md",
-          "sha256": "9a5302e76c8563fcda90158b3364ade62225f47e7fc645becf8e00edd20a4a60"
+          "sha256": "8c847114b0b92625f04e706a6b9b675bb7e89d46924ac50dc494663d2ffe0c30"
         },
         {
           "path": "IMPLEMENTATION_PLAN.md",
@@ -17751,7 +18602,7 @@
       "sources": [
         {
           "path": "README.md",
-          "sha256": "9a5302e76c8563fcda90158b3364ade62225f47e7fc645becf8e00edd20a4a60"
+          "sha256": "8c847114b0b92625f04e706a6b9b675bb7e89d46924ac50dc494663d2ffe0c30"
         },
         {
           "path": "IMPLEMENTATION_PLAN.md",
@@ -17824,7 +18675,7 @@
       "sources": [
         {
           "path": "README.md",
-          "sha256": "9a5302e76c8563fcda90158b3364ade62225f47e7fc645becf8e00edd20a4a60"
+          "sha256": "8c847114b0b92625f04e706a6b9b675bb7e89d46924ac50dc494663d2ffe0c30"
         },
         {
           "path": "ourd/transactions.py",
@@ -17836,7 +18687,7 @@
         },
         {
           "path": "ourd/agent.py",
-          "sha256": "3cf85bc8b06c0fe7ed3f967a967754fa6218c17036e21e78a2dbf1fde1b5c7de"
+          "sha256": "bdbe286456e5354b0283cc711746bc98305e91955be19af1c76041694ed59a13"
         }
       ],
       "related": [
@@ -17898,7 +18749,7 @@
       "sources": [
         {
           "path": "README.md",
-          "sha256": "9a5302e76c8563fcda90158b3364ade62225f47e7fc645becf8e00edd20a4a60"
+          "sha256": "8c847114b0b92625f04e706a6b9b675bb7e89d46924ac50dc494663d2ffe0c30"
         },
         {
           "path": "EGCFV1_IMPLEMENTATION_PLAN.md",
@@ -18030,7 +18881,7 @@
       "sources": [
         {
           "path": "README.md",
-          "sha256": "9a5302e76c8563fcda90158b3364ade62225f47e7fc645becf8e00edd20a4a60"
+          "sha256": "8c847114b0b92625f04e706a6b9b675bb7e89d46924ac50dc494663d2ffe0c30"
         },
         {
           "path": "docs/OURD_AGENT_GUI.md",
@@ -18105,7 +18956,7 @@
       "sources": [
         {
           "path": "README.md",
-          "sha256": "9a5302e76c8563fcda90158b3364ade62225f47e7fc645becf8e00edd20a4a60"
+          "sha256": "8c847114b0b92625f04e706a6b9b675bb7e89d46924ac50dc494663d2ffe0c30"
         },
         {
           "path": "docs/OURD_AGENT_GUI.md",
@@ -18495,6 +19346,61 @@
         "documentation_status": "Implemented",
         "status_evidence": [
           "ourd/egcf/store.py"
+        ],
+        "authorship": "source-derived"
+      }
+    },
+    {
+      "slug": "type-brainfeedstore",
+      "title": "Brain Feed Store",
+      "category": "Persistence and Provenance",
+      "definition": "Immutable raw/staged/quarantine ledger for SAA batch brain feeding.",
+      "thesis": "Brain Feed Store should keep canonical facts durable, verifiable, replayable, and separable from rebuildable projections.",
+      "html": "concepts/type-brainfeedstore.html",
+      "figure": "figures/concepts/type-brainfeedstore.svg",
+      "sources": [
+        {
+          "path": "ourd/egcf/brain_feed_store.py",
+          "sha256": "811f6b76cd8b5ff7a0c0385b51411fad3f6b3182a03c4628ab0b62c384163545"
+        }
+      ],
+      "related": [
+        "EGCF",
+        "Evidence",
+        "Authority",
+        "Replay"
+      ],
+      "teaching": {
+        "concept_id": "type-brainfeedstore",
+        "full_name": "Brain Feed Store",
+        "short_meaning": "Immutable raw/staged/quarantine ledger for SAA batch brain feeding.",
+        "why_it_exists": "Brain Feed Store should keep canonical facts durable, verifiable, replayable, and separable from rebuildable projections.",
+        "everyday_analogy": "A labeled station in a careful workshop: it owns one responsibility and hands a checkable result to the next station.",
+        "oiec_example": "OIEC uses Brain Feed Store for its declared responsibility while preserving source and evidence links.",
+        "inputs": "Typed requests, repository state, policy context, and linked canonical records.",
+        "outputs": "A reviewable Brain Feed Store result that can feed the next governed step.",
+        "misconception": "Brain Feed Store does not grant new authority or certify success merely because a record exists.",
+        "diagram": "figures/concepts/type-brainfeedstore.svg",
+        "formal_novice": "In plain terms, Immutable raw/staged/quarantine ledger for SAA batch brain feeding.",
+        "formal_intermediate": "Inputs are constrained by the concept controls described in the technical record, and outputs remain reviewable rather than self-authorizing.",
+        "formal_expert": "The expert contract is the source-bound 25-paragraph concept essay, typed implementation references, invariants, and manifest relations generated for type-brainfeedstore.",
+        "related_concepts": [
+          "EGCF",
+          "Evidence",
+          "Authority",
+          "Replay"
+        ],
+        "prerequisites": [
+          "evidence-gate"
+        ],
+        "cli_examples": [],
+        "failure_example": "If Brain Feed Store receives stale, incomplete, contradictory, or unauthorized inputs, the safe result is an explicit unresolved or refused outcome rather than silent continuation.",
+        "source_links": [
+          "ourd/egcf/brain_feed_store.py"
+        ],
+        "documentation_status": "Implemented",
+        "status_evidence": [
+          "ourd/egcf/brain_feed_store.py"
         ],
         "authorship": "source-derived"
       }
@@ -23084,14 +23990,14 @@
       {
         "program_id": "agent",
         "command": "oiec-stm-agent",
-        "entry_point": "ourd.cli:main",
+        "entry_point": "ourd.entrypoint:main",
         "purpose": "Start the bounded agent CLI.",
         "alias_of": ""
       },
       {
         "program_id": "agent-alias",
         "command": "ourd-agent",
-        "entry_point": "ourd.cli:main",
+        "entry_point": "ourd.entrypoint:main",
         "purpose": "Alias of the main agent CLI.",
         "alias_of": "agent"
       },
@@ -23554,6 +24460,22 @@
       "authorship": "source-derived"
     },
     {
+      "status": "ADMITTED_SEMANTIC_CONCEPT",
+      "plain_language_meaning": "The runtime reported admitted semantic concept.",
+      "category": "Qualified or Verified",
+      "trigger": "A source-owned status field or comparison emitted ADMITTED_SEMANTIC_CONCEPT.",
+      "what_happens_next": "The result may advance only through the next declared governance gate.",
+      "user_action": "Review scope, evidence, and source binding before relying on the result.",
+      "source_paths": [
+        "ourd/egcf/brain_feed.py"
+      ],
+      "related_concepts": [
+        "Evidence",
+        "CFEL"
+      ],
+      "authorship": "source-derived"
+    },
+    {
       "status": "APPROVE_WITH_LIMITS",
       "plain_language_meaning": "The runtime reported approve with limits.",
       "category": "Runtime State",
@@ -23578,6 +24500,22 @@
       "user_action": "Provide the missing evidence, clarification, approval, or source state.",
       "source_paths": [
         "ourd/egcf/engine.py"
+      ],
+      "related_concepts": [
+        "Evidence",
+        "CFEL"
+      ],
+      "authorship": "source-derived"
+    },
+    {
+      "status": "BINARY_FILE",
+      "plain_language_meaning": "The runtime reported binary file.",
+      "category": "Runtime State",
+      "trigger": "A source-owned status field or comparison emitted BINARY_FILE.",
+      "what_happens_next": "The runtime records this state for the owning workflow to interpret.",
+      "user_action": "Follow the linked source and related concept before taking action.",
+      "source_paths": [
+        "ourd/egcf/repository_brain_feed.py"
       ],
       "related_concepts": [
         "Evidence",
@@ -23718,6 +24656,38 @@
       "authorship": "source-derived"
     },
     {
+      "status": "DUPLICATE_CONTENT",
+      "plain_language_meaning": "The runtime reported duplicate content.",
+      "category": "Runtime State",
+      "trigger": "A source-owned status field or comparison emitted DUPLICATE_CONTENT.",
+      "what_happens_next": "The runtime records this state for the owning workflow to interpret.",
+      "user_action": "Follow the linked source and related concept before taking action.",
+      "source_paths": [
+        "ourd/egcf/brain_feed.py"
+      ],
+      "related_concepts": [
+        "Evidence",
+        "CFEL"
+      ],
+      "authorship": "source-derived"
+    },
+    {
+      "status": "DUPLICATE_EXACT_ITEM",
+      "plain_language_meaning": "The runtime reported duplicate exact item.",
+      "category": "Runtime State",
+      "trigger": "A source-owned status field or comparison emitted DUPLICATE_EXACT_ITEM.",
+      "what_happens_next": "The runtime records this state for the owning workflow to interpret.",
+      "user_action": "Follow the linked source and related concept before taking action.",
+      "source_paths": [
+        "ourd/egcf/brain_feed.py"
+      ],
+      "related_concepts": [
+        "Evidence",
+        "CFEL"
+      ],
+      "authorship": "source-derived"
+    },
+    {
       "status": "EVOLUTION_STEP_QUALIFIED",
       "plain_language_meaning": "The runtime reported evolution step qualified.",
       "category": "Qualified or Verified",
@@ -23790,6 +24760,38 @@
       "user_action": "Follow the linked source and related concept before taking action.",
       "source_paths": [
         "ourd/egcf/algebra/intelligence_loop.py"
+      ],
+      "related_concepts": [
+        "Evidence",
+        "CFEL"
+      ],
+      "authorship": "source-derived"
+    },
+    {
+      "status": "FILE_COUNT_LIMIT",
+      "plain_language_meaning": "The runtime reported file count limit.",
+      "category": "Runtime State",
+      "trigger": "A source-owned status field or comparison emitted FILE_COUNT_LIMIT.",
+      "what_happens_next": "The runtime records this state for the owning workflow to interpret.",
+      "user_action": "Follow the linked source and related concept before taking action.",
+      "source_paths": [
+        "ourd/egcf/repository_brain_feed.py"
+      ],
+      "related_concepts": [
+        "Evidence",
+        "CFEL"
+      ],
+      "authorship": "source-derived"
+    },
+    {
+      "status": "FILE_SIZE_LIMIT",
+      "plain_language_meaning": "The runtime reported file size limit.",
+      "category": "Runtime State",
+      "trigger": "A source-owned status field or comparison emitted FILE_SIZE_LIMIT.",
+      "what_happens_next": "The runtime records this state for the owning workflow to interpret.",
+      "user_action": "Follow the linked source and related concept before taking action.",
+      "source_paths": [
+        "ourd/egcf/repository_brain_feed.py"
       ],
       "related_concepts": [
         "Evidence",
@@ -24351,6 +25353,38 @@
       "authorship": "source-derived"
     },
     {
+      "status": "REGISTERED_EVIDENCE",
+      "plain_language_meaning": "The runtime reported registered evidence.",
+      "category": "Runtime State",
+      "trigger": "A source-owned status field or comparison emitted REGISTERED_EVIDENCE.",
+      "what_happens_next": "The runtime records this state for the owning workflow to interpret.",
+      "user_action": "Follow the linked source and related concept before taking action.",
+      "source_paths": [
+        "ourd/egcf/brain_feed.py"
+      ],
+      "related_concepts": [
+        "Evidence",
+        "CFEL"
+      ],
+      "authorship": "source-derived"
+    },
+    {
+      "status": "REGISTERED_FAILURE",
+      "plain_language_meaning": "The runtime reported registered failure.",
+      "category": "Failure or Refusal",
+      "trigger": "A source-owned status field or comparison emitted REGISTERED_FAILURE.",
+      "what_happens_next": "The dependent operation remains blocked or records a failed result.",
+      "user_action": "Inspect the named source record, violated constraint, and required evidence before retrying.",
+      "source_paths": [
+        "ourd/egcf/brain_feed.py"
+      ],
+      "related_concepts": [
+        "Evidence",
+        "CFEL"
+      ],
+      "authorship": "source-derived"
+    },
+    {
       "status": "REPRESENTATION_REGIME_CHANGE",
       "plain_language_meaning": "The runtime reported representation regime change.",
       "category": "Runtime State",
@@ -24617,6 +25651,86 @@
       "authorship": "authored"
     },
     {
+      "status": "SOURCE_ASSERTION_REQUIRES_SEMANTIC_AND_EVIDENCE_QUALIFICATION",
+      "plain_language_meaning": "The runtime reported source assertion requires semantic and evidence qualification.",
+      "category": "Runtime State",
+      "trigger": "A source-owned status field or comparison emitted SOURCE_ASSERTION_REQUIRES_SEMANTIC_AND_EVIDENCE_QUALIFICATION.",
+      "what_happens_next": "The runtime records this state for the owning workflow to interpret.",
+      "user_action": "Follow the linked source and related concept before taking action.",
+      "source_paths": [
+        "ourd/egcf/repository_brain_feed.py"
+      ],
+      "related_concepts": [
+        "Evidence",
+        "CFEL"
+      ],
+      "authorship": "source-derived"
+    },
+    {
+      "status": "STAGED_DEPENDENCY_REQUIRED",
+      "plain_language_meaning": "The runtime reported staged dependency required.",
+      "category": "Runtime State",
+      "trigger": "A source-owned status field or comparison emitted STAGED_DEPENDENCY_REQUIRED.",
+      "what_happens_next": "The runtime records this state for the owning workflow to interpret.",
+      "user_action": "Follow the linked source and related concept before taking action.",
+      "source_paths": [
+        "ourd/egcf/brain_feed.py"
+      ],
+      "related_concepts": [
+        "Evidence",
+        "CFEL"
+      ],
+      "authorship": "source-derived"
+    },
+    {
+      "status": "STAGED_EVIDENCE_METADATA_REQUIRED",
+      "plain_language_meaning": "The runtime reported staged evidence metadata required.",
+      "category": "Runtime State",
+      "trigger": "A source-owned status field or comparison emitted STAGED_EVIDENCE_METADATA_REQUIRED.",
+      "what_happens_next": "The runtime records this state for the owning workflow to interpret.",
+      "user_action": "Follow the linked source and related concept before taking action.",
+      "source_paths": [
+        "ourd/egcf/brain_feed.py"
+      ],
+      "related_concepts": [
+        "Evidence",
+        "CFEL"
+      ],
+      "authorship": "source-derived"
+    },
+    {
+      "status": "STAGED_EVIDENCE_REQUIRED",
+      "plain_language_meaning": "The runtime reported staged evidence required.",
+      "category": "Runtime State",
+      "trigger": "A source-owned status field or comparison emitted STAGED_EVIDENCE_REQUIRED.",
+      "what_happens_next": "The runtime records this state for the owning workflow to interpret.",
+      "user_action": "Follow the linked source and related concept before taking action.",
+      "source_paths": [
+        "ourd/egcf/brain_feed.py"
+      ],
+      "related_concepts": [
+        "Evidence",
+        "CFEL"
+      ],
+      "authorship": "source-derived"
+    },
+    {
+      "status": "STAGED_SEMANTIC_RESOLUTION_REQUIRED",
+      "plain_language_meaning": "The runtime reported staged semantic resolution required.",
+      "category": "Runtime State",
+      "trigger": "A source-owned status field or comparison emitted STAGED_SEMANTIC_RESOLUTION_REQUIRED.",
+      "what_happens_next": "The runtime records this state for the owning workflow to interpret.",
+      "user_action": "Follow the linked source and related concept before taking action.",
+      "source_paths": [
+        "ourd/egcf/brain_feed.py"
+      ],
+      "related_concepts": [
+        "Evidence",
+        "CFEL"
+      ],
+      "authorship": "source-derived"
+    },
+    {
       "status": "SUSTAINED_CANDIDATE_IMPROVEMENT_QUALIFIED",
       "plain_language_meaning": "The runtime reported sustained candidate improvement qualified.",
       "category": "Qualified or Verified",
@@ -24625,6 +25739,38 @@
       "user_action": "Review scope, evidence, and source binding before relying on the result.",
       "source_paths": [
         "ourd/egcf/algebra/experiment_aggregation.py"
+      ],
+      "related_concepts": [
+        "Evidence",
+        "CFEL"
+      ],
+      "authorship": "source-derived"
+    },
+    {
+      "status": "SYMBOL_COUNT_LIMIT",
+      "plain_language_meaning": "The runtime reported symbol count limit.",
+      "category": "Runtime State",
+      "trigger": "A source-owned status field or comparison emitted SYMBOL_COUNT_LIMIT.",
+      "what_happens_next": "The runtime records this state for the owning workflow to interpret.",
+      "user_action": "Follow the linked source and related concept before taking action.",
+      "source_paths": [
+        "ourd/egcf/repository_brain_feed.py"
+      ],
+      "related_concepts": [
+        "Evidence",
+        "CFEL"
+      ],
+      "authorship": "source-derived"
+    },
+    {
+      "status": "SYMLINK_SKIPPED",
+      "plain_language_meaning": "The runtime reported symlink skipped.",
+      "category": "Runtime State",
+      "trigger": "A source-owned status field or comparison emitted SYMLINK_SKIPPED.",
+      "what_happens_next": "The runtime records this state for the owning workflow to interpret.",
+      "user_action": "Follow the linked source and related concept before taking action.",
+      "source_paths": [
+        "ourd/egcf/repository_brain_feed.py"
       ],
       "related_concepts": [
         "Evidence",
@@ -24657,6 +25803,38 @@
       "user_action": "Follow the linked source and related concept before taking action.",
       "source_paths": [
         "ourd/egcf/handlers.py"
+      ],
+      "related_concepts": [
+        "Evidence",
+        "CFEL"
+      ],
+      "authorship": "source-derived"
+    },
+    {
+      "status": "TOTAL_BYTE_LIMIT",
+      "plain_language_meaning": "The runtime reported total byte limit.",
+      "category": "Runtime State",
+      "trigger": "A source-owned status field or comparison emitted TOTAL_BYTE_LIMIT.",
+      "what_happens_next": "The runtime records this state for the owning workflow to interpret.",
+      "user_action": "Follow the linked source and related concept before taking action.",
+      "source_paths": [
+        "ourd/egcf/repository_brain_feed.py"
+      ],
+      "related_concepts": [
+        "Evidence",
+        "CFEL"
+      ],
+      "authorship": "source-derived"
+    },
+    {
+      "status": "UNRESOLVED_FROM_SOURCE_CODE",
+      "plain_language_meaning": "The runtime reported unresolved from source code.",
+      "category": "Pending or Unresolved",
+      "trigger": "A source-owned status field or comparison emitted UNRESOLVED_FROM_SOURCE_CODE.",
+      "what_happens_next": "The system preserves the unresolved state instead of guessing.",
+      "user_action": "Provide the missing evidence, clarification, approval, or source state.",
+      "source_paths": [
+        "ourd/egcf/repository_brain_feed.py"
       ],
       "related_concepts": [
         "Evidence",
@@ -24846,7 +26024,7 @@
       "object_id": "rel-category-lifecycle-and-migration-df095cbb1252",
       "kind": "category",
       "title": "Lifecycle and Migration",
-      "description": "Architecture domain containing 25 source documents.",
+      "description": "Architecture domain containing 29 source documents.",
       "parent_id": "rel-root-docs-index-html-d86163bf2ae1",
       "relation": "partitions",
       "href": "#category-lifecycle-and-migration",
@@ -27929,6 +29107,277 @@
       "href": "SAA_11_3_11_4_SAA_12_CLOSED_IMPROVEMENT.html#saa-13-higher-order-reasoning-ecology",
       "source_key": "SAA_11_3_11_4_SAA_12_CLOSED_IMPROVEMENT.md#saa-13-higher-order-reasoning-ecology",
       "symbol": "figures/relational-objects/rel-heading-saa113114saa12closedimprovement-md-saa-13-aace8ff40a76.svg",
+      "related_ids": []
+    },
+    {
+      "object_id": "rel-document-saa124improvementcli-md-53172add0c73",
+      "kind": "document",
+      "title": "SAA-12.4 Improvement Scheduling CLI",
+      "description": "Generated learning document with 14 heading objects in the Lifecycle and Migration domain.",
+      "parent_id": "rel-category-lifecycle-and-migration-df095cbb1252",
+      "relation": "contains-document",
+      "href": "SAA_12_4_IMPROVEMENT_CLI.html",
+      "source_key": "SAA_12_4_IMPROVEMENT_CLI.md",
+      "symbol": "figures/relational-objects/rel-document-saa124improvementcli-md-53172add0c73.svg",
+      "related_ids": []
+    },
+    {
+      "object_id": "rel-heading-saa124improvementcli-md-saa-12-4-improveme-27ba8b549fb5",
+      "kind": "heading",
+      "title": "SAA-12.4 Improvement Scheduling CLI",
+      "description": "Level 1 learning object derived from heading 1 in SAA_12_4_IMPROVEMENT_CLI.md.",
+      "parent_id": "rel-document-saa124improvementcli-md-53172add0c73",
+      "relation": "decomposes-into",
+      "href": "SAA_12_4_IMPROVEMENT_CLI.html#saa-12-4-improvement-scheduling-cli",
+      "source_key": "SAA_12_4_IMPROVEMENT_CLI.md#saa-12-4-improvement-scheduling-cli",
+      "symbol": "figures/relational-objects/rel-heading-saa124improvementcli-md-saa-12-4-improveme-27ba8b549fb5.svg",
+      "related_ids": [
+        "rel-concept-egcf-0aab78fce577"
+      ]
+    },
+    {
+      "object_id": "rel-heading-saa124improvementcli-md-mental-model-857158bb6c45",
+      "kind": "heading",
+      "title": "Mental model",
+      "description": "Level 2 learning object derived from heading 2 in SAA_12_4_IMPROVEMENT_CLI.md.",
+      "parent_id": "rel-document-saa124improvementcli-md-53172add0c73",
+      "relation": "decomposes-into",
+      "href": "SAA_12_4_IMPROVEMENT_CLI.html#mental-model",
+      "source_key": "SAA_12_4_IMPROVEMENT_CLI.md#mental-model",
+      "symbol": "figures/relational-objects/rel-heading-saa124improvementcli-md-mental-model-857158bb6c45.svg",
+      "related_ids": []
+    },
+    {
+      "object_id": "rel-heading-saa124improvementcli-md-basis-points-582d500307ca",
+      "kind": "heading",
+      "title": "Basis points",
+      "description": "Level 2 learning object derived from heading 3 in SAA_12_4_IMPROVEMENT_CLI.md.",
+      "parent_id": "rel-document-saa124improvementcli-md-53172add0c73",
+      "relation": "decomposes-into",
+      "href": "SAA_12_4_IMPROVEMENT_CLI.html#basis-points",
+      "source_key": "SAA_12_4_IMPROVEMENT_CLI.md#basis-points",
+      "symbol": "figures/relational-objects/rel-heading-saa124improvementcli-md-basis-points-582d500307ca.svg",
+      "related_ids": []
+    },
+    {
+      "object_id": "rel-heading-saa124improvementcli-md-1-register-an-oppo-6eb6f2ea0ffa",
+      "kind": "heading",
+      "title": "1. Register an opportunity",
+      "description": "Level 2 learning object derived from heading 4 in SAA_12_4_IMPROVEMENT_CLI.md.",
+      "parent_id": "rel-document-saa124improvementcli-md-53172add0c73",
+      "relation": "decomposes-into",
+      "href": "SAA_12_4_IMPROVEMENT_CLI.html#1-register-an-opportunity",
+      "source_key": "SAA_12_4_IMPROVEMENT_CLI.md#1-register-an-opportunity",
+      "symbol": "figures/relational-objects/rel-heading-saa124improvementcli-md-1-register-an-oppo-6eb6f2ea0ffa.svg",
+      "related_ids": [
+        "rel-concept-egcf-0aab78fce577"
+      ]
+    },
+    {
+      "object_id": "rel-heading-saa124improvementcli-md-meaning-of-the-sco-55985477db5d",
+      "kind": "heading",
+      "title": "Meaning of the scores",
+      "description": "Level 3 learning object derived from heading 5 in SAA_12_4_IMPROVEMENT_CLI.md.",
+      "parent_id": "rel-document-saa124improvementcli-md-53172add0c73",
+      "relation": "decomposes-into",
+      "href": "SAA_12_4_IMPROVEMENT_CLI.html#meaning-of-the-scores",
+      "source_key": "SAA_12_4_IMPROVEMENT_CLI.md#meaning-of-the-scores",
+      "symbol": "figures/relational-objects/rel-heading-saa124improvementcli-md-meaning-of-the-sco-55985477db5d.svg",
+      "related_ids": []
+    },
+    {
+      "object_id": "rel-heading-saa124improvementcli-md-register-from-json-7dcbdbfcf076",
+      "kind": "heading",
+      "title": "Register from JSON",
+      "description": "Level 3 learning object derived from heading 6 in SAA_12_4_IMPROVEMENT_CLI.md.",
+      "parent_id": "rel-document-saa124improvementcli-md-53172add0c73",
+      "relation": "decomposes-into",
+      "href": "SAA_12_4_IMPROVEMENT_CLI.html#register-from-json",
+      "source_key": "SAA_12_4_IMPROVEMENT_CLI.md#register-from-json",
+      "symbol": "figures/relational-objects/rel-heading-saa124improvementcli-md-register-from-json-7dcbdbfcf076.svg",
+      "related_ids": []
+    },
+    {
+      "object_id": "rel-heading-saa124improvementcli-md-2-list-opportuniti-680fb3ed7745",
+      "kind": "heading",
+      "title": "2. List opportunities",
+      "description": "Level 2 learning object derived from heading 7 in SAA_12_4_IMPROVEMENT_CLI.md.",
+      "parent_id": "rel-document-saa124improvementcli-md-53172add0c73",
+      "relation": "decomposes-into",
+      "href": "SAA_12_4_IMPROVEMENT_CLI.html#2-list-opportunities",
+      "source_key": "SAA_12_4_IMPROVEMENT_CLI.md#2-list-opportunities",
+      "symbol": "figures/relational-objects/rel-heading-saa124improvementcli-md-2-list-opportuniti-680fb3ed7745.svg",
+      "related_ids": []
+    },
+    {
+      "object_id": "rel-heading-saa124improvementcli-md-3-preview-a-schedu-744e3c31bcc1",
+      "kind": "heading",
+      "title": "3. Preview a schedule",
+      "description": "Level 2 learning object derived from heading 8 in SAA_12_4_IMPROVEMENT_CLI.md.",
+      "parent_id": "rel-document-saa124improvementcli-md-53172add0c73",
+      "relation": "decomposes-into",
+      "href": "SAA_12_4_IMPROVEMENT_CLI.html#3-preview-a-schedule",
+      "source_key": "SAA_12_4_IMPROVEMENT_CLI.md#3-preview-a-schedule",
+      "symbol": "figures/relational-objects/rel-heading-saa124improvementcli-md-3-preview-a-schedu-744e3c31bcc1.svg",
+      "related_ids": []
+    },
+    {
+      "object_id": "rel-heading-saa124improvementcli-md-4-record-the-sched-35da026ec70d",
+      "kind": "heading",
+      "title": "4. Record the schedule",
+      "description": "Level 2 learning object derived from heading 9 in SAA_12_4_IMPROVEMENT_CLI.md.",
+      "parent_id": "rel-document-saa124improvementcli-md-53172add0c73",
+      "relation": "decomposes-into",
+      "href": "SAA_12_4_IMPROVEMENT_CLI.html#4-record-the-schedule",
+      "source_key": "SAA_12_4_IMPROVEMENT_CLI.md#4-record-the-schedule",
+      "symbol": "figures/relational-objects/rel-heading-saa124improvementcli-md-4-record-the-sched-35da026ec70d.svg",
+      "related_ids": []
+    },
+    {
+      "object_id": "rel-heading-saa124improvementcli-md-5-restrict-schedul-a487e5d1e56a",
+      "kind": "heading",
+      "title": "5. Restrict scheduling to selected opportunity kinds",
+      "description": "Level 2 learning object derived from heading 10 in SAA_12_4_IMPROVEMENT_CLI.md.",
+      "parent_id": "rel-document-saa124improvementcli-md-53172add0c73",
+      "relation": "decomposes-into",
+      "href": "SAA_12_4_IMPROVEMENT_CLI.html#5-restrict-scheduling-to-selected-opportunity-kinds",
+      "source_key": "SAA_12_4_IMPROVEMENT_CLI.md#5-restrict-scheduling-to-selected-opportunity-kinds",
+      "symbol": "figures/relational-objects/rel-heading-saa124improvementcli-md-5-restrict-schedul-a487e5d1e56a.svg",
+      "related_ids": []
+    },
+    {
+      "object_id": "rel-heading-saa124improvementcli-md-6-json-scheduling-88eb9b64bafe",
+      "kind": "heading",
+      "title": "6. JSON scheduling for automation",
+      "description": "Level 2 learning object derived from heading 11 in SAA_12_4_IMPROVEMENT_CLI.md.",
+      "parent_id": "rel-document-saa124improvementcli-md-53172add0c73",
+      "relation": "decomposes-into",
+      "href": "SAA_12_4_IMPROVEMENT_CLI.html#6-json-scheduling-for-automation",
+      "source_key": "SAA_12_4_IMPROVEMENT_CLI.md#6-json-scheduling-for-automation",
+      "symbol": "figures/relational-objects/rel-heading-saa124improvementcli-md-6-json-scheduling-88eb9b64bafe.svg",
+      "related_ids": []
+    },
+    {
+      "object_id": "rel-heading-saa124improvementcli-md-7-inspect-schedule-92f818f28647",
+      "kind": "heading",
+      "title": "7. Inspect schedule history",
+      "description": "Level 2 learning object derived from heading 12 in SAA_12_4_IMPROVEMENT_CLI.md.",
+      "parent_id": "rel-document-saa124improvementcli-md-53172add0c73",
+      "relation": "decomposes-into",
+      "href": "SAA_12_4_IMPROVEMENT_CLI.html#7-inspect-schedule-history",
+      "source_key": "SAA_12_4_IMPROVEMENT_CLI.md#7-inspect-schedule-history",
+      "symbol": "figures/relational-objects/rel-heading-saa124improvementcli-md-7-inspect-schedule-92f818f28647.svg",
+      "related_ids": []
+    },
+    {
+      "object_id": "rel-heading-saa124improvementcli-md-example-workflow-7ce96b728a2d",
+      "kind": "heading",
+      "title": "Example workflow",
+      "description": "Level 2 learning object derived from heading 13 in SAA_12_4_IMPROVEMENT_CLI.md.",
+      "parent_id": "rel-document-saa124improvementcli-md-53172add0c73",
+      "relation": "decomposes-into",
+      "href": "SAA_12_4_IMPROVEMENT_CLI.html#example-workflow",
+      "source_key": "SAA_12_4_IMPROVEMENT_CLI.md#example-workflow",
+      "symbol": "figures/relational-objects/rel-heading-saa124improvementcli-md-example-workflow-7ce96b728a2d.svg",
+      "related_ids": []
+    },
+    {
+      "object_id": "rel-heading-saa124improvementcli-md-safety-invariant-3a2926c8b98d",
+      "kind": "heading",
+      "title": "Safety invariant",
+      "description": "Level 2 learning object derived from heading 14 in SAA_12_4_IMPROVEMENT_CLI.md.",
+      "parent_id": "rel-document-saa124improvementcli-md-53172add0c73",
+      "relation": "decomposes-into",
+      "href": "SAA_12_4_IMPROVEMENT_CLI.html#safety-invariant",
+      "source_key": "SAA_12_4_IMPROVEMENT_CLI.md#safety-invariant",
+      "symbol": "figures/relational-objects/rel-heading-saa124improvementcli-md-safety-invariant-3a2926c8b98d.svg",
+      "related_ids": [
+        "rel-concept-egcf-0aab78fce577",
+        "rel-concept-eon-82f592cd7940"
+      ]
+    },
+    {
+      "object_id": "rel-document-saa124improvementcliquickstart-md-6d99dbdc977d",
+      "kind": "document",
+      "title": "SAA-12.4 Improvement CLI Quickstart",
+      "description": "Generated learning document with 6 heading objects in the Lifecycle and Migration domain.",
+      "parent_id": "rel-category-lifecycle-and-migration-df095cbb1252",
+      "relation": "contains-document",
+      "href": "SAA_12_4_IMPROVEMENT_CLI_QUICKSTART.html",
+      "source_key": "SAA_12_4_IMPROVEMENT_CLI_QUICKSTART.md",
+      "symbol": "figures/relational-objects/rel-document-saa124improvementcliquickstart-md-6d99dbdc977d.svg",
+      "related_ids": []
+    },
+    {
+      "object_id": "rel-heading-saa124improvementcliquickstart-md-saa-12-4-7adb55af1da2",
+      "kind": "heading",
+      "title": "SAA-12.4 Improvement CLI Quickstart",
+      "description": "Level 1 learning object derived from heading 1 in SAA_12_4_IMPROVEMENT_CLI_QUICKSTART.md.",
+      "parent_id": "rel-document-saa124improvementcliquickstart-md-6d99dbdc977d",
+      "relation": "decomposes-into",
+      "href": "SAA_12_4_IMPROVEMENT_CLI_QUICKSTART.html#saa-12-4-improvement-cli-quickstart",
+      "source_key": "SAA_12_4_IMPROVEMENT_CLI_QUICKSTART.md#saa-12-4-improvement-cli-quickstart",
+      "symbol": "figures/relational-objects/rel-heading-saa124improvementcliquickstart-md-saa-12-4-7adb55af1da2.svg",
+      "related_ids": []
+    },
+    {
+      "object_id": "rel-heading-saa124improvementcliquickstart-md-1-regist-91ac62a2c17e",
+      "kind": "heading",
+      "title": "1. Register an evidence-grounded opportunity",
+      "description": "Level 1 learning object derived from heading 2 in SAA_12_4_IMPROVEMENT_CLI_QUICKSTART.md.",
+      "parent_id": "rel-document-saa124improvementcliquickstart-md-6d99dbdc977d",
+      "relation": "decomposes-into",
+      "href": "SAA_12_4_IMPROVEMENT_CLI_QUICKSTART.html#1-register-an-evidence-grounded-opportunity",
+      "source_key": "SAA_12_4_IMPROVEMENT_CLI_QUICKSTART.md#1-register-an-evidence-grounded-opportunity",
+      "symbol": "figures/relational-objects/rel-heading-saa124improvementcliquickstart-md-1-regist-91ac62a2c17e.svg",
+      "related_ids": []
+    },
+    {
+      "object_id": "rel-heading-saa124improvementcliquickstart-md-2-inspec-7f7c5cf69b4c",
+      "kind": "heading",
+      "title": "2. Inspect all known opportunities",
+      "description": "Level 1 learning object derived from heading 3 in SAA_12_4_IMPROVEMENT_CLI_QUICKSTART.md.",
+      "parent_id": "rel-document-saa124improvementcliquickstart-md-6d99dbdc977d",
+      "relation": "decomposes-into",
+      "href": "SAA_12_4_IMPROVEMENT_CLI_QUICKSTART.html#2-inspect-all-known-opportunities",
+      "source_key": "SAA_12_4_IMPROVEMENT_CLI_QUICKSTART.md#2-inspect-all-known-opportunities",
+      "symbol": "figures/relational-objects/rel-heading-saa124improvementcliquickstart-md-2-inspec-7f7c5cf69b4c.svg",
+      "related_ids": []
+    },
+    {
+      "object_id": "rel-heading-saa124improvementcliquickstart-md-3-previe-113c4bc6c0c0",
+      "kind": "heading",
+      "title": "3. Preview a bounded schedule",
+      "description": "Level 1 learning object derived from heading 4 in SAA_12_4_IMPROVEMENT_CLI_QUICKSTART.md.",
+      "parent_id": "rel-document-saa124improvementcliquickstart-md-6d99dbdc977d",
+      "relation": "decomposes-into",
+      "href": "SAA_12_4_IMPROVEMENT_CLI_QUICKSTART.html#3-preview-a-bounded-schedule",
+      "source_key": "SAA_12_4_IMPROVEMENT_CLI_QUICKSTART.md#3-preview-a-bounded-schedule",
+      "symbol": "figures/relational-objects/rel-heading-saa124improvementcliquickstart-md-3-previe-113c4bc6c0c0.svg",
+      "related_ids": []
+    },
+    {
+      "object_id": "rel-heading-saa124improvementcliquickstart-md-4-persis-2153fcb53ac8",
+      "kind": "heading",
+      "title": "4. Persist the reviewed schedule",
+      "description": "Level 1 learning object derived from heading 5 in SAA_12_4_IMPROVEMENT_CLI_QUICKSTART.md.",
+      "parent_id": "rel-document-saa124improvementcliquickstart-md-6d99dbdc977d",
+      "relation": "decomposes-into",
+      "href": "SAA_12_4_IMPROVEMENT_CLI_QUICKSTART.html#4-persist-the-reviewed-schedule",
+      "source_key": "SAA_12_4_IMPROVEMENT_CLI_QUICKSTART.md#4-persist-the-reviewed-schedule",
+      "symbol": "figures/relational-objects/rel-heading-saa124improvementcliquickstart-md-4-persis-2153fcb53ac8.svg",
+      "related_ids": []
+    },
+    {
+      "object_id": "rel-heading-saa124improvementcliquickstart-md-5-inspec-45e09eceae50",
+      "kind": "heading",
+      "title": "5. Inspect schedule history",
+      "description": "Level 1 learning object derived from heading 6 in SAA_12_4_IMPROVEMENT_CLI_QUICKSTART.md.",
+      "parent_id": "rel-document-saa124improvementcliquickstart-md-6d99dbdc977d",
+      "relation": "decomposes-into",
+      "href": "SAA_12_4_IMPROVEMENT_CLI_QUICKSTART.html#5-inspect-schedule-history",
+      "source_key": "SAA_12_4_IMPROVEMENT_CLI_QUICKSTART.md#5-inspect-schedule-history",
+      "symbol": "figures/relational-objects/rel-heading-saa124improvementcliquickstart-md-5-inspec-45e09eceae50.svg",
       "related_ids": []
     },
     {
@@ -32074,6 +33523,426 @@
       "related_ids": []
     },
     {
+      "object_id": "rel-document-saabatchbrainfeedingcli-md-4d3258faa207",
+      "kind": "document",
+      "title": "SAA Batch Brain Feeding CLI",
+      "description": "Generated learning document with 17 heading objects in the Lifecycle and Migration domain.",
+      "parent_id": "rel-category-lifecycle-and-migration-df095cbb1252",
+      "relation": "contains-document",
+      "href": "SAA_BATCH_BRAIN_FEEDING_CLI.html",
+      "source_key": "SAA_BATCH_BRAIN_FEEDING_CLI.md",
+      "symbol": "figures/relational-objects/rel-document-saabatchbrainfeedingcli-md-4d3258faa207.svg",
+      "related_ids": []
+    },
+    {
+      "object_id": "rel-heading-saabatchbrainfeedingcli-md-saa-batch-brain-c1c1f9996b07",
+      "kind": "heading",
+      "title": "SAA Batch Brain Feeding CLI",
+      "description": "Level 1 learning object derived from heading 1 in SAA_BATCH_BRAIN_FEEDING_CLI.md.",
+      "parent_id": "rel-document-saabatchbrainfeedingcli-md-4d3258faa207",
+      "relation": "decomposes-into",
+      "href": "SAA_BATCH_BRAIN_FEEDING_CLI.html#saa-batch-brain-feeding-cli",
+      "source_key": "SAA_BATCH_BRAIN_FEEDING_CLI.md#saa-batch-brain-feeding-cli",
+      "symbol": "figures/relational-objects/rel-heading-saabatchbrainfeedingcli-md-saa-batch-brain-c1c1f9996b07.svg",
+      "related_ids": []
+    },
+    {
+      "object_id": "rel-heading-saabatchbrainfeedingcli-md-commands-0edee0e58667",
+      "kind": "heading",
+      "title": "Commands",
+      "description": "Level 2 learning object derived from heading 2 in SAA_BATCH_BRAIN_FEEDING_CLI.md.",
+      "parent_id": "rel-document-saabatchbrainfeedingcli-md-4d3258faa207",
+      "relation": "decomposes-into",
+      "href": "SAA_BATCH_BRAIN_FEEDING_CLI.html#commands",
+      "source_key": "SAA_BATCH_BRAIN_FEEDING_CLI.md#commands",
+      "symbol": "figures/relational-objects/rel-heading-saabatchbrainfeedingcli-md-commands-0edee0e58667.svg",
+      "related_ids": []
+    },
+    {
+      "object_id": "rel-heading-saabatchbrainfeedingcli-md-first-batch-3802cb049bc3",
+      "kind": "heading",
+      "title": "First batch",
+      "description": "Level 2 learning object derived from heading 3 in SAA_BATCH_BRAIN_FEEDING_CLI.md.",
+      "parent_id": "rel-document-saabatchbrainfeedingcli-md-4d3258faa207",
+      "relation": "decomposes-into",
+      "href": "SAA_BATCH_BRAIN_FEEDING_CLI.html#first-batch",
+      "source_key": "SAA_BATCH_BRAIN_FEEDING_CLI.md#first-batch",
+      "symbol": "figures/relational-objects/rel-heading-saabatchbrainfeedingcli-md-first-batch-3802cb049bc3.svg",
+      "related_ids": []
+    },
+    {
+      "object_id": "rel-heading-saabatchbrainfeedingcli-md-manifest-format-4c970764a70d",
+      "kind": "heading",
+      "title": "Manifest format",
+      "description": "Level 2 learning object derived from heading 4 in SAA_BATCH_BRAIN_FEEDING_CLI.md.",
+      "parent_id": "rel-document-saabatchbrainfeedingcli-md-4d3258faa207",
+      "relation": "decomposes-into",
+      "href": "SAA_BATCH_BRAIN_FEEDING_CLI.html#manifest-format",
+      "source_key": "SAA_BATCH_BRAIN_FEEDING_CLI.md#manifest-format",
+      "symbol": "figures/relational-objects/rel-heading-saabatchbrainfeedingcli-md-manifest-format-4c970764a70d.svg",
+      "related_ids": []
+    },
+    {
+      "object_id": "rel-heading-saabatchbrainfeedingcli-md-supported-feed-ea5fd975df0d",
+      "kind": "heading",
+      "title": "Supported feed kinds",
+      "description": "Level 2 learning object derived from heading 5 in SAA_BATCH_BRAIN_FEEDING_CLI.md.",
+      "parent_id": "rel-document-saabatchbrainfeedingcli-md-4d3258faa207",
+      "relation": "decomposes-into",
+      "href": "SAA_BATCH_BRAIN_FEEDING_CLI.html#supported-feed-kinds",
+      "source_key": "SAA_BATCH_BRAIN_FEEDING_CLI.md#supported-feed-kinds",
+      "symbol": "figures/relational-objects/rel-heading-saabatchbrainfeedingcli-md-supported-feed-ea5fd975df0d.svg",
+      "related_ids": []
+    },
+    {
+      "object_id": "rel-heading-saabatchbrainfeedingcli-md-grounded-measur-a7d3cc809493",
+      "kind": "heading",
+      "title": "Grounded measurement example",
+      "description": "Level 2 learning object derived from heading 6 in SAA_BATCH_BRAIN_FEEDING_CLI.md.",
+      "parent_id": "rel-document-saabatchbrainfeedingcli-md-4d3258faa207",
+      "relation": "decomposes-into",
+      "href": "SAA_BATCH_BRAIN_FEEDING_CLI.html#grounded-measurement-example",
+      "source_key": "SAA_BATCH_BRAIN_FEEDING_CLI.md#grounded-measurement-example",
+      "symbol": "figures/relational-objects/rel-heading-saabatchbrainfeedingcli-md-grounded-measur-a7d3cc809493.svg",
+      "related_ids": []
+    },
+    {
+      "object_id": "rel-heading-saabatchbrainfeedingcli-md-semantic-concep-3a522aa9a01e",
+      "kind": "heading",
+      "title": "Semantic concept example",
+      "description": "Level 2 learning object derived from heading 7 in SAA_BATCH_BRAIN_FEEDING_CLI.md.",
+      "parent_id": "rel-document-saabatchbrainfeedingcli-md-4d3258faa207",
+      "relation": "decomposes-into",
+      "href": "SAA_BATCH_BRAIN_FEEDING_CLI.html#semantic-concept-example",
+      "source_key": "SAA_BATCH_BRAIN_FEEDING_CLI.md#semantic-concept-example",
+      "symbol": "figures/relational-objects/rel-heading-saabatchbrainfeedingcli-md-semantic-concep-3a522aa9a01e.svg",
+      "related_ids": []
+    },
+    {
+      "object_id": "rel-heading-saabatchbrainfeedingcli-md-algorithm-candi-9c939e1d5ad2",
+      "kind": "heading",
+      "title": "Algorithm candidate example",
+      "description": "Level 2 learning object derived from heading 8 in SAA_BATCH_BRAIN_FEEDING_CLI.md.",
+      "parent_id": "rel-document-saabatchbrainfeedingcli-md-4d3258faa207",
+      "relation": "decomposes-into",
+      "href": "SAA_BATCH_BRAIN_FEEDING_CLI.html#algorithm-candidate-example",
+      "source_key": "SAA_BATCH_BRAIN_FEEDING_CLI.md#algorithm-candidate-example",
+      "symbol": "figures/relational-objects/rel-heading-saabatchbrainfeedingcli-md-algorithm-candi-9c939e1d5ad2.svg",
+      "related_ids": []
+    },
+    {
+      "object_id": "rel-heading-saabatchbrainfeedingcli-md-failure-example-ffada85d14c0",
+      "kind": "heading",
+      "title": "Failure example",
+      "description": "Level 2 learning object derived from heading 9 in SAA_BATCH_BRAIN_FEEDING_CLI.md.",
+      "parent_id": "rel-document-saabatchbrainfeedingcli-md-4d3258faa207",
+      "relation": "decomposes-into",
+      "href": "SAA_BATCH_BRAIN_FEEDING_CLI.html#failure-example",
+      "source_key": "SAA_BATCH_BRAIN_FEEDING_CLI.md#failure-example",
+      "symbol": "figures/relational-objects/rel-heading-saabatchbrainfeedingcli-md-failure-example-ffada85d14c0.svg",
+      "related_ids": []
+    },
+    {
+      "object_id": "rel-heading-saabatchbrainfeedingcli-md-feed-a-director-055bf7a784ef",
+      "kind": "heading",
+      "title": "Feed a directory",
+      "description": "Level 2 learning object derived from heading 10 in SAA_BATCH_BRAIN_FEEDING_CLI.md.",
+      "parent_id": "rel-document-saabatchbrainfeedingcli-md-4d3258faa207",
+      "relation": "decomposes-into",
+      "href": "SAA_BATCH_BRAIN_FEEDING_CLI.html#feed-a-directory",
+      "source_key": "SAA_BATCH_BRAIN_FEEDING_CLI.md#feed-a-directory",
+      "symbol": "figures/relational-objects/rel-heading-saabatchbrainfeedingcli-md-feed-a-director-055bf7a784ef.svg",
+      "related_ids": []
+    },
+    {
+      "object_id": "rel-heading-saabatchbrainfeedingcli-md-strict-mode-1b17845b1895",
+      "kind": "heading",
+      "title": "Strict mode",
+      "description": "Level 2 learning object derived from heading 11 in SAA_BATCH_BRAIN_FEEDING_CLI.md.",
+      "parent_id": "rel-document-saabatchbrainfeedingcli-md-4d3258faa207",
+      "relation": "decomposes-into",
+      "href": "SAA_BATCH_BRAIN_FEEDING_CLI.html#strict-mode",
+      "source_key": "SAA_BATCH_BRAIN_FEEDING_CLI.md#strict-mode",
+      "symbol": "figures/relational-objects/rel-heading-saabatchbrainfeedingcli-md-strict-mode-1b17845b1895.svg",
+      "related_ids": []
+    },
+    {
+      "object_id": "rel-heading-saabatchbrainfeedingcli-md-validation-only-f77aa9765dcf",
+      "kind": "heading",
+      "title": "Validation only",
+      "description": "Level 2 learning object derived from heading 12 in SAA_BATCH_BRAIN_FEEDING_CLI.md.",
+      "parent_id": "rel-document-saabatchbrainfeedingcli-md-4d3258faa207",
+      "relation": "decomposes-into",
+      "href": "SAA_BATCH_BRAIN_FEEDING_CLI.html#validation-only",
+      "source_key": "SAA_BATCH_BRAIN_FEEDING_CLI.md#validation-only",
+      "symbol": "figures/relational-objects/rel-heading-saabatchbrainfeedingcli-md-validation-only-f77aa9765dcf.svg",
+      "related_ids": []
+    },
+    {
+      "object_id": "rel-heading-saabatchbrainfeedingcli-md-inspect-the-bra-18dd516eebb2",
+      "kind": "heading",
+      "title": "Inspect the brain-feed ledger",
+      "description": "Level 2 learning object derived from heading 13 in SAA_BATCH_BRAIN_FEEDING_CLI.md.",
+      "parent_id": "rel-document-saabatchbrainfeedingcli-md-4d3258faa207",
+      "relation": "decomposes-into",
+      "href": "SAA_BATCH_BRAIN_FEEDING_CLI.html#inspect-the-brain-feed-ledger",
+      "source_key": "SAA_BATCH_BRAIN_FEEDING_CLI.md#inspect-the-brain-feed-ledger",
+      "symbol": "figures/relational-objects/rel-heading-saabatchbrainfeedingcli-md-inspect-the-bra-18dd516eebb2.svg",
+      "related_ids": []
+    },
+    {
+      "object_id": "rel-heading-saabatchbrainfeedingcli-md-inspect-quarant-1a45f70f4d95",
+      "kind": "heading",
+      "title": "Inspect quarantine",
+      "description": "Level 2 learning object derived from heading 14 in SAA_BATCH_BRAIN_FEEDING_CLI.md.",
+      "parent_id": "rel-document-saabatchbrainfeedingcli-md-4d3258faa207",
+      "relation": "decomposes-into",
+      "href": "SAA_BATCH_BRAIN_FEEDING_CLI.html#inspect-quarantine",
+      "source_key": "SAA_BATCH_BRAIN_FEEDING_CLI.md#inspect-quarantine",
+      "symbol": "figures/relational-objects/rel-heading-saabatchbrainfeedingcli-md-inspect-quarant-1a45f70f4d95.svg",
+      "related_ids": []
+    },
+    {
+      "object_id": "rel-heading-saabatchbrainfeedingcli-md-deduplication-2c3914baa683",
+      "kind": "heading",
+      "title": "Deduplication",
+      "description": "Level 2 learning object derived from heading 15 in SAA_BATCH_BRAIN_FEEDING_CLI.md.",
+      "parent_id": "rel-document-saabatchbrainfeedingcli-md-4d3258faa207",
+      "relation": "decomposes-into",
+      "href": "SAA_BATCH_BRAIN_FEEDING_CLI.html#deduplication",
+      "source_key": "SAA_BATCH_BRAIN_FEEDING_CLI.md#deduplication",
+      "symbol": "figures/relational-objects/rel-heading-saabatchbrainfeedingcli-md-deduplication-2c3914baa683.svg",
+      "related_ids": []
+    },
+    {
+      "object_id": "rel-heading-saabatchbrainfeedingcli-md-persistent-layo-6de5f85786d6",
+      "kind": "heading",
+      "title": "Persistent layout",
+      "description": "Level 2 learning object derived from heading 16 in SAA_BATCH_BRAIN_FEEDING_CLI.md.",
+      "parent_id": "rel-document-saabatchbrainfeedingcli-md-4d3258faa207",
+      "relation": "decomposes-into",
+      "href": "SAA_BATCH_BRAIN_FEEDING_CLI.html#persistent-layout",
+      "source_key": "SAA_BATCH_BRAIN_FEEDING_CLI.md#persistent-layout",
+      "symbol": "figures/relational-objects/rel-heading-saabatchbrainfeedingcli-md-persistent-layo-6de5f85786d6.svg",
+      "related_ids": []
+    },
+    {
+      "object_id": "rel-heading-saabatchbrainfeedingcli-md-brain-feeding-m-6ccef27f1671",
+      "kind": "heading",
+      "title": "Brain-feeding model",
+      "description": "Level 2 learning object derived from heading 17 in SAA_BATCH_BRAIN_FEEDING_CLI.md.",
+      "parent_id": "rel-document-saabatchbrainfeedingcli-md-4d3258faa207",
+      "relation": "decomposes-into",
+      "href": "SAA_BATCH_BRAIN_FEEDING_CLI.html#brain-feeding-model",
+      "source_key": "SAA_BATCH_BRAIN_FEEDING_CLI.md#brain-feeding-model",
+      "symbol": "figures/relational-objects/rel-heading-saabatchbrainfeedingcli-md-brain-feeding-m-6ccef27f1671.svg",
+      "related_ids": []
+    },
+    {
+      "object_id": "rel-document-saarepositorybrainfeedingcli-md-6d3b8f9c43ac",
+      "kind": "document",
+      "title": "SAA Repository Brain Feeding CLI",
+      "description": "Generated learning document with 16 heading objects in the Lifecycle and Migration domain.",
+      "parent_id": "rel-category-lifecycle-and-migration-df095cbb1252",
+      "relation": "contains-document",
+      "href": "SAA_REPOSITORY_BRAIN_FEEDING_CLI.html",
+      "source_key": "SAA_REPOSITORY_BRAIN_FEEDING_CLI.md",
+      "symbol": "figures/relational-objects/rel-document-saarepositorybrainfeedingcli-md-6d3b8f9c43ac.svg",
+      "related_ids": []
+    },
+    {
+      "object_id": "rel-heading-saarepositorybrainfeedingcli-md-saa-reposi-72081fea4b82",
+      "kind": "heading",
+      "title": "SAA Repository Brain Feeding CLI",
+      "description": "Level 1 learning object derived from heading 1 in SAA_REPOSITORY_BRAIN_FEEDING_CLI.md.",
+      "parent_id": "rel-document-saarepositorybrainfeedingcli-md-6d3b8f9c43ac",
+      "relation": "decomposes-into",
+      "href": "SAA_REPOSITORY_BRAIN_FEEDING_CLI.html#saa-repository-brain-feeding-cli",
+      "source_key": "SAA_REPOSITORY_BRAIN_FEEDING_CLI.md#saa-repository-brain-feeding-cli",
+      "symbol": "figures/relational-objects/rel-heading-saarepositorybrainfeedingcli-md-saa-reposi-72081fea4b82.svg",
+      "related_ids": []
+    },
+    {
+      "object_id": "rel-heading-saarepositorybrainfeedingcli-md-quick-star-9302dd331fc8",
+      "kind": "heading",
+      "title": "Quick start",
+      "description": "Level 2 learning object derived from heading 2 in SAA_REPOSITORY_BRAIN_FEEDING_CLI.md.",
+      "parent_id": "rel-document-saarepositorybrainfeedingcli-md-6d3b8f9c43ac",
+      "relation": "decomposes-into",
+      "href": "SAA_REPOSITORY_BRAIN_FEEDING_CLI.html#quick-start",
+      "source_key": "SAA_REPOSITORY_BRAIN_FEEDING_CLI.md#quick-start",
+      "symbol": "figures/relational-objects/rel-heading-saarepositorybrainfeedingcli-md-quick-star-9302dd331fc8.svg",
+      "related_ids": []
+    },
+    {
+      "object_id": "rel-heading-saarepositorybrainfeedingcli-md-what-happe-cca1a022e98e",
+      "kind": "heading",
+      "title": "What happens to source code",
+      "description": "Level 2 learning object derived from heading 3 in SAA_REPOSITORY_BRAIN_FEEDING_CLI.md.",
+      "parent_id": "rel-document-saarepositorybrainfeedingcli-md-6d3b8f9c43ac",
+      "relation": "decomposes-into",
+      "href": "SAA_REPOSITORY_BRAIN_FEEDING_CLI.html#what-happens-to-source-code",
+      "source_key": "SAA_REPOSITORY_BRAIN_FEEDING_CLI.md#what-happens-to-source-code",
+      "symbol": "figures/relational-objects/rel-heading-saarepositorybrainfeedingcli-md-what-happe-cca1a022e98e.svg",
+      "related_ids": []
+    },
+    {
+      "object_id": "rel-heading-saarepositorybrainfeedingcli-md-algorithm-b33bbcff0f9e",
+      "kind": "heading",
+      "title": "Algorithm extraction",
+      "description": "Level 2 learning object derived from heading 4 in SAA_REPOSITORY_BRAIN_FEEDING_CLI.md.",
+      "parent_id": "rel-document-saarepositorybrainfeedingcli-md-6d3b8f9c43ac",
+      "relation": "decomposes-into",
+      "href": "SAA_REPOSITORY_BRAIN_FEEDING_CLI.html#algorithm-extraction",
+      "source_key": "SAA_REPOSITORY_BRAIN_FEEDING_CLI.md#algorithm-extraction",
+      "symbol": "figures/relational-objects/rel-heading-saarepositorybrainfeedingcli-md-algorithm-b33bbcff0f9e.svg",
+      "related_ids": []
+    },
+    {
+      "object_id": "rel-heading-saarepositorybrainfeedingcli-md-python-ext-d8b45648feed",
+      "kind": "heading",
+      "title": "Python extraction",
+      "description": "Level 2 learning object derived from heading 5 in SAA_REPOSITORY_BRAIN_FEEDING_CLI.md.",
+      "parent_id": "rel-document-saarepositorybrainfeedingcli-md-6d3b8f9c43ac",
+      "relation": "decomposes-into",
+      "href": "SAA_REPOSITORY_BRAIN_FEEDING_CLI.html#python-extraction",
+      "source_key": "SAA_REPOSITORY_BRAIN_FEEDING_CLI.md#python-extraction",
+      "symbol": "figures/relational-objects/rel-heading-saarepositorybrainfeedingcli-md-python-ext-d8b45648feed.svg",
+      "related_ids": []
+    },
+    {
+      "object_id": "rel-heading-saarepositorybrainfeedingcli-md-other-lang-bc46f4ae4021",
+      "kind": "heading",
+      "title": "Other languages",
+      "description": "Level 2 learning object derived from heading 6 in SAA_REPOSITORY_BRAIN_FEEDING_CLI.md.",
+      "parent_id": "rel-document-saarepositorybrainfeedingcli-md-6d3b8f9c43ac",
+      "relation": "decomposes-into",
+      "href": "SAA_REPOSITORY_BRAIN_FEEDING_CLI.html#other-languages",
+      "source_key": "SAA_REPOSITORY_BRAIN_FEEDING_CLI.md#other-languages",
+      "symbol": "figures/relational-objects/rel-heading-saarepositorybrainfeedingcli-md-other-lang-bc46f4ae4021.svg",
+      "related_ids": []
+    },
+    {
+      "object_id": "rel-heading-saarepositorybrainfeedingcli-md-tests-beco-178ea53f3b1d",
+      "kind": "heading",
+      "title": "Tests become experiment candidates",
+      "description": "Level 2 learning object derived from heading 7 in SAA_REPOSITORY_BRAIN_FEEDING_CLI.md.",
+      "parent_id": "rel-document-saarepositorybrainfeedingcli-md-6d3b8f9c43ac",
+      "relation": "decomposes-into",
+      "href": "SAA_REPOSITORY_BRAIN_FEEDING_CLI.html#tests-become-experiment-candidates",
+      "source_key": "SAA_REPOSITORY_BRAIN_FEEDING_CLI.md#tests-become-experiment-candidates",
+      "symbol": "figures/relational-objects/rel-heading-saarepositorybrainfeedingcli-md-tests-beco-178ea53f3b1d.svg",
+      "related_ids": []
+    },
+    {
+      "object_id": "rel-heading-saarepositorybrainfeedingcli-md-assertions-d22b4de23e52",
+      "kind": "heading",
+      "title": "Assertions become invariant candidates",
+      "description": "Level 2 learning object derived from heading 8 in SAA_REPOSITORY_BRAIN_FEEDING_CLI.md.",
+      "parent_id": "rel-document-saarepositorybrainfeedingcli-md-6d3b8f9c43ac",
+      "relation": "decomposes-into",
+      "href": "SAA_REPOSITORY_BRAIN_FEEDING_CLI.html#assertions-become-invariant-candidates",
+      "source_key": "SAA_REPOSITORY_BRAIN_FEEDING_CLI.md#assertions-become-invariant-candidates",
+      "symbol": "figures/relational-objects/rel-heading-saarepositorybrainfeedingcli-md-assertions-d22b4de23e52.svg",
+      "related_ids": []
+    },
+    {
+      "object_id": "rel-heading-saarepositorybrainfeedingcli-md-documentat-16944a5ebbe1",
+      "kind": "heading",
+      "title": "Documentation",
+      "description": "Level 2 learning object derived from heading 9 in SAA_REPOSITORY_BRAIN_FEEDING_CLI.md.",
+      "parent_id": "rel-document-saarepositorybrainfeedingcli-md-6d3b8f9c43ac",
+      "relation": "decomposes-into",
+      "href": "SAA_REPOSITORY_BRAIN_FEEDING_CLI.html#documentation",
+      "source_key": "SAA_REPOSITORY_BRAIN_FEEDING_CLI.md#documentation",
+      "symbol": "figures/relational-objects/rel-heading-saarepositorybrainfeedingcli-md-documentat-16944a5ebbe1.svg",
+      "related_ids": []
+    },
+    {
+      "object_id": "rel-heading-saarepositorybrainfeedingcli-md-include-an-0ddfc44311f1",
+      "kind": "heading",
+      "title": "Include and exclude paths",
+      "description": "Level 2 learning object derived from heading 10 in SAA_REPOSITORY_BRAIN_FEEDING_CLI.md.",
+      "parent_id": "rel-document-saarepositorybrainfeedingcli-md-6d3b8f9c43ac",
+      "relation": "decomposes-into",
+      "href": "SAA_REPOSITORY_BRAIN_FEEDING_CLI.html#include-and-exclude-paths",
+      "source_key": "SAA_REPOSITORY_BRAIN_FEEDING_CLI.md#include-and-exclude-paths",
+      "symbol": "figures/relational-objects/rel-heading-saarepositorybrainfeedingcli-md-include-an-0ddfc44311f1.svg",
+      "related_ids": []
+    },
+    {
+      "object_id": "rel-heading-saarepositorybrainfeedingcli-md-language-f-aeb9574f8431",
+      "kind": "heading",
+      "title": "Language filtering",
+      "description": "Level 2 learning object derived from heading 11 in SAA_REPOSITORY_BRAIN_FEEDING_CLI.md.",
+      "parent_id": "rel-document-saarepositorybrainfeedingcli-md-6d3b8f9c43ac",
+      "relation": "decomposes-into",
+      "href": "SAA_REPOSITORY_BRAIN_FEEDING_CLI.html#language-filtering",
+      "source_key": "SAA_REPOSITORY_BRAIN_FEEDING_CLI.md#language-filtering",
+      "symbol": "figures/relational-objects/rel-heading-saarepositorybrainfeedingcli-md-language-f-aeb9574f8431.svg",
+      "related_ids": []
+    },
+    {
+      "object_id": "rel-heading-saarepositorybrainfeedingcli-md-bounds-587c2ba029e2",
+      "kind": "heading",
+      "title": "Bounds",
+      "description": "Level 2 learning object derived from heading 12 in SAA_REPOSITORY_BRAIN_FEEDING_CLI.md.",
+      "parent_id": "rel-document-saarepositorybrainfeedingcli-md-6d3b8f9c43ac",
+      "relation": "decomposes-into",
+      "href": "SAA_REPOSITORY_BRAIN_FEEDING_CLI.html#bounds",
+      "source_key": "SAA_REPOSITORY_BRAIN_FEEDING_CLI.md#bounds",
+      "symbol": "figures/relational-objects/rel-heading-saarepositorybrainfeedingcli-md-bounds-587c2ba029e2.svg",
+      "related_ids": []
+    },
+    {
+      "object_id": "rel-heading-saarepositorybrainfeedingcli-md-emit-ordin-b704bed347c8",
+      "kind": "heading",
+      "title": "Emit ordinary brain-feed manifests",
+      "description": "Level 2 learning object derived from heading 13 in SAA_REPOSITORY_BRAIN_FEEDING_CLI.md.",
+      "parent_id": "rel-document-saarepositorybrainfeedingcli-md-6d3b8f9c43ac",
+      "relation": "decomposes-into",
+      "href": "SAA_REPOSITORY_BRAIN_FEEDING_CLI.html#emit-ordinary-brain-feed-manifests",
+      "source_key": "SAA_REPOSITORY_BRAIN_FEEDING_CLI.md#emit-ordinary-brain-feed-manifests",
+      "symbol": "figures/relational-objects/rel-heading-saarepositorybrainfeedingcli-md-emit-ordin-b704bed347c8.svg",
+      "related_ids": []
+    },
+    {
+      "object_id": "rel-heading-saarepositorybrainfeedingcli-md-strict-mod-4fff5b0e1f30",
+      "kind": "heading",
+      "title": "Strict mode",
+      "description": "Level 2 learning object derived from heading 14 in SAA_REPOSITORY_BRAIN_FEEDING_CLI.md.",
+      "parent_id": "rel-document-saarepositorybrainfeedingcli-md-6d3b8f9c43ac",
+      "relation": "decomposes-into",
+      "href": "SAA_REPOSITORY_BRAIN_FEEDING_CLI.html#strict-mode",
+      "source_key": "SAA_REPOSITORY_BRAIN_FEEDING_CLI.md#strict-mode",
+      "symbol": "figures/relational-objects/rel-heading-saarepositorybrainfeedingcli-md-strict-mod-4fff5b0e1f30.svg",
+      "related_ids": []
+    },
+    {
+      "object_id": "rel-heading-saarepositorybrainfeedingcli-md-self-feedi-c6b7da29e65e",
+      "kind": "heading",
+      "title": "Self-feeding",
+      "description": "Level 2 learning object derived from heading 15 in SAA_REPOSITORY_BRAIN_FEEDING_CLI.md.",
+      "parent_id": "rel-document-saarepositorybrainfeedingcli-md-6d3b8f9c43ac",
+      "relation": "decomposes-into",
+      "href": "SAA_REPOSITORY_BRAIN_FEEDING_CLI.html#self-feeding",
+      "source_key": "SAA_REPOSITORY_BRAIN_FEEDING_CLI.md#self-feeding",
+      "symbol": "figures/relational-objects/rel-heading-saarepositorybrainfeedingcli-md-self-feedi-c6b7da29e65e.svg",
+      "related_ids": []
+    },
+    {
+      "object_id": "rel-heading-saarepositorybrainfeedingcli-md-how-this-c-a44400d1009a",
+      "kind": "heading",
+      "title": "How this connects to the SAA mathematical brain",
+      "description": "Level 2 learning object derived from heading 16 in SAA_REPOSITORY_BRAIN_FEEDING_CLI.md.",
+      "parent_id": "rel-document-saarepositorybrainfeedingcli-md-6d3b8f9c43ac",
+      "relation": "decomposes-into",
+      "href": "SAA_REPOSITORY_BRAIN_FEEDING_CLI.html#how-this-connects-to-the-saa-mathematical-brain",
+      "source_key": "SAA_REPOSITORY_BRAIN_FEEDING_CLI.md#how-this-connects-to-the-saa-mathematical-brain",
+      "symbol": "figures/relational-objects/rel-heading-saarepositorybrainfeedingcli-md-how-this-c-a44400d1009a.svg",
+      "related_ids": []
+    },
+    {
       "object_id": "rel-document-visualmatching-md-769826b85d88",
       "kind": "document",
       "title": "OIEC-STM-Agent Visual Matching",
@@ -33190,6 +35059,62 @@
       ]
     },
     {
+      "object_id": "rel-concept-type-brainfeedbatchreceipt-a8a1e965c520",
+      "kind": "concept",
+      "title": "Brain Feed Batch Receipt",
+      "description": "A public OURD runtime concept that owns or represents brain feed batch receipt behaviour in ourd/egcf/algebra/brain_feed.py.",
+      "parent_id": "rel-root-docs-index-html-d86163bf2ae1",
+      "relation": "defines-concept",
+      "href": "concepts/type-brainfeedbatchreceipt.html",
+      "source_key": "type-brainfeedbatchreceipt",
+      "symbol": "figures/relational-objects/rel-concept-type-brainfeedbatchreceipt-a8a1e965c520.svg",
+      "related_ids": [
+        "rel-concept-egcf-0aab78fce577"
+      ]
+    },
+    {
+      "object_id": "rel-concept-type-brainfeeddisposition-11bd10156644",
+      "kind": "concept",
+      "title": "Brain Feed Disposition",
+      "description": "A public OURD runtime concept that owns or represents brain feed disposition behaviour in ourd/egcf/algebra/brain_feed.py.",
+      "parent_id": "rel-root-docs-index-html-d86163bf2ae1",
+      "relation": "defines-concept",
+      "href": "concepts/type-brainfeeddisposition.html",
+      "source_key": "type-brainfeeddisposition",
+      "symbol": "figures/relational-objects/rel-concept-type-brainfeeddisposition-11bd10156644.svg",
+      "related_ids": [
+        "rel-concept-egcf-0aab78fce577"
+      ]
+    },
+    {
+      "object_id": "rel-concept-type-brainfeeditem-910f7bf84699",
+      "kind": "concept",
+      "title": "Brain Feed Item",
+      "description": "A public OURD runtime concept that owns or represents brain feed item behaviour in ourd/egcf/algebra/brain_feed.py.",
+      "parent_id": "rel-root-docs-index-html-d86163bf2ae1",
+      "relation": "defines-concept",
+      "href": "concepts/type-brainfeeditem.html",
+      "source_key": "type-brainfeeditem",
+      "symbol": "figures/relational-objects/rel-concept-type-brainfeeditem-910f7bf84699.svg",
+      "related_ids": [
+        "rel-concept-egcf-0aab78fce577"
+      ]
+    },
+    {
+      "object_id": "rel-concept-type-brainfeedprocessor-fcf14b2e698a",
+      "kind": "concept",
+      "title": "Brain Feed Processor",
+      "description": "Routes a bounded batch into evidence, semantic/failure knowledge, or qualification staging.",
+      "parent_id": "rel-root-docs-index-html-d86163bf2ae1",
+      "relation": "defines-concept",
+      "href": "concepts/type-brainfeedprocessor.html",
+      "source_key": "type-brainfeedprocessor",
+      "symbol": "figures/relational-objects/rel-concept-type-brainfeedprocessor-fcf14b2e698a.svg",
+      "related_ids": [
+        "rel-concept-egcf-0aab78fce577"
+      ]
+    },
+    {
       "object_id": "rel-concept-type-canonicalfailurepattern-c7e64f8e4087",
       "kind": "concept",
       "title": "Canonical Failure Pattern",
@@ -33904,6 +35829,20 @@
       ]
     },
     {
+      "object_id": "rel-concept-type-loopcommand-e1d465003e51",
+      "kind": "concept",
+      "title": "Loop Command",
+      "description": "A public OURD runtime concept that owns or represents loop command behaviour in ourd/cli.py.",
+      "parent_id": "rel-root-docs-index-html-d86163bf2ae1",
+      "relation": "defines-concept",
+      "href": "concepts/type-loopcommand.html",
+      "source_key": "type-loopcommand",
+      "symbol": "figures/relational-objects/rel-concept-type-loopcommand-e1d465003e51.svg",
+      "related_ids": [
+        "rel-concept-egcf-0aab78fce577"
+      ]
+    },
+    {
       "object_id": "rel-concept-type-loopprogresscontroller-846506db8e5b",
       "kind": "concept",
       "title": "Loop Progress Controller",
@@ -33913,6 +35852,20 @@
       "href": "concepts/type-loopprogresscontroller.html",
       "source_key": "type-loopprogresscontroller",
       "symbol": "figures/relational-objects/rel-concept-type-loopprogresscontroller-846506db8e5b.svg",
+      "related_ids": [
+        "rel-concept-egcf-0aab78fce577"
+      ]
+    },
+    {
+      "object_id": "rel-concept-type-loopresult-d98e7b21181e",
+      "kind": "concept",
+      "title": "Loop Result",
+      "description": "A public OURD runtime concept that owns or represents loop result behaviour in ourd/cli.py.",
+      "parent_id": "rel-root-docs-index-html-d86163bf2ae1",
+      "relation": "defines-concept",
+      "href": "concepts/type-loopresult.html",
+      "source_key": "type-loopresult",
+      "symbol": "figures/relational-objects/rel-concept-type-loopresult-d98e7b21181e.svg",
       "related_ids": [
         "rel-concept-egcf-0aab78fce577"
       ]
@@ -34655,6 +36608,62 @@
       "href": "concepts/type-repeatedexperimentaggregate.html",
       "source_key": "type-repeatedexperimentaggregate",
       "symbol": "figures/relational-objects/rel-concept-type-repeatedexperimentaggregate-7f6093371ac8.svg",
+      "related_ids": [
+        "rel-concept-egcf-0aab78fce577"
+      ]
+    },
+    {
+      "object_id": "rel-concept-type-repositorybrainfeedplan-fcccde9f28fe",
+      "kind": "concept",
+      "title": "Repository Brain Feed Plan",
+      "description": "A public OURD runtime concept that owns or represents repository brain feed plan behaviour in ourd/egcf/repository_brain_feed.py.",
+      "parent_id": "rel-root-docs-index-html-d86163bf2ae1",
+      "relation": "defines-concept",
+      "href": "concepts/type-repositorybrainfeedplan.html",
+      "source_key": "type-repositorybrainfeedplan",
+      "symbol": "figures/relational-objects/rel-concept-type-repositorybrainfeedplan-fcccde9f28fe.svg",
+      "related_ids": [
+        "rel-concept-egcf-0aab78fce577"
+      ]
+    },
+    {
+      "object_id": "rel-concept-type-repositoryscanpolicy-afec96756daa",
+      "kind": "concept",
+      "title": "Repository Scan Policy",
+      "description": "A public OURD runtime concept that owns or represents repository scan policy behaviour in ourd/egcf/repository_brain_feed.py.",
+      "parent_id": "rel-root-docs-index-html-d86163bf2ae1",
+      "relation": "defines-concept",
+      "href": "concepts/type-repositoryscanpolicy.html",
+      "source_key": "type-repositoryscanpolicy",
+      "symbol": "figures/relational-objects/rel-concept-type-repositoryscanpolicy-afec96756daa.svg",
+      "related_ids": [
+        "rel-concept-egcf-0aab78fce577"
+      ]
+    },
+    {
+      "object_id": "rel-concept-type-repositorysourcefile-23431a9e26da",
+      "kind": "concept",
+      "title": "Repository Source File",
+      "description": "A public OURD runtime concept that owns or represents repository source file behaviour in ourd/egcf/repository_brain_feed.py.",
+      "parent_id": "rel-root-docs-index-html-d86163bf2ae1",
+      "relation": "defines-concept",
+      "href": "concepts/type-repositorysourcefile.html",
+      "source_key": "type-repositorysourcefile",
+      "symbol": "figures/relational-objects/rel-concept-type-repositorysourcefile-23431a9e26da.svg",
+      "related_ids": [
+        "rel-concept-egcf-0aab78fce577"
+      ]
+    },
+    {
+      "object_id": "rel-concept-type-repositorysymbol-83cd47121db4",
+      "kind": "concept",
+      "title": "Repository Symbol",
+      "description": "A public OURD runtime concept that owns or represents repository symbol behaviour in ourd/egcf/repository_brain_feed.py.",
+      "parent_id": "rel-root-docs-index-html-d86163bf2ae1",
+      "relation": "defines-concept",
+      "href": "concepts/type-repositorysymbol.html",
+      "source_key": "type-repositorysymbol",
+      "symbol": "figures/relational-objects/rel-concept-type-repositorysymbol-83cd47121db4.svg",
       "related_ids": [
         "rel-concept-egcf-0aab78fce577"
       ]
@@ -36589,6 +38598,20 @@
       "href": "concepts/type-artifactstore.html",
       "source_key": "type-artifactstore",
       "symbol": "figures/relational-objects/rel-concept-type-artifactstore-d0c1cbc33e90.svg",
+      "related_ids": [
+        "rel-concept-egcf-0aab78fce577"
+      ]
+    },
+    {
+      "object_id": "rel-concept-type-brainfeedstore-ad104abd7ddb",
+      "kind": "concept",
+      "title": "Brain Feed Store",
+      "description": "Immutable raw/staged/quarantine ledger for SAA batch brain feeding.",
+      "parent_id": "rel-root-docs-index-html-d86163bf2ae1",
+      "relation": "defines-concept",
+      "href": "concepts/type-brainfeedstore.html",
+      "source_key": "type-brainfeedstore",
+      "symbol": "figures/relational-objects/rel-concept-type-brainfeedstore-ad104abd7ddb.svg",
       "related_ids": [
         "rel-concept-egcf-0aab78fce577"
       ]
@@ -39261,6 +41284,162 @@
       "canonical": true
     },
     {
+      "source_id": "rel-document-saa124improvementcli-md-53172add0c73",
+      "target_id": "rel-category-lifecycle-and-migration-df095cbb1252",
+      "relation": "contains-document",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-saa124improvementcli-md-saa-12-4-improveme-27ba8b549fb5",
+      "target_id": "rel-document-saa124improvementcli-md-53172add0c73",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-saa124improvementcli-md-saa-12-4-improveme-27ba8b549fb5",
+      "target_id": "rel-concept-egcf-0aab78fce577",
+      "relation": "related-to",
+      "canonical": false
+    },
+    {
+      "source_id": "rel-heading-saa124improvementcli-md-mental-model-857158bb6c45",
+      "target_id": "rel-document-saa124improvementcli-md-53172add0c73",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-saa124improvementcli-md-basis-points-582d500307ca",
+      "target_id": "rel-document-saa124improvementcli-md-53172add0c73",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-saa124improvementcli-md-1-register-an-oppo-6eb6f2ea0ffa",
+      "target_id": "rel-document-saa124improvementcli-md-53172add0c73",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-saa124improvementcli-md-1-register-an-oppo-6eb6f2ea0ffa",
+      "target_id": "rel-concept-egcf-0aab78fce577",
+      "relation": "related-to",
+      "canonical": false
+    },
+    {
+      "source_id": "rel-heading-saa124improvementcli-md-meaning-of-the-sco-55985477db5d",
+      "target_id": "rel-document-saa124improvementcli-md-53172add0c73",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-saa124improvementcli-md-register-from-json-7dcbdbfcf076",
+      "target_id": "rel-document-saa124improvementcli-md-53172add0c73",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-saa124improvementcli-md-2-list-opportuniti-680fb3ed7745",
+      "target_id": "rel-document-saa124improvementcli-md-53172add0c73",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-saa124improvementcli-md-3-preview-a-schedu-744e3c31bcc1",
+      "target_id": "rel-document-saa124improvementcli-md-53172add0c73",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-saa124improvementcli-md-4-record-the-sched-35da026ec70d",
+      "target_id": "rel-document-saa124improvementcli-md-53172add0c73",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-saa124improvementcli-md-5-restrict-schedul-a487e5d1e56a",
+      "target_id": "rel-document-saa124improvementcli-md-53172add0c73",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-saa124improvementcli-md-6-json-scheduling-88eb9b64bafe",
+      "target_id": "rel-document-saa124improvementcli-md-53172add0c73",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-saa124improvementcli-md-7-inspect-schedule-92f818f28647",
+      "target_id": "rel-document-saa124improvementcli-md-53172add0c73",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-saa124improvementcli-md-example-workflow-7ce96b728a2d",
+      "target_id": "rel-document-saa124improvementcli-md-53172add0c73",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-saa124improvementcli-md-safety-invariant-3a2926c8b98d",
+      "target_id": "rel-document-saa124improvementcli-md-53172add0c73",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-saa124improvementcli-md-safety-invariant-3a2926c8b98d",
+      "target_id": "rel-concept-egcf-0aab78fce577",
+      "relation": "related-to",
+      "canonical": false
+    },
+    {
+      "source_id": "rel-heading-saa124improvementcli-md-safety-invariant-3a2926c8b98d",
+      "target_id": "rel-concept-eon-82f592cd7940",
+      "relation": "related-to",
+      "canonical": false
+    },
+    {
+      "source_id": "rel-document-saa124improvementcliquickstart-md-6d99dbdc977d",
+      "target_id": "rel-category-lifecycle-and-migration-df095cbb1252",
+      "relation": "contains-document",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-saa124improvementcliquickstart-md-saa-12-4-7adb55af1da2",
+      "target_id": "rel-document-saa124improvementcliquickstart-md-6d99dbdc977d",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-saa124improvementcliquickstart-md-1-regist-91ac62a2c17e",
+      "target_id": "rel-document-saa124improvementcliquickstart-md-6d99dbdc977d",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-saa124improvementcliquickstart-md-2-inspec-7f7c5cf69b4c",
+      "target_id": "rel-document-saa124improvementcliquickstart-md-6d99dbdc977d",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-saa124improvementcliquickstart-md-3-previe-113c4bc6c0c0",
+      "target_id": "rel-document-saa124improvementcliquickstart-md-6d99dbdc977d",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-saa124improvementcliquickstart-md-4-persis-2153fcb53ac8",
+      "target_id": "rel-document-saa124improvementcliquickstart-md-6d99dbdc977d",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-saa124improvementcliquickstart-md-5-inspec-45e09eceae50",
+      "target_id": "rel-document-saa124improvementcliquickstart-md-6d99dbdc977d",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
       "source_id": "rel-document-saa1canonicalir-md-3d039a486372",
       "target_id": "rel-category-lifecycle-and-migration-df095cbb1252",
       "relation": "contains-document",
@@ -41451,6 +43630,216 @@
       "canonical": true
     },
     {
+      "source_id": "rel-document-saabatchbrainfeedingcli-md-4d3258faa207",
+      "target_id": "rel-category-lifecycle-and-migration-df095cbb1252",
+      "relation": "contains-document",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-saabatchbrainfeedingcli-md-saa-batch-brain-c1c1f9996b07",
+      "target_id": "rel-document-saabatchbrainfeedingcli-md-4d3258faa207",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-saabatchbrainfeedingcli-md-commands-0edee0e58667",
+      "target_id": "rel-document-saabatchbrainfeedingcli-md-4d3258faa207",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-saabatchbrainfeedingcli-md-first-batch-3802cb049bc3",
+      "target_id": "rel-document-saabatchbrainfeedingcli-md-4d3258faa207",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-saabatchbrainfeedingcli-md-manifest-format-4c970764a70d",
+      "target_id": "rel-document-saabatchbrainfeedingcli-md-4d3258faa207",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-saabatchbrainfeedingcli-md-supported-feed-ea5fd975df0d",
+      "target_id": "rel-document-saabatchbrainfeedingcli-md-4d3258faa207",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-saabatchbrainfeedingcli-md-grounded-measur-a7d3cc809493",
+      "target_id": "rel-document-saabatchbrainfeedingcli-md-4d3258faa207",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-saabatchbrainfeedingcli-md-semantic-concep-3a522aa9a01e",
+      "target_id": "rel-document-saabatchbrainfeedingcli-md-4d3258faa207",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-saabatchbrainfeedingcli-md-algorithm-candi-9c939e1d5ad2",
+      "target_id": "rel-document-saabatchbrainfeedingcli-md-4d3258faa207",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-saabatchbrainfeedingcli-md-failure-example-ffada85d14c0",
+      "target_id": "rel-document-saabatchbrainfeedingcli-md-4d3258faa207",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-saabatchbrainfeedingcli-md-feed-a-director-055bf7a784ef",
+      "target_id": "rel-document-saabatchbrainfeedingcli-md-4d3258faa207",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-saabatchbrainfeedingcli-md-strict-mode-1b17845b1895",
+      "target_id": "rel-document-saabatchbrainfeedingcli-md-4d3258faa207",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-saabatchbrainfeedingcli-md-validation-only-f77aa9765dcf",
+      "target_id": "rel-document-saabatchbrainfeedingcli-md-4d3258faa207",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-saabatchbrainfeedingcli-md-inspect-the-bra-18dd516eebb2",
+      "target_id": "rel-document-saabatchbrainfeedingcli-md-4d3258faa207",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-saabatchbrainfeedingcli-md-inspect-quarant-1a45f70f4d95",
+      "target_id": "rel-document-saabatchbrainfeedingcli-md-4d3258faa207",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-saabatchbrainfeedingcli-md-deduplication-2c3914baa683",
+      "target_id": "rel-document-saabatchbrainfeedingcli-md-4d3258faa207",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-saabatchbrainfeedingcli-md-persistent-layo-6de5f85786d6",
+      "target_id": "rel-document-saabatchbrainfeedingcli-md-4d3258faa207",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-saabatchbrainfeedingcli-md-brain-feeding-m-6ccef27f1671",
+      "target_id": "rel-document-saabatchbrainfeedingcli-md-4d3258faa207",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-document-saarepositorybrainfeedingcli-md-6d3b8f9c43ac",
+      "target_id": "rel-category-lifecycle-and-migration-df095cbb1252",
+      "relation": "contains-document",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-saarepositorybrainfeedingcli-md-saa-reposi-72081fea4b82",
+      "target_id": "rel-document-saarepositorybrainfeedingcli-md-6d3b8f9c43ac",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-saarepositorybrainfeedingcli-md-quick-star-9302dd331fc8",
+      "target_id": "rel-document-saarepositorybrainfeedingcli-md-6d3b8f9c43ac",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-saarepositorybrainfeedingcli-md-what-happe-cca1a022e98e",
+      "target_id": "rel-document-saarepositorybrainfeedingcli-md-6d3b8f9c43ac",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-saarepositorybrainfeedingcli-md-algorithm-b33bbcff0f9e",
+      "target_id": "rel-document-saarepositorybrainfeedingcli-md-6d3b8f9c43ac",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-saarepositorybrainfeedingcli-md-python-ext-d8b45648feed",
+      "target_id": "rel-document-saarepositorybrainfeedingcli-md-6d3b8f9c43ac",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-saarepositorybrainfeedingcli-md-other-lang-bc46f4ae4021",
+      "target_id": "rel-document-saarepositorybrainfeedingcli-md-6d3b8f9c43ac",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-saarepositorybrainfeedingcli-md-tests-beco-178ea53f3b1d",
+      "target_id": "rel-document-saarepositorybrainfeedingcli-md-6d3b8f9c43ac",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-saarepositorybrainfeedingcli-md-assertions-d22b4de23e52",
+      "target_id": "rel-document-saarepositorybrainfeedingcli-md-6d3b8f9c43ac",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-saarepositorybrainfeedingcli-md-documentat-16944a5ebbe1",
+      "target_id": "rel-document-saarepositorybrainfeedingcli-md-6d3b8f9c43ac",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-saarepositorybrainfeedingcli-md-include-an-0ddfc44311f1",
+      "target_id": "rel-document-saarepositorybrainfeedingcli-md-6d3b8f9c43ac",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-saarepositorybrainfeedingcli-md-language-f-aeb9574f8431",
+      "target_id": "rel-document-saarepositorybrainfeedingcli-md-6d3b8f9c43ac",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-saarepositorybrainfeedingcli-md-bounds-587c2ba029e2",
+      "target_id": "rel-document-saarepositorybrainfeedingcli-md-6d3b8f9c43ac",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-saarepositorybrainfeedingcli-md-emit-ordin-b704bed347c8",
+      "target_id": "rel-document-saarepositorybrainfeedingcli-md-6d3b8f9c43ac",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-saarepositorybrainfeedingcli-md-strict-mod-4fff5b0e1f30",
+      "target_id": "rel-document-saarepositorybrainfeedingcli-md-6d3b8f9c43ac",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-saarepositorybrainfeedingcli-md-self-feedi-c6b7da29e65e",
+      "target_id": "rel-document-saarepositorybrainfeedingcli-md-6d3b8f9c43ac",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-saarepositorybrainfeedingcli-md-how-this-c-a44400d1009a",
+      "target_id": "rel-document-saarepositorybrainfeedingcli-md-6d3b8f9c43ac",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
       "source_id": "rel-document-visualmatching-md-769826b85d88",
       "target_id": "rel-category-lifecycle-and-migration-df095cbb1252",
       "relation": "contains-document",
@@ -42279,6 +44668,54 @@
       "canonical": false
     },
     {
+      "source_id": "rel-concept-type-brainfeedbatchreceipt-a8a1e965c520",
+      "target_id": "rel-root-docs-index-html-d86163bf2ae1",
+      "relation": "defines-concept",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-concept-type-brainfeedbatchreceipt-a8a1e965c520",
+      "target_id": "rel-concept-egcf-0aab78fce577",
+      "relation": "related-to",
+      "canonical": false
+    },
+    {
+      "source_id": "rel-concept-type-brainfeeddisposition-11bd10156644",
+      "target_id": "rel-root-docs-index-html-d86163bf2ae1",
+      "relation": "defines-concept",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-concept-type-brainfeeddisposition-11bd10156644",
+      "target_id": "rel-concept-egcf-0aab78fce577",
+      "relation": "related-to",
+      "canonical": false
+    },
+    {
+      "source_id": "rel-concept-type-brainfeeditem-910f7bf84699",
+      "target_id": "rel-root-docs-index-html-d86163bf2ae1",
+      "relation": "defines-concept",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-concept-type-brainfeeditem-910f7bf84699",
+      "target_id": "rel-concept-egcf-0aab78fce577",
+      "relation": "related-to",
+      "canonical": false
+    },
+    {
+      "source_id": "rel-concept-type-brainfeedprocessor-fcf14b2e698a",
+      "target_id": "rel-root-docs-index-html-d86163bf2ae1",
+      "relation": "defines-concept",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-concept-type-brainfeedprocessor-fcf14b2e698a",
+      "target_id": "rel-concept-egcf-0aab78fce577",
+      "relation": "related-to",
+      "canonical": false
+    },
+    {
       "source_id": "rel-concept-type-canonicalfailurepattern-c7e64f8e4087",
       "target_id": "rel-root-docs-index-html-d86163bf2ae1",
       "relation": "defines-concept",
@@ -42891,6 +45328,18 @@
       "canonical": false
     },
     {
+      "source_id": "rel-concept-type-loopcommand-e1d465003e51",
+      "target_id": "rel-root-docs-index-html-d86163bf2ae1",
+      "relation": "defines-concept",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-concept-type-loopcommand-e1d465003e51",
+      "target_id": "rel-concept-egcf-0aab78fce577",
+      "relation": "related-to",
+      "canonical": false
+    },
+    {
       "source_id": "rel-concept-type-loopprogresscontroller-846506db8e5b",
       "target_id": "rel-root-docs-index-html-d86163bf2ae1",
       "relation": "defines-concept",
@@ -42898,6 +45347,18 @@
     },
     {
       "source_id": "rel-concept-type-loopprogresscontroller-846506db8e5b",
+      "target_id": "rel-concept-egcf-0aab78fce577",
+      "relation": "related-to",
+      "canonical": false
+    },
+    {
+      "source_id": "rel-concept-type-loopresult-d98e7b21181e",
+      "target_id": "rel-root-docs-index-html-d86163bf2ae1",
+      "relation": "defines-concept",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-concept-type-loopresult-d98e7b21181e",
       "target_id": "rel-concept-egcf-0aab78fce577",
       "relation": "related-to",
       "canonical": false
@@ -43534,6 +45995,54 @@
     },
     {
       "source_id": "rel-concept-type-repeatedexperimentaggregate-7f6093371ac8",
+      "target_id": "rel-concept-egcf-0aab78fce577",
+      "relation": "related-to",
+      "canonical": false
+    },
+    {
+      "source_id": "rel-concept-type-repositorybrainfeedplan-fcccde9f28fe",
+      "target_id": "rel-root-docs-index-html-d86163bf2ae1",
+      "relation": "defines-concept",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-concept-type-repositorybrainfeedplan-fcccde9f28fe",
+      "target_id": "rel-concept-egcf-0aab78fce577",
+      "relation": "related-to",
+      "canonical": false
+    },
+    {
+      "source_id": "rel-concept-type-repositoryscanpolicy-afec96756daa",
+      "target_id": "rel-root-docs-index-html-d86163bf2ae1",
+      "relation": "defines-concept",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-concept-type-repositoryscanpolicy-afec96756daa",
+      "target_id": "rel-concept-egcf-0aab78fce577",
+      "relation": "related-to",
+      "canonical": false
+    },
+    {
+      "source_id": "rel-concept-type-repositorysourcefile-23431a9e26da",
+      "target_id": "rel-root-docs-index-html-d86163bf2ae1",
+      "relation": "defines-concept",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-concept-type-repositorysourcefile-23431a9e26da",
+      "target_id": "rel-concept-egcf-0aab78fce577",
+      "relation": "related-to",
+      "canonical": false
+    },
+    {
+      "source_id": "rel-concept-type-repositorysymbol-83cd47121db4",
+      "target_id": "rel-root-docs-index-html-d86163bf2ae1",
+      "relation": "defines-concept",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-concept-type-repositorysymbol-83cd47121db4",
       "target_id": "rel-concept-egcf-0aab78fce577",
       "relation": "related-to",
       "canonical": false
@@ -45141,6 +47650,18 @@
       "canonical": false
     },
     {
+      "source_id": "rel-concept-type-brainfeedstore-ad104abd7ddb",
+      "target_id": "rel-root-docs-index-html-d86163bf2ae1",
+      "relation": "defines-concept",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-concept-type-brainfeedstore-ad104abd7ddb",
+      "target_id": "rel-concept-egcf-0aab78fce577",
+      "relation": "related-to",
+      "canonical": false
+    },
+    {
       "source_id": "rel-concept-type-canonicaladmissionresult-51872f893f92",
       "target_id": "rel-root-docs-index-html-d86163bf2ae1",
       "relation": "defines-concept",
@@ -45778,16 +48299,16 @@
     }
   ],
   "relational_summary": {
-    "object_count": 989,
-    "relation_count": 1399,
-    "symbol_count": 989,
+    "object_count": 1057,
+    "relation_count": 1482,
+    "symbol_count": 1057,
     "kinds": {
       "root": 1,
       "category": 6,
       "folder": 1,
-      "document": 42,
-      "heading": 606,
-      "concept": 333
+      "document": 46,
+      "heading": 659,
+      "concept": 344
     },
     "sprite_figure": "figures/relational-symbols.svg",
     "topology_figure": "figures/relational-topology.svg"
@@ -46237,13 +48758,13 @@
   },
   "coverage": {
     "concepts": {
-      "total": 333,
-      "teaching_records": 333,
-      "examples": 333,
-      "diagrams": 333,
-      "misconceptions": 333,
-      "prerequisites": 333,
-      "evidence_badges": 333
+      "total": 344,
+      "teaching_records": 344,
+      "examples": 344,
+      "diagrams": 344,
+      "misconceptions": 344,
+      "prerequisites": 344,
+      "evidence_badges": 344
     },
     "tutorials": {
       "total": 14,
@@ -46262,8 +48783,8 @@
       "defined": 21
     },
     "statuses": {
-      "total": 74,
-      "decoded": 74
+      "total": 91,
+      "decoded": 91
     },
     "commands": {
       "total": 11,

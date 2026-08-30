@@ -153,6 +153,21 @@ content-addressed so identical projected inputs replay identically. Repeating
 different wording without measurable evidence, uncertainty, contradiction, or
 confidence improvement produces `STOP_NO_VALUE`, not a new permission to act.
 
+Repository traversal supports bounded `for`-style loops without weakening the
+cycle gate. `list_files` returns `next_offset`, and `read_file` returns
+`next_start_line`; callers advance those system-owned cursors until `has_more`
+is false. Repeating the same cursor or unchanged observation remains a
+non-progress cycle and is stopped.
+
+When a request names an exact repository-relative file, the agent reads that
+path directly before using broad discovery. Empty `list_files` and `search_text`
+roots mean the workspace root, but bounded or truncated discovery output cannot
+prove that a named file is absent; only the direct `read_file` result for that
+path can establish availability. For a named file of at most 2,000 lines, the
+agent requests one complete read and narrows the following model request to the
+three file-reading tools. This retains the verified source while avoiding the
+context cost of resending unrelated governance and mutation schemas.
+
 ## Install
 
 Python 3.10 or newer is required.
@@ -231,12 +246,25 @@ The provider refuses requests estimated to exceed its configured context budget
 rather than silently increasing the verified model context.
 
 Omit `--task` for a multi-turn terminal chat. `/new` starts a fresh model
-context while preserving the repository audit trail, `/help` lists the local
+context while preserving the repository audit trail. `/loop COUNT TASK` runs a
+human-bounded sequence of governed chat turns, with `COUNT` limited to `1..32`;
+`{index}` and `{count}` in the task expand for each iteration. The exact model
+response `ICPI_LOOP_COMPLETE` stops the loop early. `/help` lists the local
 commands, and `/exit` or `/quit` closes the session:
 
 ```bash
 oiec-stm-agent /path/to/repo
 ```
+
+For example:
+
+```text
+oiec-stm> /loop 5 Inspect repository page {index} of {count}; stop when complete.
+```
+
+Each iteration still uses the active authority, evidence gates, OIEC progress
+checks, step budget, and cycle detection. `/loop` does not authorize writes or
+turn repeated unchanged work into verified progress.
 
 ### Optional VisualGrammar2d Qwen 16B drafting path
 
