@@ -6,7 +6,9 @@ from typing import Optional, Sequence
 
 HELP = """usage: oiec-stm-agent brain <command> [options]
 
-SAA brain ingestion and inspection commands.
+Batch-feed evidence and candidate knowledge into the SAA brain, inspect that
+staging state, or statically digest arbitrary repository code into new feed
+candidates.
 
 commands:
   feed         Process JSON brain-feed manifests/items/directories
@@ -25,9 +27,12 @@ invariants remain candidates until normal SAA qualification.
 
 def main(argv: Optional[Sequence[str]] = None) -> int:
     arguments = list(sys.argv[1:] if argv is None else argv)
-    if not arguments or arguments[0] in {"-h", "--help", "help"}:
+    if not arguments:
         print(HELP)
         return 0
+    if arguments[0] in {"-h", "--help", "help"}:
+        print(HELP)
+        raise SystemExit(0)
     if arguments[0] in {"repo", "feed-repo"}:
         from .repo_brain_cli import main as repository_main
 
