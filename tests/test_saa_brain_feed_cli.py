@@ -80,7 +80,7 @@ def manifest() -> dict:
     }
 
 
-class SAA BrainFeedCLITests(unittest.TestCase):
+class SAABrainFeedCLITests(unittest.TestCase):
     def _write_manifest(self, root: Path, payload: dict | None = None) -> Path:
         path = root / "brain-feed.json"
         path.write_text(json.dumps(payload or manifest(), indent=2), encoding="utf-8")
