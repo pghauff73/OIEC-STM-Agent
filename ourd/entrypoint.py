@@ -7,7 +7,7 @@ from typing import Optional, Sequence
 def main(argv: Optional[Sequence[str]] = None) -> int:
     arguments = list(sys.argv[1:] if argv is None else argv)
     if arguments and arguments[0] == "brain":
-        from .brain_cli import main as brain_main
+        from .brain_dispatch import main as brain_main
 
         return brain_main(arguments[1:])
 
