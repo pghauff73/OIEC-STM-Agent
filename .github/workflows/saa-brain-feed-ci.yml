@@ -41,7 +41,8 @@ jobs:
             ourd/egcf/algebra/brain_feed.py \
             ourd/egcf/brain_feed.py \
             ourd/egcf/brain_feed_store.py \
-            tests/test_saa_brain_feed_cli.py
+            tests/test_saa_brain_feed_cli.py \
+            tests/test_saa_brain_feed_persistence.py
 
       - name: Verify installed-style brain CLI dispatch
         run: |
@@ -51,4 +52,7 @@ jobs:
 
       - name: Run batch brain-feed qualification suite
         run: |
-          python -m unittest tests.test_saa_brain_feed_cli -v
+          python -m unittest \
+            tests.test_saa_brain_feed_cli \
+            tests.test_saa_brain_feed_persistence \
+            -v
