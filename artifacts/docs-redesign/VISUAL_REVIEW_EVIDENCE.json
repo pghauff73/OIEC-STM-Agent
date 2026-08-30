@@ -1,0 +1,138 @@
+{
+  "assistant_structural_review": {
+    "observations": [
+      "The homepage remains contained at 320, 375, 430, 768, 1024, and 1440 CSS-pixel widths.",
+      "Navigation wraps without visible horizontal clipping at the narrowest widths.",
+      "The novice hero, action controls, and learning-loop SVG remain legible and ordered across tested widths.",
+      "Learn and runtime Technical/Expert views are visually distinct while retaining the same page controls.",
+      "The no-JavaScript render exposes the fallback notice and keeps Learn and Technical content in source order.",
+      "The reduced-motion render remains visually complete with motion disabled by browser preference.",
+      "The print-style emulation removes navigation controls and presents the tutorial in a white, linear reading layout."
+    ],
+    "status": "pass"
+  },
+  "browser": "Mozilla Firefox 152.0.5",
+  "captures": [
+    {
+      "bytes": 207161,
+      "capture_id": "desktop_1440",
+      "height": 1600,
+      "method": "actual Firefox screen render",
+      "path": "artifacts/docs-redesign/validation/home-desktop.png",
+      "sha256": "d2ee78b05bc75a36031936344e4c9bca0522dba07325f783691fe2d61f78a07e",
+      "width": 1440
+    },
+    {
+      "bytes": 90627,
+      "capture_id": "mobile_320",
+      "height": 1400,
+      "method": "actual Firefox screen render",
+      "path": "artifacts/docs-redesign/validation/home-mobile-320.png",
+      "sha256": "1e09fe6ae7f13fccab8c94c6759161f788904367a80ad1c34f95f40ca7ffdeb7",
+      "width": 320
+    },
+    {
+      "bytes": 103610,
+      "capture_id": "mobile_375",
+      "height": 1600,
+      "method": "actual Firefox screen render",
+      "path": "artifacts/docs-redesign/validation/home-mobile-375.png",
+      "sha256": "f97d3dfde87b2818f128d813cac20c62800d787f10c8be445ab1b9879f06af23",
+      "width": 375
+    },
+    {
+      "bytes": 102439,
+      "capture_id": "mobile_430",
+      "height": 1400,
+      "method": "actual Firefox screen render",
+      "path": "artifacts/docs-redesign/validation/home-mobile-430.png",
+      "sha256": "61670602a4cb9c0abfd4046112565d7919e0b614d8c2ca0762576b32dc2f138d",
+      "width": 430
+    },
+    {
+      "bytes": 129459,
+      "capture_id": "tablet_768",
+      "height": 1400,
+      "method": "actual Firefox screen render",
+      "path": "artifacts/docs-redesign/validation/home-tablet-768.png",
+      "sha256": "f2a1440c1b1538a7e52227b3aaa591cf2bdc89aa675decb25981924c39522a66",
+      "width": 768
+    },
+    {
+      "bytes": 133386,
+      "capture_id": "tablet_1024",
+      "height": 1400,
+      "method": "actual Firefox screen render",
+      "path": "artifacts/docs-redesign/validation/home-tablet-1024.png",
+      "sha256": "e186d456bfd21937abe5525db58bbac2d7c4c92f559e164af7fba451b29d29f3",
+      "width": 1024
+    },
+    {
+      "bytes": 201308,
+      "capture_id": "reduced_motion",
+      "height": 1400,
+      "method": "actual Firefox render with ui.prefersReducedMotion=1",
+      "path": "artifacts/docs-redesign/validation/home-reduced-motion-1440.png",
+      "sha256": "ceed55365071fae5abc7fc9e3972029c23880853245d69a730777f69da12154a",
+      "width": 1440
+    },
+    {
+      "bytes": 245926,
+      "capture_id": "learn_view",
+      "height": 1600,
+      "method": "actual Firefox Learn view render",
+      "path": "artifacts/docs-redesign/validation/eon-learn-1440.png",
+      "sha256": "e6f8f4e84ae271b919edc167c2b628ab4b4ad3bc00ad651396bd046729f10b45",
+      "width": 1440
+    },
+    {
+      "bytes": 250596,
+      "capture_id": "technical_expert_view",
+      "height": 1600,
+      "method": "actual Firefox runtime render with persisted Technical view and Expert depth",
+      "path": "artifacts/docs-redesign/validation/eon-technical-runtime-1440.png",
+      "sha256": "1a456ba64851eaf77be9cc5c78cc4913d8137107c7737cbea513afe7371684ec",
+      "width": 1440
+    },
+    {
+      "bytes": 343083,
+      "capture_id": "no_javascript_view",
+      "height": 2200,
+      "method": "actual Firefox render with javascript.enabled=false",
+      "path": "artifacts/docs-redesign/validation/eon-no-javascript-1440.png",
+      "sha256": "a39fccd2d3a2ec7c17d054b74fcee3967f2fa402d75e3bf7c87b5329b5b8326e",
+      "width": 1440
+    },
+    {
+      "bytes": 112552,
+      "capture_id": "print_css_emulation",
+      "height": 1600,
+      "method": "screen capture with the checked-in @media print rules activated for structural inspection",
+      "path": "artifacts/docs-redesign/validation/tutorial-print-emulation-1024.png",
+      "sha256": "adf720eb77db5ad6fc3e29bbd9da3f02e5c4137933a107281df6746d8a06c7ba",
+      "width": 1024
+    }
+  ],
+  "date": "2026-08-30",
+  "human_approval": {
+    "evidence": "User instruction: \"commit and push\" on August 30, 2026 after the source-bound visual approval checklist was presented.",
+    "post_approval_delta": "The release source only removes generated trailing whitespace and refreshes embedded snapshot identifiers. Deterministic regeneration, 49 focused documentation tests, and 636 full repository tests passed; the rendered visual content is unchanged.",
+    "required_views": [
+      "desktop",
+      "mobile",
+      "print",
+      "Learn",
+      "Technical",
+      "reduced-motion"
+    ],
+    "status": "pass"
+  },
+  "limitations": [
+    "Human approval applies to the reviewed source-bound capture matrix; the automated checks remain the structural basis for viewport and presentation coverage.",
+    "The print capture activates the checked-in print CSS in a screen rendering context; it is not a printer-engine PDF or physical print proof.",
+    "Captures inspect bounded viewport regions rather than every vertical pixel of every generated page."
+  ],
+  "schema_version": 1,
+  "release_source_snapshot_sha256": "4443b6b05d4a168b90d1926725734c11729f0587bb91ec2a468d2c4a62397057",
+  "source_snapshot_sha256": "734e1f687917bb4ec4cc6415dbbfb1c75c53eaf85b894e4ee540faade08fc64a"
+}

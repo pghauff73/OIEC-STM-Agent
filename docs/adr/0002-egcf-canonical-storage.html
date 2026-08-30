@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-doc-view="learn" data-doc-depth="novice">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -7,7 +7,7 @@
   <title>ADR 0002: Canonical Ledger and Content-Addressed Objects · OIEC-STM Systems Architect Academy</title>
   <link rel="stylesheet" href="../assets/styles.css">
 </head>
-<body data-page="document" data-source-hash="684d137ae504c0af2074f8595096aec6786d9dac511980c4c5f0b287be8ea946">
+<body data-page="document" data-source-hash="684d137ae504c0af2074f8595096aec6786d9dac511980c4c5f0b287be8ea946" data-docs-version="0.7.0" data-source-snapshot="sha256:4443b6b05d4a168b90d1926725734c11729f0587bb91ec2a468d2c4a62397057" data-build-date="2026-08-30">
   <div class="scanline-overlay" aria-hidden="true"></div>
   <div class="reading-progress" aria-hidden="true"><span></span></div>
   <header class="site-header">
@@ -32,6 +32,21 @@
       </div>
     </aside>
     <main class="document-main">
+      <section class="view-controls" aria-label="Explanation controls">
+  <div class="view-tabs" role="group" aria-label="Documentation view">
+    <button type="button" data-doc-view="learn" aria-pressed="true">Learn</button>
+    <button type="button" data-doc-view="technical" aria-pressed="false">Technical</button>
+  </div>
+  <div class="depth-control">
+    <label for="explanation-depth">Explanation depth</label>
+    <input id="explanation-depth" type="range" min="0" max="2" step="1" value="0" data-depth-control>
+    <div aria-hidden="true"><span>Novice</span><span>Intermediate</span><span>Expert</span></div>
+  </div>
+  <button type="button" data-action="teacher-mode" aria-pressed="false">Teacher mode</button>
+  <button type="button" data-action="reset-learning">Reset learning preferences</button>
+</section>
+<noscript><p class="noscript-note">JavaScript is optional. Learn and Technical content remain visible in source order.</p></noscript>
+
       <section class="document-hero">
         <p class="eyebrow">SYSTEMS ARCHITECT LEARNING EDITION · BUILT 2026-08-30</p>
         <h1>ADR 0002: Canonical Ledger and Content-Addressed Objects</h1>
@@ -42,6 +57,8 @@
           <div><dt>SOURCE SHA-256</dt><dd>684d137ae504</dd></div>
         </dl>
       </section>
+      <section class="document-learn-overview" data-view-content="learn"><div class="teaching-heading"><div><p class="terminal-label">LEARN VIEW</p><h2>Plain-language map of this source</h2><p>Use these short explanations first. Switch to Technical for the complete source-bound essays, references, and logic maps.</p></div><aside class="evidence-badge" data-doc-status="Implemented"><strong>Implemented</strong><span>Documentation evidence</span><ul><li><code>adr/0002-egcf-canonical-storage.md</code></li></ul></aside></div><div class="learning-card-grid"><article><span>01</span><h2>ADR 0002: Canonical Ledger and Content-Addressed Objects</h2><p>ADR means architecture decision record: a short document that records a significant design choice, its context, and its consequences.</p><a href="#adr-0002-canonical-ledger-and-content-addressed-objects">Open technical lesson →</a></article><article><span>02</span><h2>Decision</h2><p>EGCF means evidence-governed command fabric: the semantic command layer that compiles intent into typed, content-addressed, policy-checked workflow plans.</p><a href="#decision">Open technical lesson →</a></article><article><span>03</span><h2>Consequences</h2><p>the phrase &#x27;consequences&#x27; names the responsibility, rule, or architectural boundary that this part of the documentation asks the reader to inspect</p><a href="#consequences">Open technical lesson →</a></article></div></section>
+      <div data-view-content="technical">
       <section class="map-panel" aria-labelledby="map-title">
         <div>
           <p class="terminal-label">INTERACTIVE DOCUMENT CIRCUIT</p>
@@ -128,6 +145,7 @@
         <p>These summaries are paraphrases for teaching. Follow the links for the authoritative source text.</p>
         <ol class="reference-list"><li id="ref-S1"><span class="reference-id">S1</span><a href="0002-egcf-canonical-storage.md">adr/0002-egcf-canonical-storage.md</a><p>The checked-in Markdown is the primary local evidence. Its claims remain subject to current-source validation and exact-snapshot review.</p></li><li id="ref-R10"><span class="reference-id">R10</span><a href="https://www.rfc-editor.org/rfc/rfc8785.html" rel="noreferrer">RFC 8785: JSON Canonicalization Scheme</a><p><strong>Anders Rundgren, Bruce Jordan, and Samuel Erdtman</strong> — The RFC defines a repeatable JSON representation so hashing and signing use the same bytes even when ordinary serializers could choose different layouts.</p></li><li id="ref-R15"><span class="reference-id">R15</span><a href="https://www.rfc-editor.org/rfc/rfc8259.html" rel="noreferrer">RFC 8259: The JavaScript Object Notation Data Interchange Format</a><p><strong>Tim Bray and the IETF</strong> — The RFC defines JSON as a text format for structured values and specifies the grammar needed for different implementations to exchange the same information.</p></li><li id="ref-R12"><span class="reference-id">R12</span><a href="https://git-scm.com/book/en/v2/Git-Internals-Git-Objects" rel="noreferrer">Git Internals: Git Objects</a><p><strong>Git Project</strong> — Git stores content-addressed objects whose identifiers depend on content, allowing snapshots and relationships to be checked rather than trusted by name.</p></li><li id="ref-R14"><span class="reference-id">R14</span><a href="https://docs.python.org/3/library/dataclasses.html" rel="noreferrer">Python Standard Library: dataclasses</a><p><strong>Python Software Foundation</strong> — Python documents data classes as a way to declare named fields and generate standard methods, making record structure explicit and inspectable.</p></li><li id="ref-R13"><span class="reference-id">R13</span><a href="https://csrc.nist.gov/pubs/sp/800/92/final" rel="noreferrer">NIST SP 800-92: Guide to Computer Security Log Management</a><p><strong>Karen Kent and Murugiah Souppaya</strong> — NIST treats logs as evidence that must be generated, protected, reviewed, and managed across a lifecycle so events can support detection and investigation.</p></li></ol>
       </section>
+      </div>
       <nav class="document-pager" aria-label="Previous and next documents"><a class="pager-link previous" href="0001-egcf-semantic-layer.html">← ADR 0001: EGCF Is an Additive Semantic Layer</a><a class="pager-link next" href="0003-egcf-capability-authority.html">ADR 0003: Capability Requirements Union, Authority Intersection →</a></nav>
     </main>
   </div>

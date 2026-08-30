@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1160" height="317" viewBox="0 0 1160 317">
+<svg data-visual-grammar="1" data-visual-role="expert-document" data-doc-node="document-adr-0001-egcf-semantic-layer-md" data-node-role="process" aria-label="ADR 0001: EGCF Is an Additive Semantic Layer" tabindex="0" xmlns="http://www.w3.org/2000/svg" width="1160" height="317" viewBox="0 0 1160 317"><title>ADR 0001: EGCF Is an Additive Semantic Layer</title><desc>Generated expert-document diagram for ADR 0001: EGCF Is an Additive Semantic Layer.</desc>
 <style>
   :root { color-scheme: light; }
   svg { background:#fbf8ff; font-family:'Courier New',monospace; }

@@ -283,6 +283,23 @@ class DocumentationSiteTests(unittest.TestCase):
         }
         self.assertEqual(current_ids, reversed_ids)
 
+    def test_relational_ids_preserve_the_frozen_baseline_sequence(self) -> None:
+        baseline_path = (
+            self.docs_root.parent
+            / "artifacts"
+            / "docs-redesign"
+            / "baseline"
+            / "site-manifest.json"
+        )
+        baseline = json.loads(baseline_path.read_text(encoding="utf-8"))
+        baseline_ids = [item["object_id"] for item in baseline["relational_objects"]]
+        current_ids = [item["object_id"] for item in self.manifest["relational_objects"]]
+        self.assertEqual(current_ids, baseline_ids)
+        self.assertEqual(
+            hashlib.sha256("\n".join(current_ids).encode("utf-8")).hexdigest(),
+            "66805dda605345b5fa720c6e56ced88308b2adcc3d7363e3e63bbb0e2586a5ad",
+        )
+
     def test_every_relational_object_has_one_matching_svg_symbol(self) -> None:
         manifest_objects = {
             item["object_id"]: item
@@ -340,7 +357,9 @@ class DocumentationSiteTests(unittest.TestCase):
         ET.parse(self.docs_root / summary["topology_figure"])
 
     def test_index_tree_references_every_relational_object(self) -> None:
-        page = (self.docs_root / "index.html").read_text(encoding="utf-8")
+        page = (self.docs_root / "architecture-explorer.html").read_text(
+            encoding="utf-8"
+        )
         represented_ids = set(
             re.findall(r'data-relational-object="([^"]+)"', page)
         )
@@ -498,10 +517,37 @@ class DocumentationSiteTests(unittest.TestCase):
         ET.parse(self.docs_root / "figures" / "governed-loop.svg")
         ET.parse(self.docs_root / "figures" / "concept-atlas.svg")
 
-    def test_index_contains_governed_loop_hero_and_concept_atlas(self) -> None:
+    def test_index_teaches_before_linking_to_the_expert_explorer(self) -> None:
         page = (self.docs_root / "index.html").read_text(encoding="utf-8")
-        for term in ("OURD", "IURM", "EON", "CFEL", "governed-loop.svg", "concepts/index.html"):
+        first_heading = re.search(r"<h1>(.*?)</h1>", page, flags=re.DOTALL)
+        self.assertIsNotNone(first_heading)
+        self.assertEqual(
+            html.unescape(re.sub(r"<[^>]+>", "", first_heading.group(1))),
+            "An AI agent designed to work carefully.",
+        )
+        for term in (
+            "First 15 Minutes",
+            "Learn by Task",
+            "learning-loop.svg",
+            "tutorial/index.html",
+            "tools.html",
+            "architecture-explorer.html",
+        ):
             self.assertIn(term, page)
+        self.assertNotIn("window.RELATIONAL_OBJECTS", page)
+        self.assertNotIn('class="relational-row', page)
+        explorer = (self.docs_root / "architecture-explorer.html").read_text(
+            encoding="utf-8"
+        )
+        for term in (
+            "OURD",
+            "IURM",
+            "EON",
+            "CFEL",
+            "governed-loop.svg",
+            "concepts/index.html",
+        ):
+            self.assertIn(term, explorer)
         atlas = (self.docs_root / "concepts" / "index.html").read_text(encoding="utf-8")
         self.assertIn(f"{len(self.concepts)} source-derived concepts", atlas)
         self.assertNotIn("125 source-derived concepts", atlas)

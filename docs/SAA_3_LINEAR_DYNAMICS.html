@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-doc-view="learn" data-doc-depth="novice">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -7,7 +7,7 @@
   <title>SAA-3 Canonical Linear Dynamics · OIEC-STM Systems Architect Academy</title>
   <link rel="stylesheet" href="assets/styles.css">
 </head>
-<body data-page="document" data-source-hash="8f9b04d2b9224a6b2738bc5563525243f6cee1d3b768fff737d8c7db4538a27c">
+<body data-page="document" data-source-hash="8f9b04d2b9224a6b2738bc5563525243f6cee1d3b768fff737d8c7db4538a27c" data-docs-version="0.7.0" data-source-snapshot="sha256:4443b6b05d4a168b90d1926725734c11729f0587bb91ec2a468d2c4a62397057" data-build-date="2026-08-30">
   <div class="scanline-overlay" aria-hidden="true"></div>
   <div class="reading-progress" aria-hidden="true"><span></span></div>
   <header class="site-header">
@@ -32,6 +32,21 @@
       </div>
     </aside>
     <main class="document-main">
+      <section class="view-controls" aria-label="Explanation controls">
+  <div class="view-tabs" role="group" aria-label="Documentation view">
+    <button type="button" data-doc-view="learn" aria-pressed="true">Learn</button>
+    <button type="button" data-doc-view="technical" aria-pressed="false">Technical</button>
+  </div>
+  <div class="depth-control">
+    <label for="explanation-depth">Explanation depth</label>
+    <input id="explanation-depth" type="range" min="0" max="2" step="1" value="0" data-depth-control>
+    <div aria-hidden="true"><span>Novice</span><span>Intermediate</span><span>Expert</span></div>
+  </div>
+  <button type="button" data-action="teacher-mode" aria-pressed="false">Teacher mode</button>
+  <button type="button" data-action="reset-learning">Reset learning preferences</button>
+</section>
+<noscript><p class="noscript-note">JavaScript is optional. Learn and Technical content remain visible in source order.</p></noscript>
+
       <section class="document-hero">
         <p class="eyebrow">SYSTEMS ARCHITECT LEARNING EDITION · BUILT 2026-08-30</p>
         <h1>SAA-3 Canonical Linear Dynamics</h1>
@@ -42,6 +57,8 @@
           <div><dt>SOURCE SHA-256</dt><dd>8f9b04d2b922</dd></div>
         </dl>
       </section>
+      <section class="document-learn-overview" data-view-content="learn"><div class="teaching-heading"><div><p class="terminal-label">LEARN VIEW</p><h2>Plain-language map of this source</h2><p>Use these short explanations first. Switch to Technical for the complete source-bound essays, references, and logic maps.</p></div><aside class="evidence-badge" data-doc-status="Implemented"><strong>Implemented</strong><span>Documentation evidence</span><ul><li><code>SAA_3_LINEAR_DYNAMICS.md</code></li></ul></aside></div><div class="learning-card-grid"><article><span>01</span><h2>SAA-3 Canonical Linear Dynamics</h2><p>the phrase &#x27;saa3 canonical linear dynamics&#x27; names the responsibility, rule, or architectural boundary that this part of the documentation asks the reader to inspect</p><a href="#saa-3-canonical-linear-dynamics">Open technical lesson →</a></article><article><span>02</span><h2>1. Linear deviation model</h2><p>the phrase &#x27;1 linear deviation model&#x27; names the responsibility, rule, or architectural boundary that this part of the documentation asks the reader to inspect</p><a href="#1-linear-deviation-model">Open technical lesson →</a></article><article><span>03</span><h2>2. Interface normalization</h2><p>the phrase &#x27;2 interface normalization&#x27; names the responsibility, rule, or architectural boundary that this part of the documentation asks the reader to inspect</p><a href="#2-interface-normalization">Open technical lesson →</a></article><article><span>04</span><h2>3. Continuous-time normalization</h2><p>the phrase &#x27;3 continuoustime normalization&#x27; names the responsibility, rule, or architectural boundary that this part of the documentation asks the reader to inspect</p><a href="#3-continuous-time-normalization">Open technical lesson →</a></article><article><span>05</span><h2>4. Discrete-time normalization</h2><p>the phrase &#x27;4 discretetime normalization&#x27; names the responsibility, rule, or architectural boundary that this part of the documentation asks the reader to inspect</p><a href="#4-discrete-time-normalization">Open technical lesson →</a></article><article><span>06</span><h2>5. Coefficient evidence strength</h2><p>the phrase &#x27;5 coefficient evidence strength&#x27; names the responsibility, rule, or architectural boundary that this part of the documentation asks the reader to inspect</p><a href="#5-coefficient-evidence-strength">Open technical lesson →</a></article><article><span>07</span><h2>6. Exact rational canonicalization</h2><p>the phrase &#x27;6 exact rational canonicalization&#x27; names the responsibility, rule, or architectural boundary that this part of the documentation asks the reader to inspect</p><a href="#6-exact-rational-canonicalization">Open technical lesson →</a></article><article><span>08</span><h2>7. Approximate models do not cancel near poles and zeros</h2><p>the phrase &#x27;7 approximate models do not cancel near poles and zeros&#x27; names the responsibility, rule, or architectural boundary that this part of the documentation asks the reader to inspect</p><a href="#7-approximate-models-do-not-cancel-near-poles-and-zeros">Open technical lesson →</a></article><article><span>09</span><h2>8. State-space entry path</h2><p>the phrase &#x27;8 statespace entry path&#x27; names the responsibility, rule, or architectural boundary that this part of the documentation asks the reader to inspect</p><a href="#8-state-space-entry-path">Open technical lesson →</a></article><article><span>10</span><h2>9. Canonical dynamic record</h2><p>the phrase &#x27;9 canonical dynamic record&#x27; names the responsibility, rule, or architectural boundary that this part of the documentation asks the reader to inspect</p><a href="#9-canonical-dynamic-record">Open technical lesson →</a></article><article><span>11</span><h2>10. Combined SAA-1 + SAA-2 + SAA-3 identity</h2><p>the phrase &#x27;10 combined saa1  saa2  saa3 identity&#x27; names the responsibility, rule, or architectural boundary that this part of the documentation asks the reader to inspect</p><a href="#10-combined-saa-1-saa-2-saa-3-identity">Open technical lesson →</a></article><article><span>12</span><h2>11. Bounds on the implementation</h2><p>the phrase &#x27;11 bounds on the implementation&#x27; names the responsibility, rule, or architectural boundary that this part of the documentation asks the reader to inspect</p><a href="#11-bounds-on-the-implementation">Open technical lesson →</a></article><article><span>13</span><h2>12. Non-claims and deferred milestones</h2><p>the phrase &#x27;12 nonclaims and deferred milestones&#x27; names the responsibility, rule, or architectural boundary that this part of the documentation asks the reader to inspect</p><a href="#12-non-claims-and-deferred-milestones">Open technical lesson →</a></article></div></section>
+      <div data-view-content="technical">
       <section class="map-panel" aria-labelledby="map-title">
         <div>
           <p class="terminal-label">INTERACTIVE DOCUMENT CIRCUIT</p>
@@ -429,6 +446,7 @@ STRUCTURE_PLUS_NORMALIZED_LINEAR_IO_DYNAMICS</code></pre>
         <p>These summaries are paraphrases for teaching. Follow the links for the authoritative source text.</p>
         <ol class="reference-list"><li id="ref-S1"><span class="reference-id">S1</span><a href="SAA_3_LINEAR_DYNAMICS.md">SAA_3_LINEAR_DYNAMICS.md</a><p>The checked-in Markdown is the primary local evidence. Its claims remain subject to current-source validation and exact-snapshot review.</p></li><li id="ref-R10"><span class="reference-id">R10</span><a href="https://www.rfc-editor.org/rfc/rfc8785.html" rel="noreferrer">RFC 8785: JSON Canonicalization Scheme</a><p><strong>Anders Rundgren, Bruce Jordan, and Samuel Erdtman</strong> — The RFC defines a repeatable JSON representation so hashing and signing use the same bytes even when ordinary serializers could choose different layouts.</p></li><li id="ref-R15"><span class="reference-id">R15</span><a href="https://www.rfc-editor.org/rfc/rfc8259.html" rel="noreferrer">RFC 8259: The JavaScript Object Notation Data Interchange Format</a><p><strong>Tim Bray and the IETF</strong> — The RFC defines JSON as a text format for structured values and specifies the grammar needed for different implementations to exchange the same information.</p></li><li id="ref-R12"><span class="reference-id">R12</span><a href="https://git-scm.com/book/en/v2/Git-Internals-Git-Objects" rel="noreferrer">Git Internals: Git Objects</a><p><strong>Git Project</strong> — Git stores content-addressed objects whose identifiers depend on content, allowing snapshots and relationships to be checked rather than trusted by name.</p></li><li id="ref-R14"><span class="reference-id">R14</span><a href="https://docs.python.org/3/library/dataclasses.html" rel="noreferrer">Python Standard Library: dataclasses</a><p><strong>Python Software Foundation</strong> — Python documents data classes as a way to declare named fields and generate standard methods, making record structure explicit and inspectable.</p></li><li id="ref-R13"><span class="reference-id">R13</span><a href="https://csrc.nist.gov/pubs/sp/800/92/final" rel="noreferrer">NIST SP 800-92: Guide to Computer Security Log Management</a><p><strong>Karen Kent and Murugiah Souppaya</strong> — NIST treats logs as evidence that must be generated, protected, reviewed, and managed across a lifecycle so events can support detection and investigation.</p></li></ol>
       </section>
+      </div>
       <nav class="document-pager" aria-label="Previous and next documents"><a class="pager-link previous" href="SAA_2_NORMALIZATION.html">← SAA-2 Bounded 0–1 Normalization</a><a class="pager-link next" href="SAA_4_MIMO_COUPLING.html">SAA-4 MIMO Coupling and Static Decoupling →</a></nav>
     </main>
   </div>

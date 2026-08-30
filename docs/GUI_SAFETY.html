@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-doc-view="learn" data-doc-depth="novice">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -7,7 +7,7 @@
   <title>OURD GUI Safety Boundary · OIEC-STM Systems Architect Academy</title>
   <link rel="stylesheet" href="assets/styles.css">
 </head>
-<body data-page="document" data-source-hash="15b1f07bbca01af87c12fcde997d89731e0ae3228c464fa7f4ae9e8bf48eba82">
+<body data-page="document" data-source-hash="15b1f07bbca01af87c12fcde997d89731e0ae3228c464fa7f4ae9e8bf48eba82" data-docs-version="0.7.0" data-source-snapshot="sha256:4443b6b05d4a168b90d1926725734c11729f0587bb91ec2a468d2c4a62397057" data-build-date="2026-08-30">
   <div class="scanline-overlay" aria-hidden="true"></div>
   <div class="reading-progress" aria-hidden="true"><span></span></div>
   <header class="site-header">
@@ -32,6 +32,21 @@
       </div>
     </aside>
     <main class="document-main">
+      <section class="view-controls" aria-label="Explanation controls">
+  <div class="view-tabs" role="group" aria-label="Documentation view">
+    <button type="button" data-doc-view="learn" aria-pressed="true">Learn</button>
+    <button type="button" data-doc-view="technical" aria-pressed="false">Technical</button>
+  </div>
+  <div class="depth-control">
+    <label for="explanation-depth">Explanation depth</label>
+    <input id="explanation-depth" type="range" min="0" max="2" step="1" value="0" data-depth-control>
+    <div aria-hidden="true"><span>Novice</span><span>Intermediate</span><span>Expert</span></div>
+  </div>
+  <button type="button" data-action="teacher-mode" aria-pressed="false">Teacher mode</button>
+  <button type="button" data-action="reset-learning">Reset learning preferences</button>
+</section>
+<noscript><p class="noscript-note">JavaScript is optional. Learn and Technical content remain visible in source order.</p></noscript>
+
       <section class="document-hero">
         <p class="eyebrow">SYSTEMS ARCHITECT LEARNING EDITION · BUILT 2026-08-30</p>
         <h1>OURD GUI Safety Boundary</h1>
@@ -42,6 +57,8 @@
           <div><dt>SOURCE SHA-256</dt><dd>15b1f07bbca0</dd></div>
         </dl>
       </section>
+      <section class="document-learn-overview" data-view-content="learn"><div class="teaching-heading"><div><p class="terminal-label">LEARN VIEW</p><h2>Plain-language map of this source</h2><p>Use these short explanations first. Switch to Technical for the complete source-bound essays, references, and logic maps.</p></div><aside class="evidence-badge" data-doc-status="Implemented"><strong>Implemented</strong><span>Documentation evidence</span><ul><li><code>GUI_SAFETY.md</code></li></ul></aside></div><div class="learning-card-grid"><article><span>01</span><h2>OURD GUI Safety Boundary</h2><p>GUI means graphical user interface: windows, controls, and visual feedback through which a person operates the system.</p><a href="#ourd-gui-safety-boundary">Open technical lesson →</a></article><article><span>02</span><h2>Primary Invariant</h2><p>EON means execution and operational nexus: the governed boundary that binds authority, evidence, approval, exact targets, commands, and rollback before execution.</p><a href="#primary-invariant">Open technical lesson →</a></article><article><span>03</span><h2>Mutation Boundary</h2><p>API means application programming interface: a defined way for software components to request services from one another.</p><a href="#mutation-boundary">Open technical lesson →</a></article><article><span>04</span><h2>Untrusted Data</h2><p>API means application programming interface: a defined way for software components to request services from one another.</p><a href="#untrusted-data">Open technical lesson →</a></article><article><span>05</span><h2>Model Boundary</h2><p>HTTP means hypertext transfer protocol: the request-and-response protocol commonly used by web clients and servers.</p><a href="#model-boundary">Open technical lesson →</a></article><article><span>06</span><h2>Export Boundary</h2><p>the phrase &#x27;export boundary&#x27; names the responsibility, rule, or architectural boundary that this part of the documentation asks the reader to inspect</p><a href="#export-boundary">Open technical lesson →</a></article></div></section>
+      <div data-view-content="technical">
       <section class="map-panel" aria-labelledby="map-title">
         <div>
           <p class="terminal-label">INTERACTIVE DOCUMENT CIRCUIT</p>
@@ -201,6 +218,7 @@
         <p>These summaries are paraphrases for teaching. Follow the links for the authoritative source text.</p>
         <ol class="reference-list"><li id="ref-S1"><span class="reference-id">S1</span><a href="GUI_SAFETY.md">GUI_SAFETY.md</a><p>The checked-in Markdown is the primary local evidence. Its claims remain subject to current-source validation and exact-snapshot review.</p></li><li id="ref-R9"><span class="reference-id">R9</span><a href="https://www.w3.org/WAI/ARIA/apg/practices/keyboard-interface/" rel="noreferrer">WAI-ARIA Authoring Practices: Developing a Keyboard Interface</a><p><strong>World Wide Web Consortium Web Accessibility Initiative</strong> — W3C guidance explains that interactive interfaces need predictable keyboard movement, visible focus, and controls whose behaviour is understandable without relying on a mouse.</p></li><li id="ref-R1"><span class="reference-id">R1</span><a href="https://www.sei.cmu.edu/library/software-architecture-in-practice-fourth-edition/" rel="noreferrer">Software Architecture in Practice, 4th Edition</a><p><strong>Len Bass, Paul Clements, and Rick Kazman</strong> — The textbook treats architecture as the disciplined management of quality attributes, trade-offs, lifecycle change, and organizational value.</p></li><li id="ref-R8"><span class="reference-id">R8</span><a href="https://www.nasa.gov/reference/systems-engineering-handbook/" rel="noreferrer">NASA Systems Engineering Handbook</a><p><strong>National Aeronautics and Space Administration</strong> — NASA explains systems engineering as a lifecycle discipline that connects stakeholder needs, requirements, design, implementation, verification, validation, and technical decision-making.</p></li><li id="ref-R5"><span class="reference-id">R5</span><a href="https://mitpress.mit.edu/9780262016629/engineering-a-safer-world/" rel="noreferrer">Engineering a Safer World: Systems Thinking Applied to Safety</a><p><strong>Nancy G. Leveson</strong> — Leveson argues that complex software-intensive systems should be understood through interacting controls, constraints, feedback, and sociotechnical context rather than through isolated component failure alone.</p></li><li id="ref-R2"><span class="reference-id">R2</span><a href="https://csrc.nist.gov/pubs/sp/800/160/v1/r1/final" rel="noreferrer">NIST SP 800-160 Vol. 1 Rev. 1: Engineering Trustworthy Secure Systems</a><p><strong>Ron Ross, Mark Winstead, and Michael McEvilley</strong> — NIST frames trustworthiness as a whole-system engineering concern that must be addressed through requirements, architecture, implementation, verification, validation, and lifecycle evidence.</p></li><li id="ref-R7"><span class="reference-id">R7</span><a href="https://ieeexplore.ieee.org/document/1451869" rel="noreferrer">The Protection of Information in Computer Systems</a><p><strong>Jerome H. Saltzer and Michael D. Schroeder</strong> — The classic protection principles include least privilege, fail-safe defaults, complete mediation, economy of mechanism, and explicit design rather than secrecy.</p></li><li id="ref-R4"><span class="reference-id">R4</span><a href="https://www.rfc-editor.org/info/rfc2119/" rel="noreferrer">RFC 2119 and BCP 14 requirement language</a><p><strong>Scott Bradner and the IETF</strong> — The RFC distinguishes absolute requirements, recommendations, and optional behaviour so readers can tell policy force from ordinary emphasis.</p></li><li id="ref-R3"><span class="reference-id">R3</span><a href="https://csrc.nist.gov/pubs/sp/800/218/final" rel="noreferrer">NIST SP 800-218: Secure Software Development Framework 1.1</a><p><strong>Murugiah Souppaya, Karen Scarfone, and Donna Dodson</strong> — The Secure Software Development Framework recommends integrating secure practices into the development lifecycle and using a shared vocabulary for producers, acquirers, and reviewers.</p></li><li id="ref-R13"><span class="reference-id">R13</span><a href="https://csrc.nist.gov/pubs/sp/800/92/final" rel="noreferrer">NIST SP 800-92: Guide to Computer Security Log Management</a><p><strong>Karen Kent and Murugiah Souppaya</strong> — NIST treats logs as evidence that must be generated, protected, reviewed, and managed across a lifecycle so events can support detection and investigation.</p></li><li id="ref-R10"><span class="reference-id">R10</span><a href="https://www.rfc-editor.org/rfc/rfc8785.html" rel="noreferrer">RFC 8785: JSON Canonicalization Scheme</a><p><strong>Anders Rundgren, Bruce Jordan, and Samuel Erdtman</strong> — The RFC defines a repeatable JSON representation so hashing and signing use the same bytes even when ordinary serializers could choose different layouts.</p></li><li id="ref-R15"><span class="reference-id">R15</span><a href="https://www.rfc-editor.org/rfc/rfc8259.html" rel="noreferrer">RFC 8259: The JavaScript Object Notation Data Interchange Format</a><p><strong>Tim Bray and the IETF</strong> — The RFC defines JSON as a text format for structured values and specifies the grammar needed for different implementations to exchange the same information.</p></li><li id="ref-R12"><span class="reference-id">R12</span><a href="https://git-scm.com/book/en/v2/Git-Internals-Git-Objects" rel="noreferrer">Git Internals: Git Objects</a><p><strong>Git Project</strong> — Git stores content-addressed objects whose identifiers depend on content, allowing snapshots and relationships to be checked rather than trusted by name.</p></li><li id="ref-R14"><span class="reference-id">R14</span><a href="https://docs.python.org/3/library/dataclasses.html" rel="noreferrer">Python Standard Library: dataclasses</a><p><strong>Python Software Foundation</strong> — Python documents data classes as a way to declare named fields and generate standard methods, making record structure explicit and inspectable.</p></li></ol>
       </section>
+      </div>
       <nav class="document-pager" aria-label="Previous and next documents"><a class="pager-link previous" href="GUI_EVENT_SCHEMA.html">← OURD GUI Event Schema</a><a class="pager-link next" href="GUI_SELECTION_TRACE.html">OURD GUI Selection Trace →</a></nav>
     </main>
   </div>

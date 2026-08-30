@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "fixtures": [
+    {"fixture_id": "lamp-loop", "title": "Lamp problem loop", "states": ["You report a dark lamp", "Map bulb, fitting, switch, circuit, breaker, and supply", "Test one hypothesis", "Check authority before any wiring change", "Observe whether the lamp turns on", "Record the qualified result or failure"]},
+    {"fixture_id": "read-only-run", "title": "Read-only repository run", "states": ["Workspace selected", "Read authority confirmed", "Repository inspected", "Proposal returned", "No file mutation permitted"]},
+    {"fixture_id": "evidence-layers", "title": "Belief and verification", "states": ["Model proposes a cause", "Source record supports or contradicts it", "Simulation exercises a candidate", "Execution evidence remains separate", "Qualification records limitations"]},
+    {"fixture_id": "lamp-ourd", "title": "Lamp OURD map", "states": ["Problem boundary", "Bulb", "Fitting", "Switch", "Circuit", "Breaker", "Power supply", "Unresolved relation"]},
+    {"fixture_id": "lamp-iurm", "title": "Lamp controlled tests", "states": ["Freeze observation conditions", "Test known-good bulb", "Test switch continuity", "Inspect breaker state", "Compare responses"]},
+    {"fixture_id": "egcf-command", "title": "EGCF command parts", "states": ["Objective", "Scope", "Risk", "Evidence", "Approval", "Execution", "Rollback"]},
+    {"fixture_id": "eon-proposal", "title": "Exact action proposal", "states": ["Target path", "Source snapshot", "Candidate hash", "Authority", "Tests", "Approval", "Rollback"]},
+    {"fixture_id": "lamp-cfel", "title": "Failed bulb hypothesis", "states": ["Expected: light turns on", "Observed: light remains off", "Collision recorded", "Bad-bulb hypothesis loses support", "Blind retry blocked"]},
+    {"fixture_id": "saa-retrieval", "title": "Qualified retrieval", "states": ["Describe context", "Search algorithm records", "Search reasoning records", "Check failure memory", "Reuse, adapt, generate, or abstain"]},
+    {"fixture_id": "one-dimension-adaptation", "title": "One-dimension adaptation", "states": ["Qualified parent", "Select one allowed dimension", "Preserve other invariants", "Create lineage-bound candidate", "Require new evidence"]},
+    {"fixture_id": "ab-evidence", "title": "Candidate versus baseline", "states": ["Freeze baseline", "Run common workload", "Measure candidate", "Check regressions", "Classify result"]},
+    {"fixture_id": "closed-loop", "title": "Closed improvement loop", "states": ["Candidate qualified", "Promotion approved", "Canonical record stored", "Later context arrives", "Qualified record re-retrieved"]},
+    {"fixture_id": "complete-workflow", "title": "Complete governed workflow", "states": ["Interpret", "Map", "Experiment", "Compile", "Review exact action", "Verify", "Learn", "Retrieve", "Improve"]},
+    {"fixture_id": "bread-experiment", "title": "Bread experiment", "states": ["Dense loaf observed", "Freeze recipe", "Vary proofing time", "Measure rise and crumb", "Record limits"]},
+    {"fixture_id": "controller-oscillation", "title": "Controller oscillation", "states": ["Map controller, sensor, process, delay, gain, and setpoint", "Freeze plant conditions", "Vary gain", "Measure oscillation", "Bound conclusion"]},
+    {"fixture_id": "brake-vibration", "title": "Brake vibration", "states": ["Record speed and braking conditions", "Map wheel, rotor, pad, suspension, and road", "Test one dimension", "Preserve safety boundary", "Record evidence"]},
+    {"fixture_id": "research-hypotheses", "title": "Competing hypotheses", "states": ["Declare alternatives", "Predict discriminating outcomes", "Collect evidence", "Update support", "Preserve unresolved state"]},
+    {"fixture_id": "parser-regression", "title": "Parser regression", "states": ["Freeze failing input", "Map grammar and precedence", "Dry-run candidate", "Run regression evidence", "Record result"]},
+    {"fixture_id": "unsupported-claim", "title": "Unsupported claim", "states": ["Identify claim", "Locate source evidence", "Separate inference", "Add limitation", "Approve supported wording"]},
+    {"fixture_id": "business-comparison", "title": "Process comparison", "states": ["Freeze workload", "Define quality measures", "Run both processes", "Check hidden costs", "Record bounded decision"]}
+  ],
+  "refusals": [
+    {"refusal_id": "write-without-path", "choice": "Enable write mode without a path", "violated_invariant": "Bounded write mode requires at least one explicit write path.", "required_evidence": "A human-declared path or pattern defining the permitted proposal boundary."},
+    {"refusal_id": "write-with-yolo", "choice": "Combine bounded write mode with yolo", "violated_invariant": "Bounded write mode never bypasses exact-candidate review.", "required_evidence": "Use a separately reviewed authority manifest when broader approval policy is intended."},
+    {"refusal_id": "adapt-two-dimensions", "choice": "Change two adaptation dimensions", "violated_invariant": "The adaptation record permits one controlled dimension.", "required_evidence": "Create a new experiment plan that represents and tests the coupled change explicitly."},
+    {"refusal_id": "promote-without-evidence", "choice": "Promote an untested candidate", "violated_invariant": "Canonical promotion requires the declared qualification evidence.", "required_evidence": "Complete the candidate-versus-baseline evidence contract and regression checks."}
+  ]
+}

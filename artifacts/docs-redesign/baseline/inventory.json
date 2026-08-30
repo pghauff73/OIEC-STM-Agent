@@ -1,0 +1,14 @@
+{
+  "date": "2026-08-30",
+  "commit": "0f3ce90a2c8360667f67ada20d113c1f7d540514",
+  "worktree_status": [
+    "?? DOCS_NOVICE_FIRST_REDESIGN_IMPLEMENTATION_PLAN.md"
+  ],
+  "documents": 42,
+  "concepts": 333,
+  "relational_objects": 989,
+  "relational_relations": 1399,
+  "homepage_bytes": 1760381,
+  "manifest_bytes": 1384468,
+  "relational_ids_sha256": "66805dda605345b5fa720c6e56ced88308b2adcc3d7363e3e63bbb0e2586a5ad"
+}

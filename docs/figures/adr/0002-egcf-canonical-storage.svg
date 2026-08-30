@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1160" height="317" viewBox="0 0 1160 317">
+<svg data-visual-grammar="1" data-visual-role="expert-document" data-doc-node="document-adr-0002-egcf-canonical-storage-md" data-node-role="process" aria-label="ADR 0002: Canonical Ledger and Content-Addressed Objects" tabindex="0" xmlns="http://www.w3.org/2000/svg" width="1160" height="317" viewBox="0 0 1160 317"><title>ADR 0002: Canonical Ledger and Content-Addressed Objects</title><desc>Generated expert-document diagram for ADR 0002: Canonical Ledger and Content-Addressed Objects.</desc>
 <style>
   :root { color-scheme: light; }
   svg { background:#fbf8ff; font-family:'Courier New',monospace; }

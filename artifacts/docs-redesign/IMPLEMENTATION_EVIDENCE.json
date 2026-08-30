@@ -1,0 +1,421 @@
+{
+  "additional_features": {
+    "belief_vs_verified_visuals": {
+      "evidence": [
+        "tools/docs_visual_grammar.py",
+        "tests.test_docs_visual_grammar.DocumentationVisualGrammarTests.test_tutorial_diagrams_use_typed_edges"
+      ],
+      "status": "pass"
+    },
+    "break_the_invariant_lessons": {
+      "evidence": [
+        "tests.test_docs_tutorials.DocumentationTutorialTests.test_refusal_lessons_publish_break_the_invariant_fixtures"
+      ],
+      "status": "pass"
+    },
+    "command_recipes": {
+      "evidence": [
+        "tests.test_docs_cli_catalog.DocumentationCliCatalogTests.test_program_aliases_and_recipes_match_real_parsers"
+      ],
+      "status": "pass"
+    },
+    "concept_linting": {
+      "evidence": [
+        "tests/test_docs_learning_catalog.py",
+        "tests/test_docs_status_catalog.py",
+        "tests/test_docs_visual_grammar.py"
+      ],
+      "status": "pass"
+    },
+    "documentation_coverage_report": {
+      "evidence": [
+        "docs/site-manifest.json#coverage"
+      ],
+      "status": "pass"
+    },
+    "evidence_badges": {
+      "evidence": [
+        "docs/site-manifest.json#coverage.concepts.evidence_badges"
+      ],
+      "status": "pass"
+    },
+    "failure_museum": {
+      "evidence": [
+        "docs/failure-museum.html",
+        "tests.test_docs_interactions.DocumentationInteractionTests.test_timeline_and_failure_museum_are_source_bound"
+      ],
+      "status": "pass"
+    },
+    "intent_oriented_search": {
+      "evidence": [
+        "tests.test_docs_interactions.DocumentationInteractionTests.test_intent_routes_cover_natural_language_failure_and_provider_queries"
+      ],
+      "status": "pass"
+    },
+    "invention_timeline": {
+      "evidence": [
+        "docs/timeline.html",
+        "tests.test_docs_interactions.DocumentationInteractionTests.test_timeline_and_failure_museum_are_source_bound"
+      ],
+      "status": "pass"
+    },
+    "page_source_snapshots": {
+      "evidence": [
+        "tests.test_docs_accessibility.DocumentationAccessibilityTests.test_every_page_binds_version_date_and_source_snapshot"
+      ],
+      "status": "pass"
+    },
+    "printable_course": {
+      "evidence": [
+        "tests.test_docs_accessibility.DocumentationAccessibilityTests.test_learning_styles_declare_motion_print_and_mobile_fallbacks"
+      ],
+      "status": "pass"
+    },
+    "source_code_bridge": {
+      "evidence": [
+        "tests.test_docs_site.DocumentationSiteTests.test_every_local_page_and_anchor_link_resolves"
+      ],
+      "status": "pass"
+    },
+    "status_decoder": {
+      "evidence": [
+        "tests.test_docs_status_catalog.DocumentationStatusCatalogTests.test_source_statuses_are_closed_and_decodable"
+      ],
+      "status": "pass"
+    },
+    "teacher_mode": {
+      "evidence": [
+        "tests.test_docs_tutorials.DocumentationTutorialTests.test_every_lesson_has_generated_modes_diagram_and_fixtures"
+      ],
+      "status": "pass"
+    },
+    "vocabulary_memory": {
+      "evidence": [
+        "tests.test_docs_security.DocumentationSecurityTests.test_local_storage_is_limited_to_display_preferences"
+      ],
+      "status": "pass"
+    }
+  },
+  "baseline_commit": "0f3ce90a2c8360667f67ada20d113c1f7d540514",
+  "branch": "main",
+  "date": "2026-08-30",
+  "documentation_version": "0.7.0",
+  "generated": {
+    "acronyms": 21,
+    "case_studies": 8,
+    "concepts": 333,
+    "expert_documents": 42,
+    "headings": 606,
+    "homepage_bytes": 9030,
+    "homepage_elements": 201,
+    "homepage_object_embeds": 1,
+    "html_pages": 417,
+    "parser_validated_commands": 11,
+    "relational_objects": 989,
+    "relational_relations": 1399,
+    "statuses": 74,
+    "svg_figures": 1384,
+    "task_routes": 9,
+    "tutorials": 14
+  },
+  "hashes": {
+    "desktop_screenshot_sha256": "d2ee78b05bc75a36031936344e4c9bca0522dba07325f783691fe2d61f78a07e",
+    "docs_tree_sha256": "315e0c522f8282197729b91dcf65ec5dddfc59132648c2f9258abeb31837aff3",
+    "generator_sha256": "e004bcd7ea1521b851f019a1ec1bf263671db6dac88ef55ab7b339c6b9e9996f",
+    "javascript_sha256": "404ef2ff4f3eb77a751b771a44c4f9d0e22817d45df49adfcaf62f5ab2c75e11",
+    "manifest_sha256": "1071fc625853c7f369668e0835e4d8e7a8478b147538a1a4b908b8f2ed0fc030",
+    "mobile_screenshot_sha256": "f97d3dfde87b2818f128d813cac20c62800d787f10c8be445ab1b9879f06af23",
+    "plan_sha256": "4300308097fc977c40af68774370e5e7f6e13c18b773c01f3e8b25c858aaa8b0",
+    "relational_ids_sha256": "66805dda605345b5fa720c6e56ced88308b2adcc3d7363e3e63bbb0e2586a5ad",
+    "sdist_sha256": "151d4a5310ca032c81e4c4b3f13c9ca3fa791c1d2dc7dc387e1641ebc6ddc3e9",
+    "styles_sha256": "ec77e238cef16bb32baffdd648b42bd1d79e7cd1922f4f9a6855ec0143c2d03d",
+    "wheel_sha256": "3b8e4551654cc73eea88e65fdf783817bac53e6ffc3088e082d2f1ce07aaf603"
+  },
+  "release_gates": {
+    "commit_and_remote_main_identity": {
+      "reason": "The implementation remains uncommitted. Current local and remote main both point to the baseline commit, so no merged release SHA exists yet.",
+      "status": "pending"
+    },
+    "human_visual_review": {
+      "reason": "The user approved the reviewed visual snapshot by instructing \"commit and push\" on August 30, 2026 after receiving the source-bound visual approval checklist. The subsequent release-source delta only removed generated trailing whitespace and refreshed embedded snapshot identifiers; deterministic regeneration, 49 focused documentation tests, and 636 full repository tests passed without a visual-content change.",
+      "status": "pass"
+    }
+  },
+  "requirements": {
+    "R01": {
+      "evidence": [
+        "tests.test_docs_site.DocumentationSiteTests.test_index_teaches_before_linking_to_the_expert_explorer",
+        "artifacts/docs-redesign/validation/home-desktop.png",
+        "artifacts/docs-redesign/validation/home-mobile-375.png"
+      ],
+      "status": "deterministic_pass_human_review_pending",
+      "title": "Plain-language homepage"
+    },
+    "R02": {
+      "evidence": [
+        "tests.test_docs_accessibility.DocumentationAccessibilityTests.test_learn_pages_preserve_no_javascript_fallback",
+        "tests.test_docs_tutorials.DocumentationTutorialTests.test_every_lesson_has_generated_modes_diagram_and_fixtures"
+      ],
+      "status": "pass",
+      "title": "Learn and Technical layers"
+    },
+    "R03": {
+      "evidence": [
+        "tests.test_docs_learning_catalog.DocumentationLearningCatalogTests.test_every_concept_satisfies_the_teaching_contract",
+        "docs/site-manifest.json#coverage.concepts"
+      ],
+      "status": "pass",
+      "title": "Concept Teaching Contract"
+    },
+    "R04": {
+      "evidence": [
+        "tests.test_docs_tutorials.DocumentationTutorialTests.test_task_routes_and_case_studies_are_generated",
+        "docs/tutorial/fixtures/core-learning.json"
+      ],
+      "status": "pass",
+      "title": "Everyday system examples"
+    },
+    "R05": {
+      "evidence": [
+        "tests.test_docs_site.DocumentationSiteTests.test_index_teaches_before_linking_to_the_expert_explorer",
+        "docs/index.html"
+      ],
+      "status": "pass",
+      "title": "Homepage learning map"
+    },
+    "R06": {
+      "evidence": [
+        "tests.test_docs_learning_catalog.DocumentationLearningCatalogTests.test_curriculum_is_complete_and_ordered",
+        "docs/site-manifest.json#coverage.tutorials"
+      ],
+      "status": "pass",
+      "title": "Tutorial curriculum"
+    },
+    "R07": {
+      "evidence": [
+        "docs/index.html#first-15-minutes",
+        "tests.test_docs_cli_catalog.DocumentationCliCatalogTests.test_program_aliases_and_recipes_match_real_parsers"
+      ],
+      "status": "pass",
+      "title": "First 15 Minutes"
+    },
+    "R08": {
+      "evidence": [
+        "tools/docs_cli_catalog.py",
+        "tests.test_docs_cli_catalog.DocumentationCliCatalogTests.test_program_aliases_and_recipes_match_real_parsers"
+      ],
+      "status": "pass",
+      "title": "Main CLI walkthrough"
+    },
+    "R09": {
+      "evidence": [
+        "docs/tutorial/07_EON.md",
+        "tests.test_docs_cli_catalog.DocumentationCliCatalogTests.test_rejected_write_recipes_remain_rejected"
+      ],
+      "status": "pass",
+      "title": "Write-mode tutorial"
+    },
+    "R10": {
+      "evidence": [
+        "docs/tools.html",
+        "tests.test_docs_interactions.DocumentationInteractionTests.test_tools_cover_provider_capability_gui_and_explanation_routes",
+        "tests.test_docs_cli_catalog.DocumentationCliCatalogTests.test_generated_recipes_do_not_contain_real_secrets"
+      ],
+      "status": "pass",
+      "title": "Provider wizard"
+    },
+    "R11": {
+      "evidence": [
+        "docs/tutorial/06_EGCF.md",
+        "tests.test_docs_cli_catalog.DocumentationCliCatalogTests.test_program_aliases_and_recipes_match_real_parsers"
+      ],
+      "status": "pass",
+      "title": "EGCF beginner guide"
+    },
+    "R12": {
+      "evidence": [
+        "docs/figures/tutorial/t06.svg",
+        "tests.test_docs_visual_grammar.DocumentationVisualGrammarTests.test_tutorial_diagrams_use_typed_edges"
+      ],
+      "status": "pass",
+      "title": "Modifier visuals"
+    },
+    "R13": {
+      "evidence": [
+        "docs/tools.html",
+        "tests.test_docs_interactions.DocumentationInteractionTests.test_tools_cover_provider_capability_gui_and_explanation_routes"
+      ],
+      "status": "pass",
+      "title": "Capability analogy"
+    },
+    "R14": {
+      "evidence": [
+        "docs/tools.html",
+        "tests.test_docs_interactions.DocumentationInteractionTests.test_tools_cover_provider_capability_gui_and_explanation_routes",
+        "headless GUI smoke"
+      ],
+      "status": "pass",
+      "title": "GUI first launch"
+    },
+    "R15": {
+      "evidence": [
+        "tools/docs_visual_grammar.py",
+        "tests.test_docs_visual_grammar.DocumentationVisualGrammarTests.test_every_generated_svg_declares_accessible_visual_grammar"
+      ],
+      "status": "pass",
+      "title": "Universal SVG language"
+    },
+    "R16": {
+      "evidence": [
+        "docs/assets/site.js#setupSharedSvgCards",
+        "tests.test_docs_visual_grammar.DocumentationVisualGrammarTests.test_every_generated_svg_declares_accessible_visual_grammar"
+      ],
+      "status": "pass",
+      "title": "Interactive SVGs"
+    },
+    "R17": {
+      "evidence": [
+        "docs/assets/site.js#setupDocumentationViews",
+        "tests.test_docs_tutorials.DocumentationTutorialTests.test_every_lesson_has_generated_modes_diagram_and_fixtures"
+      ],
+      "status": "pass",
+      "title": "Formalism slider"
+    },
+    "R18": {
+      "evidence": [
+        "docs/site-manifest.json#coverage.concepts.misconceptions",
+        "tests.test_docs_learning_catalog.DocumentationLearningCatalogTests.test_every_concept_satisfies_the_teaching_contract"
+      ],
+      "status": "pass",
+      "title": "Misconception sections"
+    },
+    "R19": {
+      "evidence": [
+        "docs/index.html",
+        "docs/assets/styles.css#careful-sequence",
+        "tests.test_docs_accessibility.DocumentationAccessibilityTests.test_learning_styles_declare_motion_print_and_mobile_fallbacks"
+      ],
+      "status": "pass",
+      "title": "Before and with OIEC animation"
+    },
+    "R20": {
+      "evidence": [
+        "docs/index.html#learn-by-task",
+        "tests.test_docs_interactions.DocumentationInteractionTests.test_intent_routes_cover_natural_language_failure_and_provider_queries"
+      ],
+      "status": "pass",
+      "title": "Learn by task"
+    },
+    "R21": {
+      "evidence": [
+        "docs/tools.html",
+        "tests.test_docs_cli_catalog.DocumentationCliCatalogTests.test_program_aliases_and_recipes_match_real_parsers"
+      ],
+      "status": "pass",
+      "title": "CLI command builder"
+    },
+    "R22": {
+      "evidence": [
+        "docs/status-decoder.html",
+        "tests.test_docs_status_catalog.DocumentationStatusCatalogTests.test_source_statuses_are_closed_and_decodable"
+      ],
+      "status": "pass",
+      "title": "Output decoder"
+    },
+    "R23": {
+      "evidence": [
+        "docs/tools.html",
+        "tests.test_docs_site.DocumentationSiteTests.test_relational_relations_are_closed_and_canonical"
+      ],
+      "status": "pass",
+      "title": "Trace This Term"
+    },
+    "R24": {
+      "evidence": [
+        "tests.test_docs_learning_catalog.DocumentationLearningCatalogTests.test_every_concept_satisfies_the_teaching_contract",
+        "tools/docs_learning_catalog.py#validate_prerequisite_graph"
+      ],
+      "status": "pass",
+      "title": "Concept prerequisites"
+    },
+    "R25": {
+      "evidence": [
+        "docs/glossary.html",
+        "tests.test_docs_learning_catalog.DocumentationLearningCatalogTests.test_mandatory_acronyms_have_complete_records"
+      ],
+      "status": "pass",
+      "title": "Encyclopedia glossary"
+    },
+    "R26": {
+      "evidence": [
+        "docs/tutorial/fixtures/core-learning.json",
+        "tests.test_docs_security.DocumentationSecurityTests.test_learning_tools_have_no_network_or_execution_path"
+      ],
+      "status": "pass",
+      "title": "Read-only sandboxes"
+    },
+    "R27": {
+      "evidence": [
+        "docs/case-studies/index.html",
+        "docs/site-manifest.json#coverage.case_studies"
+      ],
+      "status": "pass",
+      "title": "Real-world domains"
+    },
+    "R28": {
+      "evidence": [
+        "docs/architecture-explorer.html",
+        "tests.test_docs_site.DocumentationSiteTests.test_relational_ids_preserve_the_frozen_baseline_sequence"
+      ],
+      "status": "pass",
+      "title": "Architecture Explorer"
+    },
+    "R29": {
+      "evidence": [
+        "docs/assets/styles.css",
+        "artifacts/docs-redesign/validation/home-desktop.png",
+        "artifacts/docs-redesign/validation/home-mobile-375.png"
+      ],
+      "status": "deterministic_pass_human_review_pending",
+      "title": "Novice visual tone"
+    },
+    "R30": {
+      "evidence": [
+        "tests.test_docs_learning_catalog.DocumentationLearningCatalogTests.test_curriculum_is_complete_and_ordered",
+        "tests.test_docs_learning_catalog.DocumentationLearningCatalogTests.test_paths_routes_cases_and_content_kinds_are_closed"
+      ],
+      "status": "pass",
+      "title": "Progressive learning progression"
+    }
+  },
+  "schema_version": 1,
+  "source_snapshot_sha256": "4443b6b05d4a168b90d1926725734c11729f0587bb91ec2a468d2c4a62397057",
+  "validation": {
+    "clean_wheel_command_smoke": {
+      "commands": [
+        "oiec-stm-agent",
+        "ourd-agent",
+        "egcf",
+        "oiec-stm-gui",
+        "ourd-gui"
+      ],
+      "status": "pass"
+    },
+    "complete_repository_discovery": {
+      "seconds": 935.635,
+      "skipped": 1,
+      "status": "pass",
+      "tests": 636
+    },
+    "focused_documentation_tests": {
+      "seconds": 12.063,
+      "status": "pass",
+      "tests": 49
+    },
+    "git_diff_check": "pass",
+    "headless_gui_smoke": "pass",
+    "javascript_syntax": "pass",
+    "python_compileall": "pass",
+    "reproducible_wheel_and_sdist": "pass"
+  }
+}

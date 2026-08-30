@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en" data-doc-view="learn" data-doc-depth="novice">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Read and assemble an inspectable semantic command.">
+<title>EGCF · OIEC Tutorial</title><link rel="stylesheet" href="../assets/styles.css"></head>
+<body data-page="tutorial" data-lesson-id="T06" data-source-hash="897b09c3e24e2d73f2d43ac53366defd05e8f860bb90a5d9669501db758d013b" data-docs-version="0.7.0" data-source-snapshot="sha256:4443b6b05d4a168b90d1926725734c11729f0587bb91ec2a468d2c4a62397057" data-build-date="2026-08-30">
+<header class="site-header"><a class="brand" href="../index.html"><span class="brand-mark">T06</span><span><strong>OIEC LEARNING PATH</strong><small>EGCF</small></span></a><nav class="header-actions"><a href="index.html">TUTORIALS</a><a href="../architecture-explorer.html">TECHNICAL EXPLORER</a></nav></header>
+<main class="learning-main">
+  <section class="view-controls" aria-label="Explanation controls">
+  <div class="view-tabs" role="group" aria-label="Documentation view">
+    <button type="button" data-doc-view="learn" aria-pressed="true">Learn</button>
+    <button type="button" data-doc-view="technical" aria-pressed="false">Technical</button>
+  </div>
+  <div class="depth-control">
+    <label for="explanation-depth">Explanation depth</label>
+    <input id="explanation-depth" type="range" min="0" max="2" step="1" value="0" data-depth-control>
+    <div aria-hidden="true"><span>Novice</span><span>Intermediate</span><span>Expert</span></div>
+  </div>
+  <button type="button" data-action="teacher-mode" aria-pressed="false">Teacher mode</button>
+  <button type="button" data-action="reset-learning">Reset learning preferences</button>
+</section>
+<noscript><p class="noscript-note">JavaScript is optional. Learn and Technical content remain visible in source order.</p></noscript>
+
+  <section class="prerequisite-map" aria-label="Learning prerequisites"><p class="terminal-label">YOU ARE HERE</p><div><span class="prerequisite-node is-complete">✓ T05</span><span aria-hidden="true">→</span><span class="prerequisite-node is-current">T06 · YOU ARE HERE</span><span aria-hidden="true">→</span><span class="prerequisite-node">T07</span></div></section>
+  <section class="learning-hero"><p class="eyebrow">LESSON 06 · BUILT 2026-08-30</p><h1>EGCF</h1><p>Read and assemble an inspectable semantic command.</p><aside class="evidence-badge" data-doc-status="Tested"><strong>Tested</strong><span>Documentation evidence</span><ul><li><code>docs/tutorial/06_EGCF.md</code></li><li><code>tests/test_docs_tutorials.py</code></li></ul></aside></section>
+  <figure class="learning-diagram"><object type="image/svg+xml" data="../figures/tutorial/t06.svg"><a href="../figures/tutorial/t06.svg">Open lesson diagram</a></object><figcaption>Shared visual grammar: processes, gates, evidence, authority, and verified or hypothetical relations.</figcaption></figure>
+  <article class="learning-prose" data-view-content="learn"><section class="learning-section" id="what-you-will-learn"><h2>What you will learn</h2><p>You will read the EGCF command grammar and attach scope, risk, evidence, approval, explanation, simulation, and rollback to an objective.</p></section><section class="learning-section" id="everyday-analogy"><h2>Everyday analogy</h2><p>A workshop job card names the job, machine, permitted area, risk, required inspection, approval route, and recovery plan. It is more useful than “fix it.”</p></section><section class="learning-section" id="new-vocabulary"><h2>New vocabulary</h2><p><strong>EGCF</strong> means Evidence-Governed Command Fabric. A <strong>namespace</strong> groups one responsibility. A <strong>verb</strong> selects an operation. <strong>Modifiers</strong> declare governance details.</p></section><section class="learning-section" id="diagram"><h2>Diagram</h2><p>The diagram decomposes a command into objective, scope, risk, evidence, approval, execution, and rollback.</p>
+<p>Capability levels use a workshop analogy:</p>
+<div class="table-scroll"><table><thead><tr><th>Level</th><th>Everyday meaning</th><th>Current documentation behavior</th></tr></thead><tbody><tr><td>C0</td><td>Look at the machine</td><td>Observe only</td></tr><tr><td>C1</td><td>Draw a repair plan</td><td>Analyse and propose</td></tr><tr><td>C2</td><td>Try it on a test machine</td><td>Simulate</td></tr><tr><td>C3</td><td>Repair the actual machine with permission</td><td>Authorized local mutation</td></tr><tr><td>C4</td><td>Change something outside the workshop</td><td>Fail closed in the current implementation</td></tr><tr><td>C5</td><td>Perform a critical or destructive operation</td><td>Fail closed in the current implementation</td></tr></tbody></table></div></section><section class="learning-section" id="command-or-interaction"><h2>Command or interaction</h2><pre data-language="bash"><code>egcf capability list --repo .
+
+egcf run fix parser regression \
+  --repo . \
+  --input &#x27;{&quot;target&quot;:&quot;src/parser.py&quot;}&#x27; \
+  --dry-run \
+  --why</code></pre></section><section class="learning-section" id="expected-output"><h2>Expected output</h2><p>The first command lists capability definitions. The second compiles and explains a plan without executing it.</p></section><section class="learning-section" id="what-just-happened"><h2>What just happened?</h2><p>The grammar is <code>egcf namespace verb options</code>. The <code>run</code> namespace accepts a natural-language objective, while other namespaces invoke typed verbs from the command catalog.</p></section><section class="learning-section" id="try-changing-this"><h2>Try changing this</h2><p>Enable graph output and strict checking in the command builder. Observe which generated tokens explain those choices.</p></section><section class="learning-section" id="common-mistake"><h2>Common mistake</h2><p>Do not treat EGCF as arbitrary shell execution. Its namespace, verb, inputs, capability, risk, evidence, and lifecycle remain typed and governed.</p></section><section class="learning-section" id="next-lesson"><h2>Next lesson</h2><p>Continue to <strong>EON</strong> and inspect the exact boundary around a proposed mutation.</p></section></article>
+
+<section class="technical-panel" data-view-content="technical">
+  <p class="terminal-label">TECHNICAL CONTRACT</p>
+  <h2>T06 catalog record</h2>
+  <dl class="technical-grid">
+    <div><dt>Source</dt><dd><code>docs/tutorial/06_EGCF.md</code></dd></div>
+    <div><dt>Prerequisites</dt><dd>T05</dd></div>
+    <div><dt>Vocabulary</dt><dd>EGCF, scope, risk</dd></div>
+    <div><dt>Fixture IDs</dt><dd>egcf-command</dd></div>
+    <div><dt>Source SHA-256</dt><dd><code>897b09c3e24e2d73f2d43ac53366defd05e8f860bb90a5d9669501db758d013b</code></dd></div>
+    <div><dt>Build date</dt><dd>2026-08-30</dd></div>
+  </dl>
+  <div class="command-grid"><article class="command-card" data-command-id="egcf-capability-list"><h3>List EGCF capabilities</h3><pre data-language="bash"><code>egcf capability list --repo .</code></pre><p>Inspect available capability definitions.</p><ul><li><code>capability</code><span>select the capability namespace</span></li><li><code>list</code><span>select the list verb</span></li><li><code>--repo .</code><span>use the current workspace</span></li></ul><button type="button" data-copy-command>Copy command</button></article><article class="command-card" data-command-id="egcf-dry-run"><h3>Dry-run a parser fix</h3><pre data-language="bash"><code>egcf run fix parser regression --repo . --input &#x27;{&quot;target&quot;:&quot;src/parser.py&quot;}&#x27; --dry-run --why</code></pre><p>Compile and explain a proposed operation without executing it.</p><ul><li><code>run fix parser regression</code><span>state the objective</span></li><li><code>--input</code><span>supply typed JSON inputs</span></li><li><code>--dry-run</code><span>prevent execution</span></li><li><code>--why</code><span>explain compilation decisions</span></li></ul><button type="button" data-copy-command>Copy command</button></article></div>
+</section>
+
+
+<section class="tutorial-sandbox" data-tutorial-sandbox="egcf-command">
+  <div><p class="terminal-label">READ-ONLY BROWSER SANDBOX</p><h2>EGCF command parts</h2>
+  <p>Runs checked-in deterministic fixture data only. It has no provider, network, filesystem, command, or mutation path.</p></div>
+  <div class="sandbox-controls"><button type="button" data-sandbox-run>Run next step</button><button type="button" data-sandbox-reset>Reset</button></div>
+  <ol class="sandbox-output" aria-live="polite"></ol>
+  <script type="application/json" data-sandbox-fixture>{"fixture_id":"egcf-command","title":"EGCF command parts","states":["Objective","Scope","Risk","Evidence","Approval","Execution","Rollback"]}</script>
+</section>
+
+  <section class="teacher-panel" data-teacher-content hidden><h2>Teacher mode</h2><p><strong>Objective:</strong> Read and assemble an inspectable semantic command.</p><details><summary>Exercise and checked answer</summary><p>Explain the lesson using a different domain while preserving its authority and evidence boundaries.</p><p><strong>Answer check:</strong> the explanation must name the input, controlled boundary, evidence, output, and a common misconception.</p></details></section>
+  <nav class="learning-pager"><a href="index.html">← Tutorial index</a><a class="primary-action" href="07_EON.html">Next lesson →</a></nav>
+</main><script src="../assets/site.js" defer></script></body></html>

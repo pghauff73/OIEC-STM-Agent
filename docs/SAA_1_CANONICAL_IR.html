@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-doc-view="learn" data-doc-depth="novice">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -7,7 +7,7 @@
   <title>SAA-1 Canonical Structural IR · OIEC-STM Systems Architect Academy</title>
   <link rel="stylesheet" href="assets/styles.css">
 </head>
-<body data-page="document" data-source-hash="e0f55c5abbaaee3a57d51eaa1aba1462907bd777062cf74e630aa4ef81ecbc29">
+<body data-page="document" data-source-hash="e0f55c5abbaaee3a57d51eaa1aba1462907bd777062cf74e630aa4ef81ecbc29" data-docs-version="0.7.0" data-source-snapshot="sha256:4443b6b05d4a168b90d1926725734c11729f0587bb91ec2a468d2c4a62397057" data-build-date="2026-08-30">
   <div class="scanline-overlay" aria-hidden="true"></div>
   <div class="reading-progress" aria-hidden="true"><span></span></div>
   <header class="site-header">
@@ -32,6 +32,21 @@
       </div>
     </aside>
     <main class="document-main">
+      <section class="view-controls" aria-label="Explanation controls">
+  <div class="view-tabs" role="group" aria-label="Documentation view">
+    <button type="button" data-doc-view="learn" aria-pressed="true">Learn</button>
+    <button type="button" data-doc-view="technical" aria-pressed="false">Technical</button>
+  </div>
+  <div class="depth-control">
+    <label for="explanation-depth">Explanation depth</label>
+    <input id="explanation-depth" type="range" min="0" max="2" step="1" value="0" data-depth-control>
+    <div aria-hidden="true"><span>Novice</span><span>Intermediate</span><span>Expert</span></div>
+  </div>
+  <button type="button" data-action="teacher-mode" aria-pressed="false">Teacher mode</button>
+  <button type="button" data-action="reset-learning">Reset learning preferences</button>
+</section>
+<noscript><p class="noscript-note">JavaScript is optional. Learn and Technical content remain visible in source order.</p></noscript>
+
       <section class="document-hero">
         <p class="eyebrow">SYSTEMS ARCHITECT LEARNING EDITION · BUILT 2026-08-30</p>
         <h1>SAA-1 Canonical Structural IR</h1>
@@ -42,6 +57,8 @@
           <div><dt>SOURCE SHA-256</dt><dd>e0f55c5abbaa</dd></div>
         </dl>
       </section>
+      <section class="document-learn-overview" data-view-content="learn"><div class="teaching-heading"><div><p class="terminal-label">LEARN VIEW</p><h2>Plain-language map of this source</h2><p>Use these short explanations first. Switch to Technical for the complete source-bound essays, references, and logic maps.</p></div><aside class="evidence-badge" data-doc-status="Implemented"><strong>Implemented</strong><span>Documentation evidence</span><ul><li><code>SAA_1_CANONICAL_IR.md</code></li></ul></aside></div><div class="learning-card-grid"><article><span>01</span><h2>SAA-1 Canonical Structural IR</h2><p>the phrase &#x27;saa1 canonical structural ir&#x27; names the responsibility, rule, or architectural boundary that this part of the documentation asks the reader to inspect</p><a href="#saa-1-canonical-structural-ir">Open technical lesson →</a></article><article><span>02</span><h2>Scope</h2><p>the phrase &#x27;scope&#x27; names the responsibility, rule, or architectural boundary that this part of the documentation asks the reader to inspect</p><a href="#scope">Open technical lesson →</a></article><article><span>03</span><h2>Canonical vocabulary</h2><p>the phrase &#x27;canonical vocabulary&#x27; names the responsibility, rule, or architectural boundary that this part of the documentation asks the reader to inspect</p><a href="#canonical-vocabulary">Open technical lesson →</a></article><article><span>04</span><h2>Interface identity</h2><p>the phrase &#x27;interface identity&#x27; names the responsibility, rule, or architectural boundary that this part of the documentation asks the reader to inspect</p><a href="#interface-identity">Open technical lesson →</a></article><article><span>05</span><h2>Node identity</h2><p>the phrase &#x27;node identity&#x27; names the responsibility, rule, or architectural boundary that this part of the documentation asks the reader to inspect</p><a href="#node-identity">Open technical lesson →</a></article><article><span>06</span><h2>Commutativity</h2><p>the phrase &#x27;commutativity&#x27; names the responsibility, rule, or architectural boundary that this part of the documentation asks the reader to inspect</p><a href="#commutativity">Open technical lesson →</a></article><article><span>07</span><h2>Branch and termination semantics</h2><p>the phrase &#x27;branch and termination semantics&#x27; names the responsibility, rule, or architectural boundary that this part of the documentation asks the reader to inspect</p><a href="#branch-and-termination-semantics">Open technical lesson →</a></article><article><span>08</span><h2>Exact canonicalization and bounded symmetry</h2><p>the phrase &#x27;exact canonicalization and bounded symmetry&#x27; names the responsibility, rule, or architectural boundary that this part of the documentation asks the reader to inspect</p><a href="#exact-canonicalization-and-bounded-symmetry">Open technical lesson →</a></article><article><span>09</span><h2>Declarative input</h2><p>ID means identifier: a value used to name and distinguish one object from another.</p><a href="#declarative-input">Open technical lesson →</a></article><article><span>10</span><h2>Output</h2><p>the phrase &#x27;output&#x27; names the responsibility, rule, or architectural boundary that this part of the documentation asks the reader to inspect</p><a href="#output">Open technical lesson →</a></article><article><span>11</span><h2>SAA-1 invariants</h2><p>the phrase &#x27;saa1 invariants&#x27; names the responsibility, rule, or architectural boundary that this part of the documentation asks the reader to inspect</p><a href="#saa-1-invariants">Open technical lesson →</a></article><article><span>12</span><h2>Deferred work</h2><p>the phrase &#x27;deferred work&#x27; names the responsibility, rule, or architectural boundary that this part of the documentation asks the reader to inspect</p><a href="#deferred-work">Open technical lesson →</a></article></div></section>
+      <div data-view-content="technical">
       <section class="map-panel" aria-labelledby="map-title">
         <div>
           <p class="terminal-label">INTERACTIVE DOCUMENT CIRCUIT</p>
@@ -402,6 +419,7 @@ unknown fields and unknown primitives fail closed</code></pre></div>
         <p>These summaries are paraphrases for teaching. Follow the links for the authoritative source text.</p>
         <ol class="reference-list"><li id="ref-S1"><span class="reference-id">S1</span><a href="SAA_1_CANONICAL_IR.md">SAA_1_CANONICAL_IR.md</a><p>The checked-in Markdown is the primary local evidence. Its claims remain subject to current-source validation and exact-snapshot review.</p></li><li id="ref-R10"><span class="reference-id">R10</span><a href="https://www.rfc-editor.org/rfc/rfc8785.html" rel="noreferrer">RFC 8785: JSON Canonicalization Scheme</a><p><strong>Anders Rundgren, Bruce Jordan, and Samuel Erdtman</strong> — The RFC defines a repeatable JSON representation so hashing and signing use the same bytes even when ordinary serializers could choose different layouts.</p></li><li id="ref-R15"><span class="reference-id">R15</span><a href="https://www.rfc-editor.org/rfc/rfc8259.html" rel="noreferrer">RFC 8259: The JavaScript Object Notation Data Interchange Format</a><p><strong>Tim Bray and the IETF</strong> — The RFC defines JSON as a text format for structured values and specifies the grammar needed for different implementations to exchange the same information.</p></li><li id="ref-R12"><span class="reference-id">R12</span><a href="https://git-scm.com/book/en/v2/Git-Internals-Git-Objects" rel="noreferrer">Git Internals: Git Objects</a><p><strong>Git Project</strong> — Git stores content-addressed objects whose identifiers depend on content, allowing snapshots and relationships to be checked rather than trusted by name.</p></li><li id="ref-R14"><span class="reference-id">R14</span><a href="https://docs.python.org/3/library/dataclasses.html" rel="noreferrer">Python Standard Library: dataclasses</a><p><strong>Python Software Foundation</strong> — Python documents data classes as a way to declare named fields and generate standard methods, making record structure explicit and inspectable.</p></li><li id="ref-R13"><span class="reference-id">R13</span><a href="https://csrc.nist.gov/pubs/sp/800/92/final" rel="noreferrer">NIST SP 800-92: Guide to Computer Security Log Management</a><p><strong>Karen Kent and Murugiah Souppaya</strong> — NIST treats logs as evidence that must be generated, protected, reviewed, and managed across a lifecycle so events can support detection and investigation.</p></li></ol>
       </section>
+      </div>
       <nav class="document-pager" aria-label="Previous and next documents"><a class="pager-link previous" href="SAA_11_3_11_4_SAA_12_CLOSED_IMPROVEMENT.html">← SAA-11.3, SAA-11.4 and SAA-12: Closed qualified improvement</a><a class="pager-link next" href="SAA_2_NORMALIZATION.html">SAA-2 Bounded 0–1 Normalization →</a></nav>
     </main>
   </div>
