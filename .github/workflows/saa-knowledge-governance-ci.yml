@@ -43,12 +43,15 @@ jobs:
             ourd/egcf/algebra/promotion_governance.py \
             ourd/egcf/knowledge_governance_store.py \
             ourd/egcf/knowledge_governance_store_grounded.py \
-            ourd/egcf/intelligence.py
+            ourd/egcf/intelligence.py \
+            ourd/improvement_cli.py \
+            ourd/cli.py
 
       - name: Import public facade
         run: |
           python - <<'PY'
           import ourd.egcf.intelligence as intelligence
+          import ourd.improvement_cli as improvement_cli
           for name in (
               "KnowledgeGovernanceStore",
               "FailureObservation",
@@ -63,9 +66,13 @@ jobs:
               "assess_canonical_promotion_governance",
           ):
               assert hasattr(intelligence, name), name
-          print("public SAA-12.1-12.4 facade OK")
+          assert callable(improvement_cli.main)
+          print("public SAA-12.1-12.4 facade and improvement CLI OK")
           PY
 
       - name: Run knowledge governance qualification suite
         run: |
-          python -m unittest tests.test_saa_knowledge_governance -v
+          python -m unittest \
+            tests.test_saa_knowledge_governance \
+            tests.test_saa_improvement_cli \
+            -v

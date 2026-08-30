@@ -4,6 +4,7 @@ import argparse
 import getpass
 import json
 import os
+import sys
 import tempfile
 from pathlib import Path
 from typing import Optional, Sequence
@@ -167,8 +168,14 @@ def _validate_write_args(parser: argparse.ArgumentParser, args: argparse.Namespa
 
 
 def main(argv: Optional[Sequence[str]] = None) -> int:
+    arguments = list(sys.argv[1:] if argv is None else argv)
+    if arguments and arguments[0] == "improvement":
+        from .improvement_cli import main as improvement_main
+
+        return improvement_main(arguments[1:])
+
     parser = build_parser()
-    args = parser.parse_args(argv)
+    args = parser.parse_args(arguments)
     _validate_write_args(parser, args)
     root = Path(args.repo)
     workspace = Workspace(root)
