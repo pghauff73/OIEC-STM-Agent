@@ -131,20 +131,101 @@ def _add_payload(args: argparse.Namespace) -> dict[str, Any]:
 
 
 def _make_opportunity(store: EGCFStore, payload: Mapping[str, Any]) -> ImprovementOpportunity:
+    required = (
+        "source_signature",
+        "objective",
+        "evidence_value_bp",
+        "uncertainty_reduction_bp",
+        "cost_bp",
+        "risk_bp",
+    )
+    missing = [name for name in required if payload.get(name) is None or payload.get(name) == ""]
+    if "expected_impact_bp" not in payload and "impact_bp" not in payload:
+        missing.append("expected_impact_bp")
+    if "opportunity_id" not in payload and "id" not in payload:
+        missing.append("opportunity_id")
+    if not payload.get("kind"):
+        missing.append("kind")
+    if missing:
+        raise EGCFError("opportunity input is missing required fields: " + ", ".join(sorted(set(missing))))
     return make_improvement_opportunity(
         store,
         opportunity_id=str(payload.get("opportunity_id", payload.get("id", ""))),
         kind=str(payload.get("kind", "")),
         source_signature=str(payload.get("source_signature", "")),
         objective=str(payload.get("objective", "")),
-        evidence_value_bp=int(payload.get("evidence_value_bp")),
+        evidence_value_bp=int(payload["evidence_value_bp"]),
         expected_impact_bp=int(payload.get("expected_impact_bp", payload.get("impact_bp"))),
-        uncertainty_reduction_bp=int(payload.get("uncertainty_reduction_bp")),
-        cost_bp=int(payload.get("cost_bp")),
-        risk_bp=int(payload.get("risk_bp")),
+        uncertainty_reduction_bp=int(payload["uncertainty_reduction_bp"]),
+        cost_bp=int(payload["cost_bp"]),
+        risk_bp=int(payload["risk_bp"]),
         evidence_ids=tuple(payload.get("evidence_ids", ())),
         blocked_reasons=tuple(payload.get("blocked_reasons", ())),
     )
+
+
+def _opportunity_from_payload(payload: Mapping[str, Any]) -> ImprovementOpportunity:
+    return ImprovementOpportunity(
+        opportunity_id=str(payload["opportunity_id"]),
+        kind=str(payload["kind"]),
+        source_signature=str(payload["source_signature"]),
+        objective=str(payload["objective"]),
+        evidence_value_bp=int(payload["evidence_value_bp"]),
+        expected_impact_bp=int(payload["expected_impact_bp"]),
+        uncertainty_reduction_bp=int(payload["uncertainty_reduction_bp"]),
+        cost_bp=int(payload["cost_bp"]),
+        risk_bp=int(payload["risk_bp"]),
+        priority_bp=int(payload["priority_bp"]),
+        evidence_ids=tuple(payload.get("evidence_ids", ())),
+        independence_groups=tuple(payload.get("independence_groups", ())),
+        blocked_reasons=tuple(payload.get("blocked_reasons", ())),
+        opportunity_signature=str(payload["opportunity_signature"]),
+    )
+
+
+def _registered_opportunity_rows(governance: KnowledgeGovernanceStore) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    for path in sorted(governance.opportunity_root.glob("*/*.json")):
+        try:
+            envelope = json.loads(path.read_text(encoding="utf-8"))
+            payload = envelope["payload"]
+            opportunity = _opportunity_from_payload(payload)
+        except (OSError, json.JSONDecodeError, KeyError, TypeError, ValueError) as exc:
+            raise EGCFError(f"cannot read registered improvement opportunity {path}: {exc}") from exc
+        rows.append({"opportunity_ref": str(envelope["object_id"]), "opportunity": opportunity})
+    return rows
+
+
+def _registered_opportunities(
+    governance: KnowledgeGovernanceStore,
+    *,
+    kind: str | None = None,
+    eligible_only: bool = False,
+) -> list[ImprovementOpportunity]:
+    records = [row["opportunity"] for row in _registered_opportunity_rows(governance)]
+    if kind:
+        records = [item for item in records if item.kind == kind]
+    if eligible_only:
+        records = [item for item in records if item.eligible]
+    return records
+
+
+def _recorded_schedules(governance: KnowledgeGovernanceStore) -> list[dict[str, Any]]:
+    records: list[dict[str, Any]] = []
+    for path in sorted(governance.schedule_root.glob("*/*.json")):
+        try:
+            envelope = json.loads(path.read_text(encoding="utf-8"))
+            payload = envelope["payload"]
+        except (OSError, json.JSONDecodeError, KeyError, TypeError) as exc:
+            raise EGCFError(f"cannot read recorded improvement schedule {path}: {exc}") from exc
+        records.append(
+            {
+                "schedule_ref": str(envelope["object_id"]),
+                "created_at": str(envelope.get("created_at", "")),
+                "payload": payload,
+            }
+        )
+    return records
 
 
 def _percent(bp: int) -> str:
@@ -196,6 +277,28 @@ def _schedule_to_dict(schedule: Any, *, recorded_ref: str = "", explanation: Seq
     return payload
 
 
+def _register_opportunity_idempotently(
+    governance: KnowledgeGovernanceStore,
+    opportunity: ImprovementOpportunity,
+) -> str:
+    for row in _registered_opportunity_rows(governance):
+        existing = row["opportunity"]
+        if existing.opportunity_signature == opportunity.opportunity_signature:
+            return str(row["opportunity_ref"])
+        if existing.opportunity_id == opportunity.opportunity_id:
+            raise EGCFError(
+                f"opportunity id {opportunity.opportunity_id!r} is already registered with different content"
+            )
+    return governance.register_opportunity(opportunity)
+
+
+def _register_schedule_idempotently(governance: KnowledgeGovernanceStore, schedule: Any) -> str:
+    for row in _recorded_schedules(governance):
+        if row["payload"].get("schedule_signature") == schedule.schedule_signature:
+            return str(row["schedule_ref"])
+    return governance.register_schedule(schedule)
+
+
 def main(argv: Optional[Sequence[str]] = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
@@ -205,7 +308,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             governance = KnowledgeGovernanceStore(egcf)
             if args.command == "add":
                 opportunity = _make_opportunity(egcf, _add_payload(args))
-                ref = governance.register_opportunity(opportunity)
+                ref = _register_opportunity_idempotently(governance, opportunity)
                 result = {"opportunity_ref": ref, **opportunity.to_dict()}
                 if args.json_output:
                     print(json.dumps(result, indent=2, ensure_ascii=False))
@@ -218,7 +321,8 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
                 return 0
 
             if args.command == "list":
-                records = governance.improvement_opportunities(
+                records = _registered_opportunities(
+                    governance,
                     kind=args.kind,
                     eligible_only=args.eligible_only,
                 )
@@ -230,7 +334,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
 
             if args.command == "schedule":
                 kinds = set(args.kind)
-                records = governance.improvement_opportunities(eligible_only=args.eligible_only)
+                records = _registered_opportunities(governance, eligible_only=args.eligible_only)
                 if kinds:
                     records = [item for item in records if item.kind in kinds]
                 policy = ImprovementSchedulingPolicy(
@@ -240,7 +344,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
                     minimum_priority_bp=args.min_priority_bp,
                 )
                 schedule = schedule_improvements(records, policy)
-                recorded_ref = governance.register_schedule(schedule) if args.record else ""
+                recorded_ref = _register_schedule_idempotently(governance, schedule) if args.record else ""
                 by_signature = {item.opportunity_signature: item for item in records}
                 explanation = _explain_schedule(schedule, by_signature) if args.explain else ()
                 result = _schedule_to_dict(schedule, recorded_ref=recorded_ref, explanation=explanation)
@@ -256,7 +360,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
                 return 0
 
             if args.command == "history":
-                records = governance.improvement_schedules()
+                records = _recorded_schedules(governance)
                 if args.json_output:
                     print(json.dumps(records, indent=2, ensure_ascii=False))
                 elif not records:
