@@ -155,9 +155,10 @@ class SAARepositoryBrainFeedTests(unittest.TestCase):
 
     def test_top_level_brain_dispatch_exposes_repository_feeding(self):
         output = io.StringIO()
-        with redirect_stdout(output):
-            status = entrypoint_main(["brain", "--help"])
-        self.assertEqual(0, status)
+        with self.assertRaises(SystemExit) as raised, redirect_stdout(output):
+            entrypoint_main(["brain", "--help"])
+        self.assertEqual(0, raised.exception.code)
+        self.assertIn("Batch-feed evidence and candidate knowledge", output.getvalue())
         self.assertIn("repo", output.getvalue())
         self.assertIn("static", output.getvalue().casefold())
 
