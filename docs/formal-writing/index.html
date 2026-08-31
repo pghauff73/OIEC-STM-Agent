@@ -130,18 +130,20 @@
         </article>
 
         <article class="claim-card challenge">
-          <span class="claim-id">Counterclaim K1</span>
+          <span class="claim-id">Qualified editorial inference K1</span>
           <h3>Governance can impose cost.</h3>
           <p>
             Exact snapshots, evidence records, narrow capabilities, candidate review, and
             deterministic tests add work that a direct “generate and write” loop does not require.
             For low-impact tasks, that cost may appear disproportionate.
           </p>
-          <p class="warrant"><strong>Response.</strong> The architecture retains read-only use and
-            risk-sensitive paths, but the overhead is real. The repository therefore supports a
-            bounded engineering trade-off; it does not establish that every task needs the same
-            level of ceremony.</p>
-          <a class="source-link" href="https://github.com/pghauff73/OIEC-STM-Agent/blob/d82969ac152281394423d30063a87d4de0f8889b/COMPLETE_IMPLEMENTATION_STRATEGY.md" rel="noopener noreferrer">Primary source P4: complete strategy</a>
+          <p class="warrant"><strong>Status and response.</strong> The existence of additional
+            records, gates, and review steps is source-backed. The conclusion that these controls
+            impose process cost, and that the cost can be disproportionate for some low-impact
+            tasks, is a qualified editorial inference. The architecture retains read-only and
+            risk-sensitive paths; it does not establish that every task needs the same level of
+            ceremony.</p>
+          <a class="source-link" href="#sources">Sources informing the inference: P3, P4, E1, E2</a>
         </article>
       </div>
 
@@ -334,11 +336,13 @@
 
       <div class="topology-contract">
         <div>
-          <h3>Machine-checked topology</h3>
+          <h3>Machine-checkable topology</h3>
           <p>
-            Current source defines one thesis, typed nodes, typed edges, referenced evidence,
-            acyclic positive support, thesis connectivity, and an explicit response to active
-            counterclaims.
+            Current source provides an <code>ArgumentTopology.validate()</code> validator for one
+            thesis, typed nodes and edges, referenced evidence, acyclic positive support, thesis
+            connectivity, and responses to active counterclaims. The normal CLI path injects
+            textual Formal Writing guidance; generated essays are not automatically constructed or
+            validated as an <code>ArgumentTopology</code>.
           </p>
           <a class="source-link" href="https://github.com/pghauff73/OIEC-STM-Agent/blob/d82969ac152281394423d30063a87d4de0f8889b/ourd/formal_writing.py" rel="noopener noreferrer">Primary source P5: formal_writing.py</a>
         </div>
@@ -365,7 +369,8 @@
         <p>
           The command grants a path-bounded writing request for one exact workspace snapshot. It
           does not grant unrestricted mutation, autonomous approval, or authority to invent
-          citations.
+          citations. The executable argument routing is identified as P8, and the non-authoritative
+          prompt integration is identified as P9.
         </p>
       </div>
     </section>
@@ -479,6 +484,12 @@
         </article>
         <article class="source-entry" data-source-class="project">
           <span class="source-id">P7</span><div><h3>docs/ACRONYM_GLOSSARY.md</h3><p>Canonical expansions, meanings, non-expansions, analogies, and relations for the project vocabulary used on this page.</p><a href="https://github.com/pghauff73/OIEC-STM-Agent/blob/d82969ac152281394423d30063a87d4de0f8889b/docs/ACRONYM_GLOSSARY.md" rel="noopener noreferrer">Open repository source</a></div>
+        </article>
+        <article class="source-entry" data-source-class="project">
+          <span class="source-id">P8</span><div><h3>ourd/cli.py</h3><p>Executable <code>--write</code>, <code>--write-path</code>, and <code>--writing-profile</code> arguments, temporary bounded authority construction, and profile routing.</p><a href="https://github.com/pghauff73/OIEC-STM-Agent/blob/d82969ac152281394423d30063a87d4de0f8889b/ourd/cli.py" rel="noopener noreferrer">Open repository source</a></div>
+        </article>
+        <article class="source-entry" data-source-class="project">
+          <span class="source-id">P9</span><div><h3>ourd/writing.py</h3><p>Non-authoritative writing-guidance integration, profile selection, citation-integrity rules, and bounded deterministic command capabilities.</p><a href="https://github.com/pghauff73/OIEC-STM-Agent/blob/d82969ac152281394423d30063a87d4de0f8889b/ourd/writing.py" rel="noopener noreferrer">Open repository source</a></div>
         </article>
 
         <article class="source-entry" data-source-class="writing">
