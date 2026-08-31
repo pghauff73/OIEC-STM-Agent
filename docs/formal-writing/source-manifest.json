@@ -16,7 +16,9 @@
       "proposition": "Model output remains advisory and cannot create its own mutation or release authority.",
       "source_ids": [
         "P1",
-        "P4"
+        "P4",
+        "P8",
+        "P9"
       ],
       "status": "source-backed"
     },
@@ -35,7 +37,9 @@
       "source_ids": [
         "P1",
         "P2",
-        "P3"
+        "P3",
+        "P8",
+        "P9"
       ],
       "status": "source-backed"
     },
@@ -56,11 +60,22 @@
       "source_ids": [
         "P5",
         "P6",
+        "P9",
         "W1",
         "W2",
         "W3",
         "W4",
         "W5"
+      ],
+      "status": "source-backed"
+    },
+    {
+      "claim_id": "OP1",
+      "proposition": "The current CLI exposes bounded writing arguments and routes selected Formal Writing guidance into the task prompt without making that guidance an authority grant.",
+      "source_ids": [
+        "P3",
+        "P8",
+        "P9"
       ],
       "status": "source-backed"
     },
@@ -119,7 +134,7 @@
       "path": "../../ourd/formal_writing.py",
       "repository_path": "ourd/formal_writing.py",
       "git_blob_sha": "dcf970f31f0996a1929f17af5c62cefedb29225f",
-      "role": "Executable Formal Writing profiles and topology validation"
+      "role": "Executable Formal Writing profiles and topology validator"
     },
     {
       "source_id": "P6",
@@ -138,6 +153,24 @@
       "repository_path": "docs/ACRONYM_GLOSSARY.md",
       "git_blob_sha": "999993beade85d2036b73c7f64bfb42d3f077a55",
       "role": "Canonical vocabulary and expansions"
+    },
+    {
+      "source_id": "P8",
+      "class": "project",
+      "title": "ourd/cli.py",
+      "path": "../../ourd/cli.py",
+      "repository_path": "ourd/cli.py",
+      "git_blob_sha": "cb13544802557523f4a6ff4b1321c1a1de575c2a",
+      "role": "Executable CLI arguments, bounded write-session construction, and profile routing"
+    },
+    {
+      "source_id": "P9",
+      "class": "project",
+      "title": "ourd/writing.py",
+      "path": "../../ourd/writing.py",
+      "repository_path": "ourd/writing.py",
+      "git_blob_sha": "937cb88c9f948ea6dde9c4e262c8929d52448626",
+      "role": "Non-authoritative Formal Writing prompt integration and bounded command capabilities"
     },
     {
       "source_id": "W1",
