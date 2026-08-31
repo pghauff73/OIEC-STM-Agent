@@ -22,17 +22,20 @@ jobs:
           ref: fix/canonical-stm-ourd-expansions
           fetch-depth: 0
 
-      - name: Apply canonical STM and OURD definitions
+      - name: Correct canonical source definitions
         shell: bash
         run: |
           python3 - <<'PY'
           from pathlib import Path
 
           root = Path.cwd()
-          text_suffixes = {
-              ".css", ".html", ".js", ".json", ".md", ".py", ".svg",
-              ".toml", ".txt", ".yaml", ".yml",
-          }
+          source_paths = (
+              root / "docs" / "ACRONYM_GLOSSARY.md",
+              root / "docs" / "tutorial" / "04_OURD.md",
+              root / "tools" / "build_docs_site.py",
+              root / "tools" / "docs_concept_catalog.py",
+              root / "tools" / "docs_learning_catalog.py",
+          )
 
           replacements = (
               (
@@ -110,15 +113,8 @@ jobs:
           )
 
           changed = []
-          for path in sorted(root.rglob("*")):
-              if not path.is_file() or path.suffix.lower() not in text_suffixes:
-                  continue
-              if ".git" in path.parts or ".ourd-agent" in path.parts:
-                  continue
-              try:
-                  original = path.read_text(encoding="utf-8")
-              except UnicodeDecodeError:
-                  continue
+          for path in source_paths:
+              original = path.read_text(encoding="utf-8")
               updated = original
               for old, new in replacements:
                   updated = updated.replace(old, new)
@@ -126,61 +122,88 @@ jobs:
                   path.write_text(updated, encoding="utf-8")
                   changed.append(path.relative_to(root).as_posix())
 
-          registry = root / "tools" / "docs_learning_catalog.py"
-          registry_text = registry.read_text(encoding="utf-8")
-          required_registry_fragments = (
+          registry_text = (root / "tools" / "docs_learning_catalog.py").read_text(encoding="utf-8")
+          for fragment in (
               'AcronymRecord("STM", "State Transition Machine"',
               'AcronymRecord("OURD", "Object Unique Relational Decomposition"',
-          )
-          for fragment in required_registry_fragments:
+          ):
               if fragment not in registry_text:
                   raise SystemExit(f"canonical registry correction missing: {fragment}")
 
-          glossary = root / "docs" / "ACRONYM_GLOSSARY.md"
-          glossary_text = glossary.read_text(encoding="utf-8")
+          glossary_text = (root / "docs" / "ACRONYM_GLOSSARY.md").read_text(encoding="utf-8")
           for fragment in ("**State Transition Machine**", "Object Unique Relational Decomposition"):
               if fragment not in glossary_text:
                   raise SystemExit(f"glossary correction missing: {fragment}")
 
-          forbidden = (
-              "Object-Universe-Relation-Dependency",
-              "STM v1.2 bounded-transition layer",
-              "STM | bounded-transition layer; no letter-by-letter expansion declared",
-          )
-          for fragment in forbidden:
-              if fragment in registry_text or fragment in glossary_text:
-                  raise SystemExit(f"stale canonical wording remains: {fragment}")
-
           test_path = root / "tests" / "test_canonical_acronyms.py"
           test_path.write_text(
-              '''"""Regression tests for repository-owned acronym expansions."""\n\n'
-              'from pathlib import Path\n'
-              'import unittest\n\n\n'
-              'ROOT = Path(__file__).resolve().parents[1]\n\n\n'
-              'class CanonicalAcronymTests(unittest.TestCase):\n'
-              '    def test_registry_uses_owner_declared_expansions(self) -> None:\n'
-              '        text = (ROOT / "tools" / "docs_learning_catalog.py").read_text(encoding="utf-8")\n'
-              '        self.assertIn(\'AcronymRecord("STM", "State Transition Machine"\', text)\n'
-              '        self.assertIn(\'AcronymRecord("OURD", "Object Unique Relational Decomposition"\', text)\n'
-              '        self.assertNotIn("Object-Universe-Relation-Dependency", text)\n\n'
-              '    def test_reader_glossary_matches_registry(self) -> None:\n'
-              '        text = (ROOT / "docs" / "ACRONYM_GLOSSARY.md").read_text(encoding="utf-8")\n'
-              '        self.assertIn("State Transition Machine", text)\n'
-              '        self.assertIn("Object Unique Relational Decomposition", text)\n'
-              '        self.assertNotIn("Object-Universe-Relation-Dependency", text)\n'
-              '        self.assertNotIn("STM v1.2 bounded-transition layer", text)\n\n\n'
-              'if __name__ == "__main__":\n'
-              '    unittest.main()\n''',
+              '''"""Regression tests for repository-owned acronym expansions."""
+
+from pathlib import Path
+import unittest
+
+
+ROOT = Path(__file__).resolve().parents[1]
+
+
+class CanonicalAcronymTests(unittest.TestCase):
+    def test_registry_uses_owner_declared_expansions(self) -> None:
+        text = (ROOT / "tools" / "docs_learning_catalog.py").read_text(encoding="utf-8")
+        self.assertIn('AcronymRecord("STM", "State Transition Machine"', text)
+        self.assertIn('AcronymRecord("OURD", "Object Unique Relational Decomposition"', text)
+        self.assertNotIn("Object-Universe-Relation-Dependency", text)
+
+    def test_reader_glossary_matches_registry(self) -> None:
+        text = (ROOT / "docs" / "ACRONYM_GLOSSARY.md").read_text(encoding="utf-8")
+        self.assertIn("State Transition Machine", text)
+        self.assertIn("Object Unique Relational Decomposition", text)
+        self.assertNotIn("Object-Universe-Relation-Dependency", text)
+        self.assertNotIn("STM v1.2 bounded-transition layer", text)
+
+
+if __name__ == "__main__":
+    unittest.main()
+''',
               encoding="utf-8",
           )
           changed.append(test_path.relative_to(root).as_posix())
 
-          print("Corrected files:")
+          print("Corrected canonical sources:")
           for item in changed:
               print(f"  {item}")
           PY
 
-          python3 -m py_compile tools/docs_learning_catalog.py tests/test_canonical_acronyms.py
+          python3 -m py_compile tools/docs_learning_catalog.py tools/docs_concept_catalog.py tools/build_docs_site.py tests/test_canonical_acronyms.py
+          python3 -m unittest tests.test_canonical_acronyms
+
+      - name: Regenerate documentation from corrected sources
+        shell: bash
+        run: |
+          python3 tools/build_docs_site.py --date 2026-08-31
+          python3 - <<'PY'
+          from pathlib import Path
+
+          forbidden = (
+              "Object-Universe-Relation-Dependency",
+              "STM v1.2 bounded-transition layer",
+          )
+          roots = (Path("docs"), Path("tools/docs_learning_catalog.py"), Path("tools/docs_concept_catalog.py"))
+          stale = []
+          for root in roots:
+              paths = root.rglob("*") if root.is_dir() else (root,)
+              for path in paths:
+                  if not path.is_file() or path.suffix.lower() not in {".html", ".json", ".md", ".py", ".svg"}:
+                      continue
+                  try:
+                      text = path.read_text(encoding="utf-8")
+                  except UnicodeDecodeError:
+                      continue
+                  for phrase in forbidden:
+                      if phrase in text:
+                          stale.append(f"{path}: {phrase}")
+          if stale:
+              raise SystemExit("stale canonical definitions remain:\n" + "\n".join(stale))
+          PY
           python3 -m unittest tests.test_canonical_acronyms
           git diff --check
 
