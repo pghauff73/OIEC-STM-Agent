@@ -1,0 +1,195 @@
+name: One-shot canonical acronym correction
+
+on:
+  push:
+    branches:
+      - fix/canonical-stm-ourd-expansions
+
+permissions:
+  contents: write
+
+concurrency:
+  group: canonical-acronym-fix
+  cancel-in-progress: false
+
+jobs:
+  correct-definitions:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out correction branch
+        uses: actions/checkout@v4
+        with:
+          ref: fix/canonical-stm-ourd-expansions
+          fetch-depth: 0
+
+      - name: Apply canonical STM and OURD definitions
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          root = Path.cwd()
+          text_suffixes = {
+              ".css", ".html", ".js", ".json", ".md", ".py", ".svg",
+              ".toml", ".txt", ".yaml", ".yml",
+          }
+
+          replacements = (
+              (
+                  "The repository currently treats **OIEC** as the canonical project name and **STM** as the name of its bounded-transition layer. Neither source contract declares a letter-by-letter expansion for those names.",
+                  "The repository treats **OIEC** as the canonical project name without a declared expansion. **STM** expands to **State Transition Machine**, the bounded-transition layer.",
+              ),
+              (
+                  "| **STM** | STM v1.2 bounded-transition layer; no letter-by-letter expansion is currently declared |",
+                  "| **STM** | State Transition Machine |",
+              ),
+              (
+                  "| **OIEC-STM** | OIEC joined to its STM bounded-transition layer |",
+                  "| **OIEC-STM** | OIEC joined to its State Transition Machine |",
+              ),
+              (
+                  "**Canonical reading:** `STM v1.2 bounded-transition layer`",
+                  "**Expansion:** **State Transition Machine**",
+              ),
+              (
+                  "**Do not confuse it with:** Ordinary conversational **short-term memory**. The repository does not define STM that way, and it does not currently publish a letter-by-letter expansion.",
+                  "**Do not confuse it with:** Ordinary conversational **short-term memory**. In this repository, STM explicitly means **State Transition Machine**.",
+              ),
+              (
+                  "**Reading:** OIEC joined to the STM bounded-transition layer.",
+                  "**Reading:** OIEC joined to the **State Transition Machine (STM)** bounded-transition layer.",
+              ),
+              (
+                  "Within this repository, STM names the bounded-transition layer. A reader should not import an unrelated cognitive-memory meaning.",
+                  "Within this repository, STM means **State Transition Machine**, the bounded-transition layer. A reader should not import an unrelated cognitive-memory meaning.",
+              ),
+              (
+                  "For OIEC and STM, use the canonical-name rule:",
+                  "For OIEC, use the canonical-name rule. Expand STM normally at first use:",
+              ),
+              (
+                  "> **OIEC-STM-Agent** uses the **STM bounded-transition layer** to constrain admissible state changes.",
+                  "> **OIEC-STM-Agent** uses a **State Transition Machine (STM)** bounded-transition layer to constrain admissible state changes.",
+              ),
+              (
+                  "| STM | bounded-transition layer; no letter-by-letter expansion declared |",
+                  "| STM | State Transition Machine |",
+              ),
+              (
+                  "The current source names STM as a bounded-transition layer; it does not define STM as ordinary conversational short-term memory.",
+                  "STM is the State Transition Machine: the bounded-transition layer that governs admissible state changes; it is not ordinary conversational short-term memory.",
+              ),
+              (
+                  "STM v1.2 bounded-transition layer",
+                  "State Transition Machine",
+              ),
+              (
+                  "Object-Universe-Relation-Dependency",
+                  "Object Unique Relational Decomposition",
+              ),
+              (
+                  "Maps what belongs to a problem and how the parts relate.",
+                  "Decomposes a problem into unique objects and the relations between them.",
+              ),
+              (
+                  "Maps what belongs to a problem and how its parts relate",
+                  "Decomposes a problem into unique objects and the relations between them",
+              ),
+              (
+                  "A canonical relational problem representation with explicit boundaries and unresolved relations.",
+                  "A canonical relational decomposition into unique objects, their relations, dependencies, boundaries, exclusions, and unresolved relations.",
+              ),
+              (
+                  "A canonical relational model of the problem territory. It identifies objects, boundaries, relationships, dependencies, exclusions, and unresolved relations.",
+                  "A canonical decomposition of the problem territory into unique objects and their relationships, dependencies, boundaries, exclusions, and unresolved relations.",
+              ),
+              (
+                  "OURD names the object universe, relations, boundaries, exclusions, and unknowns.",
+                  "OURD decomposes the problem into unique objects, relations, dependencies, boundaries, exclusions, and unknowns.",
+              ),
+          )
+
+          changed = []
+          for path in sorted(root.rglob("*")):
+              if not path.is_file() or path.suffix.lower() not in text_suffixes:
+                  continue
+              if ".git" in path.parts or ".ourd-agent" in path.parts:
+                  continue
+              try:
+                  original = path.read_text(encoding="utf-8")
+              except UnicodeDecodeError:
+                  continue
+              updated = original
+              for old, new in replacements:
+                  updated = updated.replace(old, new)
+              if updated != original:
+                  path.write_text(updated, encoding="utf-8")
+                  changed.append(path.relative_to(root).as_posix())
+
+          registry = root / "tools" / "docs_learning_catalog.py"
+          registry_text = registry.read_text(encoding="utf-8")
+          required_registry_fragments = (
+              'AcronymRecord("STM", "State Transition Machine"',
+              'AcronymRecord("OURD", "Object Unique Relational Decomposition"',
+          )
+          for fragment in required_registry_fragments:
+              if fragment not in registry_text:
+                  raise SystemExit(f"canonical registry correction missing: {fragment}")
+
+          glossary = root / "docs" / "ACRONYM_GLOSSARY.md"
+          glossary_text = glossary.read_text(encoding="utf-8")
+          for fragment in ("**State Transition Machine**", "Object Unique Relational Decomposition"):
+              if fragment not in glossary_text:
+                  raise SystemExit(f"glossary correction missing: {fragment}")
+
+          forbidden = (
+              "Object-Universe-Relation-Dependency",
+              "STM v1.2 bounded-transition layer",
+              "STM | bounded-transition layer; no letter-by-letter expansion declared",
+          )
+          for fragment in forbidden:
+              if fragment in registry_text or fragment in glossary_text:
+                  raise SystemExit(f"stale canonical wording remains: {fragment}")
+
+          test_path = root / "tests" / "test_canonical_acronyms.py"
+          test_path.write_text(
+              '''"""Regression tests for repository-owned acronym expansions."""\n\n'
+              'from pathlib import Path\n'
+              'import unittest\n\n\n'
+              'ROOT = Path(__file__).resolve().parents[1]\n\n\n'
+              'class CanonicalAcronymTests(unittest.TestCase):\n'
+              '    def test_registry_uses_owner_declared_expansions(self) -> None:\n'
+              '        text = (ROOT / "tools" / "docs_learning_catalog.py").read_text(encoding="utf-8")\n'
+              '        self.assertIn(\'AcronymRecord("STM", "State Transition Machine"\', text)\n'
+              '        self.assertIn(\'AcronymRecord("OURD", "Object Unique Relational Decomposition"\', text)\n'
+              '        self.assertNotIn("Object-Universe-Relation-Dependency", text)\n\n'
+              '    def test_reader_glossary_matches_registry(self) -> None:\n'
+              '        text = (ROOT / "docs" / "ACRONYM_GLOSSARY.md").read_text(encoding="utf-8")\n'
+              '        self.assertIn("State Transition Machine", text)\n'
+              '        self.assertIn("Object Unique Relational Decomposition", text)\n'
+              '        self.assertNotIn("Object-Universe-Relation-Dependency", text)\n'
+              '        self.assertNotIn("STM v1.2 bounded-transition layer", text)\n\n\n'
+              'if __name__ == "__main__":\n'
+              '    unittest.main()\n''',
+              encoding="utf-8",
+          )
+          changed.append(test_path.relative_to(root).as_posix())
+
+          print("Corrected files:")
+          for item in changed:
+              print(f"  {item}")
+          PY
+
+          python3 -m py_compile tools/docs_learning_catalog.py tests/test_canonical_acronyms.py
+          python3 -m unittest tests.test_canonical_acronyms
+          git diff --check
+
+      - name: Commit corrected definitions and remove this one-shot workflow
+        shell: bash
+        run: |
+          git rm .github/workflows/one-shot-canonical-acronym-fix.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Correct STM and OURD canonical expansions"
+          git push origin HEAD:fix/canonical-stm-ourd-expansions
