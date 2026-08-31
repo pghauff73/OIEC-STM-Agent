@@ -39,9 +39,9 @@
         <p class="lede">
           OIEC-STM-Agent is presented in its repository as a Python coding agent that separates
           task interpretation, relational reasoning, authority, evidence, execution, failure
-          feedback, and reusable knowledge. The central design claim is not that model output is
-          infallible. It is that persuasive output must not be mistaken for permission, proof, or
-          release authority.
+          feedback, and reusable knowledge. Its central design claim is not that model output is
+          infallible. Persuasive output must not be mistaken for permission, proof, or release
+          authority.
         </p>
         <div class="hero-actions">
           <a class="button primary" href="#thesis">Read the formal argument</a>
@@ -53,6 +53,7 @@
           <div><dt>Certification status</dt><dd>No certification claim</dd></div>
         </dl>
       </div>
+
       <aside class="thesis-card" aria-labelledby="thesis-card-title">
         <p class="card-kicker">Central proposition</p>
         <h2 id="thesis-card-title">Useful agency requires independent constraints.</h2>
@@ -72,8 +73,9 @@
     <section class="notice" aria-label="Epistemic status">
       <strong>Epistemic status.</strong>
       This website distinguishes repository assertions, dated implementation evidence, open plans,
-      and editorial synthesis. It does not convert a test result, model response, or documentation
-      statement into proof of correctness, safety certification, or release approval.
+      prompt guidance, and editorial synthesis. It does not convert a test result, model response,
+      or documentation statement into proof of correctness, safety certification, or release
+      approval.
     </section>
 
     <section class="section" id="thesis" aria-labelledby="thesis-title">
@@ -94,9 +96,9 @@
           <span class="claim-id">Claim C1</span>
           <h3>Model output must remain advisory.</h3>
           <p>
-            The README states that the model may inspect, reason, propose, generate candidate
-            patches, and analyse failures, but may not grant itself mutation authority, lower
-            deterministic risk, approve unsupported evidence, or certify a release.
+            The model may inspect, reason, propose, generate candidate patches, and analyse
+            failures. It may not grant itself mutation authority, lower deterministic risk,
+            approve unsupported evidence, or certify a release.
           </p>
           <p class="warrant"><strong>Warrant.</strong> A proposer cannot be the sole judge of the
             evidence and permission required to accept its own proposal.</p>
@@ -111,7 +113,7 @@
             boundary, and dimension state. An unchanged exhausted attempt is blocked; changed
             wording alone does not establish new progress.
           </p>
-          <p class="warrant"><strong>Warrant.</strong> Retry is rational only when the conditions
+          <p class="warrant"><strong>Warrant.</strong> Retry is rational only when conditions
             relevant to the previous failure have changed or a terminal stop is justified.</p>
           <a class="source-link" href="https://github.com/pghauff73/OIEC-STM-Agent/blob/d82969ac152281394423d30063a87d4de0f8889b/OIEC_STMV1_2_IMPLEMENTATION_REPORT.md" rel="noopener noreferrer">Primary source P2: implementation report</a>
         </article>
@@ -121,12 +123,12 @@
           <h3>Exact identity limits semantic drift.</h3>
           <p>
             Authority, source state, target paths, candidate bytes, command arguments, evidence,
-            risk, and use limits are bound into inspectable records before mutation. This makes a
-            later approval refer to a specific candidate rather than to a vague intention.
+            risk, and use limits are bound into inspectable records before mutation. An approval
+            therefore refers to a specific candidate rather than a vague intention.
           </p>
           <p class="warrant"><strong>Warrant.</strong> An approval whose object can silently change
             is not an approval of the resulting action.</p>
-          <a class="source-link" href="https://github.com/pghauff73/OIEC-STM-Agent/blob/d82969ac152281394423d30063a87d4de0f8889b/docs/WRITING_MODE.md" rel="noopener noreferrer">Primary source P3: Writing Mode</a>
+          <a class="source-link" href="https://github.com/pghauff73/OIEC-STM-Agent/blob/d82969ac152281394423d30063a87d4de0f8889b/ourd/authority.py" rel="noopener noreferrer">Primary source P10: authority implementation</a>
         </article>
 
         <article class="claim-card challenge">
@@ -150,8 +152,8 @@
       <div class="status-panel">
         <h3>Claim discipline used on this page</h3>
         <div class="status-grid">
-          <div><span class="status implemented">Repository-reported implementation</span><p>Bounded-transition primitives, formal-writing profile definitions, and governed writing mode are present in current source.</p></div>
-          <div><span class="status dated">Dated validation evidence</span><p>The August 28 implementation report records a 234-test run and additional checks. It is historical evidence tied to that report, not a timeless count.</p></div>
+          <div><span class="status implemented">Repository-reported implementation</span><p>Bounded-transition primitives, Formal Writing profile definitions, governed writing mode, and scoped authority construction are present in source.</p></div>
+          <div><span class="status dated">Dated validation evidence</span><p>The 28 August implementation report records a 234-test run and additional checks. It is historical evidence tied to that report, not a timeless count.</p></div>
           <div><span class="status open">Open program work</span><p>The complete strategy distinguishes integrated candidates from later qualification, exact-hash approval, certification, and release work.</p></div>
           <div><span class="status excluded">Not claimed</span><p>No general superiority, flawless output, autonomous authority, automatic essay compliance, or universal safety guarantee is inferred.</p></div>
         </div>
@@ -163,9 +165,9 @@
         <p class="eyebrow">02 — Governed architecture</p>
         <h2 id="architecture-title">Responsibilities are separated so that one component cannot silently become the whole system.</h2>
         <p>
-          The following diagram is a formal reading of the repository’s baseline and optional
-          reasoning paths. It is a responsibility map rather than a claim that every workflow is
-          strictly linear.
+          The diagram is a responsibility map rather than a claim that every workflow is strictly
+          linear. Human authority bounds the process; reasoning can expand candidate explanations,
+          but action identity, evidence, policy, and feedback remain separate owners.
         </p>
       </div>
 
@@ -174,8 +176,8 @@
           <a href="figures/governed-pipeline.svg">Open the governed architecture diagram</a>
         </object>
         <figcaption>
-          Human authority bounds the process. Reasoning can expand candidate explanations, but
-          exact action, evidence, policy, and feedback remain separate owners.
+          The baseline path remains available. Optional Super Reasoning explores bounded competing
+          hypotheses without becoming an authority owner.
         </figcaption>
       </figure>
 
@@ -197,7 +199,7 @@
             <tr><td>SR</td><td>Super Reasoning</td><td>Explores bounded competing reasoning paths without becoming an authority owner.</td></tr>
           </tbody>
         </table>
-        <p class="table-note">Terminology follows the repository’s current canonical glossary, including the author-declared expansion of OURD.</p>
+        <p class="table-note">Terminology follows the repository’s canonical glossary, including the author-declared expansion of OURD.</p>
       </div>
 
       <article class="formal-model" aria-labelledby="model-title">
@@ -205,24 +207,20 @@
           <p class="card-kicker">Editorial mathematical abstraction</p>
           <h3 id="model-title">A compact admissibility model</h3>
           <p>
-            The repository defines concrete records and policies. The equations below are an
-            editorial synthesis of those constraints, included to make the argument testable.
-            They are not a verbatim runtime API.
+            The repository defines concrete records and policies. The equations make their logical
+            relationship explicit for analysis. They are not a verbatim runtime API.
           </p>
         </div>
         <div class="equation-block" role="math" aria-label="State and admissibility equations">
           <p><span class="math">S<sub>t</sub> = (A<sub>t</sub>, G<sub>t</sub>, B<sub>t</sub>, D<sub>t</sub>, F<sub>t</sub>, K<sub>t</sub>, X<sub>t</sub>)</span></p>
-          <p class="where">
-            authority, governance, boundary, dimension budget, finite evidence, attempt history,
-            and exact source snapshot.
-          </p>
+          <p class="where">authority, governance, boundary, dimension budget, finite evidence, attempt history, and exact source snapshot.</p>
           <p><span class="math">Adm(a | S<sub>t</sub>) = 1</span> only when:</p>
           <ul>
             <li><span class="math">Targets(a) ⊆ A<sub>t</sub> ∩ G<sub>t</sub></span></li>
             <li><span class="math">Dimensions(a) ⊆ D<sub>t</sub></span></li>
             <li><span class="math">Evidence(a) ⊨ Gate(Risk(a))</span></li>
             <li><span class="math">AttemptKey(a, S<sub>t</sub>) ∉ Exhausted(K<sub>t</sub>)</span></li>
-            <li><span class="math">Progress(a) &gt; 0</span> or the transition is a justified terminal stop.</li>
+            <li><span class="math">Progress(a) &gt; 0</span>, or the transition is a justified terminal stop.</li>
           </ul>
         </div>
       </article>
@@ -231,7 +229,7 @@
         <article><span>01</span><h3>BoundaryState</h3><p>Combines authority and governance without allowing semantic relevance to enlarge permission.</p></article>
         <article><span>02</span><h3>DimensionBudget</h3><p>Bounds active variables, interactions, candidates, evidence atoms, and retries.</p></article>
         <article><span>03</span><h3>FiniteEvidenceState</h3><p>Projects action-relevant evidence while retaining append-only audit history.</p></article>
-        <article><span>04</span><h3>AttemptKey</h3><p>Identifies the material pre-action conditions that determine whether a retry is genuinely new.</p></article>
+        <article><span>04</span><h3>AttemptKey</h3><p>Identifies material pre-action conditions that determine whether a retry is genuinely new.</p></article>
         <article><span>05</span><h3>ProgressCertificate</h3><p>Requires measurable evidence, goal, risk, boundary, or experiment value before continuation.</p></article>
         <article><span>06</span><h3>BoundedTransitionKernel</h3><p>Prepares and evaluates transitions but has no independent mutation or subprocess authority.</p></article>
       </div>
@@ -254,76 +252,32 @@
       </div>
 
       <div class="writing-principles" aria-label="Formal Writing profile guidance">
-        <article>
-          <span class="principle-number">1</span>
-          <h3>Analyse the task</h3>
-          <p>The guidance asks the writer to identify purpose, audience, genre, scope, direction words, limiting terms, evidence expectations, and assessment criteria.</p>
-        </article>
-        <article>
-          <span class="principle-number">2</span>
-          <h3>State one controlling thesis</h3>
-          <p>The guidance asks each major section to advance, qualify, challenge, or delimit the central position.</p>
-        </article>
-        <article>
-          <span class="principle-number">3</span>
-          <h3>Separate evidence from warrant</h3>
-          <p>The guidance distinguishes cited material from the reasoning that explains why it supports a claim.</p>
-        </article>
-        <article>
-          <span class="principle-number">4</span>
-          <h3>Synthesise by issue</h3>
-          <p>The guidance organises sources by agreement, disagreement, method, limitation, mechanism, or implication rather than one source per paragraph.</p>
-        </article>
-        <article>
-          <span class="principle-number">5</span>
-          <h3>Test serious objections</h3>
-          <p>The guidance asks counterclaims to target a claim, premise, or inference and receive an explicit response.</p>
-        </article>
-        <article>
-          <span class="principle-number">6</span>
-          <h3>Calibrate certainty</h3>
-          <p>The guidance distinguishes observation, inference, correlation, causation, mechanism, necessity, sufficiency, and speculation.</p>
-        </article>
+        <article><span class="principle-number">1</span><h3>Analyse the task</h3><p>The guidance asks the writer to identify purpose, audience, genre, scope, evidence expectations, and assessment criteria.</p></article>
+        <article><span class="principle-number">2</span><h3>State one controlling thesis</h3><p>The guidance asks each major section to advance, qualify, challenge, or delimit the central position.</p></article>
+        <article><span class="principle-number">3</span><h3>Separate evidence from warrant</h3><p>The guidance distinguishes cited material from the reasoning that explains why it supports a claim.</p></article>
+        <article><span class="principle-number">4</span><h3>Synthesise by issue</h3><p>The guidance organises sources by agreement, disagreement, method, limitation, mechanism, or implication.</p></article>
+        <article><span class="principle-number">5</span><h3>Test serious objections</h3><p>The guidance asks counterclaims to target a claim, premise, or inference and receive an explicit response.</p></article>
+        <article><span class="principle-number">6</span><h3>Calibrate certainty</h3><p>The guidance distinguishes observation, inference, correlation, causation, mechanism, necessity, sufficiency, and speculation.</p></article>
       </div>
 
       <div class="profile-grid">
         <article class="profile-card">
           <p class="card-kicker">Profile 1</p>
           <h3>General formal writing</h3>
-          <p>
-            Guides the writer toward a thesis-led structure, evidence–reasoning paragraphs, source
-            synthesis, explicit limitations, precise prose, and accurate references.
-          </p>
-          <dl>
-            <div><dt>Review question</dt><dd>Does each section contribute to the task and thesis?</dd></div>
-            <div><dt>Failure mode</dt><dd>Source catalogue without an argument.</dd></div>
-          </dl>
+          <p>Guides the writer toward a thesis-led structure, evidence–reasoning paragraphs, source synthesis, explicit limitations, precise prose, and accurate references.</p>
+          <dl><div><dt>Review question</dt><dd>Does each section contribute to the task and thesis?</dd></div><div><dt>Failure mode</dt><dd>Source catalogue without an argument.</dd></div></dl>
         </article>
         <article class="profile-card">
           <p class="card-kicker">Profile 2</p>
           <h3>Scientific essay</h3>
-          <p>
-            Guides the writer to treat a science essay as a scientific argument unless the task
-            explicitly requires a report or IMRaD form. Major claims should track evidence, method,
-            reasoning, competing explanations, limits, and confidence.
-          </p>
-          <dl>
-            <div><dt>Review question</dt><dd>What relation does the evidence actually establish?</dd></div>
-            <div><dt>Failure mode</dt><dd>Overclaiming causation, mechanism, or certainty.</dd></div>
-          </dl>
+          <p>Guides the writer to connect claims with evidence, method, reasoning, competing explanations, limitations, and calibrated confidence.</p>
+          <dl><div><dt>Review question</dt><dd>What relation does the evidence actually establish?</dd></div><div><dt>Failure mode</dt><dd>Overclaiming causation, mechanism, or certainty.</dd></div></dl>
         </article>
         <article class="profile-card">
           <p class="card-kicker">Profile 3</p>
           <h3>Argumentative essay</h3>
-          <p>
-            Guides the writer to construct an explicit topology of thesis, claims, premises,
-            evidence, warrants, counterclaims, rebuttals, qualifiers, limitations, and implications
-            before translating the structure into readable prose.
-          </p>
-          <dl>
-            <div><dt>Review question</dt><dd>Is the positive support graph acyclic and connected?</dd></div>
-            <div><dt>Failure mode</dt><dd>Circular support or an unanswered material objection.</dd></div>
-          </dl>
+          <p>Guides the writer to make thesis, claims, premises, evidence, warrants, counterclaims, rebuttals, qualifiers, limitations, and implications explicit.</p>
+          <dl><div><dt>Review question</dt><dd>Is the positive support graph acyclic and connected?</dd></div><div><dt>Failure mode</dt><dd>Circular support or an unanswered material objection.</dd></div></dl>
         </article>
       </div>
 
@@ -333,8 +287,7 @@
         </object>
         <figcaption>
           Positive support proceeds toward the thesis. Counterclaims attack identifiable claims or
-          inferences; rebuttals answer them. Qualifiers and limitations constrain what the thesis
-          is allowed to assert.
+          inferences; rebuttals answer them. Qualifiers and limitations constrain claim strength.
         </figcaption>
       </figure>
 
@@ -352,10 +305,7 @@
         </div>
         <div>
           <h3>Readable prose remains the output</h3>
-          <p>
-            The topology is a reasoning scaffold. It should not force graph jargon into ordinary
-            writing unless formal notation is useful to the reader or required by the task.
-          </p>
+          <p>The topology is a reasoning scaffold. It should not force graph jargon into ordinary writing unless formal notation is useful to the reader or required by the task.</p>
           <a class="source-link" href="https://github.com/pghauff73/OIEC-STM-Agent/blob/d82969ac152281394423d30063a87d4de0f8889b/docs/FORMAL_WRITING_RESEARCH.md" rel="noopener noreferrer">Primary source P6: research basis</a>
         </div>
       </div>
@@ -373,8 +323,9 @@
         <p>
           The command grants a path-bounded writing request for one exact workspace snapshot. It
           does not grant unrestricted mutation, autonomous approval, authority to invent citations,
-          or automatic compliance with the selected profile. The executable argument routing is
-          identified as P8, and the non-authoritative prompt integration is identified as P9.
+          or automatic compliance with the selected profile. CLI routing is identified as P8,
+          non-authoritative prompt integration as P9, and exact-snapshot authority construction and
+          validation as P10.
         </p>
       </div>
     </section>
@@ -385,9 +336,10 @@
         <h2 id="operation-title">The default posture is observation; mutation requires a narrow, inspectable grant.</h2>
         <p>
           Without an authority manifest or explicit writing grant, ordinary workspace files remain
-          read-only. Writing mode creates temporary authority tied to the current snapshot and the
-          supplied path patterns. A successful mutation changes the snapshot, so a later
-          transaction requires a fresh grant.
+          read-only. Writing mode delegates to the authority module, which creates temporary
+          exact-snapshot authority from human-supplied relative path patterns, conservative risk
+          settings, and explicit review rules. A successful mutation changes the snapshot, so a
+          later transaction requires a fresh grant.
         </p>
       </div>
 
@@ -440,8 +392,8 @@
         <h2 id="method-title">The page applies the same formal discipline it describes.</h2>
       </div>
       <ol class="method-list">
-        <li><strong>Source discovery.</strong><span>Repository Markdown, current implementation, and dated reports were separated before drafting.</span></li>
-        <li><strong>Status classification.</strong><span>Implemented source, historical validation, open plans, editorial models, and excluded claims received distinct labels.</span></li>
+        <li><strong>Source discovery.</strong><span>Repository Markdown, executable implementation, and dated reports were separated before drafting.</span></li>
+        <li><strong>Status classification.</strong><span>Implementation, historical validation, open plans, prompt guidance, editorial models, and excluded claims received distinct labels.</span></li>
         <li><strong>Thesis construction.</strong><span>The page advances one proposition: independent authority and evidence owners are necessary for governable agency.</span></li>
         <li><strong>Argument topology.</strong><span>Claims were connected to primary evidence and warrants; one practical counterclaim received an explicit response.</span></li>
         <li><strong>Scientific calibration.</strong><span>Reported tests are described with dates and limits rather than converted into universal performance or safety claims.</span></li>
@@ -454,10 +406,9 @@
         <p class="eyebrow">06 — Source register</p>
         <h2 id="sources-title">Every central claim has an identifiable evidence owner.</h2>
         <p>
-          Filter the register by source class. Primary project sources establish what the
-          repository says and implements. External sources establish the formal-writing,
-          argumentation, scientific-communication, accessibility, and systems-engineering methods
-          used to present that material.
+          Primary project sources establish what the repository says and implements. External
+          sources establish the formal-writing, argumentation, scientific-communication,
+          accessibility, and systems-engineering methods used to present that material.
         </p>
       </div>
 
@@ -469,81 +420,35 @@
       </div>
 
       <div class="source-register" data-source-register>
-        <article class="source-entry" data-source-class="project">
-          <span class="source-id">P1</span><div><h3>README.md</h3><p>Canonical overview of the baseline and optional reasoning paths, authority separation, evidence gates, transactions, retry constraints, CLI, and GUI.</p><a href="https://github.com/pghauff73/OIEC-STM-Agent/blob/d82969ac152281394423d30063a87d4de0f8889b/README.md" rel="noopener noreferrer">Open repository source</a></div>
-        </article>
-        <article class="source-entry" data-source-class="project">
-          <span class="source-id">P2</span><div><h3>OIEC_STMV1_2_IMPLEMENTATION_REPORT.md</h3><p>Dated implementation account for the six bounded-transition primitives, integration boundaries, machine-checked properties, recorded validation, and explicit limits.</p><a href="https://github.com/pghauff73/OIEC-STM-Agent/blob/d82969ac152281394423d30063a87d4de0f8889b/OIEC_STMV1_2_IMPLEMENTATION_REPORT.md" rel="noopener noreferrer">Open repository source</a></div>
-        </article>
-        <article class="source-entry" data-source-class="project">
-          <span class="source-id">P3</span><div><h3>docs/WRITING_MODE.md</h3><p>Exact-snapshot writing authority, supported profiles, bounded command capabilities, review requirements, and examples.</p><a href="https://github.com/pghauff73/OIEC-STM-Agent/blob/d82969ac152281394423d30063a87d4de0f8889b/docs/WRITING_MODE.md" rel="noopener noreferrer">Open repository source</a></div>
-        </article>
-        <article class="source-entry" data-source-class="project">
-          <span class="source-id">P4</span><div><h3>COMPLETE_IMPLEMENTATION_STRATEGY.md</h3><p>Program-level dependency graph, non-negotiable governance rules, workstream status, qualification gates, and open release/certification work.</p><a href="https://github.com/pghauff73/OIEC-STM-Agent/blob/d82969ac152281394423d30063a87d4de0f8889b/COMPLETE_IMPLEMENTATION_STRATEGY.md" rel="noopener noreferrer">Open repository source</a></div>
-        </article>
-        <article class="source-entry" data-source-class="project">
-          <span class="source-id">P5</span><div><h3>ourd/formal_writing.py</h3><p>Executable profile definitions and validation rules for argument nodes, relations, source references, acyclic positive support, connectivity, and counterclaim response.</p><a href="https://github.com/pghauff73/OIEC-STM-Agent/blob/d82969ac152281394423d30063a87d4de0f8889b/ourd/formal_writing.py" rel="noopener noreferrer">Open repository source</a></div>
-        </article>
-        <article class="source-entry" data-source-class="project">
-          <span class="source-id">P6</span><div><h3>docs/FORMAL_WRITING_RESEARCH.md</h3><p>Repository research basis for thesis-driven academic writing, synthesis, scientific essays, argument maps, counterarguments, claim calibration, and academic integrity.</p><a href="https://github.com/pghauff73/OIEC-STM-Agent/blob/d82969ac152281394423d30063a87d4de0f8889b/docs/FORMAL_WRITING_RESEARCH.md" rel="noopener noreferrer">Open repository source</a></div>
-        </article>
-        <article class="source-entry" data-source-class="project">
-          <span class="source-id">P7</span><div><h3>docs/ACRONYM_GLOSSARY.md</h3><p>Canonical expansions, meanings, non-expansions, analogies, and relations for the project vocabulary used on this page.</p><a href="https://github.com/pghauff73/OIEC-STM-Agent/blob/d82969ac152281394423d30063a87d4de0f8889b/docs/ACRONYM_GLOSSARY.md" rel="noopener noreferrer">Open repository source</a></div>
-        </article>
-        <article class="source-entry" data-source-class="project">
-          <span class="source-id">P8</span><div><h3>ourd/cli.py</h3><p>Executable <code>--write</code>, <code>--write-path</code>, and <code>--writing-profile</code> arguments, temporary bounded authority construction, and profile routing.</p><a href="https://github.com/pghauff73/OIEC-STM-Agent/blob/d82969ac152281394423d30063a87d4de0f8889b/ourd/cli.py" rel="noopener noreferrer">Open repository source</a></div>
-        </article>
-        <article class="source-entry" data-source-class="project">
-          <span class="source-id">P9</span><div><h3>ourd/writing.py</h3><p>Non-authoritative writing-guidance integration, profile selection, citation-integrity guidance, and bounded deterministic command capabilities.</p><a href="https://github.com/pghauff73/OIEC-STM-Agent/blob/d82969ac152281394423d30063a87d4de0f8889b/ourd/writing.py" rel="noopener noreferrer">Open repository source</a></div>
-        </article>
+        <article class="source-entry" data-source-class="project"><span class="source-id">P1</span><div><h3>README.md</h3><p>Canonical architecture, authority separation, evidence gates, transactions, retry constraints, CLI, and GUI overview.</p><a href="https://github.com/pghauff73/OIEC-STM-Agent/blob/d82969ac152281394423d30063a87d4de0f8889b/README.md" rel="noopener noreferrer">Open repository source</a></div></article>
+        <article class="source-entry" data-source-class="project"><span class="source-id">P2</span><div><h3>OIEC_STMV1_2_IMPLEMENTATION_REPORT.md</h3><p>Dated implementation account for bounded-transition primitives, invariants, validation, and explicit limits.</p><a href="https://github.com/pghauff73/OIEC-STM-Agent/blob/d82969ac152281394423d30063a87d4de0f8889b/OIEC_STMV1_2_IMPLEMENTATION_REPORT.md" rel="noopener noreferrer">Open repository source</a></div></article>
+        <article class="source-entry" data-source-class="project"><span class="source-id">P3</span><div><h3>docs/WRITING_MODE.md</h3><p>Exact-snapshot writing contract, profiles, bounded command capabilities, review requirements, and examples.</p><a href="https://github.com/pghauff73/OIEC-STM-Agent/blob/d82969ac152281394423d30063a87d4de0f8889b/docs/WRITING_MODE.md" rel="noopener noreferrer">Open repository source</a></div></article>
+        <article class="source-entry" data-source-class="project"><span class="source-id">P4</span><div><h3>COMPLETE_IMPLEMENTATION_STRATEGY.md</h3><p>Program dependencies, non-negotiable governance rules, workstream status, qualification gates, and open work.</p><a href="https://github.com/pghauff73/OIEC-STM-Agent/blob/d82969ac152281394423d30063a87d4de0f8889b/COMPLETE_IMPLEMENTATION_STRATEGY.md" rel="noopener noreferrer">Open repository source</a></div></article>
+        <article class="source-entry" data-source-class="project"><span class="source-id">P5</span><div><h3>ourd/formal_writing.py</h3><p>Formal Writing profile definitions and machine-checkable topology validation rules.</p><a href="https://github.com/pghauff73/OIEC-STM-Agent/blob/d82969ac152281394423d30063a87d4de0f8889b/ourd/formal_writing.py" rel="noopener noreferrer">Open repository source</a></div></article>
+        <article class="source-entry" data-source-class="project"><span class="source-id">P6</span><div><h3>docs/FORMAL_WRITING_RESEARCH.md</h3><p>Research basis for thesis-driven writing, synthesis, scientific essays, argument maps, counterarguments, and claim calibration.</p><a href="https://github.com/pghauff73/OIEC-STM-Agent/blob/d82969ac152281394423d30063a87d4de0f8889b/docs/FORMAL_WRITING_RESEARCH.md" rel="noopener noreferrer">Open repository source</a></div></article>
+        <article class="source-entry" data-source-class="project"><span class="source-id">P7</span><div><h3>docs/ACRONYM_GLOSSARY.md</h3><p>Canonical expansions, meanings, non-expansions, analogies, and relations for project vocabulary.</p><a href="https://github.com/pghauff73/OIEC-STM-Agent/blob/d82969ac152281394423d30063a87d4de0f8889b/docs/ACRONYM_GLOSSARY.md" rel="noopener noreferrer">Open repository source</a></div></article>
+        <article class="source-entry" data-source-class="project"><span class="source-id">P8</span><div><h3>ourd/cli.py</h3><p>Executable <code>--write</code>, <code>--write-path</code>, and <code>--writing-profile</code> arguments, delegation into bounded authority construction, and profile routing.</p><a href="https://github.com/pghauff73/OIEC-STM-Agent/blob/d82969ac152281394423d30063a87d4de0f8889b/ourd/cli.py" rel="noopener noreferrer">Open repository source</a></div></article>
+        <article class="source-entry" data-source-class="project"><span class="source-id">P9</span><div><h3>ourd/writing.py</h3><p>Non-authoritative writing-guidance integration, profile selection, citation-integrity guidance, and bounded deterministic command capabilities.</p><a href="https://github.com/pghauff73/OIEC-STM-Agent/blob/d82969ac152281394423d30063a87d4de0f8889b/ourd/writing.py" rel="noopener noreferrer">Open repository source</a></div></article>
+        <article class="source-entry" data-source-class="project"><span class="source-id">P10</span><div><h3>ourd/authority.py</h3><p>Exact-snapshot authority construction, allowed-path normalization, conservative risk and review settings, and read/write authority validation.</p><a href="https://github.com/pghauff73/OIEC-STM-Agent/blob/d82969ac152281394423d30063a87d4de0f8889b/ourd/authority.py" rel="noopener noreferrer">Open repository source</a></div></article>
 
-        <article class="source-entry" data-source-class="writing">
-          <span class="source-id">W1</span><div><h3>Monash University — Writing an essay</h3><p>Academic essays take a supported position and use introduction, connected evidence-bearing body paragraphs, and conclusion.</p><a href="https://www.monash.edu/student-academic-success/excel-at-writing/how-to-write/essay" rel="noopener noreferrer">Open external source</a></div>
-        </article>
-        <article class="source-entry" data-source-class="writing">
-          <span class="source-id">W2</span><div><h3>University of Melbourne — Using a writing process</h3><p>Task analysis, genre, research, structure, critical analysis, citation, and revision form an integrated writing process.</p><a href="https://students.unimelb.edu.au/academic-skills/reading-writing-and-referencing/writing-effectively/using-a-writing-process" rel="noopener noreferrer">Open external source</a></div>
-        </article>
-        <article class="source-entry" data-source-class="writing">
-          <span class="source-id">W3</span><div><h3>University of Oxford — Essay and dissertation writing skills</h3><p>Body paragraphs should make specific evidence-supported points that advance the argument; conclusions should answer the task without new evidence.</p><a href="https://www.ox.ac.uk/students/academic/guidance/skills/essay" rel="noopener noreferrer">Open external source</a></div>
-        </article>
-        <article class="source-entry" data-source-class="writing">
-          <span class="source-id">W4</span><div><h3>Monash University — Evidence and reasoning</h3><p>Evidence provides support, while reasoning explains the inferential connection between evidence and claim.</p><a href="https://www.monash.edu/student-academic-success/sharpen-your-thinking/critical-thinking/create-argument/bring-together-your-evidence-and-reasoning" rel="noopener noreferrer">Open external source</a></div>
-        </article>
-        <article class="source-entry" data-source-class="writing">
-          <span class="source-id">W5</span><div><h3>Stanford Encyclopedia of Philosophy — Informal Logic</h3><p>Standardised premises, conclusions, implicit premises, linked support, convergent support, and argument diagrams provide a basis for explicit topology.</p><a href="https://plato.stanford.edu/entries/logic-informal/" rel="noopener noreferrer">Open external source</a></div>
-        </article>
-        <article class="source-entry" data-source-class="writing">
-          <span class="source-id">W6</span><div><h3>Nature Genetics — Cause, correlation, conjecture</h3><p>Scientific planning should keep claims, supporting evidence, methods, and claim strength visibly related.</p><a href="https://www.nature.com/articles/ng.3271" rel="noopener noreferrer">Open external source</a></div>
-        </article>
-        <article class="source-entry" data-source-class="writing">
-          <span class="source-id">W7</span><div><h3>Nature Methods — So you’re writing a paper</h3><p>Scientific writing should communicate a defensible message while allowing readers to understand observations, methods, and interpretation.</p><a href="https://www.nature.com/articles/nmeth.4532" rel="noopener noreferrer">Open external source</a></div>
-        </article>
-        <article class="source-entry" data-source-class="writing">
-          <span class="source-id">W8</span><div><h3>Nature — Five rules for evidence communication</h3><p>Evidence communication should avoid unwarranted certainty and narratives that are neater than the evidence permits.</p><a href="https://www.nature.com/articles/d41586-020-03189-1" rel="noopener noreferrer">Open external source</a></div>
-        </article>
+        <article class="source-entry" data-source-class="writing"><span class="source-id">W1</span><div><h3>Monash University — Writing an essay</h3><p>Thesis-led essay structure and evidence-supported position.</p><a href="https://www.monash.edu/student-academic-success/excel-at-writing/how-to-write/essay" rel="noopener noreferrer">Open external source</a></div></article>
+        <article class="source-entry" data-source-class="writing"><span class="source-id">W2</span><div><h3>University of Melbourne — Using a writing process</h3><p>Task analysis, research, critical analysis, drafting, citation, and revision.</p><a href="https://students.unimelb.edu.au/academic-skills/reading-writing-and-referencing/writing-effectively/using-a-writing-process" rel="noopener noreferrer">Open external source</a></div></article>
+        <article class="source-entry" data-source-class="writing"><span class="source-id">W3</span><div><h3>University of Oxford — Essay and dissertation writing skills</h3><p>Evidence-bearing paragraph structure and conclusion discipline.</p><a href="https://www.ox.ac.uk/students/academic/guidance/skills/essay" rel="noopener noreferrer">Open external source</a></div></article>
+        <article class="source-entry" data-source-class="writing"><span class="source-id">W4</span><div><h3>Monash University — Evidence and reasoning</h3><p>Separation of evidential material from inferential reasoning.</p><a href="https://www.monash.edu/student-academic-success/sharpen-your-thinking/critical-thinking/create-argument/bring-together-your-evidence-and-reasoning" rel="noopener noreferrer">Open external source</a></div></article>
+        <article class="source-entry" data-source-class="writing"><span class="source-id">W5</span><div><h3>Stanford Encyclopedia of Philosophy — Informal Logic</h3><p>Premise–conclusion standardisation, linked and convergent support, implicit premises, and diagrams.</p><a href="https://plato.stanford.edu/entries/logic-informal/" rel="noopener noreferrer">Open external source</a></div></article>
+        <article class="source-entry" data-source-class="writing"><span class="source-id">W6</span><div><h3>Nature Genetics — Cause, correlation, conjecture</h3><p>Scientific claim, evidence, method, and claim-strength planning.</p><a href="https://www.nature.com/articles/ng.3271" rel="noopener noreferrer">Open external source</a></div></article>
+        <article class="source-entry" data-source-class="writing"><span class="source-id">W7</span><div><h3>Nature Methods — So you’re writing a paper</h3><p>Audience, observations, analysis, interpretation, and reproducible communication.</p><a href="https://www.nature.com/articles/nmeth.4532" rel="noopener noreferrer">Open external source</a></div></article>
+        <article class="source-entry" data-source-class="writing"><span class="source-id">W8</span><div><h3>Nature — Five rules for evidence communication</h3><p>Calibrated certainty and avoidance of narratives neater than the evidence permits.</p><a href="https://www.nature.com/articles/d41586-020-03189-1" rel="noopener noreferrer">Open external source</a></div></article>
 
-        <article class="source-entry" data-source-class="engineering">
-          <span class="source-id">E1</span><div><h3>NIST SP 800-160 Vol. 1 Rev. 1</h3><p>Trustworthiness is treated as a whole-system engineering concern spanning requirements, architecture, implementation, verification, validation, and lifecycle evidence.</p><a href="https://csrc.nist.gov/pubs/sp/800/160/v1/r1/final" rel="noopener noreferrer">Open external source</a></div>
-        </article>
-        <article class="source-entry" data-source-class="engineering">
-          <span class="source-id">E2</span><div><h3>NIST SP 800-218 — Secure Software Development Framework</h3><p>Secure practices should be integrated into the development lifecycle and expressed through a shared vocabulary.</p><a href="https://csrc.nist.gov/pubs/sp/800/218/final" rel="noopener noreferrer">Open external source</a></div>
-        </article>
-        <article class="source-entry" data-source-class="engineering">
-          <span class="source-id">E3</span><div><h3>NASA Systems Engineering Handbook</h3><p>Systems engineering links stakeholder needs, requirements, design, implementation, verification, validation, and technical decisions across a lifecycle.</p><a href="https://www.nasa.gov/reference/systems-engineering-handbook/" rel="noopener noreferrer">Open external source</a></div>
-        </article>
-        <article class="source-entry" data-source-class="engineering">
-          <span class="source-id">E4</span><div><h3>RFC 2119 / BCP 14</h3><p>Normative requirement words should distinguish mandatory, recommended, and optional behaviour rather than using emphasis ambiguously.</p><a href="https://www.rfc-editor.org/info/rfc2119" rel="noopener noreferrer">Open external source</a></div>
-        </article>
-        <article class="source-entry" data-source-class="engineering">
-          <span class="source-id">E5</span><div><h3>WAI-ARIA Authoring Practices — Keyboard Interface</h3><p>Interactive interfaces need predictable keyboard operation, visible focus, and understandable controls that do not depend on a mouse.</p><a href="https://www.w3.org/WAI/ARIA/apg/practices/keyboard-interface/" rel="noopener noreferrer">Open external source</a></div>
-        </article>
+        <article class="source-entry" data-source-class="engineering"><span class="source-id">E1</span><div><h3>NIST SP 800-160 Vol. 1 Rev. 1</h3><p>Lifecycle engineering of trustworthy secure systems.</p><a href="https://csrc.nist.gov/pubs/sp/800/160/v1/r1/final" rel="noopener noreferrer">Open external source</a></div></article>
+        <article class="source-entry" data-source-class="engineering"><span class="source-id">E2</span><div><h3>NIST SP 800-218 — Secure Software Development Framework</h3><p>Lifecycle-integrated secure practices and common vocabulary.</p><a href="https://csrc.nist.gov/pubs/sp/800/218/final" rel="noopener noreferrer">Open external source</a></div></article>
+        <article class="source-entry" data-source-class="engineering"><span class="source-id">E3</span><div><h3>NASA Systems Engineering Handbook</h3><p>Requirements, design, implementation, verification, validation, and lifecycle decisions.</p><a href="https://www.nasa.gov/reference/systems-engineering-handbook/" rel="noopener noreferrer">Open external source</a></div></article>
+        <article class="source-entry" data-source-class="engineering"><span class="source-id">E4</span><div><h3>RFC 2119 / BCP 14</h3><p>Normative requirement language.</p><a href="https://www.rfc-editor.org/info/rfc2119" rel="noopener noreferrer">Open external source</a></div></article>
+        <article class="source-entry" data-source-class="engineering"><span class="source-id">E5</span><div><h3>WAI-ARIA Authoring Practices — Keyboard Interface</h3><p>Keyboard accessibility, visible focus, and understandable interaction.</p><a href="https://www.w3.org/WAI/ARIA/apg/practices/keyboard-interface/" rel="noopener noreferrer">Open external source</a></div></article>
       </div>
 
       <div class="manifest-note">
-        <p>
-          A machine-readable projection of this register, including source class, role, and claim
-          bindings, is available in <a href="source-manifest.json"><code>source-manifest.json</code></a>.
-        </p>
+        <p>A machine-readable projection of this register, including source class, role, exact project blob identity, and claim bindings, is available in <a href="source-manifest.json"><code>source-manifest.json</code></a>.</p>
       </div>
     </section>
   </main>
