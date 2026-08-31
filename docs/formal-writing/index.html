@@ -150,10 +150,10 @@
       <div class="status-panel">
         <h3>Claim discipline used on this page</h3>
         <div class="status-grid">
-          <div><span class="status implemented">Repository-reported implementation</span><p>Bounded-transition primitives, formal-writing profiles, and governed writing mode are present in current source.</p></div>
+          <div><span class="status implemented">Repository-reported implementation</span><p>Bounded-transition primitives, formal-writing profile definitions, and governed writing mode are present in current source.</p></div>
           <div><span class="status dated">Dated validation evidence</span><p>The August 28 implementation report records a 234-test run and additional checks. It is historical evidence tied to that report, not a timeless count.</p></div>
           <div><span class="status open">Open program work</span><p>The complete strategy distinguishes integrated candidates from later qualification, exact-hash approval, certification, and release work.</p></div>
-          <div><span class="status excluded">Not claimed</span><p>No general superiority, flawless output, autonomous authority, or universal safety guarantee is inferred.</p></div>
+          <div><span class="status excluded">Not claimed</span><p>No general superiority, flawless output, autonomous authority, automatic essay compliance, or universal safety guarantee is inferred.</p></div>
         </div>
       </div>
     </section>
@@ -240,45 +240,49 @@
     <section class="section" id="writing" aria-labelledby="writing-title">
       <div class="section-heading">
         <p class="eyebrow">03 — Formal Writing</p>
-        <h2 id="writing-title">Formal Writing is a reasoning contract, not a decorative tone.</h2>
+        <h2 id="writing-title">Formal Writing profiles provide structured reasoning guidance; they are not an automatic essay grader.</h2>
         <p>
-          The repository’s Formal Writing implementation requires task analysis, a central thesis,
+          The repository defines Formal Writing profiles for task analysis, a central thesis,
           evidence-bearing claims, explicit reasoning, source synthesis, counterargument handling,
-          calibrated certainty, and citation integrity. Scientific and argumentative profiles add
-          specialised tests without displacing the assignment brief or local academic rules.
+          calibrated certainty, and citation integrity. In the normal CLI path, the selected profile
+          is injected as textual guidance. A generated essay is not automatically checked for those
+          qualities, and profile compliance therefore depends on model output, source integrity,
+          and human review. The separate <code>ArgumentTopology.validate()</code> function can check
+          an explicitly constructed topology, but the CLI does not automatically construct one from
+          generated prose.
         </p>
       </div>
 
-      <div class="writing-principles">
+      <div class="writing-principles" aria-label="Formal Writing profile guidance">
         <article>
           <span class="principle-number">1</span>
           <h3>Analyse the task</h3>
-          <p>Identify purpose, audience, genre, scope, direction words, limiting terms, evidence expectations, and assessment criteria.</p>
+          <p>The guidance asks the writer to identify purpose, audience, genre, scope, direction words, limiting terms, evidence expectations, and assessment criteria.</p>
         </article>
         <article>
           <span class="principle-number">2</span>
           <h3>State one controlling thesis</h3>
-          <p>Every major section must advance, qualify, challenge, or delimit the central position.</p>
+          <p>The guidance asks each major section to advance, qualify, challenge, or delimit the central position.</p>
         </article>
         <article>
           <span class="principle-number">3</span>
           <h3>Separate evidence from warrant</h3>
-          <p>A citation supplies material; reasoning explains why that material supports the claim.</p>
+          <p>The guidance distinguishes cited material from the reasoning that explains why it supports a claim.</p>
         </article>
         <article>
           <span class="principle-number">4</span>
           <h3>Synthesise by issue</h3>
-          <p>Organise sources by agreement, disagreement, method, limitation, mechanism, or implication rather than summarising one source per paragraph.</p>
+          <p>The guidance organises sources by agreement, disagreement, method, limitation, mechanism, or implication rather than one source per paragraph.</p>
         </article>
         <article>
           <span class="principle-number">5</span>
           <h3>Test serious objections</h3>
-          <p>Counterclaims must target a claim, premise, or inference and receive an explicit response.</p>
+          <p>The guidance asks counterclaims to target a claim, premise, or inference and receive an explicit response.</p>
         </article>
         <article>
           <span class="principle-number">6</span>
           <h3>Calibrate certainty</h3>
-          <p>Distinguish observation, inference, correlation, causation, mechanism, necessity, sufficiency, and speculation.</p>
+          <p>The guidance distinguishes observation, inference, correlation, causation, mechanism, necessity, sufficiency, and speculation.</p>
         </article>
       </div>
 
@@ -287,11 +291,11 @@
           <p class="card-kicker">Profile 1</p>
           <h3>General formal writing</h3>
           <p>
-            Uses a thesis-led structure, evidence–reasoning paragraphs, source synthesis, explicit
-            limitations, precise prose, and accurate references.
+            Guides the writer toward a thesis-led structure, evidence–reasoning paragraphs, source
+            synthesis, explicit limitations, precise prose, and accurate references.
           </p>
           <dl>
-            <div><dt>Primary test</dt><dd>Does each section contribute to the task and thesis?</dd></div>
+            <div><dt>Review question</dt><dd>Does each section contribute to the task and thesis?</dd></div>
             <div><dt>Failure mode</dt><dd>Source catalogue without an argument.</dd></div>
           </dl>
         </article>
@@ -299,12 +303,12 @@
           <p class="card-kicker">Profile 2</p>
           <h3>Scientific essay</h3>
           <p>
-            Treats a science essay as a scientific argument unless the task explicitly requires a
-            report or IMRaD form. Major claims track evidence, method, reasoning, competing
-            explanations, limits, and confidence.
+            Guides the writer to treat a science essay as a scientific argument unless the task
+            explicitly requires a report or IMRaD form. Major claims should track evidence, method,
+            reasoning, competing explanations, limits, and confidence.
           </p>
           <dl>
-            <div><dt>Primary test</dt><dd>What relation does the evidence actually establish?</dd></div>
+            <div><dt>Review question</dt><dd>What relation does the evidence actually establish?</dd></div>
             <div><dt>Failure mode</dt><dd>Overclaiming causation, mechanism, or certainty.</dd></div>
           </dl>
         </article>
@@ -312,12 +316,12 @@
           <p class="card-kicker">Profile 3</p>
           <h3>Argumentative essay</h3>
           <p>
-            Constructs an explicit topology of thesis, claims, premises, evidence, warrants,
-            counterclaims, rebuttals, qualifiers, limitations, and implications before translating
-            the structure into readable prose.
+            Guides the writer to construct an explicit topology of thesis, claims, premises,
+            evidence, warrants, counterclaims, rebuttals, qualifiers, limitations, and implications
+            before translating the structure into readable prose.
           </p>
           <dl>
-            <div><dt>Primary test</dt><dd>Is the positive support graph acyclic and connected?</dd></div>
+            <div><dt>Review question</dt><dd>Is the positive support graph acyclic and connected?</dd></div>
             <div><dt>Failure mode</dt><dd>Circular support or an unanswered material objection.</dd></div>
           </dl>
         </article>
@@ -368,9 +372,9 @@
   --task 'Write a scientific essay that evaluates the evidence for the proposed mechanism.'</code></pre>
         <p>
           The command grants a path-bounded writing request for one exact workspace snapshot. It
-          does not grant unrestricted mutation, autonomous approval, or authority to invent
-          citations. The executable argument routing is identified as P8, and the non-authoritative
-          prompt integration is identified as P9.
+          does not grant unrestricted mutation, autonomous approval, authority to invent citations,
+          or automatic compliance with the selected profile. The executable argument routing is
+          identified as P8, and the non-authoritative prompt integration is identified as P9.
         </p>
       </div>
     </section>
@@ -422,6 +426,7 @@
           <li>Passing tests are implementation evidence, not certification or proof that every relevant case has been tested.</li>
           <li>Deterministic control quantities do not replace the project’s L0/L1/L2 policy model.</li>
           <li>The bounded-transition kernel does not independently execute commands or mutate files.</li>
+          <li>Formal Writing profiles guide prompts but do not automatically grade or validate generated essays.</li>
           <li>Model providers can still generate incorrect, incomplete, biased, or unsupported proposals.</li>
           <li>Human approval can be mistaken; governance reduces ambiguity but cannot abolish judgement.</li>
           <li>Historical reports become stale when source, environment, dependencies, models, or qualification conditions change.</li>
@@ -477,7 +482,7 @@
           <span class="source-id">P4</span><div><h3>COMPLETE_IMPLEMENTATION_STRATEGY.md</h3><p>Program-level dependency graph, non-negotiable governance rules, workstream status, qualification gates, and open release/certification work.</p><a href="https://github.com/pghauff73/OIEC-STM-Agent/blob/d82969ac152281394423d30063a87d4de0f8889b/COMPLETE_IMPLEMENTATION_STRATEGY.md" rel="noopener noreferrer">Open repository source</a></div>
         </article>
         <article class="source-entry" data-source-class="project">
-          <span class="source-id">P5</span><div><h3>ourd/formal_writing.py</h3><p>Executable writing profiles and validation rules for argument nodes, relations, source references, acyclic positive support, connectivity, and counterclaim response.</p><a href="https://github.com/pghauff73/OIEC-STM-Agent/blob/d82969ac152281394423d30063a87d4de0f8889b/ourd/formal_writing.py" rel="noopener noreferrer">Open repository source</a></div>
+          <span class="source-id">P5</span><div><h3>ourd/formal_writing.py</h3><p>Executable profile definitions and validation rules for argument nodes, relations, source references, acyclic positive support, connectivity, and counterclaim response.</p><a href="https://github.com/pghauff73/OIEC-STM-Agent/blob/d82969ac152281394423d30063a87d4de0f8889b/ourd/formal_writing.py" rel="noopener noreferrer">Open repository source</a></div>
         </article>
         <article class="source-entry" data-source-class="project">
           <span class="source-id">P6</span><div><h3>docs/FORMAL_WRITING_RESEARCH.md</h3><p>Repository research basis for thesis-driven academic writing, synthesis, scientific essays, argument maps, counterarguments, claim calibration, and academic integrity.</p><a href="https://github.com/pghauff73/OIEC-STM-Agent/blob/d82969ac152281394423d30063a87d4de0f8889b/docs/FORMAL_WRITING_RESEARCH.md" rel="noopener noreferrer">Open repository source</a></div>
@@ -489,7 +494,7 @@
           <span class="source-id">P8</span><div><h3>ourd/cli.py</h3><p>Executable <code>--write</code>, <code>--write-path</code>, and <code>--writing-profile</code> arguments, temporary bounded authority construction, and profile routing.</p><a href="https://github.com/pghauff73/OIEC-STM-Agent/blob/d82969ac152281394423d30063a87d4de0f8889b/ourd/cli.py" rel="noopener noreferrer">Open repository source</a></div>
         </article>
         <article class="source-entry" data-source-class="project">
-          <span class="source-id">P9</span><div><h3>ourd/writing.py</h3><p>Non-authoritative writing-guidance integration, profile selection, citation-integrity rules, and bounded deterministic command capabilities.</p><a href="https://github.com/pghauff73/OIEC-STM-Agent/blob/d82969ac152281394423d30063a87d4de0f8889b/ourd/writing.py" rel="noopener noreferrer">Open repository source</a></div>
+          <span class="source-id">P9</span><div><h3>ourd/writing.py</h3><p>Non-authoritative writing-guidance integration, profile selection, citation-integrity guidance, and bounded deterministic command capabilities.</p><a href="https://github.com/pghauff73/OIEC-STM-Agent/blob/d82969ac152281394423d30063a87d4de0f8889b/ourd/writing.py" rel="noopener noreferrer">Open repository source</a></div>
         </article>
 
         <article class="source-entry" data-source-class="writing">
