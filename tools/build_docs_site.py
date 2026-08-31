@@ -395,7 +395,7 @@ GLOSSARY = {
     "OBJ": "Wavefront OBJ: a text-based file format for polygonal 3D geometry.",
     "OFAT": "One Factor At a Time: an experiment strategy that varies one input while holding the others steady.",
     "OIEC-STM": "Operationally Isolated Epistemic Control State-Transition Model: this project's bounded control layer for deciding whether a proposed state transition may proceed.",
-    "OURD": "Object Unique Relational Decomposition modeling: the project layer that identifies system objects, their boundaries, relations, dependencies, impacts, exclusions, and scope.",
+    "OURD": "Orthogonal Unique Relational Decomposition modeling: the project layer that identifies system objects, their boundaries, relations, dependencies, impacts, exclusions, and scope.",
     "PEP": "Python Enhancement Proposal: a design document used to propose and explain changes to Python.",
     "PLY": "Polygon File Format: a format for storing 3D meshes and point-cloud attributes.",
     "PNG": "Portable Network Graphics: a lossless bitmap image format with transparency support.",
