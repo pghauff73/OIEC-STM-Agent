@@ -55,7 +55,7 @@ CORE_CONCEPTS = (
     ),
     Concept(
         "ourd",
-        "OURD: Object-Universe-Relation-Dependency Modeling",
+        "OURD: Object Unique Relational Decomposition Modeling",
         "Governed Reasoning Loop",
         "OURD builds the relational map of the problem: objects, boundaries, dependencies, goals, impacts, exclusions, and unresolved relations.",
         "The agent should model the territory before choosing one imagined implementation path.",

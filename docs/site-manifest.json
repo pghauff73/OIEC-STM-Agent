@@ -1,8 +1,8 @@
 {
   "schema_version": 2,
-  "build_date": "2026-08-30",
+  "build_date": "2026-08-31",
   "documentation_version": "0.7.0",
-  "source_snapshot_sha256": "fbf1697f650ec67c29519ee324c09ae8721efb3f6423d7f3e681cf1ea189a9db",
+  "source_snapshot_sha256": "eda0d780ab0be87b5bdce0ed0cf148598613e3e752bbbf5b0a8ad02933ec4b77",
   "content_kinds": [
     "tutorial",
     "task-guide",
@@ -22,6 +22,235 @@
     "Planned"
   ],
   "documents": [
+    {
+      "title": "OIEC-STM-Agent Acronym and Abbreviation Glossary",
+      "source": "ACRONYM_GLOSSARY.md",
+      "html": "ACRONYM_GLOSSARY.html",
+      "figure": "figures/ACRONYM_GLOSSARY.svg",
+      "source_sha256": "74c62ab1268033579138aba2e8bb49385ce1a7e9719df56a3a27f8b0987b7c02",
+      "headings": [
+        {
+          "title": "OIEC-STM-Agent Acronym and Abbreviation Glossary",
+          "slug": "oiec-stm-agent-acronym-and-abbreviation-glossary",
+          "level": 1
+        },
+        {
+          "title": "1. How to read this glossary",
+          "slug": "1-how-to-read-this-glossary",
+          "level": 2
+        },
+        {
+          "title": "2. The architecture at a glance",
+          "slug": "2-the-architecture-at-a-glance",
+          "level": 2
+        },
+        {
+          "title": "3. Core OIEC architecture terms",
+          "slug": "3-core-oiec-architecture-terms",
+          "level": 1
+        },
+        {
+          "title": "Quick reference",
+          "slug": "quick-reference",
+          "level": 2
+        },
+        {
+          "title": "OIEC",
+          "slug": "oiec",
+          "level": 2
+        },
+        {
+          "title": "STM",
+          "slug": "stm",
+          "level": 2
+        },
+        {
+          "title": "OIEC-STM",
+          "slug": "oiec-stm",
+          "level": 2
+        },
+        {
+          "title": "SR and OIEC-SR",
+          "slug": "sr-and-oiec-sr",
+          "level": 2
+        },
+        {
+          "title": "HRT",
+          "slug": "hrt",
+          "level": 2
+        },
+        {
+          "title": "OURD",
+          "slug": "ourd",
+          "level": 2
+        },
+        {
+          "title": "IURM",
+          "slug": "iurm",
+          "level": 2
+        },
+        {
+          "title": "IEPS",
+          "slug": "ieps",
+          "level": 2
+        },
+        {
+          "title": "BD",
+          "slug": "bd",
+          "level": 2
+        },
+        {
+          "title": "DL",
+          "slug": "dl",
+          "level": 2
+        },
+        {
+          "title": "EON",
+          "slug": "eon",
+          "level": 2
+        },
+        {
+          "title": "EGCF",
+          "slug": "egcf",
+          "level": 2
+        },
+        {
+          "title": "CFEL",
+          "slug": "cfel",
+          "level": 2
+        },
+        {
+          "title": "SAA",
+          "slug": "saa",
+          "level": 2
+        },
+        {
+          "title": "OIEC-Bench",
+          "slug": "oiec-bench",
+          "level": 2
+        },
+        {
+          "title": "4. SAA milestone labels",
+          "slug": "4-saa-milestone-labels",
+          "level": 1
+        },
+        {
+          "title": "5. Governance levels and coded labels",
+          "slug": "5-governance-levels-and-coded-labels",
+          "level": 1
+        },
+        {
+          "title": "C0–C5 capability classes",
+          "slug": "c0-c5-capability-classes",
+          "level": 2
+        },
+        {
+          "title": "L0–L2 risk classes",
+          "slug": "l0-l2-risk-classes",
+          "level": 2
+        },
+        {
+          "title": "T00–T13 tutorial identifiers",
+          "slug": "t00-t13-tutorial-identifiers",
+          "level": 2
+        },
+        {
+          "title": "v1, v1.1, v1.2, and similar suffixes",
+          "slug": "v1-v1-1-v1-2-and-similar-suffixes",
+          "level": 2
+        },
+        {
+          "title": "6. Agent, software, and repository engineering terms",
+          "slug": "6-agent-software-and-repository-engineering-terms",
+          "level": 1
+        },
+        {
+          "title": "7. Mathematical, control, and evidence terms",
+          "slug": "7-mathematical-control-and-evidence-terms",
+          "level": 1
+        },
+        {
+          "title": "Mathematical symbols that are not acronyms",
+          "slug": "mathematical-symbols-that-are-not-acronyms",
+          "level": 2
+        },
+        {
+          "title": "8. Graphics, image, and 3D terms",
+          "slug": "8-graphics-image-and-3d-terms",
+          "level": 1
+        },
+        {
+          "title": "9. File, web, and documentation terms",
+          "slug": "9-file-web-and-documentation-terms",
+          "level": 1
+        },
+        {
+          "title": "10. Common confusions",
+          "slug": "10-common-confusions",
+          "level": 1
+        },
+        {
+          "title": "OIEC is not given a made-up expansion",
+          "slug": "oiec-is-not-given-a-made-up-expansion",
+          "level": 2
+        },
+        {
+          "title": "STM is not ordinary short-term memory",
+          "slug": "stm-is-not-ordinary-short-term-memory",
+          "level": 2
+        },
+        {
+          "title": "SR and SAA solve different problems",
+          "slug": "sr-and-saa-solve-different-problems",
+          "level": 2
+        },
+        {
+          "title": "EON and EGCF are not synonyms",
+          "slug": "eon-and-egcf-are-not-synonyms",
+          "level": 2
+        },
+        {
+          "title": "IURM and IEPS are not synonyms",
+          "slug": "iurm-and-ieps-are-not-synonyms",
+          "level": 2
+        },
+        {
+          "title": "API and ABI are different contracts",
+          "slug": "api-and-abi-are-different-contracts",
+          "level": 2
+        },
+        {
+          "title": "A source-code function is not automatically a canonical algorithm",
+          "slug": "a-source-code-function-is-not-automatically-a-canonical-algorithm",
+          "level": 2
+        },
+        {
+          "title": "Several agreeing agents do not create authority",
+          "slug": "several-agreeing-agents-do-not-create-authority",
+          "level": 2
+        },
+        {
+          "title": "11. First-use writing rule",
+          "slug": "11-first-use-writing-rule",
+          "level": 1
+        },
+        {
+          "title": "12. Adding a new acronym to the repository",
+          "slug": "12-adding-a-new-acronym-to-the-repository",
+          "level": 1
+        },
+        {
+          "title": "13. Alphabetical index",
+          "slug": "13-alphabetical-index",
+          "level": 1
+        },
+        {
+          "title": "14. Sources of truth",
+          "slug": "14-sources-of-truth",
+          "level": 1
+        }
+      ]
+    },
     {
       "title": "EGCFv1 Command Reference",
       "source": "EGCFV1_COMMAND_REFERENCE.md",
@@ -18947,7 +19176,7 @@
     },
     {
       "slug": "ourd",
-      "title": "OURD: Object-Universe-Relation-Dependency Modeling",
+      "title": "OURD: Object Unique Relational Decomposition Modeling",
       "category": "Governed Reasoning Loop",
       "definition": "OURD builds the relational map of the problem: objects, boundaries, dependencies, goals, impacts, exclusions, and unresolved relations.",
       "thesis": "The agent should model the territory before choosing one imagined implementation path.",
@@ -18979,7 +19208,7 @@
       ],
       "teaching": {
         "concept_id": "ourd",
-        "full_name": "OURD: Object-Universe-Relation-Dependency Modeling",
+        "full_name": "OURD: Object Unique Relational Decomposition Modeling",
         "short_meaning": "OURD builds the relational map of the problem: objects, boundaries, dependencies, goals, impacts, exclusions, and unresolved relations.",
         "why_it_exists": "The agent should model the territory before choosing one imagined implementation path.",
         "everyday_analogy": "A lamp diagnosis maps the bulb, fitting, switch, circuit, breaker, and supply before choosing a cause.",
@@ -19003,7 +19232,7 @@
         "cli_examples": [
           "agent-one-shot"
         ],
-        "failure_example": "If OURD: Object-Universe-Relation-Dependency Modeling receives stale, incomplete, contradictory, or unauthorized inputs, the safe result is an explicit unresolved or refused outcome rather than silent continuation.",
+        "failure_example": "If OURD: Object Unique Relational Decomposition Modeling receives stale, incomplete, contradictory, or unauthorized inputs, the safe result is an explicit unresolved or refused outcome rather than silent continuation.",
         "source_links": [
           "README.md",
           "docs/OURD_AGENT_GUI.md",
@@ -23633,7 +23862,7 @@
       "entry_id": "problem-map",
       "title": "Model the territory",
       "problem": "A plausible first solution can hide missing objects and dependencies.",
-      "response": "OURD names the object universe, relations, boundaries, exclusions, and unknowns.",
+      "response": "OURD decomposes the problem into unique objects, relations, dependencies, boundaries, exclusions, and unknowns.",
       "source_paths": [
         "README.md",
         "ourd/egcf/catalog.py"
@@ -23701,10 +23930,10 @@
     },
     {
       "token": "STM",
-      "expansion": "STM v1.2 bounded-transition layer",
+      "expansion": "State Transition Machine",
       "short_meaning": "The bounded state-transition part of OIEC-STM-Agent.",
       "everyday_analogy": "A turnstile that admits only a checked transition rather than any movement.",
-      "formal_meaning": "The current source names STM as a bounded-transition layer; it does not define STM as ordinary conversational short-term memory.",
+      "formal_meaning": "STM is the State Transition Machine: the bounded-transition layer that governs admissible state changes; it is not ordinary conversational short-term memory.",
       "related_concepts": [
         "eon",
         "evidence-gate"
@@ -23733,10 +23962,10 @@
     },
     {
       "token": "OURD",
-      "expansion": "Object-Universe-Relation-Dependency",
-      "short_meaning": "Maps what belongs to a problem and how the parts relate.",
+      "expansion": "Object Unique Relational Decomposition",
+      "short_meaning": "Decomposes a problem into unique objects and the relations between them.",
       "everyday_analogy": "List every part of a lamp circuit before blaming the bulb.",
-      "formal_meaning": "A canonical relational problem representation with explicit boundaries and unresolved relations.",
+      "formal_meaning": "A canonical relational decomposition into unique objects, their relations, dependencies, boundaries, exclusions, and unresolved relations.",
       "related_concepts": [
         "ourd"
       ],
@@ -26024,7 +26253,7 @@
       "object_id": "rel-category-lifecycle-and-migration-df095cbb1252",
       "kind": "category",
       "title": "Lifecycle and Migration",
-      "description": "Architecture domain containing 29 source documents.",
+      "description": "Architecture domain containing 30 source documents.",
       "parent_id": "rel-root-docs-index-html-d86163bf2ae1",
       "relation": "partitions",
       "href": "#category-lifecycle-and-migration",
@@ -26060,6 +26289,609 @@
         "rel-document-adr-0003-egcf-capability-authority-md-8c5f4a4079a8",
         "rel-document-adr-0004-egcf-eon-boundary-md-ac8184ccbf8b"
       ]
+    },
+    {
+      "object_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "kind": "document",
+      "title": "OIEC-STM-Agent Acronym and Abbreviation Glossary",
+      "description": "Generated learning document with 44 heading objects in the Lifecycle and Migration domain.",
+      "parent_id": "rel-category-lifecycle-and-migration-df095cbb1252",
+      "relation": "contains-document",
+      "href": "ACRONYM_GLOSSARY.html",
+      "source_key": "ACRONYM_GLOSSARY.md",
+      "symbol": "figures/relational-objects/rel-document-acronymglossary-md-cf5b514a1d47.svg",
+      "related_ids": []
+    },
+    {
+      "object_id": "rel-heading-acronymglossary-md-oiec-stm-agent-acronym-1af6629871ff",
+      "kind": "heading",
+      "title": "OIEC-STM-Agent Acronym and Abbreviation Glossary",
+      "description": "Level 1 learning object derived from heading 1 in ACRONYM_GLOSSARY.md.",
+      "parent_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "href": "ACRONYM_GLOSSARY.html#oiec-stm-agent-acronym-and-abbreviation-glossary",
+      "source_key": "ACRONYM_GLOSSARY.md#oiec-stm-agent-acronym-and-abbreviation-glossary",
+      "symbol": "figures/relational-objects/rel-heading-acronymglossary-md-oiec-stm-agent-acronym-1af6629871ff.svg",
+      "related_ids": []
+    },
+    {
+      "object_id": "rel-heading-acronymglossary-md-1-how-to-read-this-glos-7bc8e453ee34",
+      "kind": "heading",
+      "title": "1. How to read this glossary",
+      "description": "Level 2 learning object derived from heading 2 in ACRONYM_GLOSSARY.md.",
+      "parent_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "href": "ACRONYM_GLOSSARY.html#1-how-to-read-this-glossary",
+      "source_key": "ACRONYM_GLOSSARY.md#1-how-to-read-this-glossary",
+      "symbol": "figures/relational-objects/rel-heading-acronymglossary-md-1-how-to-read-this-glos-7bc8e453ee34.svg",
+      "related_ids": []
+    },
+    {
+      "object_id": "rel-heading-acronymglossary-md-2-the-architecture-at-a-9a9c0673086e",
+      "kind": "heading",
+      "title": "2. The architecture at a glance",
+      "description": "Level 2 learning object derived from heading 3 in ACRONYM_GLOSSARY.md.",
+      "parent_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "href": "ACRONYM_GLOSSARY.html#2-the-architecture-at-a-glance",
+      "source_key": "ACRONYM_GLOSSARY.md#2-the-architecture-at-a-glance",
+      "symbol": "figures/relational-objects/rel-heading-acronymglossary-md-2-the-architecture-at-a-9a9c0673086e.svg",
+      "related_ids": [
+        "rel-concept-cfel-2ba4461ef142",
+        "rel-concept-egcf-0aab78fce577",
+        "rel-concept-eon-82f592cd7940",
+        "rel-concept-hrt-3249d576640e",
+        "rel-concept-ieps-01bbd9fab060",
+        "rel-concept-iurm-1af8fcd29b36",
+        "rel-concept-ourd-b804b7772b3e"
+      ]
+    },
+    {
+      "object_id": "rel-heading-acronymglossary-md-3-core-oiec-architectur-1bb534842433",
+      "kind": "heading",
+      "title": "3. Core OIEC architecture terms",
+      "description": "Level 1 learning object derived from heading 4 in ACRONYM_GLOSSARY.md.",
+      "parent_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "href": "ACRONYM_GLOSSARY.html#3-core-oiec-architecture-terms",
+      "source_key": "ACRONYM_GLOSSARY.md#3-core-oiec-architecture-terms",
+      "symbol": "figures/relational-objects/rel-heading-acronymglossary-md-3-core-oiec-architectur-1bb534842433.svg",
+      "related_ids": []
+    },
+    {
+      "object_id": "rel-heading-acronymglossary-md-quick-reference-21678af58802",
+      "kind": "heading",
+      "title": "Quick reference",
+      "description": "Level 2 learning object derived from heading 5 in ACRONYM_GLOSSARY.md.",
+      "parent_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "href": "ACRONYM_GLOSSARY.html#quick-reference",
+      "source_key": "ACRONYM_GLOSSARY.md#quick-reference",
+      "symbol": "figures/relational-objects/rel-heading-acronymglossary-md-quick-reference-21678af58802.svg",
+      "related_ids": [
+        "rel-concept-cfel-2ba4461ef142",
+        "rel-concept-egcf-0aab78fce577",
+        "rel-concept-eon-82f592cd7940",
+        "rel-concept-hrt-3249d576640e",
+        "rel-concept-ieps-01bbd9fab060",
+        "rel-concept-iurm-1af8fcd29b36",
+        "rel-concept-ourd-b804b7772b3e"
+      ]
+    },
+    {
+      "object_id": "rel-heading-acronymglossary-md-oiec-d77f73c49ddd",
+      "kind": "heading",
+      "title": "OIEC",
+      "description": "Level 2 learning object derived from heading 6 in ACRONYM_GLOSSARY.md.",
+      "parent_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "href": "ACRONYM_GLOSSARY.html#oiec",
+      "source_key": "ACRONYM_GLOSSARY.md#oiec",
+      "symbol": "figures/relational-objects/rel-heading-acronymglossary-md-oiec-d77f73c49ddd.svg",
+      "related_ids": [
+        "rel-concept-cfel-2ba4461ef142",
+        "rel-concept-egcf-0aab78fce577",
+        "rel-concept-eon-82f592cd7940",
+        "rel-concept-hrt-3249d576640e",
+        "rel-concept-ieps-01bbd9fab060",
+        "rel-concept-iurm-1af8fcd29b36",
+        "rel-concept-ourd-b804b7772b3e"
+      ]
+    },
+    {
+      "object_id": "rel-heading-acronymglossary-md-stm-17974fc14085",
+      "kind": "heading",
+      "title": "STM",
+      "description": "Level 2 learning object derived from heading 7 in ACRONYM_GLOSSARY.md.",
+      "parent_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "href": "ACRONYM_GLOSSARY.html#stm",
+      "source_key": "ACRONYM_GLOSSARY.md#stm",
+      "symbol": "figures/relational-objects/rel-heading-acronymglossary-md-stm-17974fc14085.svg",
+      "related_ids": []
+    },
+    {
+      "object_id": "rel-heading-acronymglossary-md-oiec-stm-0563dd447d69",
+      "kind": "heading",
+      "title": "OIEC-STM",
+      "description": "Level 2 learning object derived from heading 8 in ACRONYM_GLOSSARY.md.",
+      "parent_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "href": "ACRONYM_GLOSSARY.html#oiec-stm",
+      "source_key": "ACRONYM_GLOSSARY.md#oiec-stm",
+      "symbol": "figures/relational-objects/rel-heading-acronymglossary-md-oiec-stm-0563dd447d69.svg",
+      "related_ids": []
+    },
+    {
+      "object_id": "rel-heading-acronymglossary-md-sr-and-oiec-sr-174402f9dc71",
+      "kind": "heading",
+      "title": "SR and OIEC-SR",
+      "description": "Level 2 learning object derived from heading 9 in ACRONYM_GLOSSARY.md.",
+      "parent_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "href": "ACRONYM_GLOSSARY.html#sr-and-oiec-sr",
+      "source_key": "ACRONYM_GLOSSARY.md#sr-and-oiec-sr",
+      "symbol": "figures/relational-objects/rel-heading-acronymglossary-md-sr-and-oiec-sr-174402f9dc71.svg",
+      "related_ids": []
+    },
+    {
+      "object_id": "rel-heading-acronymglossary-md-hrt-b07859a2965b",
+      "kind": "heading",
+      "title": "HRT",
+      "description": "Level 2 learning object derived from heading 10 in ACRONYM_GLOSSARY.md.",
+      "parent_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "href": "ACRONYM_GLOSSARY.html#hrt",
+      "source_key": "ACRONYM_GLOSSARY.md#hrt",
+      "symbol": "figures/relational-objects/rel-heading-acronymglossary-md-hrt-b07859a2965b.svg",
+      "related_ids": [
+        "rel-concept-hrt-3249d576640e",
+        "rel-concept-ourd-b804b7772b3e"
+      ]
+    },
+    {
+      "object_id": "rel-heading-acronymglossary-md-ourd-40143d1ddfe4",
+      "kind": "heading",
+      "title": "OURD",
+      "description": "Level 2 learning object derived from heading 11 in ACRONYM_GLOSSARY.md.",
+      "parent_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "href": "ACRONYM_GLOSSARY.html#ourd",
+      "source_key": "ACRONYM_GLOSSARY.md#ourd",
+      "symbol": "figures/relational-objects/rel-heading-acronymglossary-md-ourd-40143d1ddfe4.svg",
+      "related_ids": [
+        "rel-concept-ourd-b804b7772b3e"
+      ]
+    },
+    {
+      "object_id": "rel-heading-acronymglossary-md-iurm-08951d3e8ecd",
+      "kind": "heading",
+      "title": "IURM",
+      "description": "Level 2 learning object derived from heading 12 in ACRONYM_GLOSSARY.md.",
+      "parent_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "href": "ACRONYM_GLOSSARY.html#iurm",
+      "source_key": "ACRONYM_GLOSSARY.md#iurm",
+      "symbol": "figures/relational-objects/rel-heading-acronymglossary-md-iurm-08951d3e8ecd.svg",
+      "related_ids": [
+        "rel-concept-iurm-1af8fcd29b36"
+      ]
+    },
+    {
+      "object_id": "rel-heading-acronymglossary-md-ieps-9c0c6ecfb15b",
+      "kind": "heading",
+      "title": "IEPS",
+      "description": "Level 2 learning object derived from heading 13 in ACRONYM_GLOSSARY.md.",
+      "parent_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "href": "ACRONYM_GLOSSARY.html#ieps",
+      "source_key": "ACRONYM_GLOSSARY.md#ieps",
+      "symbol": "figures/relational-objects/rel-heading-acronymglossary-md-ieps-9c0c6ecfb15b.svg",
+      "related_ids": [
+        "rel-concept-ieps-01bbd9fab060"
+      ]
+    },
+    {
+      "object_id": "rel-heading-acronymglossary-md-bd-cf3a9fd013aa",
+      "kind": "heading",
+      "title": "BD",
+      "description": "Level 2 learning object derived from heading 14 in ACRONYM_GLOSSARY.md.",
+      "parent_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "href": "ACRONYM_GLOSSARY.html#bd",
+      "source_key": "ACRONYM_GLOSSARY.md#bd",
+      "symbol": "figures/relational-objects/rel-heading-acronymglossary-md-bd-cf3a9fd013aa.svg",
+      "related_ids": [
+        "rel-concept-ieps-01bbd9fab060",
+        "rel-concept-iurm-1af8fcd29b36"
+      ]
+    },
+    {
+      "object_id": "rel-heading-acronymglossary-md-dl-7fa089d7db36",
+      "kind": "heading",
+      "title": "DL",
+      "description": "Level 2 learning object derived from heading 15 in ACRONYM_GLOSSARY.md.",
+      "parent_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "href": "ACRONYM_GLOSSARY.html#dl",
+      "source_key": "ACRONYM_GLOSSARY.md#dl",
+      "symbol": "figures/relational-objects/rel-heading-acronymglossary-md-dl-7fa089d7db36.svg",
+      "related_ids": [
+        "rel-concept-iurm-1af8fcd29b36"
+      ]
+    },
+    {
+      "object_id": "rel-heading-acronymglossary-md-eon-20c53c1673a4",
+      "kind": "heading",
+      "title": "EON",
+      "description": "Level 2 learning object derived from heading 16 in ACRONYM_GLOSSARY.md.",
+      "parent_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "href": "ACRONYM_GLOSSARY.html#eon",
+      "source_key": "ACRONYM_GLOSSARY.md#eon",
+      "symbol": "figures/relational-objects/rel-heading-acronymglossary-md-eon-20c53c1673a4.svg",
+      "related_ids": [
+        "rel-concept-egcf-0aab78fce577",
+        "rel-concept-eon-82f592cd7940"
+      ]
+    },
+    {
+      "object_id": "rel-heading-acronymglossary-md-egcf-a734e22cd844",
+      "kind": "heading",
+      "title": "EGCF",
+      "description": "Level 2 learning object derived from heading 17 in ACRONYM_GLOSSARY.md.",
+      "parent_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "href": "ACRONYM_GLOSSARY.html#egcf",
+      "source_key": "ACRONYM_GLOSSARY.md#egcf",
+      "symbol": "figures/relational-objects/rel-heading-acronymglossary-md-egcf-a734e22cd844.svg",
+      "related_ids": [
+        "rel-concept-egcf-0aab78fce577"
+      ]
+    },
+    {
+      "object_id": "rel-heading-acronymglossary-md-cfel-f092cb037c59",
+      "kind": "heading",
+      "title": "CFEL",
+      "description": "Level 2 learning object derived from heading 18 in ACRONYM_GLOSSARY.md.",
+      "parent_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "href": "ACRONYM_GLOSSARY.html#cfel",
+      "source_key": "ACRONYM_GLOSSARY.md#cfel",
+      "symbol": "figures/relational-objects/rel-heading-acronymglossary-md-cfel-f092cb037c59.svg",
+      "related_ids": [
+        "rel-concept-cfel-2ba4461ef142"
+      ]
+    },
+    {
+      "object_id": "rel-heading-acronymglossary-md-saa-6b66ff51be44",
+      "kind": "heading",
+      "title": "SAA",
+      "description": "Level 2 learning object derived from heading 19 in ACRONYM_GLOSSARY.md.",
+      "parent_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "href": "ACRONYM_GLOSSARY.html#saa",
+      "source_key": "ACRONYM_GLOSSARY.md#saa",
+      "symbol": "figures/relational-objects/rel-heading-acronymglossary-md-saa-6b66ff51be44.svg",
+      "related_ids": []
+    },
+    {
+      "object_id": "rel-heading-acronymglossary-md-oiec-bench-d9240a6dd0e0",
+      "kind": "heading",
+      "title": "OIEC-Bench",
+      "description": "Level 2 learning object derived from heading 20 in ACRONYM_GLOSSARY.md.",
+      "parent_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "href": "ACRONYM_GLOSSARY.html#oiec-bench",
+      "source_key": "ACRONYM_GLOSSARY.md#oiec-bench",
+      "symbol": "figures/relational-objects/rel-heading-acronymglossary-md-oiec-bench-d9240a6dd0e0.svg",
+      "related_ids": []
+    },
+    {
+      "object_id": "rel-heading-acronymglossary-md-4-saa-milestone-labels-7f099b604e3e",
+      "kind": "heading",
+      "title": "4. SAA milestone labels",
+      "description": "Level 1 learning object derived from heading 21 in ACRONYM_GLOSSARY.md.",
+      "parent_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "href": "ACRONYM_GLOSSARY.html#4-saa-milestone-labels",
+      "source_key": "ACRONYM_GLOSSARY.md#4-saa-milestone-labels",
+      "symbol": "figures/relational-objects/rel-heading-acronymglossary-md-4-saa-milestone-labels-7f099b604e3e.svg",
+      "related_ids": []
+    },
+    {
+      "object_id": "rel-heading-acronymglossary-md-5-governance-levels-and-0bcb4bcaa82a",
+      "kind": "heading",
+      "title": "5. Governance levels and coded labels",
+      "description": "Level 1 learning object derived from heading 22 in ACRONYM_GLOSSARY.md.",
+      "parent_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "href": "ACRONYM_GLOSSARY.html#5-governance-levels-and-coded-labels",
+      "source_key": "ACRONYM_GLOSSARY.md#5-governance-levels-and-coded-labels",
+      "symbol": "figures/relational-objects/rel-heading-acronymglossary-md-5-governance-levels-and-0bcb4bcaa82a.svg",
+      "related_ids": []
+    },
+    {
+      "object_id": "rel-heading-acronymglossary-md-c0-c5-capability-classe-6246a72d266e",
+      "kind": "heading",
+      "title": "C0–C5 capability classes",
+      "description": "Level 2 learning object derived from heading 23 in ACRONYM_GLOSSARY.md.",
+      "parent_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "href": "ACRONYM_GLOSSARY.html#c0-c5-capability-classes",
+      "source_key": "ACRONYM_GLOSSARY.md#c0-c5-capability-classes",
+      "symbol": "figures/relational-objects/rel-heading-acronymglossary-md-c0-c5-capability-classe-6246a72d266e.svg",
+      "related_ids": []
+    },
+    {
+      "object_id": "rel-heading-acronymglossary-md-l0-l2-risk-classes-3357065ad252",
+      "kind": "heading",
+      "title": "L0–L2 risk classes",
+      "description": "Level 2 learning object derived from heading 24 in ACRONYM_GLOSSARY.md.",
+      "parent_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "href": "ACRONYM_GLOSSARY.html#l0-l2-risk-classes",
+      "source_key": "ACRONYM_GLOSSARY.md#l0-l2-risk-classes",
+      "symbol": "figures/relational-objects/rel-heading-acronymglossary-md-l0-l2-risk-classes-3357065ad252.svg",
+      "related_ids": []
+    },
+    {
+      "object_id": "rel-heading-acronymglossary-md-t00-t13-tutorial-identi-92c901c64f04",
+      "kind": "heading",
+      "title": "T00–T13 tutorial identifiers",
+      "description": "Level 2 learning object derived from heading 25 in ACRONYM_GLOSSARY.md.",
+      "parent_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "href": "ACRONYM_GLOSSARY.html#t00-t13-tutorial-identifiers",
+      "source_key": "ACRONYM_GLOSSARY.md#t00-t13-tutorial-identifiers",
+      "symbol": "figures/relational-objects/rel-heading-acronymglossary-md-t00-t13-tutorial-identi-92c901c64f04.svg",
+      "related_ids": [
+        "rel-concept-ourd-b804b7772b3e"
+      ]
+    },
+    {
+      "object_id": "rel-heading-acronymglossary-md-v1-v1-1-v1-2-and-simila-64c99923d0e9",
+      "kind": "heading",
+      "title": "v1, v1.1, v1.2, and similar suffixes",
+      "description": "Level 2 learning object derived from heading 26 in ACRONYM_GLOSSARY.md.",
+      "parent_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "href": "ACRONYM_GLOSSARY.html#v1-v1-1-v1-2-and-similar-suffixes",
+      "source_key": "ACRONYM_GLOSSARY.md#v1-v1-1-v1-2-and-similar-suffixes",
+      "symbol": "figures/relational-objects/rel-heading-acronymglossary-md-v1-v1-1-v1-2-and-simila-64c99923d0e9.svg",
+      "related_ids": []
+    },
+    {
+      "object_id": "rel-heading-acronymglossary-md-6-agent-software-and-re-b28be9f268cf",
+      "kind": "heading",
+      "title": "6. Agent, software, and repository engineering terms",
+      "description": "Level 1 learning object derived from heading 27 in ACRONYM_GLOSSARY.md.",
+      "parent_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "href": "ACRONYM_GLOSSARY.html#6-agent-software-and-repository-engineering-terms",
+      "source_key": "ACRONYM_GLOSSARY.md#6-agent-software-and-repository-engineering-terms",
+      "symbol": "figures/relational-objects/rel-heading-acronymglossary-md-6-agent-software-and-re-b28be9f268cf.svg",
+      "related_ids": []
+    },
+    {
+      "object_id": "rel-heading-acronymglossary-md-7-mathematical-control-5fb21c96a680",
+      "kind": "heading",
+      "title": "7. Mathematical, control, and evidence terms",
+      "description": "Level 1 learning object derived from heading 28 in ACRONYM_GLOSSARY.md.",
+      "parent_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "href": "ACRONYM_GLOSSARY.html#7-mathematical-control-and-evidence-terms",
+      "source_key": "ACRONYM_GLOSSARY.md#7-mathematical-control-and-evidence-terms",
+      "symbol": "figures/relational-objects/rel-heading-acronymglossary-md-7-mathematical-control-5fb21c96a680.svg",
+      "related_ids": []
+    },
+    {
+      "object_id": "rel-heading-acronymglossary-md-mathematical-symbols-th-af6a8ff643eb",
+      "kind": "heading",
+      "title": "Mathematical symbols that are not acronyms",
+      "description": "Level 2 learning object derived from heading 29 in ACRONYM_GLOSSARY.md.",
+      "parent_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "href": "ACRONYM_GLOSSARY.html#mathematical-symbols-that-are-not-acronyms",
+      "source_key": "ACRONYM_GLOSSARY.md#mathematical-symbols-that-are-not-acronyms",
+      "symbol": "figures/relational-objects/rel-heading-acronymglossary-md-mathematical-symbols-th-af6a8ff643eb.svg",
+      "related_ids": []
+    },
+    {
+      "object_id": "rel-heading-acronymglossary-md-8-graphics-image-and-3d-ae96948e0661",
+      "kind": "heading",
+      "title": "8. Graphics, image, and 3D terms",
+      "description": "Level 1 learning object derived from heading 30 in ACRONYM_GLOSSARY.md.",
+      "parent_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "href": "ACRONYM_GLOSSARY.html#8-graphics-image-and-3d-terms",
+      "source_key": "ACRONYM_GLOSSARY.md#8-graphics-image-and-3d-terms",
+      "symbol": "figures/relational-objects/rel-heading-acronymglossary-md-8-graphics-image-and-3d-ae96948e0661.svg",
+      "related_ids": []
+    },
+    {
+      "object_id": "rel-heading-acronymglossary-md-9-file-web-and-document-6d3bdce146e4",
+      "kind": "heading",
+      "title": "9. File, web, and documentation terms",
+      "description": "Level 1 learning object derived from heading 31 in ACRONYM_GLOSSARY.md.",
+      "parent_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "href": "ACRONYM_GLOSSARY.html#9-file-web-and-documentation-terms",
+      "source_key": "ACRONYM_GLOSSARY.md#9-file-web-and-documentation-terms",
+      "symbol": "figures/relational-objects/rel-heading-acronymglossary-md-9-file-web-and-document-6d3bdce146e4.svg",
+      "related_ids": []
+    },
+    {
+      "object_id": "rel-heading-acronymglossary-md-10-common-confusions-901331680d01",
+      "kind": "heading",
+      "title": "10. Common confusions",
+      "description": "Level 1 learning object derived from heading 32 in ACRONYM_GLOSSARY.md.",
+      "parent_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "href": "ACRONYM_GLOSSARY.html#10-common-confusions",
+      "source_key": "ACRONYM_GLOSSARY.md#10-common-confusions",
+      "symbol": "figures/relational-objects/rel-heading-acronymglossary-md-10-common-confusions-901331680d01.svg",
+      "related_ids": []
+    },
+    {
+      "object_id": "rel-heading-acronymglossary-md-oiec-is-not-given-a-mad-1a36a2d88b87",
+      "kind": "heading",
+      "title": "OIEC is not given a made-up expansion",
+      "description": "Level 2 learning object derived from heading 33 in ACRONYM_GLOSSARY.md.",
+      "parent_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "href": "ACRONYM_GLOSSARY.html#oiec-is-not-given-a-made-up-expansion",
+      "source_key": "ACRONYM_GLOSSARY.md#oiec-is-not-given-a-made-up-expansion",
+      "symbol": "figures/relational-objects/rel-heading-acronymglossary-md-oiec-is-not-given-a-mad-1a36a2d88b87.svg",
+      "related_ids": []
+    },
+    {
+      "object_id": "rel-heading-acronymglossary-md-stm-is-not-ordinary-sho-7f9b31a0cdc3",
+      "kind": "heading",
+      "title": "STM is not ordinary short-term memory",
+      "description": "Level 2 learning object derived from heading 34 in ACRONYM_GLOSSARY.md.",
+      "parent_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "href": "ACRONYM_GLOSSARY.html#stm-is-not-ordinary-short-term-memory",
+      "source_key": "ACRONYM_GLOSSARY.md#stm-is-not-ordinary-short-term-memory",
+      "symbol": "figures/relational-objects/rel-heading-acronymglossary-md-stm-is-not-ordinary-sho-7f9b31a0cdc3.svg",
+      "related_ids": []
+    },
+    {
+      "object_id": "rel-heading-acronymglossary-md-sr-and-saa-solve-differ-702729f3b718",
+      "kind": "heading",
+      "title": "SR and SAA solve different problems",
+      "description": "Level 2 learning object derived from heading 35 in ACRONYM_GLOSSARY.md.",
+      "parent_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "href": "ACRONYM_GLOSSARY.html#sr-and-saa-solve-different-problems",
+      "source_key": "ACRONYM_GLOSSARY.md#sr-and-saa-solve-different-problems",
+      "symbol": "figures/relational-objects/rel-heading-acronymglossary-md-sr-and-saa-solve-differ-702729f3b718.svg",
+      "related_ids": []
+    },
+    {
+      "object_id": "rel-heading-acronymglossary-md-eon-and-egcf-are-not-sy-995b497e9aa1",
+      "kind": "heading",
+      "title": "EON and EGCF are not synonyms",
+      "description": "Level 2 learning object derived from heading 36 in ACRONYM_GLOSSARY.md.",
+      "parent_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "href": "ACRONYM_GLOSSARY.html#eon-and-egcf-are-not-synonyms",
+      "source_key": "ACRONYM_GLOSSARY.md#eon-and-egcf-are-not-synonyms",
+      "symbol": "figures/relational-objects/rel-heading-acronymglossary-md-eon-and-egcf-are-not-sy-995b497e9aa1.svg",
+      "related_ids": [
+        "rel-concept-egcf-0aab78fce577",
+        "rel-concept-eon-82f592cd7940"
+      ]
+    },
+    {
+      "object_id": "rel-heading-acronymglossary-md-iurm-and-ieps-are-not-s-d719f55cab4e",
+      "kind": "heading",
+      "title": "IURM and IEPS are not synonyms",
+      "description": "Level 2 learning object derived from heading 37 in ACRONYM_GLOSSARY.md.",
+      "parent_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "href": "ACRONYM_GLOSSARY.html#iurm-and-ieps-are-not-synonyms",
+      "source_key": "ACRONYM_GLOSSARY.md#iurm-and-ieps-are-not-synonyms",
+      "symbol": "figures/relational-objects/rel-heading-acronymglossary-md-iurm-and-ieps-are-not-s-d719f55cab4e.svg",
+      "related_ids": [
+        "rel-concept-ieps-01bbd9fab060",
+        "rel-concept-iurm-1af8fcd29b36"
+      ]
+    },
+    {
+      "object_id": "rel-heading-acronymglossary-md-api-and-abi-are-differe-adc572fc4929",
+      "kind": "heading",
+      "title": "API and ABI are different contracts",
+      "description": "Level 2 learning object derived from heading 38 in ACRONYM_GLOSSARY.md.",
+      "parent_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "href": "ACRONYM_GLOSSARY.html#api-and-abi-are-different-contracts",
+      "source_key": "ACRONYM_GLOSSARY.md#api-and-abi-are-different-contracts",
+      "symbol": "figures/relational-objects/rel-heading-acronymglossary-md-api-and-abi-are-differe-adc572fc4929.svg",
+      "related_ids": []
+    },
+    {
+      "object_id": "rel-heading-acronymglossary-md-a-source-code-function-820a97c26e9c",
+      "kind": "heading",
+      "title": "A source-code function is not automatically a canonical algorithm",
+      "description": "Level 2 learning object derived from heading 39 in ACRONYM_GLOSSARY.md.",
+      "parent_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "href": "ACRONYM_GLOSSARY.html#a-source-code-function-is-not-automatically-a-canonical-algorithm",
+      "source_key": "ACRONYM_GLOSSARY.md#a-source-code-function-is-not-automatically-a-canonical-algorithm",
+      "symbol": "figures/relational-objects/rel-heading-acronymglossary-md-a-source-code-function-820a97c26e9c.svg",
+      "related_ids": []
+    },
+    {
+      "object_id": "rel-heading-acronymglossary-md-several-agreeing-agents-93b3a11a416a",
+      "kind": "heading",
+      "title": "Several agreeing agents do not create authority",
+      "description": "Level 2 learning object derived from heading 40 in ACRONYM_GLOSSARY.md.",
+      "parent_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "href": "ACRONYM_GLOSSARY.html#several-agreeing-agents-do-not-create-authority",
+      "source_key": "ACRONYM_GLOSSARY.md#several-agreeing-agents-do-not-create-authority",
+      "symbol": "figures/relational-objects/rel-heading-acronymglossary-md-several-agreeing-agents-93b3a11a416a.svg",
+      "related_ids": []
+    },
+    {
+      "object_id": "rel-heading-acronymglossary-md-11-first-use-writing-ru-04cb54296567",
+      "kind": "heading",
+      "title": "11. First-use writing rule",
+      "description": "Level 1 learning object derived from heading 41 in ACRONYM_GLOSSARY.md.",
+      "parent_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "href": "ACRONYM_GLOSSARY.html#11-first-use-writing-rule",
+      "source_key": "ACRONYM_GLOSSARY.md#11-first-use-writing-rule",
+      "symbol": "figures/relational-objects/rel-heading-acronymglossary-md-11-first-use-writing-ru-04cb54296567.svg",
+      "related_ids": [
+        "rel-concept-egcf-0aab78fce577"
+      ]
+    },
+    {
+      "object_id": "rel-heading-acronymglossary-md-12-adding-a-new-acronym-ab76ccd1a302",
+      "kind": "heading",
+      "title": "12. Adding a new acronym to the repository",
+      "description": "Level 1 learning object derived from heading 42 in ACRONYM_GLOSSARY.md.",
+      "parent_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "href": "ACRONYM_GLOSSARY.html#12-adding-a-new-acronym-to-the-repository",
+      "source_key": "ACRONYM_GLOSSARY.md#12-adding-a-new-acronym-to-the-repository",
+      "symbol": "figures/relational-objects/rel-heading-acronymglossary-md-12-adding-a-new-acronym-ab76ccd1a302.svg",
+      "related_ids": []
+    },
+    {
+      "object_id": "rel-heading-acronymglossary-md-13-alphabetical-index-1c21388aea67",
+      "kind": "heading",
+      "title": "13. Alphabetical index",
+      "description": "Level 1 learning object derived from heading 43 in ACRONYM_GLOSSARY.md.",
+      "parent_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "href": "ACRONYM_GLOSSARY.html#13-alphabetical-index",
+      "source_key": "ACRONYM_GLOSSARY.md#13-alphabetical-index",
+      "symbol": "figures/relational-objects/rel-heading-acronymglossary-md-13-alphabetical-index-1c21388aea67.svg",
+      "related_ids": [
+        "rel-concept-cfel-2ba4461ef142",
+        "rel-concept-egcf-0aab78fce577",
+        "rel-concept-eon-82f592cd7940",
+        "rel-concept-hrt-3249d576640e",
+        "rel-concept-ieps-01bbd9fab060",
+        "rel-concept-iurm-1af8fcd29b36",
+        "rel-concept-ourd-b804b7772b3e"
+      ]
+    },
+    {
+      "object_id": "rel-heading-acronymglossary-md-14-sources-of-truth-d2e0abed7efe",
+      "kind": "heading",
+      "title": "14. Sources of truth",
+      "description": "Level 1 learning object derived from heading 44 in ACRONYM_GLOSSARY.md.",
+      "parent_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "href": "ACRONYM_GLOSSARY.html#14-sources-of-truth",
+      "source_key": "ACRONYM_GLOSSARY.md#14-sources-of-truth",
+      "symbol": "figures/relational-objects/rel-heading-acronymglossary-md-14-sources-of-truth-d2e0abed7efe.svg",
+      "related_ids": []
     },
     {
       "object_id": "rel-document-egcfv1commandreference-md-234600f357f9",
@@ -38506,7 +39338,7 @@
     {
       "object_id": "rel-concept-ourd-b804b7772b3e",
       "kind": "concept",
-      "title": "OURD: Object-Universe-Relation-Dependency Modeling",
+      "title": "OURD: Object Unique Relational Decomposition Modeling",
       "description": "OURD builds the relational map of the problem: objects, boundaries, dependencies, goals, impacts, exclusions, and unresolved relations.",
       "parent_id": "rel-root-docs-index-html-d86163bf2ae1",
       "relation": "defines-concept",
@@ -39470,6 +40302,552 @@
       "target_id": "rel-document-adr-0004-egcf-eon-boundary-md-ac8184ccbf8b",
       "relation": "related-to",
       "canonical": false
+    },
+    {
+      "source_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "target_id": "rel-category-lifecycle-and-migration-df095cbb1252",
+      "relation": "contains-document",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-oiec-stm-agent-acronym-1af6629871ff",
+      "target_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-1-how-to-read-this-glos-7bc8e453ee34",
+      "target_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-2-the-architecture-at-a-9a9c0673086e",
+      "target_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-2-the-architecture-at-a-9a9c0673086e",
+      "target_id": "rel-concept-cfel-2ba4461ef142",
+      "relation": "related-to",
+      "canonical": false
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-2-the-architecture-at-a-9a9c0673086e",
+      "target_id": "rel-concept-egcf-0aab78fce577",
+      "relation": "related-to",
+      "canonical": false
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-2-the-architecture-at-a-9a9c0673086e",
+      "target_id": "rel-concept-eon-82f592cd7940",
+      "relation": "related-to",
+      "canonical": false
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-2-the-architecture-at-a-9a9c0673086e",
+      "target_id": "rel-concept-hrt-3249d576640e",
+      "relation": "related-to",
+      "canonical": false
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-2-the-architecture-at-a-9a9c0673086e",
+      "target_id": "rel-concept-ieps-01bbd9fab060",
+      "relation": "related-to",
+      "canonical": false
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-2-the-architecture-at-a-9a9c0673086e",
+      "target_id": "rel-concept-iurm-1af8fcd29b36",
+      "relation": "related-to",
+      "canonical": false
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-2-the-architecture-at-a-9a9c0673086e",
+      "target_id": "rel-concept-ourd-b804b7772b3e",
+      "relation": "related-to",
+      "canonical": false
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-3-core-oiec-architectur-1bb534842433",
+      "target_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-quick-reference-21678af58802",
+      "target_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-quick-reference-21678af58802",
+      "target_id": "rel-concept-cfel-2ba4461ef142",
+      "relation": "related-to",
+      "canonical": false
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-quick-reference-21678af58802",
+      "target_id": "rel-concept-egcf-0aab78fce577",
+      "relation": "related-to",
+      "canonical": false
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-quick-reference-21678af58802",
+      "target_id": "rel-concept-eon-82f592cd7940",
+      "relation": "related-to",
+      "canonical": false
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-quick-reference-21678af58802",
+      "target_id": "rel-concept-hrt-3249d576640e",
+      "relation": "related-to",
+      "canonical": false
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-quick-reference-21678af58802",
+      "target_id": "rel-concept-ieps-01bbd9fab060",
+      "relation": "related-to",
+      "canonical": false
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-quick-reference-21678af58802",
+      "target_id": "rel-concept-iurm-1af8fcd29b36",
+      "relation": "related-to",
+      "canonical": false
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-quick-reference-21678af58802",
+      "target_id": "rel-concept-ourd-b804b7772b3e",
+      "relation": "related-to",
+      "canonical": false
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-oiec-d77f73c49ddd",
+      "target_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-oiec-d77f73c49ddd",
+      "target_id": "rel-concept-cfel-2ba4461ef142",
+      "relation": "related-to",
+      "canonical": false
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-oiec-d77f73c49ddd",
+      "target_id": "rel-concept-egcf-0aab78fce577",
+      "relation": "related-to",
+      "canonical": false
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-oiec-d77f73c49ddd",
+      "target_id": "rel-concept-eon-82f592cd7940",
+      "relation": "related-to",
+      "canonical": false
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-oiec-d77f73c49ddd",
+      "target_id": "rel-concept-hrt-3249d576640e",
+      "relation": "related-to",
+      "canonical": false
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-oiec-d77f73c49ddd",
+      "target_id": "rel-concept-ieps-01bbd9fab060",
+      "relation": "related-to",
+      "canonical": false
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-oiec-d77f73c49ddd",
+      "target_id": "rel-concept-iurm-1af8fcd29b36",
+      "relation": "related-to",
+      "canonical": false
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-oiec-d77f73c49ddd",
+      "target_id": "rel-concept-ourd-b804b7772b3e",
+      "relation": "related-to",
+      "canonical": false
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-stm-17974fc14085",
+      "target_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-oiec-stm-0563dd447d69",
+      "target_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-sr-and-oiec-sr-174402f9dc71",
+      "target_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-hrt-b07859a2965b",
+      "target_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-hrt-b07859a2965b",
+      "target_id": "rel-concept-hrt-3249d576640e",
+      "relation": "related-to",
+      "canonical": false
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-hrt-b07859a2965b",
+      "target_id": "rel-concept-ourd-b804b7772b3e",
+      "relation": "related-to",
+      "canonical": false
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-ourd-40143d1ddfe4",
+      "target_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-ourd-40143d1ddfe4",
+      "target_id": "rel-concept-ourd-b804b7772b3e",
+      "relation": "related-to",
+      "canonical": false
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-iurm-08951d3e8ecd",
+      "target_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-iurm-08951d3e8ecd",
+      "target_id": "rel-concept-iurm-1af8fcd29b36",
+      "relation": "related-to",
+      "canonical": false
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-ieps-9c0c6ecfb15b",
+      "target_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-ieps-9c0c6ecfb15b",
+      "target_id": "rel-concept-ieps-01bbd9fab060",
+      "relation": "related-to",
+      "canonical": false
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-bd-cf3a9fd013aa",
+      "target_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-bd-cf3a9fd013aa",
+      "target_id": "rel-concept-ieps-01bbd9fab060",
+      "relation": "related-to",
+      "canonical": false
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-bd-cf3a9fd013aa",
+      "target_id": "rel-concept-iurm-1af8fcd29b36",
+      "relation": "related-to",
+      "canonical": false
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-dl-7fa089d7db36",
+      "target_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-dl-7fa089d7db36",
+      "target_id": "rel-concept-iurm-1af8fcd29b36",
+      "relation": "related-to",
+      "canonical": false
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-eon-20c53c1673a4",
+      "target_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-eon-20c53c1673a4",
+      "target_id": "rel-concept-egcf-0aab78fce577",
+      "relation": "related-to",
+      "canonical": false
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-eon-20c53c1673a4",
+      "target_id": "rel-concept-eon-82f592cd7940",
+      "relation": "related-to",
+      "canonical": false
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-egcf-a734e22cd844",
+      "target_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-egcf-a734e22cd844",
+      "target_id": "rel-concept-egcf-0aab78fce577",
+      "relation": "related-to",
+      "canonical": false
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-cfel-f092cb037c59",
+      "target_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-cfel-f092cb037c59",
+      "target_id": "rel-concept-cfel-2ba4461ef142",
+      "relation": "related-to",
+      "canonical": false
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-saa-6b66ff51be44",
+      "target_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-oiec-bench-d9240a6dd0e0",
+      "target_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-4-saa-milestone-labels-7f099b604e3e",
+      "target_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-5-governance-levels-and-0bcb4bcaa82a",
+      "target_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-c0-c5-capability-classe-6246a72d266e",
+      "target_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-l0-l2-risk-classes-3357065ad252",
+      "target_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-t00-t13-tutorial-identi-92c901c64f04",
+      "target_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-t00-t13-tutorial-identi-92c901c64f04",
+      "target_id": "rel-concept-ourd-b804b7772b3e",
+      "relation": "related-to",
+      "canonical": false
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-v1-v1-1-v1-2-and-simila-64c99923d0e9",
+      "target_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-6-agent-software-and-re-b28be9f268cf",
+      "target_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-7-mathematical-control-5fb21c96a680",
+      "target_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-mathematical-symbols-th-af6a8ff643eb",
+      "target_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-8-graphics-image-and-3d-ae96948e0661",
+      "target_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-9-file-web-and-document-6d3bdce146e4",
+      "target_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-10-common-confusions-901331680d01",
+      "target_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-oiec-is-not-given-a-mad-1a36a2d88b87",
+      "target_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-stm-is-not-ordinary-sho-7f9b31a0cdc3",
+      "target_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-sr-and-saa-solve-differ-702729f3b718",
+      "target_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-eon-and-egcf-are-not-sy-995b497e9aa1",
+      "target_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-eon-and-egcf-are-not-sy-995b497e9aa1",
+      "target_id": "rel-concept-egcf-0aab78fce577",
+      "relation": "related-to",
+      "canonical": false
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-eon-and-egcf-are-not-sy-995b497e9aa1",
+      "target_id": "rel-concept-eon-82f592cd7940",
+      "relation": "related-to",
+      "canonical": false
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-iurm-and-ieps-are-not-s-d719f55cab4e",
+      "target_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-iurm-and-ieps-are-not-s-d719f55cab4e",
+      "target_id": "rel-concept-ieps-01bbd9fab060",
+      "relation": "related-to",
+      "canonical": false
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-iurm-and-ieps-are-not-s-d719f55cab4e",
+      "target_id": "rel-concept-iurm-1af8fcd29b36",
+      "relation": "related-to",
+      "canonical": false
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-api-and-abi-are-differe-adc572fc4929",
+      "target_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-a-source-code-function-820a97c26e9c",
+      "target_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-several-agreeing-agents-93b3a11a416a",
+      "target_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-11-first-use-writing-ru-04cb54296567",
+      "target_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-11-first-use-writing-ru-04cb54296567",
+      "target_id": "rel-concept-egcf-0aab78fce577",
+      "relation": "related-to",
+      "canonical": false
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-12-adding-a-new-acronym-ab76ccd1a302",
+      "target_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-13-alphabetical-index-1c21388aea67",
+      "target_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "canonical": true
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-13-alphabetical-index-1c21388aea67",
+      "target_id": "rel-concept-cfel-2ba4461ef142",
+      "relation": "related-to",
+      "canonical": false
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-13-alphabetical-index-1c21388aea67",
+      "target_id": "rel-concept-egcf-0aab78fce577",
+      "relation": "related-to",
+      "canonical": false
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-13-alphabetical-index-1c21388aea67",
+      "target_id": "rel-concept-eon-82f592cd7940",
+      "relation": "related-to",
+      "canonical": false
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-13-alphabetical-index-1c21388aea67",
+      "target_id": "rel-concept-hrt-3249d576640e",
+      "relation": "related-to",
+      "canonical": false
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-13-alphabetical-index-1c21388aea67",
+      "target_id": "rel-concept-ieps-01bbd9fab060",
+      "relation": "related-to",
+      "canonical": false
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-13-alphabetical-index-1c21388aea67",
+      "target_id": "rel-concept-iurm-1af8fcd29b36",
+      "relation": "related-to",
+      "canonical": false
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-13-alphabetical-index-1c21388aea67",
+      "target_id": "rel-concept-ourd-b804b7772b3e",
+      "relation": "related-to",
+      "canonical": false
+    },
+    {
+      "source_id": "rel-heading-acronymglossary-md-14-sources-of-truth-d2e0abed7efe",
+      "target_id": "rel-document-acronymglossary-md-cf5b514a1d47",
+      "relation": "decomposes-into",
+      "canonical": true
     },
     {
       "source_id": "rel-document-egcfv1commandreference-md-234600f357f9",
@@ -48299,15 +49677,15 @@
     }
   ],
   "relational_summary": {
-    "object_count": 1057,
-    "relation_count": 1482,
-    "symbol_count": 1057,
+    "object_count": 1102,
+    "relation_count": 1573,
+    "symbol_count": 1102,
     "kinds": {
       "root": 1,
       "category": 6,
       "folder": 1,
-      "document": 46,
-      "heading": 659,
+      "document": 47,
+      "heading": 703,
       "concept": 344
     },
     "sprite_figure": "figures/relational-symbols.svg",
@@ -48720,7 +50098,7 @@
     "OBJ": "Wavefront OBJ: a text-based file format for polygonal 3D geometry.",
     "OFAT": "One Factor At a Time: an experiment strategy that varies one input while holding the others steady.",
     "OIEC-STM": "Operationally Isolated Epistemic Control State-Transition Model: this project's bounded control layer for deciding whether a proposed state transition may proceed.",
-    "OURD": "Maps what belongs to a problem and how the parts relate.",
+    "OURD": "Decomposes a problem into unique objects and the relations between them.",
     "PEP": "A design document used to specify Python changes and conventions.",
     "PLY": "Polygon File Format: a format for storing 3D meshes and point-cloud attributes.",
     "PNG": "Portable Network Graphics: a lossless bitmap image format with transparency support.",
