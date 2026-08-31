@@ -83,7 +83,7 @@ This is a teaching map, not a claim that every runtime call executes in one fixe
 | **SR** | Super Reasoning | A bounded additive process for generating and comparing candidate reasoning paths | Project-defined |
 | **OIEC-SR** | OIEC Super Reasoning | The OIEC-governed multi-response reasoning procedure | Composite name |
 | **HRT** | Human-Readable Task Interpretation | Makes the requested task, assumptions, scope, and ambiguities inspectable | Project-defined |
-| **OURD** | Object Unique Relational Decomposition | Decomposes a problem into unique objects and the relations between them | Project-defined |
+| **OURD** | Orthogonal Unique Relational Decomposition | Decomposes a problem into orthogonal, uniquely identified relational components and the relations between them | Project-defined |
 | **IURM** | Invariant-Uncertainty-Response Modeling | Designs controlled variations that reduce uncertainty while preserving invariants | Project-defined |
 | **IEPS** | Invariant and Evidence Production System | Produces tests, counterexamples, evidence, and gate material | Project-defined |
 | **BD** | Boundary Determination | Finds the domain inside which a claim, model, action, or experiment is supported | Project-defined |
@@ -180,9 +180,9 @@ See [`OIEC_SR_V1_IMPLEMENTATION_PLAN.md`](../OIEC_SR_V1_IMPLEMENTATION_PLAN.md).
 
 ## OURD
 
-**Expansion:** **Object Unique Relational Decomposition**.
+**Expansion:** **Orthogonal Unique Relational Decomposition**.
 
-**Repository meaning:** A canonical decomposition of the problem territory into unique objects and their relationships, dependencies, boundaries, exclusions, and unresolved relations.
+**Repository meaning:** A canonical decomposition of the problem territory into orthogonal, uniquely identified relational components and their relationships, dependencies, boundaries, exclusions, and unresolved relations.
 
 **Everyday example:** A lamp fault is mapped into the bulb, socket, switch, cable, breaker, supply, user action, and observed symptoms before the bulb is blamed.
 
@@ -643,7 +643,7 @@ new token
 | OIEC-STM | OIEC plus the STM bounded-transition layer |
 | OpenGL | Open Graphics Library |
 | OS | Operating System |
-| OURD | Object Unique Relational Decomposition |
+| OURD | Orthogonal Unique Relational Decomposition |
 | PBR | Physically Based Rendering |
 | PEP | Python Enhancement Proposal |
 | PEP 517 | Python Enhancement Proposal 517 |

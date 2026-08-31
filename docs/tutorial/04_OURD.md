@@ -10,7 +10,7 @@ For a dark kitchen light, the relevant universe may include the bulb, fitting, s
 
 ## New vocabulary
 
-**OURD** means Object Unique Relational Decomposition modeling. A **boundary** states what is inside or outside the problem. A **relation** states how two named things are connected.
+**OURD** means Orthogonal Unique Relational Decomposition modeling. A **boundary** states what is inside or outside the problem. A **relation** states how two named things are connected.
 
 ## Diagram
 

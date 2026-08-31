@@ -2,7 +2,7 @@
   "schema_version": 2,
   "build_date": "2026-08-31",
   "documentation_version": "0.7.0",
-  "source_snapshot_sha256": "eda0d780ab0be87b5bdce0ed0cf148598613e3e752bbbf5b0a8ad02933ec4b77",
+  "source_snapshot_sha256": "be12d07cd224527a083fb144fd0cba26cac299af6dd51f3e78336bfbc89b4f47",
   "content_kinds": [
     "tutorial",
     "task-guide",
@@ -27,7 +27,7 @@
       "source": "ACRONYM_GLOSSARY.md",
       "html": "ACRONYM_GLOSSARY.html",
       "figure": "figures/ACRONYM_GLOSSARY.svg",
-      "source_sha256": "74c62ab1268033579138aba2e8bb49385ce1a7e9719df56a3a27f8b0987b7c02",
+      "source_sha256": "d11f5b95f42e5769510bb288d11228879c3cc7aa6e6356ca50a48a8adb65d566",
       "headings": [
         {
           "title": "OIEC-STM-Agent Acronym and Abbreviation Glossary",
@@ -19176,9 +19176,9 @@
     },
     {
       "slug": "ourd",
-      "title": "OURD: Object Unique Relational Decomposition Modeling",
+      "title": "OURD: Orthogonal Unique Relational Decomposition Modeling",
       "category": "Governed Reasoning Loop",
-      "definition": "OURD builds the relational map of the problem: objects, boundaries, dependencies, goals, impacts, exclusions, and unresolved relations.",
+      "definition": "OURD decomposes the problem into orthogonal, uniquely identified relational components, boundaries, dependencies, goals, impacts, exclusions, and unresolved relations.",
       "thesis": "The agent should model the territory before choosing one imagined implementation path.",
       "html": "concepts/ourd.html",
       "figure": "figures/concepts/ourd.svg",
@@ -19208,8 +19208,8 @@
       ],
       "teaching": {
         "concept_id": "ourd",
-        "full_name": "OURD: Object Unique Relational Decomposition Modeling",
-        "short_meaning": "OURD builds the relational map of the problem: objects, boundaries, dependencies, goals, impacts, exclusions, and unresolved relations.",
+        "full_name": "OURD: Orthogonal Unique Relational Decomposition Modeling",
+        "short_meaning": "OURD decomposes the problem into orthogonal, uniquely identified relational components, boundaries, dependencies, goals, impacts, exclusions, and unresolved relations.",
         "why_it_exists": "The agent should model the territory before choosing one imagined implementation path.",
         "everyday_analogy": "A lamp diagnosis maps the bulb, fitting, switch, circuit, breaker, and supply before choosing a cause.",
         "oiec_example": "The parser, grammar, tests, token stream, precedence rules, and callers become named related objects.",
@@ -19217,7 +19217,7 @@
         "outputs": "A problem representation that separates the task from any single candidate solution.",
         "misconception": "OURD is not an instruction to implement the first relation the model notices.",
         "diagram": "figures/concepts/ourd.svg",
-        "formal_novice": "In plain terms, OURD builds the relational map of the problem: objects, boundaries, dependencies, goals, impacts, exclusions, and unresolved relations.",
+        "formal_novice": "In plain terms, OURD decomposes the problem into orthogonal, uniquely identified relational components, boundaries, dependencies, goals, impacts, exclusions, and unresolved relations.",
         "formal_intermediate": "Inputs are constrained by the concept controls described in the technical record, and outputs remain reviewable rather than self-authorizing.",
         "formal_expert": "The expert contract is the source-bound 25-paragraph concept essay, typed implementation references, invariants, and manifest relations generated for ourd.",
         "related_concepts": [
@@ -19232,7 +19232,7 @@
         "cli_examples": [
           "agent-one-shot"
         ],
-        "failure_example": "If OURD: Object Unique Relational Decomposition Modeling receives stale, incomplete, contradictory, or unauthorized inputs, the safe result is an explicit unresolved or refused outcome rather than silent continuation.",
+        "failure_example": "If OURD: Orthogonal Unique Relational Decomposition Modeling receives stale, incomplete, contradictory, or unauthorized inputs, the safe result is an explicit unresolved or refused outcome rather than silent continuation.",
         "source_links": [
           "README.md",
           "docs/OURD_AGENT_GUI.md",
@@ -23862,7 +23862,7 @@
       "entry_id": "problem-map",
       "title": "Model the territory",
       "problem": "A plausible first solution can hide missing objects and dependencies.",
-      "response": "OURD decomposes the problem into unique objects, relations, dependencies, boundaries, exclusions, and unknowns.",
+      "response": "OURD decomposes the problem into orthogonal, uniquely identified components while preserving their relations, dependencies, boundaries, exclusions, and unknowns.",
       "source_paths": [
         "README.md",
         "ourd/egcf/catalog.py"
@@ -23962,10 +23962,10 @@
     },
     {
       "token": "OURD",
-      "expansion": "Object Unique Relational Decomposition",
-      "short_meaning": "Decomposes a problem into unique objects and the relations between them.",
+      "expansion": "Orthogonal Unique Relational Decomposition",
+      "short_meaning": "Decomposes a problem into orthogonal, uniquely identified relational components and the relations between them.",
       "everyday_analogy": "List every part of a lamp circuit before blaming the bulb.",
-      "formal_meaning": "A canonical relational decomposition into unique objects, their relations, dependencies, boundaries, exclusions, and unresolved relations.",
+      "formal_meaning": "A canonical decomposition into orthogonal, uniquely identified relational components, together with their relations, dependencies, boundaries, exclusions, and unresolved relations.",
       "related_concepts": [
         "ourd"
       ],
@@ -39338,8 +39338,8 @@
     {
       "object_id": "rel-concept-ourd-b804b7772b3e",
       "kind": "concept",
-      "title": "OURD: Object Unique Relational Decomposition Modeling",
-      "description": "OURD builds the relational map of the problem: objects, boundaries, dependencies, goals, impacts, exclusions, and unresolved relations.",
+      "title": "OURD: Orthogonal Unique Relational Decomposition Modeling",
+      "description": "OURD decomposes the problem into orthogonal, uniquely identified relational components, boundaries, dependencies, goals, impacts, exclusions, and unresolved relations.",
       "parent_id": "rel-root-docs-index-html-d86163bf2ae1",
       "relation": "defines-concept",
       "href": "concepts/ourd.html",
@@ -50098,7 +50098,7 @@
     "OBJ": "Wavefront OBJ: a text-based file format for polygonal 3D geometry.",
     "OFAT": "One Factor At a Time: an experiment strategy that varies one input while holding the others steady.",
     "OIEC-STM": "Operationally Isolated Epistemic Control State-Transition Model: this project's bounded control layer for deciding whether a proposed state transition may proceed.",
-    "OURD": "Decomposes a problem into unique objects and the relations between them.",
+    "OURD": "Decomposes a problem into orthogonal, uniquely identified relational components and the relations between them.",
     "PEP": "A design document used to specify Python changes and conventions.",
     "PLY": "Polygon File Format: a format for storing 3D meshes and point-cloud attributes.",
     "PNG": "Portable Network Graphics: a lossless bitmap image format with transparency support.",
