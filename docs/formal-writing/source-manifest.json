@@ -19,7 +19,8 @@
         "P1",
         "P4",
         "P8",
-        "P9"
+        "P9",
+        "P10"
       ],
       "status": "source-backed"
     },
@@ -40,7 +41,8 @@
         "P2",
         "P3",
         "P8",
-        "P9"
+        "P9",
+        "P10"
       ],
       "status": "source-backed"
     },
@@ -73,11 +75,12 @@
     },
     {
       "claim_id": "OP1",
-      "proposition": "The current CLI exposes bounded writing arguments and routes selected Formal Writing guidance into the task prompt without making that guidance an authority grant or an automatic grading contract.",
+      "proposition": "The current CLI exposes bounded writing arguments, delegates exact-snapshot path-bounded authority construction to the authority module, and routes selected Formal Writing guidance into the task prompt without making that guidance an authority grant or an automatic grading contract.",
       "source_ids": [
         "P3",
         "P8",
-        "P9"
+        "P9",
+        "P10"
       ],
       "status": "source-backed"
     },
@@ -87,7 +90,8 @@
       "source_ids": [
         "P1",
         "P2",
-        "P3"
+        "P3",
+        "P10"
       ],
       "status": "editorial-synthesis"
     }
@@ -163,7 +167,7 @@
       "path": "../../ourd/cli.py",
       "repository_path": "ourd/cli.py",
       "git_blob_sha": "cb13544802557523f4a6ff4b1321c1a1de575c2a",
-      "role": "Executable CLI arguments, bounded write-session construction, and profile routing"
+      "role": "Executable CLI arguments and delegation into bounded write-session construction"
     },
     {
       "source_id": "P9",
@@ -173,6 +177,15 @@
       "repository_path": "ourd/writing.py",
       "git_blob_sha": "937cb88c9f948ea6dde9c4e262c8929d52448626",
       "role": "Non-authoritative Formal Writing prompt integration and bounded command capabilities"
+    },
+    {
+      "source_id": "P10",
+      "class": "project",
+      "title": "ourd/authority.py",
+      "path": "../../ourd/authority.py",
+      "repository_path": "ourd/authority.py",
+      "git_blob_sha": "d595afb05f7dc2e8114b24b4e1a3ca87fdbbfcb8",
+      "role": "Exact-snapshot authority construction, path normalization, risk posture, review settings, and read/write validation"
     },
     {
       "source_id": "W1",
