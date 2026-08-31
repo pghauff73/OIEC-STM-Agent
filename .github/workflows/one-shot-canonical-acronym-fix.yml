@@ -135,43 +135,39 @@ jobs:
               if fragment not in glossary_text:
                   raise SystemExit(f"glossary correction missing: {fragment}")
 
-          test_path = root / "tests" / "test_canonical_acronyms.py"
-          test_path.write_text(
-              '''"""Regression tests for repository-owned acronym expansions."""
-
-from pathlib import Path
-import unittest
-
-
-ROOT = Path(__file__).resolve().parents[1]
-
-
-class CanonicalAcronymTests(unittest.TestCase):
-    def test_registry_uses_owner_declared_expansions(self) -> None:
-        text = (ROOT / "tools" / "docs_learning_catalog.py").read_text(encoding="utf-8")
-        self.assertIn('AcronymRecord("STM", "State Transition Machine"', text)
-        self.assertIn('AcronymRecord("OURD", "Object Unique Relational Decomposition"', text)
-        self.assertNotIn("Object-Universe-Relation-Dependency", text)
-
-    def test_reader_glossary_matches_registry(self) -> None:
-        text = (ROOT / "docs" / "ACRONYM_GLOSSARY.md").read_text(encoding="utf-8")
-        self.assertIn("State Transition Machine", text)
-        self.assertIn("Object Unique Relational Decomposition", text)
-        self.assertNotIn("Object-Universe-Relation-Dependency", text)
-        self.assertNotIn("STM v1.2 bounded-transition layer", text)
-
-
-if __name__ == "__main__":
-    unittest.main()
-''',
-              encoding="utf-8",
-          )
-          changed.append(test_path.relative_to(root).as_posix())
-
           print("Corrected canonical sources:")
           for item in changed:
               print(f"  {item}")
           PY
+
+          cat > tests/test_canonical_acronyms.py <<'PYTEST'
+          """Regression tests for repository-owned acronym expansions."""
+
+          from pathlib import Path
+          import unittest
+
+
+          ROOT = Path(__file__).resolve().parents[1]
+
+
+          class CanonicalAcronymTests(unittest.TestCase):
+              def test_registry_uses_owner_declared_expansions(self) -> None:
+                  text = (ROOT / "tools" / "docs_learning_catalog.py").read_text(encoding="utf-8")
+                  self.assertIn('AcronymRecord("STM", "State Transition Machine"', text)
+                  self.assertIn('AcronymRecord("OURD", "Object Unique Relational Decomposition"', text)
+                  self.assertNotIn("Object-Universe-Relation-Dependency", text)
+
+              def test_reader_glossary_matches_registry(self) -> None:
+                  text = (ROOT / "docs" / "ACRONYM_GLOSSARY.md").read_text(encoding="utf-8")
+                  self.assertIn("State Transition Machine", text)
+                  self.assertIn("Object Unique Relational Decomposition", text)
+                  self.assertNotIn("Object-Universe-Relation-Dependency", text)
+                  self.assertNotIn("STM v1.2 bounded-transition layer", text)
+
+
+          if __name__ == "__main__":
+              unittest.main()
+          PYTEST
 
           python3 -m py_compile tools/docs_learning_catalog.py tools/docs_concept_catalog.py tools/build_docs_site.py tests/test_canonical_acronyms.py
           python3 -m unittest tests.test_canonical_acronyms
@@ -187,7 +183,11 @@ if __name__ == "__main__":
               "Object-Universe-Relation-Dependency",
               "STM v1.2 bounded-transition layer",
           )
-          roots = (Path("docs"), Path("tools/docs_learning_catalog.py"), Path("tools/docs_concept_catalog.py"))
+          roots = (
+              Path("docs"),
+              Path("tools/docs_learning_catalog.py"),
+              Path("tools/docs_concept_catalog.py"),
+          )
           stale = []
           for root in roots:
               paths = root.rglob("*") if root.is_dir() else (root,)
