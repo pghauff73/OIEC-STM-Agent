@@ -111,7 +111,7 @@ class FormalWritingSiteTests(unittest.TestCase):
         sources = self.manifest["sources"]
         source_ids = [source["source_id"] for source in sources]
         self.assertEqual(len(source_ids), len(set(source_ids)))
-        self.assertGreaterEqual(len([s for s in sources if s["class"] == "project"]), 7)
+        self.assertGreaterEqual(len([s for s in sources if s["class"] == "project"]), 9)
 
         known = set(source_ids)
         claim_ids: set[str] = set()
@@ -150,6 +150,8 @@ class FormalWritingSiteTests(unittest.TestCase):
             "../../ourd/formal_writing.py",
             "../FORMAL_WRITING_RESEARCH.md",
             "../ACRONYM_GLOSSARY.md",
+            "../../ourd/cli.py",
+            "../../ourd/writing.py",
         }
         self.assertTrue(unsafe_relative_sources.isdisjoint(hrefs))
 
@@ -185,6 +187,15 @@ class FormalWritingSiteTests(unittest.TestCase):
                 working_tree = hashlib.sha1(header + payload).hexdigest()
                 self.assertEqual(declared, working_tree)
 
+    def test_workflow_tracks_executable_writing_sources(self) -> None:
+        workflow = (
+            self.root / ".github" / "workflows" / "formal-writing-site.yml"
+        ).read_text(encoding="utf-8")
+        self.assertIn("fetch-depth: 0", workflow)
+        for path in ("ourd/formal_writing.py", "ourd/cli.py", "ourd/writing.py"):
+            with self.subTest(path=path):
+                self.assertEqual(2, workflow.count(f'- "{path}"'))
+
     def test_svg_figures_are_accessible_and_static(self) -> None:
         namespace = {"svg": "http://www.w3.org/2000/svg"}
         for path in sorted((self.site / "figures").glob("*.svg")):
@@ -216,6 +227,19 @@ class FormalWritingSiteTests(unittest.TestCase):
         for pattern in forbidden:
             with self.subTest(pattern=pattern):
                 self.assertNotRegex(script, pattern)
+
+    def test_epistemic_labels_match_runtime_scope(self) -> None:
+        self.assertIn("Qualified editorial inference K1", self.html)
+        self.assertIn("Machine-checkable topology", self.html)
+        self.assertNotIn("<h3>Machine-checked topology</h3>", self.html)
+        self.assertRegex(
+            self.html,
+            r"generated essays are not automatically constructed or\s+validated",
+        )
+        self.assertRegex(
+            self.html,
+            r"conclusion that these controls\s+impose process cost",
+        )
 
     def test_no_placeholder_or_certification_language(self) -> None:
         self.assertNotRegex(
