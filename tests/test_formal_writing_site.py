@@ -4,6 +4,7 @@ import hashlib
 import json
 import os
 import re
+import subprocess
 import unittest
 import xml.etree.ElementTree as ET
 from html.parser import HTMLParser
@@ -152,19 +153,37 @@ class FormalWritingSiteTests(unittest.TestCase):
         }
         self.assertTrue(unsafe_relative_sources.isdisjoint(hrefs))
 
-    def test_project_source_blob_hashes_match_the_base_files(self) -> None:
+    def test_project_source_blob_hashes_match_declared_commit_and_worktree(self) -> None:
         if os.environ.get("OIEC_FORMAL_SITE_SKIP_SOURCE_HASH") == "1":
             self.skipTest("source hash verification disabled for an isolated site fixture")
+
+        base_commit = self.manifest["base_commit"]
         for source in self.manifest["sources"]:
             if source["class"] != "project":
                 continue
+
             path = self.root / source["repository_path"]
+            declared = source["git_blob_sha"]
             with self.subTest(source_id=source["source_id"], path=path):
                 self.assertTrue(path.is_file())
+
+                committed = subprocess.run(
+                    [
+                        "git",
+                        "rev-parse",
+                        f"{base_commit}:{source['repository_path']}",
+                    ],
+                    cwd=self.root,
+                    check=True,
+                    capture_output=True,
+                    text=True,
+                ).stdout.strip()
+                self.assertEqual(declared, committed)
+
                 payload = path.read_bytes()
                 header = f"blob {len(payload)}\0".encode("ascii")
-                actual = hashlib.sha1(header + payload).hexdigest()
-                self.assertEqual(source["git_blob_sha"], actual)
+                working_tree = hashlib.sha1(header + payload).hexdigest()
+                self.assertEqual(declared, working_tree)
 
     def test_svg_figures_are_accessible_and_static(self) -> None:
         namespace = {"svg": "http://www.w3.org/2000/svg"}
