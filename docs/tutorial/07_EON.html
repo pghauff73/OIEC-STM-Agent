@@ -3,7 +3,7 @@
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Inspect an exact proposed mutation before it can execute.">
 <title>EON · OIEC Tutorial</title><link rel="stylesheet" href="../assets/styles.css"></head>
-<body data-page="tutorial" data-lesson-id="T07" data-source-hash="7df5a803060ea2396d9d1a1eec91d83555e6402e0c3fe20002286a0c4ffacb70" data-docs-version="0.7.0" data-source-snapshot="sha256:fbf1697f650ec67c29519ee324c09ae8721efb3f6423d7f3e681cf1ea189a9db" data-build-date="2026-08-30">
+<body data-page="tutorial" data-lesson-id="T07" data-source-hash="7df5a803060ea2396d9d1a1eec91d83555e6402e0c3fe20002286a0c4ffacb70" data-docs-version="0.7.0" data-source-snapshot="sha256:eda0d780ab0be87b5bdce0ed0cf148598613e3e752bbbf5b0a8ad02933ec4b77" data-build-date="2026-08-31">
 <header class="site-header"><a class="brand" href="../index.html"><span class="brand-mark">T07</span><span><strong>OIEC LEARNING PATH</strong><small>EON</small></span></a><nav class="header-actions"><a href="index.html">TUTORIALS</a><a href="../architecture-explorer.html">TECHNICAL EXPLORER</a></nav></header>
 <main class="learning-main">
   <section class="view-controls" aria-label="Explanation controls">
@@ -22,7 +22,7 @@
 <noscript><p class="noscript-note">JavaScript is optional. Learn and Technical content remain visible in source order.</p></noscript>
 
   <section class="prerequisite-map" aria-label="Learning prerequisites"><p class="terminal-label">YOU ARE HERE</p><div><span class="prerequisite-node is-complete">✓ T06</span><span aria-hidden="true">→</span><span class="prerequisite-node is-current">T07 · YOU ARE HERE</span><span aria-hidden="true">→</span><span class="prerequisite-node">T08</span></div></section>
-  <section class="learning-hero"><p class="eyebrow">LESSON 07 · BUILT 2026-08-30</p><h1>EON</h1><p>Inspect an exact proposed mutation before it can execute.</p><aside class="evidence-badge" data-doc-status="Tested"><strong>Tested</strong><span>Documentation evidence</span><ul><li><code>docs/tutorial/07_EON.md</code></li><li><code>tests/test_docs_tutorials.py</code></li></ul></aside></section>
+  <section class="learning-hero"><p class="eyebrow">LESSON 07 · BUILT 2026-08-31</p><h1>EON</h1><p>Inspect an exact proposed mutation before it can execute.</p><aside class="evidence-badge" data-doc-status="Tested"><strong>Tested</strong><span>Documentation evidence</span><ul><li><code>docs/tutorial/07_EON.md</code></li><li><code>tests/test_docs_tutorials.py</code></li></ul></aside></section>
   <figure class="learning-diagram"><object type="image/svg+xml" data="../figures/tutorial/t07.svg"><a href="../figures/tutorial/t07.svg">Open lesson diagram</a></object><figcaption>Shared visual grammar: processes, gates, evidence, authority, and verified or hypothetical relations.</figcaption></figure>
   <article class="learning-prose" data-view-content="learn"><section class="learning-section" id="what-you-will-learn"><h2>What you will learn</h2><p>You will inspect the exact target, source state, candidate, authority, risk, tests, approval, and rollback attached to a proposed action.</p></section><section class="learning-section" id="everyday-analogy"><h2>Everyday analogy</h2><p>“Fix the electricity” is too broad. “Test this switch in this circuit without modifying wiring” is a bounded action that can be reviewed.</p></section><section class="learning-section" id="new-vocabulary"><h2>New vocabulary</h2><p><strong>EON</strong> means Exact Governed Action Boundary. <strong>Authority</strong> states what may be attempted. <strong>Rollback</strong> states how an accepted change can be undone.</p></section><section class="learning-section" id="diagram"><h2>Diagram</h2><p>The diagram turns “fix parser” into questions about files, source version, allowed paths, required tests, approval, expiry, and rollback.</p></section><section class="learning-section" id="command-or-interaction"><h2>Command or interaction</h2><pre data-language="bash"><code>oiec-stm-agent . \
   --write \
@@ -38,7 +38,7 @@
     <div><dt>Vocabulary</dt><dd>EON, authority, rollback</dd></div>
     <div><dt>Fixture IDs</dt><dd>eon-proposal, write-without-path, write-with-yolo</dd></div>
     <div><dt>Source SHA-256</dt><dd><code>7df5a803060ea2396d9d1a1eec91d83555e6402e0c3fe20002286a0c4ffacb70</code></dd></div>
-    <div><dt>Build date</dt><dd>2026-08-30</dd></div>
+    <div><dt>Build date</dt><dd>2026-08-31</dd></div>
   </dl>
   <div class="command-grid"><article class="command-card" data-command-id="agent-write-docs"><h3>Improve documentation in a bounded path</h3><pre data-language="bash"><code>oiec-stm-agent . --write --write-path &#x27;docs/**&#x27; --task &#x27;Improve the introduction&#x27;</code></pre><p>Grant a temporary bounded writing session limited to docs/**.</p><ul><li><code>--write</code><span>request bounded writing mode</span></li><li><code>--write-path docs/**</code><span>limit proposed writes to documentation paths</span></li><li><code>--task</code><span>run one exact writing objective</span></li></ul><button type="button" data-copy-command>Copy command</button></article></div>
 </section>

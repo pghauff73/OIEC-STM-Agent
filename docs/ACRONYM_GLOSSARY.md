@@ -8,7 +8,7 @@ It is written for readers who may be meeting the architecture for the first time
 2. **What does it mean inside this repository?**
 3. **What should it not be confused with?**
 
-> **Canonical-name rule:** An expansion is not invented merely because a group of letters looks expandable. The repository currently treats **OIEC** as the canonical project name and **STM** as the name of its bounded-transition layer. Neither source contract declares a letter-by-letter expansion for those names.
+> **Canonical-name rule:** An expansion is not invented merely because a group of letters looks expandable. The repository treats **OIEC** as the canonical project name without a declared expansion. **STM** expands to **State Transition Machine**, the bounded-transition layer.
 
 ---
 
@@ -78,12 +78,12 @@ This is a teaching map, not a claim that every runtime call executes in one fixe
 | Term | Expansion or canonical reading | Plain-language meaning | Status |
 | --- | --- | --- | --- |
 | **OIEC** | Canonical project name; no expanded form is currently declared | The overall governed architecture separating interpretation, evidence, authority, action, learning, and reusable knowledge | Project name |
-| **STM** | STM v1.2 bounded-transition layer; no letter-by-letter expansion is currently declared | The finite, bounded state-transition part of OIEC-STM-Agent | Project name |
-| **OIEC-STM** | OIEC joined to its STM bounded-transition layer | The governed state machine and transition kernel at the centre of the agent | Composite name |
+| **STM** | State Transition Machine | The finite, bounded state-transition part of OIEC-STM-Agent | Project name |
+| **OIEC-STM** | OIEC joined to its State Transition Machine | The governed state machine and transition kernel at the centre of the agent | Composite name |
 | **SR** | Super Reasoning | A bounded additive process for generating and comparing candidate reasoning paths | Project-defined |
 | **OIEC-SR** | OIEC Super Reasoning | The OIEC-governed multi-response reasoning procedure | Composite name |
 | **HRT** | Human-Readable Task Interpretation | Makes the requested task, assumptions, scope, and ambiguities inspectable | Project-defined |
-| **OURD** | Object-Universe-Relation-Dependency | Maps what belongs to a problem and how its parts relate | Project-defined |
+| **OURD** | Object Unique Relational Decomposition | Decomposes a problem into unique objects and the relations between them | Project-defined |
 | **IURM** | Invariant-Uncertainty-Response Modeling | Designs controlled variations that reduce uncertainty while preserving invariants | Project-defined |
 | **IEPS** | Invariant and Evidence Production System | Produces tests, counterexamples, evidence, and gate material | Project-defined |
 | **BD** | Boundary Determination | Finds the domain inside which a claim, model, action, or experiment is supported | Project-defined |
@@ -112,13 +112,13 @@ This is a teaching map, not a claim that every runtime call executes in one fixe
 
 ## STM
 
-**Canonical reading:** `STM v1.2 bounded-transition layer`
+**Expansion:** **State Transition Machine**
 
 **Repository meaning:** The state-transition machinery that limits admissible states, transition choices, retries, dimensions, and progress claims. It is implemented around bounded state and kernel concepts such as `OIECSTMState` and `OIECSTMKernel`.
 
 **Everyday analogy:** A railway interlocking system. A train may move only when the route, points, signals, and occupancy conditions form an admissible transition.
 
-**Do not confuse it with:** Ordinary conversational **short-term memory**. The repository does not define STM that way, and it does not currently publish a letter-by-letter expansion.
+**Do not confuse it with:** Ordinary conversational **short-term memory**. In this repository, STM explicitly means **State Transition Machine**.
 
 **Related:** OIEC-STM, Boundary Determination, Dimension Limiting, progress certificates, transition kernels.
 
@@ -128,7 +128,7 @@ See [`OIEC_STMV1_2_IMPLEMENTATION_PLAN.md`](../OIEC_STMV1_2_IMPLEMENTATION_PLAN.
 
 ## OIEC-STM
 
-**Reading:** OIEC joined to the STM bounded-transition layer.
+**Reading:** OIEC joined to the **State Transition Machine (STM)** bounded-transition layer.
 
 **Repository meaning:** The formal state-and-transition architecture that turns the OIEC governance concepts into executable bounded transitions.
 
@@ -180,9 +180,9 @@ See [`OIEC_SR_V1_IMPLEMENTATION_PLAN.md`](../OIEC_SR_V1_IMPLEMENTATION_PLAN.md).
 
 ## OURD
 
-**Expansion:** **Object-Universe-Relation-Dependency**.
+**Expansion:** **Object Unique Relational Decomposition**.
 
-**Repository meaning:** A canonical relational model of the problem territory. It identifies objects, boundaries, relationships, dependencies, exclusions, and unresolved relations.
+**Repository meaning:** A canonical decomposition of the problem territory into unique objects and their relationships, dependencies, boundaries, exclusions, and unresolved relations.
 
 **Everyday example:** A lamp fault is mapped into the bulb, socket, switch, cable, breaker, supply, user action, and observed symptoms before the bulb is blamed.
 
@@ -516,7 +516,7 @@ Incorrect:
 
 ## STM is not ordinary short-term memory
 
-Within this repository, STM names the bounded-transition layer. A reader should not import an unrelated cognitive-memory meaning.
+Within this repository, STM means **State Transition Machine**, the bounded-transition layer. A reader should not import an unrelated cognitive-memory meaning.
 
 ## SR and SAA solve different problems
 
@@ -556,9 +556,9 @@ Recommended:
 
 > The **Evidence-Governed Command Fabric (EGCF)** compiles semantic commands into inspectable plans. EGCF then applies capability, evidence, and authority checks.
 
-For OIEC and STM, use the canonical-name rule:
+For OIEC, use the canonical-name rule. Expand STM normally at first use:
 
-> **OIEC-STM-Agent** uses the **STM bounded-transition layer** to constrain admissible state changes.
+> **OIEC-STM-Agent** uses a **State Transition Machine (STM)** bounded-transition layer to constrain admissible state changes.
 
 Do not force a fabricated expansion into the sentence.
 
@@ -643,7 +643,7 @@ new token
 | OIEC-STM | OIEC plus the STM bounded-transition layer |
 | OpenGL | Open Graphics Library |
 | OS | Operating System |
-| OURD | Object-Universe-Relation-Dependency |
+| OURD | Object Unique Relational Decomposition |
 | PBR | Physically Based Rendering |
 | PEP | Python Enhancement Proposal |
 | PEP 517 | Python Enhancement Proposal 517 |
@@ -660,7 +660,7 @@ new token
 | SQL | Structured Query Language |
 | SR | Super Reasoning |
 | STL | Stereolithography mesh format |
-| STM | bounded-transition layer; no letter-by-letter expansion declared |
+| STM | State Transition Machine |
 | SVG | Scalable Vector Graphics |
 | T00–T13 | tutorial identifiers |
 | Tk / Tkinter | Tcl/Tk toolkit and Python interface |
