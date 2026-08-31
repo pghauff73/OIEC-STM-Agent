@@ -229,9 +229,27 @@ class FormalWritingSiteTests(unittest.TestCase):
                 self.assertNotRegex(script, pattern)
 
     def test_epistemic_labels_match_runtime_scope(self) -> None:
+        normalized = " ".join(self.html.split())
         self.assertIn("Qualified editorial inference K1", self.html)
         self.assertIn("Machine-checkable topology", self.html)
         self.assertNotIn("<h3>Machine-checked topology</h3>", self.html)
+        self.assertIn(
+            "Formal Writing profiles provide structured reasoning guidance; they are not an automatic essay grader.",
+            normalized,
+        )
+        self.assertIn(
+            "A generated essay is not automatically checked for those qualities",
+            normalized,
+        )
+        self.assertIn(
+            "profile compliance therefore depends on model output, source integrity, and human review",
+            normalized,
+        )
+        self.assertIn(
+            "Formal Writing profiles guide prompts but do not automatically grade or validate generated essays.",
+            normalized,
+        )
+        self.assertNotIn("Formal Writing implementation requires", self.html)
         self.assertRegex(
             self.html,
             r"generated essays are not automatically constructed or\s+validated",
@@ -239,6 +257,16 @@ class FormalWritingSiteTests(unittest.TestCase):
         self.assertRegex(
             self.html,
             r"conclusion that these controls\s+impose process cost",
+        )
+
+        formal_claim = next(
+            claim for claim in self.manifest["claims"] if claim["claim_id"] == "FW1"
+        )
+        self.assertEqual("source-backed-guidance", formal_claim["status"])
+        self.assertIn("not automatically checked", formal_claim["proposition"])
+        self.assertIn(
+            "Formal Writing profiles guide model output but do not automatically grade",
+            self.manifest["epistemic_policy"]["profile_guidance"],
         )
 
     def test_no_placeholder_or_certification_language(self) -> None:
