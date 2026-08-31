@@ -120,6 +120,38 @@ class FormalWritingSiteTests(unittest.TestCase):
             self.assertTrue(claim["source_ids"])
             self.assertLessEqual(set(claim["source_ids"]), known)
 
+    def test_project_source_links_are_exact_snapshot_urls(self) -> None:
+        base_commit = self.manifest["base_commit"]
+        hrefs = {
+            value
+            for attribute, value in self.parser.references
+            if attribute == "href"
+        }
+        project_urls = {
+            value for value in hrefs if value.startswith("https://github.com/")
+        }
+
+        for source in self.manifest["sources"]:
+            if source["class"] != "project":
+                continue
+            expected = (
+                "https://github.com/pghauff73/OIEC-STM-Agent/blob/"
+                f"{base_commit}/{source['repository_path']}"
+            )
+            with self.subTest(source_id=source["source_id"], expected=expected):
+                self.assertIn(expected, project_urls)
+
+        unsafe_relative_sources = {
+            "../../README.md",
+            "../../OIEC_STMV1_2_IMPLEMENTATION_REPORT.md",
+            "../WRITING_MODE.md",
+            "../../COMPLETE_IMPLEMENTATION_STRATEGY.md",
+            "../../ourd/formal_writing.py",
+            "../FORMAL_WRITING_RESEARCH.md",
+            "../ACRONYM_GLOSSARY.md",
+        }
+        self.assertTrue(unsafe_relative_sources.isdisjoint(hrefs))
+
     def test_project_source_blob_hashes_match_the_base_files(self) -> None:
         if os.environ.get("OIEC_FORMAL_SITE_SKIP_SOURCE_HASH") == "1":
             self.skipTest("source hash verification disabled for an isolated site fixture")
