@@ -8,7 +8,8 @@
     "primary_project_sources": "Establish repository-declared architecture, implementation, terminology, and status.",
     "external_sources": "Support the writing, argumentation, scientific-communication, accessibility, and engineering method. They do not prove repository behaviour.",
     "editorial_synthesis": "Must be labelled and must not be represented as a verbatim runtime API.",
-    "certification": "No certification, flawless-output, universal-safety, or general-superiority claim is made."
+    "profile_guidance": "Formal Writing profiles guide model output but do not automatically grade or validate generated essays.",
+    "certification": "No certification, flawless-output, universal-safety, automatic-essay-compliance, or general-superiority claim is made."
   },
   "claims": [
     {
@@ -56,10 +57,11 @@
     },
     {
       "claim_id": "FW1",
-      "proposition": "Formal Writing requires an explicit thesis, evidence, reasoning, synthesis, counterargument treatment, calibrated certainty, and citation integrity.",
+      "proposition": "The Formal Writing profiles specify guidance for an explicit thesis, evidence, reasoning, synthesis, counterargument treatment, calibrated certainty, and citation integrity; normal CLI output is not automatically checked for compliance.",
       "source_ids": [
         "P5",
         "P6",
+        "P8",
         "P9",
         "W1",
         "W2",
@@ -67,11 +69,11 @@
         "W4",
         "W5"
       ],
-      "status": "source-backed"
+      "status": "source-backed-guidance"
     },
     {
       "claim_id": "OP1",
-      "proposition": "The current CLI exposes bounded writing arguments and routes selected Formal Writing guidance into the task prompt without making that guidance an authority grant.",
+      "proposition": "The current CLI exposes bounded writing arguments and routes selected Formal Writing guidance into the task prompt without making that guidance an authority grant or an automatic grading contract.",
       "source_ids": [
         "P3",
         "P8",
@@ -134,7 +136,7 @@
       "path": "../../ourd/formal_writing.py",
       "repository_path": "ourd/formal_writing.py",
       "git_blob_sha": "dcf970f31f0996a1929f17af5c62cefedb29225f",
-      "role": "Executable Formal Writing profiles and topology validator"
+      "role": "Formal Writing profile definitions and machine-checkable topology validator"
     },
     {
       "source_id": "P6",
