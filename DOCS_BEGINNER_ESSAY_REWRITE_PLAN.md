@@ -1,7 +1,7 @@
 # OIEC-STM-Agent Beginner Essay Rewrite Plan
 
-**Plan date:** August 28, 2026  
-**Canonical generator:** `tools/build_docs_site.py`  
+**Plan date:** August 28, 2026
+**Canonical generator:** `tools/build_docs_site.py`
 **Generated scope:** every HTML page under `docs/`
 
 ## Objective
@@ -47,11 +47,12 @@ focused documentation tests, and full repository tests.
 
 ## Completion Evidence
 
-**Validation date:** August 28, 2026
+**Validation date:** August 30, 2026
 
-- Regenerated 189 HTML pages, 492 interactive SVG figures, and 6,850 essay
-  paragraphs from 105 Markdown headings and 169 concept records.
-- Bound all 274 essays to a validated 25-node directed acyclic logic topology:
+- Regenerated 377 HTML pages, 1,369 interactive SVG figures, and 23,475 essay
+  paragraphs from 606 Markdown headings and 333 concept records, with 989
+  relational objects in the canonical inventory.
+- Bound all 939 essays to a validated 25-node directed acyclic logic topology:
   claim, mechanism, proof, challenge, and winning position. Each paragraph now
   records its global topological order, topic, predecessor, and successor.
 - Verified every logic node targets exactly one paragraph and every paragraph
@@ -61,15 +62,18 @@ focused documentation tests, and full repository tests.
   detected source acronyms.
 - Verified every essay page uses topic-matched references with closed local
   citation targets and a decisive final winning position.
-- Verified all 189 generated pages have unique element IDs and all 5,406 local
-  links resolve to existing files or anchors.
-- Rebuilt the documentation twice with the identical SHA-256 tree digest
-  `fad4a4a943aacbb2875990157c8a97b719436e11c5ab84e558ce816731b6e667`.
-- Passed 19 focused generated-documentation tests and the 109-test hypothesis,
-  model benchmark, SR/OIEC, persistence, and packaging compatibility suite.
-- Passed the complete repository suite: 316 tests in 821.893 seconds.
+- Verified every generated page has unique element IDs and every local link
+  resolves to an existing file or anchor.
+- Rebuilt the documentation twice from the same source and obtained an
+  identical SHA-256 tree digest on both runs. The digest remains external to
+  this generator input so recording it cannot invalidate itself.
+- Passed 19 focused generated-documentation tests and the reasoning,
+  hypothesis, model benchmark, OIEC, persistence, GUI, and packaging
+  compatibility suites.
+- Passed the complete repository suite: 606 tests with one optional OpenGL
+  dependency skip.
 - Passed JavaScript syntax validation with `node --check docs/assets/site.js`
-  parsed all 492 SVG files as XML, and passed patch whitespace validation with
+  parsed all 1,369 SVG files as XML, and passed patch whitespace validation with
   `git diff --check`.
 
 ## Countered Issues

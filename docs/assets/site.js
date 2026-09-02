@@ -1,6 +1,8 @@
 (function () {
   "use strict";
 
+  document.documentElement.classList.add("js");
+
   const SVG_NS = "http://www.w3.org/2000/svg";
   const thoughtMessages = [
     "TRACE THE CLAIM TO ITS EVIDENCE.",
@@ -835,7 +837,366 @@
     });
   }
 
+  function readJsonScript(selector, fallback, root = document) {
+    const element = query(selector, root);
+    if (!element) return fallback;
+    try {
+      return JSON.parse(element.textContent || "");
+    } catch (_error) {
+      return fallback;
+    }
+  }
+
+  function safeLocalGet(key, fallback = "") {
+    try {
+      return window.localStorage.getItem(key) ?? fallback;
+    } catch (_error) {
+      return fallback;
+    }
+  }
+
+  function safeLocalSet(key, value) {
+    try {
+      window.localStorage.setItem(key, value);
+    } catch (_error) {
+      return;
+    }
+  }
+
+  function setupDocumentationViews() {
+    const buttons = queryAll("[data-doc-view]");
+    const depth = query("[data-depth-control]");
+    if (!buttons.length && !depth) return;
+
+    const allowedViews = new Set(["learn", "technical"]);
+    const savedView = safeLocalGet("oiec-docs-view", "learn");
+    const initialView = allowedViews.has(savedView) ? savedView : "learn";
+    document.documentElement.dataset.docView = initialView;
+
+    const applyView = (view) => {
+      const selected = allowedViews.has(view) ? view : "learn";
+      document.documentElement.dataset.docView = selected;
+      safeLocalSet("oiec-docs-view", selected);
+      buttons.forEach((button) => {
+        button.setAttribute("aria-pressed", button.dataset.docView === selected ? "true" : "false");
+      });
+    };
+
+    buttons.forEach((button) => button.addEventListener("click", () => applyView(button.dataset.docView)));
+    applyView(initialView);
+
+    if (depth) {
+      const depthNames = ["novice", "intermediate", "expert"];
+      const savedDepth = Number.parseInt(safeLocalGet("oiec-docs-depth", "0"), 10);
+      const initialDepth = Number.isInteger(savedDepth) ? Math.min(2, Math.max(0, savedDepth)) : 0;
+      const applyDepth = (value) => {
+        const bounded = Math.min(2, Math.max(0, Number.parseInt(String(value), 10) || 0));
+        depth.value = String(bounded);
+        document.documentElement.dataset.docDepth = depthNames[bounded];
+        safeLocalSet("oiec-docs-depth", String(bounded));
+      };
+      depth.addEventListener("input", () => applyDepth(depth.value));
+      applyDepth(initialDepth);
+    }
+  }
+
+  function setupTeacherMode() {
+    const button = query('[data-action="teacher-mode"]');
+    if (!button) return;
+    const panels = queryAll("[data-teacher-content]");
+    const apply = (enabled) => {
+      panels.forEach((panel) => {
+        panel.hidden = !enabled;
+      });
+      button.setAttribute("aria-pressed", enabled ? "true" : "false");
+      button.textContent = enabled ? "Exit teacher mode" : "Teacher mode";
+      safeLocalSet("oiec-docs-teacher", enabled ? "true" : "false");
+    };
+    apply(safeLocalGet("oiec-docs-teacher", "false") === "true");
+    button.addEventListener("click", () => apply(button.getAttribute("aria-pressed") !== "true"));
+  }
+
+  function setupLearningReset() {
+    const button = query('[data-action="reset-learning"]');
+    if (!button) return;
+    button.addEventListener("click", () => {
+      try {
+        Object.keys(window.localStorage)
+          .filter((key) => key.startsWith("oiec-docs-"))
+          .forEach((key) => window.localStorage.removeItem(key));
+      } catch (_error) {
+        return;
+      }
+      document.documentElement.dataset.docView = "learn";
+      document.documentElement.dataset.docDepth = "novice";
+      window.location.reload();
+    });
+  }
+
+  function setupVocabularyMemory() {
+    const conceptId = document.body.dataset.concept;
+    const lead = query(".concept-teaching .lead");
+    if (!conceptId || !lead) return;
+    const key = `oiec-docs-vocab-${conceptId}`;
+    const count = Number.parseInt(safeLocalGet(key, "0"), 10) || 0;
+    const nextCount = Math.min(99, count + 1);
+    safeLocalSet(key, String(nextCount));
+    if (nextCount < 3) return;
+    const fullText = lead.textContent || "";
+    const firstSentence = fullText.match(/^.*?[.!?](?:\s|$)/)?.[0]?.trim();
+    if (firstSentence && firstSentence.length < fullText.length) {
+      lead.textContent = firstSentence;
+    }
+    const marker = document.createElement("p");
+    marker.className = "vocabulary-familiar";
+    marker.textContent = `Familiar term · concise explanation after ${nextCount} local views`;
+    lead.insertAdjacentElement("afterend", marker);
+  }
+
+  function stemIntentToken(token) {
+    return token
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "")
+      .replace(/(?:ing|ed|es|s)$/g, "");
+  }
+
+  function setupIntentSearch() {
+    const input = query("#intent-search");
+    if (!input) return;
+    const cards = queryAll(".task-card");
+    const status = query("[data-intent-status]");
+    const ignored = new Set(["a", "an", "the", "i", "want", "to", "my", "agent"]);
+    const update = () => {
+      const tokens = input.value
+        .split(/\s+/)
+        .map(stemIntentToken)
+        .filter((token) => token && !ignored.has(token));
+      let visible = 0;
+      cards.forEach((card) => {
+        const haystack = stemIntentToken(`${card.textContent || ""} ${card.dataset.intentTerms || ""}`);
+        const matches = !tokens.length || tokens.some((token) => haystack.includes(token));
+        card.hidden = !matches;
+        if (matches) visible += 1;
+      });
+      if (status) {
+        status.textContent = tokens.length
+          ? `${visible} task route${visible === 1 ? "" : "s"} matched. Failure and repeated-action searches lead to CFEL and failure memory.`
+          : `${cards.length} task routes available`;
+      }
+    };
+    input.addEventListener("input", update);
+    update();
+  }
+
+  function setupTutorialSandboxes() {
+    queryAll("[data-tutorial-sandbox]").forEach((sandbox) => {
+      const fixture = readJsonScript("[data-sandbox-fixture]", {}, sandbox);
+      const output = query(".sandbox-output", sandbox);
+      const run = query("[data-sandbox-run]", sandbox);
+      const reset = query("[data-sandbox-reset]", sandbox);
+      if (!output || !run || !reset) return;
+      const states = Array.isArray(fixture.states)
+        ? fixture.states.map(String)
+        : [
+            `Refused: ${String(fixture.violated_invariant || "The selected action violates a declared invariant.")}`,
+            `Evidence needed: ${String(fixture.required_evidence || "Additional evidence is required.")}`
+          ];
+      let index = 0;
+      const renderNext = () => {
+        if (index >= states.length) return;
+        const item = document.createElement("li");
+        item.textContent = states[index];
+        output.appendChild(item);
+        index += 1;
+        run.disabled = index >= states.length;
+      };
+      reset.addEventListener("click", () => {
+        index = 0;
+        output.replaceChildren();
+        run.disabled = false;
+      });
+      run.addEventListener("click", renderNext);
+    });
+  }
+
+  function setupCommandCopy() {
+    queryAll("[data-copy-command]").forEach((button) => {
+      button.addEventListener("click", async () => {
+        const command = query("pre code", button.closest(".command-card"));
+        if (!command) return;
+        try {
+          await navigator.clipboard.writeText(command.textContent || "");
+          button.textContent = "Copied";
+        } catch (_error) {
+          button.textContent = "Select command text to copy";
+        }
+      });
+    });
+  }
+
+  function setupAcronymInspector() {
+    const button = query('[data-action="inspect-acronyms"]');
+    const input = query("#acronym-input");
+    const output = query("[data-acronym-output]");
+    if (!button || !input || !output) return;
+    const catalog = readJsonScript("#acronym-catalog", {});
+    const inspect = () => {
+      output.replaceChildren();
+      const tokens = Array.from(new Set((input.value.match(/\b[A-Z][A-Z0-9-]{1,}\b/g) || [])));
+      if (!tokens.length) {
+        output.textContent = "No uppercase acronym-like tokens found.";
+        return;
+      }
+      const list = document.createElement("dl");
+      tokens.forEach((token) => {
+        const term = document.createElement("dt");
+        term.textContent = token;
+        const definition = document.createElement("dd");
+        definition.textContent = Object.prototype.hasOwnProperty.call(catalog, token)
+          ? String(catalog[token])
+          : "Unresolved: the canonical acronym catalog does not define this token.";
+        list.append(term, definition);
+      });
+      output.appendChild(list);
+    };
+    button.addEventListener("click", inspect);
+    inspect();
+  }
+
+  function setupStatusDecoder() {
+    const button = query('[data-action="decode-status"]');
+    const input = query("#status-input");
+    const output = query("[data-status-output]");
+    if (!button || !input || !output) return;
+    const catalog = readJsonScript("#status-catalog", {});
+    const decode = () => {
+      const key = input.value.trim().toUpperCase();
+      output.replaceChildren();
+      const record = catalog[key];
+      if (!record) {
+        output.textContent = "Unknown status. No meaning is guessed; inspect the source or update the canonical catalog.";
+        return;
+      }
+      const heading = document.createElement("h2");
+      heading.textContent = key;
+      const fields = [
+        ["Plain English", record.plain_language_meaning],
+        ["Trigger", record.trigger],
+        ["What happens next", record.what_happens_next],
+        ["User action", record.user_action],
+        ["Sources", Array.isArray(record.source_paths) ? record.source_paths.join(", ") : ""]
+      ];
+      const list = document.createElement("dl");
+      fields.forEach(([label, value]) => {
+        const term = document.createElement("dt");
+        term.textContent = label;
+        const definition = document.createElement("dd");
+        definition.textContent = String(value || "Not declared");
+        list.append(term, definition);
+      });
+      output.append(heading, list);
+    };
+    button.addEventListener("click", decode);
+    decode();
+  }
+
+  function shellQuote(value) {
+    if (/^[A-Za-z0-9_./:@-]+$/.test(value)) return value;
+    return `'${value.replace(/'/g, `'"'"'`)}'`;
+  }
+
+  function setupCommandBuilder() {
+    const button = query('[data-action="build-command"]');
+    const selector = query("[data-builder-program]");
+    const output = query("[data-command-output]");
+    const explanation = query("[data-command-explanation]");
+    if (!button || !selector || !output || !explanation) return;
+    const recipes = readJsonScript("#command-recipes", []);
+    const byId = new Map(recipes.map((recipe) => [recipe.command_id, recipe]));
+    const build = () => {
+      const recipe = byId.get(selector.value);
+      if (!recipe) {
+        output.textContent = "";
+        explanation.textContent = "Unknown command recipe.";
+        return;
+      }
+      const workspace = query("[data-builder-workspace]")?.value.trim() || ".";
+      const target = query("[data-builder-target]")?.value.trim() || "src/parser.py";
+      const risk = query("[data-builder-risk]")?.value || "L0";
+      const argv = Array.from(recipe.argv, String);
+      argv.forEach((token, index) => {
+        if ((argv[index - 1] === "--repo" || index === 1 && recipe.program_id === "agent") && token === ".") argv[index] = workspace;
+        if (token.includes("src/parser.py")) argv[index] = token.replace("src/parser.py", target);
+        if (argv[index - 1] === "--risk") argv[index] = risk;
+      });
+      output.textContent = argv.map(shellQuote).join(" ");
+      explanation.replaceChildren();
+      const title = document.createElement("strong");
+      title.textContent = String(recipe.title);
+      const text = document.createElement("p");
+      text.textContent = `${String(recipe.purpose)} This command is generated from parser-validated checked-in tokens; it is not executed by the browser.`;
+      explanation.append(title, text);
+    };
+    button.addEventListener("click", build);
+    selector.addEventListener("change", build);
+    build();
+  }
+
+  function setupProviderWizard() {
+    const button = query('[data-action="show-provider-recipe"]');
+    const selector = query("[data-provider-choice]");
+    const output = query("[data-provider-output]");
+    if (!button || !selector || !output) return;
+    const recipes = readJsonScript("#command-recipes", []);
+    const byId = new Map(recipes.map((recipe) => [recipe.command_id, recipe]));
+    const show = () => {
+      const recipe = byId.get(selector.value);
+      output.textContent = recipe ? Array.from(recipe.argv, String).map(shellQuote).join(" ") : "No checked-in provider recipe is available.";
+    };
+    button.addEventListener("click", show);
+    selector.addEventListener("change", show);
+    show();
+  }
+
+  function setupSharedSvgCards() {
+    queryAll("object.learning-diagram, .learning-diagram object, .novice-hero object").forEach((objectElement) => {
+      objectElement.addEventListener("load", () => {
+        const svgDocument = objectElement.contentDocument;
+        if (!svgDocument) return;
+        svgDocument.querySelectorAll("[data-doc-node]").forEach((node) => {
+          const describe = () => {
+            const figure = objectElement.closest("figure");
+            const caption = figure ? query("figcaption", figure) : null;
+            if (!caption) return;
+            const label = node.getAttribute("aria-label") || node.getAttribute("data-doc-node") || "Diagram node";
+            const role = node.getAttribute("data-node-role") || "concept";
+            caption.textContent = `${label} · visual role: ${role}. Follow the page explanation for inputs, outputs, evidence, and related concepts.`;
+          };
+          node.addEventListener("click", describe);
+          node.addEventListener("keydown", (event) => {
+            if (event.key === "Enter" || event.key === " ") {
+              event.preventDefault();
+              describe();
+            }
+          });
+        });
+      });
+    });
+  }
+
   function initialize() {
+    setupDocumentationViews();
+    setupTeacherMode();
+    setupLearningReset();
+    setupVocabularyMemory();
+    setupIntentSearch();
+    setupTutorialSandboxes();
+    setupCommandCopy();
+    setupAcronymInspector();
+    setupStatusDecoder();
+    setupCommandBuilder();
+    setupProviderWizard();
+    setupSharedSvgCards();
     setupFocusMode();
     setupEvidenceToggle();
     setupReadingProgress();

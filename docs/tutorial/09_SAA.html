@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en" data-doc-view="learn" data-doc-depth="novice">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Search qualified knowledge before inventing a replacement.">
+<title>SAA · OIEC Tutorial</title><link rel="stylesheet" href="../assets/styles.css"></head>
+<body data-page="tutorial" data-lesson-id="T09" data-source-hash="a98e5c1fcf3b9f580004c130cc1d50602ecb750b29df7d2085d87dfb5ad57871" data-docs-version="0.7.0" data-source-snapshot="sha256:ecce5a5aa2e46384af47c11999429232573813714d48ec063efe4caa6eb5ef06" data-build-date="2026-08-30">
+<header class="site-header"><a class="brand" href="../index.html"><span class="brand-mark">T09</span><span><strong>OIEC LEARNING PATH</strong><small>SAA</small></span></a><nav class="header-actions"><a href="index.html">TUTORIALS</a><a href="../architecture-explorer.html">TECHNICAL EXPLORER</a></nav></header>
+<main class="learning-main">
+  <section class="view-controls" aria-label="Explanation controls">
+  <div class="view-tabs" role="group" aria-label="Documentation view">
+    <button type="button" data-doc-view="learn" aria-pressed="true">Learn</button>
+    <button type="button" data-doc-view="technical" aria-pressed="false">Technical</button>
+  </div>
+  <div class="depth-control">
+    <label for="explanation-depth">Explanation depth</label>
+    <input id="explanation-depth" type="range" min="0" max="2" step="1" value="0" data-depth-control>
+    <div aria-hidden="true"><span>Novice</span><span>Intermediate</span><span>Expert</span></div>
+  </div>
+  <button type="button" data-action="teacher-mode" aria-pressed="false">Teacher mode</button>
+  <button type="button" data-action="reset-learning">Reset learning preferences</button>
+</section>
+<noscript><p class="noscript-note">JavaScript is optional. Learn and Technical content remain visible in source order.</p></noscript>
+
+  <section class="prerequisite-map" aria-label="Learning prerequisites"><p class="terminal-label">YOU ARE HERE</p><div><span class="prerequisite-node is-complete">✓ T08</span><span aria-hidden="true">→</span><span class="prerequisite-node is-current">T09 · YOU ARE HERE</span><span aria-hidden="true">→</span><span class="prerequisite-node">T10</span></div></section>
+  <section class="learning-hero"><p class="eyebrow">LESSON 09 · BUILT 2026-08-30</p><h1>SAA</h1><p>Search qualified knowledge before inventing a replacement.</p><aside class="evidence-badge" data-doc-status="Tested"><strong>Tested</strong><span>Documentation evidence</span><ul><li><code>docs/tutorial/09_SAA.md</code></li><li><code>tests/test_docs_tutorials.py</code></li></ul></aside></section>
+  <figure class="learning-diagram"><object type="image/svg+xml" data="../figures/tutorial/t09.svg"><a href="../figures/tutorial/t09.svg">Open lesson diagram</a></object><figcaption>Shared visual grammar: processes, gates, evidence, authority, and verified or hypothetical relations.</figcaption></figure>
+  <article class="learning-prose" data-view-content="learn"><section class="learning-section" id="what-you-will-learn"><h2>What you will learn</h2><p>You will distinguish retrieval of qualified known work from generation of a new candidate.</p></section><section class="learning-section" id="everyday-analogy"><h2>Everyday analogy</h2><p>A technician searches a repair manual and failure log before inventing a procedure. A matching title is not enough; the operating context and qualification must also match.</p></section><section class="learning-section" id="new-vocabulary"><h2>New vocabulary</h2><p><strong>SAA</strong> means Searchable Algebra of Algorithms. <strong>Qualification</strong> states the evidence and boundary under which a record may be reused. <strong>Retrieval</strong> selects compatible records.</p></section><section class="learning-section" id="diagram"><h2>Diagram</h2><p>The diagram compares the current context with algorithm, reasoning, and failure records before choosing reuse, adaptation, generation, or abstention.</p></section><section class="learning-section" id="command-or-interaction"><h2>Command or interaction</h2><p>Use the retrieval sandbox to select a context and inspect why one known solution qualifies while another superficially similar result does not.</p></section><section class="learning-section" id="expected-output"><h2>Expected output</h2><p>The system returns a qualified algorithm, a qualified reasoning procedure, an adaptation candidate, a known failure, or an explicit gap.</p></section><section class="learning-section" id="what-just-happened"><h2>What just happened?</h2><p>Search happened before invention. Identity, semantics, evidence, boundaries, and failure history participated in the decision.</p></section><section class="learning-section" id="try-changing-this"><h2>Try changing this</h2><p>Change one context field and observe whether the record remains reusable, requires adaptation, or becomes ineligible.</p></section><section class="learning-section" id="common-mistake"><h2>Common mistake</h2><p>Keyword similarity does not prove that two algorithms or failures are equivalent in the current context.</p></section><section class="learning-section" id="next-lesson"><h2>Next lesson</h2><p>Continue to <strong>Adaptation</strong> and vary one controlled dimension of qualified work.</p></section></article>
+
+<section class="technical-panel" data-view-content="technical">
+  <p class="terminal-label">TECHNICAL CONTRACT</p>
+  <h2>T09 catalog record</h2>
+  <dl class="technical-grid">
+    <div><dt>Source</dt><dd><code>docs/tutorial/09_SAA.md</code></dd></div>
+    <div><dt>Prerequisites</dt><dd>T08</dd></div>
+    <div><dt>Vocabulary</dt><dd>SAA, qualification, retrieval</dd></div>
+    <div><dt>Fixture IDs</dt><dd>saa-retrieval</dd></div>
+    <div><dt>Source SHA-256</dt><dd><code>a98e5c1fcf3b9f580004c130cc1d50602ecb750b29df7d2085d87dfb5ad57871</code></dd></div>
+    <div><dt>Build date</dt><dd>2026-08-30</dd></div>
+  </dl>
+  <div class="command-grid"><p>No direct command is required for this lesson.</p></div>
+</section>
+
+
+<section class="tutorial-sandbox" data-tutorial-sandbox="saa-retrieval">
+  <div><p class="terminal-label">READ-ONLY BROWSER SANDBOX</p><h2>Qualified retrieval</h2>
+  <p>Runs checked-in deterministic fixture data only. It has no provider, network, filesystem, command, or mutation path.</p></div>
+  <div class="sandbox-controls"><button type="button" data-sandbox-run>Run next step</button><button type="button" data-sandbox-reset>Reset</button></div>
+  <ol class="sandbox-output" aria-live="polite"></ol>
+  <script type="application/json" data-sandbox-fixture>{"fixture_id":"saa-retrieval","title":"Qualified retrieval","states":["Describe context","Search algorithm records","Search reasoning records","Check failure memory","Reuse, adapt, generate, or abstain"]}</script>
+</section>
+
+  <section class="teacher-panel" data-teacher-content hidden><h2>Teacher mode</h2><p><strong>Objective:</strong> Search qualified knowledge before inventing a replacement.</p><details><summary>Exercise and checked answer</summary><p>Explain the lesson using a different domain while preserving its authority and evidence boundaries.</p><p><strong>Answer check:</strong> the explanation must name the input, controlled boundary, evidence, output, and a common misconception.</p></details></section>
+  <nav class="learning-pager"><a href="index.html">← Tutorial index</a><a class="primary-action" href="10_ADAPTATION.html">Next lesson →</a></nav>
+</main><script src="../assets/site.js" defer></script></body></html>

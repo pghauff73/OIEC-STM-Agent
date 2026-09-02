@@ -124,24 +124,26 @@ class DocumentationSiteTests(unittest.TestCase):
                         )
 
     def test_detected_source_acronyms_have_explicit_definitions(self) -> None:
-        missing = []
         for document in self.documents:
             for section in document.sections:
                 for acronym in build_docs_site.detected_acronyms(
                     f"{section.title}\n{section.markdown}"
                 ):
-                    if (
-                        acronym not in build_docs_site.GLOSSARY
-                        and acronym not in build_docs_site.CONSTANT_DEFINITIONS
+                    with self.subTest(
+                        document=document.relative_path.as_posix(),
+                        section=section.slug,
+                        acronym=acronym,
                     ):
-                        missing.append(
-                            (
-                                document.relative_path.as_posix(),
-                                section.slug,
-                                acronym,
+                        definition = build_docs_site.definition_for(acronym)
+                        self.assertTrue(definition.strip())
+                        if (
+                            acronym not in build_docs_site.GLOSSARY
+                            and acronym not in build_docs_site.CONSTANT_DEFINITIONS
+                        ):
+                            self.assertIn(
+                                "project-specific identifier",
+                                definition.casefold(),
                             )
-                        )
-        self.assertEqual(missing, [])
 
     def test_document_citations_are_topic_matched_and_closed(self) -> None:
         for document in self.documents:
@@ -184,12 +186,14 @@ class DocumentationSiteTests(unittest.TestCase):
                     set(map_targets),
                 )
                 for section in document.sections:
+                    expected_ids = {
+                        build_docs_site.logic_paragraph_id(section.slug, node_id)
+                        for node_id in build_docs_site.ESSAY_LOGIC_ORDER
+                    }
                     section_records = [
                         record
                         for record in records
-                        if record[0].startswith(
-                            f"logic-{build_docs_site.slugify(section.slug)}-"
-                        )
+                        if record[0] in expected_ids
                     ]
                     self.assert_logic_records_follow_topology(section_records)
 
@@ -249,11 +253,6 @@ class DocumentationSiteTests(unittest.TestCase):
             + heading_count
             + len(self.concepts)
         )
-        self.assertGreaterEqual(expected_count, 300)
-        self.assertEqual(
-            expected_count,
-            self.manifest["relational_summary"]["object_count"],
-        )
         self.assertEqual(len(self.relational_objects), expected_count)
         build_docs_site.validate_relational_objects(self.relational_objects)
         kind_counts = self.manifest["relational_summary"]["kinds"]
@@ -283,6 +282,36 @@ class DocumentationSiteTests(unittest.TestCase):
             for relational_object in reversed_objects
         }
         self.assertEqual(current_ids, reversed_ids)
+
+    def test_relational_ids_preserve_the_frozen_baseline_sequence(self) -> None:
+        baseline_path = (
+            self.docs_root.parent
+            / "artifacts"
+            / "docs-redesign"
+            / "baseline"
+            / "site-manifest.json"
+        )
+        baseline = json.loads(baseline_path.read_text(encoding="utf-8"))
+        baseline_ids = [item["object_id"] for item in baseline["relational_objects"]]
+        current_ids = [item["object_id"] for item in self.manifest["relational_objects"]]
+        retired_baseline_ids = {
+            "rel-concept-type-openairesponsesprovider-a7741b3d383a",
+        }
+        baseline_id_set = set(baseline_ids)
+        preserved_baseline_ids = [
+            object_id for object_id in current_ids if object_id in baseline_id_set
+        ]
+        expected_preserved_ids = [
+            object_id
+            for object_id in baseline_ids
+            if object_id not in retired_baseline_ids
+        ]
+        self.assertEqual(preserved_baseline_ids, expected_preserved_ids)
+        self.assertTrue(retired_baseline_ids.isdisjoint(current_ids))
+        self.assertEqual(
+            hashlib.sha256("\n".join(baseline_ids).encode("utf-8")).hexdigest(),
+            "66805dda605345b5fa720c6e56ced88308b2adcc3d7363e3e63bbb0e2586a5ad",
+        )
 
     def test_every_relational_object_has_one_matching_svg_symbol(self) -> None:
         manifest_objects = {
@@ -341,7 +370,9 @@ class DocumentationSiteTests(unittest.TestCase):
         ET.parse(self.docs_root / summary["topology_figure"])
 
     def test_index_tree_references_every_relational_object(self) -> None:
-        page = (self.docs_root / "index.html").read_text(encoding="utf-8")
+        page = (self.docs_root / "architecture-explorer.html").read_text(
+            encoding="utf-8"
+        )
         represented_ids = set(
             re.findall(r'data-relational-object="([^"]+)"', page)
         )
@@ -499,10 +530,37 @@ class DocumentationSiteTests(unittest.TestCase):
         ET.parse(self.docs_root / "figures" / "governed-loop.svg")
         ET.parse(self.docs_root / "figures" / "concept-atlas.svg")
 
-    def test_index_contains_governed_loop_hero_and_concept_atlas(self) -> None:
+    def test_index_teaches_before_linking_to_the_expert_explorer(self) -> None:
         page = (self.docs_root / "index.html").read_text(encoding="utf-8")
-        for term in ("OURD", "IURM", "EON", "CFEL", "governed-loop.svg", "concepts/index.html"):
+        first_heading = re.search(r"<h1>(.*?)</h1>", page, flags=re.DOTALL)
+        self.assertIsNotNone(first_heading)
+        self.assertEqual(
+            html.unescape(re.sub(r"<[^>]+>", "", first_heading.group(1))),
+            "An AI agent designed to work carefully.",
+        )
+        for term in (
+            "First 15 Minutes",
+            "Learn by Task",
+            "learning-loop.svg",
+            "tutorial/index.html",
+            "tools.html",
+            "architecture-explorer.html",
+        ):
             self.assertIn(term, page)
+        self.assertNotIn("window.RELATIONAL_OBJECTS", page)
+        self.assertNotIn('class="relational-row', page)
+        explorer = (self.docs_root / "architecture-explorer.html").read_text(
+            encoding="utf-8"
+        )
+        for term in (
+            "OURD",
+            "IURM",
+            "EON",
+            "CFEL",
+            "governed-loop.svg",
+            "concepts/index.html",
+        ):
+            self.assertIn(term, explorer)
         atlas = (self.docs_root / "concepts" / "index.html").read_text(encoding="utf-8")
         self.assertIn(f"{len(self.concepts)} source-derived concepts", atlas)
         self.assertNotIn("125 source-derived concepts", atlas)

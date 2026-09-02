@@ -1,0 +1,80 @@
+name: SAA nonlinear frontier and reasoning qualification
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: saa-frontier-reasoning-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  frontier-reasoning:
+    name: SAA-7.8-8.2 / Python ${{ matrix.python-version }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version:
+          - "3.10"
+          - "3.12"
+          - "3.13"
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v7
+        with:
+          python-version: "${{ matrix.python-version }}"
+
+      - name: Compile frontier algebra
+        run: |
+          python -m py_compile \
+            ourd/egcf/algebra/nonlinear_lie.py \
+            ourd/egcf/algebra/nonlinear_remainder.py \
+            ourd/egcf/algebra/nonlinear_global.py \
+            ourd/egcf/algebra/nonlinear_lift.py \
+            ourd/egcf/algebra/reasoning.py \
+            ourd/egcf/algebra/reasoning_equivalence.py \
+            ourd/egcf/algebra/reasoning_semantics.py \
+            ourd/egcf/nonlinear.py \
+            ourd/egcf/reasoning.py
+
+      - name: Import public facades
+        run: |
+          python - <<'PY'
+          import ourd.egcf.nonlinear as nonlinear
+          import ourd.egcf.reasoning as reasoning
+
+          nonlinear_required = (
+              "NonlinearLieAssessment",
+              "ValidatedTaylorRemainder",
+              "GlobalNonlinearEquivalenceCertificate",
+              "CarlemanKoopmanLift",
+          )
+          reasoning_required = (
+              "CanonicalReasoningAlgorithm",
+              "ReasoningEquivalenceAssessment",
+              "ReasoningSemanticAssessment",
+          )
+          for name in nonlinear_required:
+              assert hasattr(nonlinear, name), name
+          for name in reasoning_required:
+              assert hasattr(reasoning, name), name
+          print("frontier public facades OK")
+          PY
+
+      - name: Run frontier qualification suites
+        run: |
+          python -m unittest \
+            tests.test_saa_nonlinear \
+            tests.test_saa_nonlinear_advanced \
+            tests.test_saa_nonlinear_frontier \
+            tests.test_saa_reasoning \
+            -v

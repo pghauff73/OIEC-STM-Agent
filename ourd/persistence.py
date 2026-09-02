@@ -89,7 +89,7 @@ def migrate_v2_to_v3(payload: Dict[str, Any]) -> Dict[str, Any]:
     migrated["schema_version"] = 3
     migrated.setdefault("reasoning_problem", None)
     migrated.setdefault("reasoning_hypothesis_state", None)
-    migrated.setdefault("hypothesis_pool", {})
+    migrated.setdefault("reasoning_hypothesis_pool", {})
     migrated.setdefault("reasoning_topology", None)
     migrated.setdefault("reasoning_candidates", None)
     migrated.setdefault("last_reasoning_certificate", None)
@@ -106,9 +106,13 @@ def migrate_v3_to_v4(payload: Dict[str, Any]) -> Dict[str, Any]:
     if int(migrated.get("schema_version", 3)) != 3:
         raise StateError("runtime migration requires schema version 3")
     migrated["schema_version"] = 4
-    pool = migrated.setdefault("hypothesis_pool", {})
+    legacy_pool = migrated.pop("hypothesis_pool", None)
+    pool = migrated.setdefault(
+        "reasoning_hypothesis_pool",
+        legacy_pool if isinstance(legacy_pool, dict) else {},
+    )
     if not isinstance(pool, dict):
-        raise StateError("runtime hypothesis pool must be an object")
+        raise StateError("runtime reasoning hypothesis pool must be an object")
     for hypothesis in pool.values():
         if isinstance(hypothesis, dict):
             hypothesis.setdefault("predictions", [])
@@ -132,13 +136,13 @@ def migrate_v3_to_v4(payload: Dict[str, Any]) -> Dict[str, Any]:
             mutually_exclusive=mutually_exclusive,
         )
         migrated["reasoning_hypothesis_state"] = asdict(state)
-        migrated["hypothesis_pool"] = {
+        migrated["reasoning_hypothesis_pool"] = {
             hypothesis.hypothesis_id: asdict(hypothesis)
             for hypothesis in state.hypotheses
         }
     else:
         migrated["reasoning_hypothesis_state"] = None
-    migrated.setdefault("hypothesis_updates", [])
+    migrated.setdefault("reasoning_hypothesis_updates", [])
     return migrated
 
 
@@ -147,6 +151,16 @@ def migrate_v4_to_v5(payload: Dict[str, Any]) -> Dict[str, Any]:
     if int(migrated.get("schema_version", 4)) != 4:
         raise StateError("runtime migration requires schema version 4")
     migrated["schema_version"] = 5
+    legacy_pool = migrated.pop("hypothesis_pool", None)
+    migrated.setdefault(
+        "reasoning_hypothesis_pool",
+        legacy_pool if isinstance(legacy_pool, dict) else {},
+    )
+    legacy_updates = migrated.pop("hypothesis_updates", None)
+    migrated.setdefault(
+        "reasoning_hypothesis_updates",
+        legacy_updates if isinstance(legacy_updates, list) else [],
+    )
     migrated.setdefault("reasoning_budget", None)
     migrated.setdefault("reasoning_context", None)
     migrated.setdefault("reasoning_contradictions", [])
@@ -175,6 +189,21 @@ def migrate_v5_to_v6(payload: Dict[str, Any]) -> Dict[str, Any]:
     if int(migrated.get("schema_version", 5)) != 5:
         raise StateError("runtime migration requires schema version 5")
     migrated["schema_version"] = RUNTIME_SCHEMA_VERSION
+    legacy_pool = migrated.pop("hypothesis_pool", None)
+    migrated.setdefault(
+        "reasoning_hypothesis_pool",
+        legacy_pool if isinstance(legacy_pool, dict) else {},
+    )
+    legacy_updates = migrated.pop("hypothesis_updates", None)
+    migrated.setdefault(
+        "reasoning_hypothesis_updates",
+        legacy_updates if isinstance(legacy_updates, list) else [],
+    )
+    migrated.setdefault("reasoning_budget", None)
+    migrated.setdefault("reasoning_context", None)
+    migrated.setdefault("reasoning_contradictions", [])
+    migrated.setdefault("last_synthesis", None)
+    migrated.setdefault("next_reasoning_operation", None)
     legacy_hypothesis_state = migrated.get("hypothesis_state")
     if (
         migrated.get("reasoning_hypothesis_state") is None

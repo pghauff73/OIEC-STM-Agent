@@ -5,6 +5,7 @@ import tarfile
 import unittest
 import zipfile
 from pathlib import Path
+from unittest import mock
 
 from tools.build_backend import build_sdist, build_wheel
 
@@ -42,11 +43,11 @@ class GuiPackagingTests(unittest.TestCase):
                     name for name in names if name.endswith(".dist-info/entry_points.txt")
                 )
                 entry_points = archive.read(entry_points_name).decode("utf-8")
-        self.assertIn("oiec-stm-agent = ourd.cli:main", entry_points)
+        self.assertIn("oiec-stm-agent = ourd.entrypoint:main", entry_points)
         self.assertIn("oiec-stm-sr-agent-icpi = ourd_gui.app:main", entry_points)
         self.assertIn("oiec-stm-sr-AgentICPI = ourd_gui.app:main", entry_points)
         self.assertIn("oiec-stm-gui = ourd_gui.app:main", entry_points)
-        self.assertIn("ourd-agent = ourd.cli:main", entry_points)
+        self.assertIn("ourd-agent = ourd.entrypoint:main", entry_points)
         self.assertIn("ourd-gui = ourd_gui.app:main", entry_points)
         self.assertIn(
             "oiec-stm-formal-writing-gui = ourd_gui.formal_writing_gui:main",
@@ -68,6 +69,18 @@ class GuiPackagingTests(unittest.TestCase):
         self.assertTrue(any(name.endswith("/ourd/reasoning/model_benchmark.py") for name in names))
         self.assertTrue(any(name.endswith("/grammars/providers/oiec_reasoning_response.gbnf") for name in names))
         self.assertTrue(any(name.endswith("/native/oiec_llama_runner/main.cpp") for name in names))
+
+    def test_sdist_is_byte_reproducible_across_build_times(self) -> None:
+        with tempfile.TemporaryDirectory() as first_directory:
+            with mock.patch("gzip.time.time", return_value=1_000_000_000):
+                first_name = build_sdist(first_directory)
+            first_bytes = (Path(first_directory) / first_name).read_bytes()
+        with tempfile.TemporaryDirectory() as second_directory:
+            with mock.patch("gzip.time.time", return_value=2_000_000_000):
+                second_name = build_sdist(second_directory)
+            second_bytes = (Path(second_directory) / second_name).read_bytes()
+        self.assertEqual(first_name, second_name)
+        self.assertEqual(first_bytes, second_bytes)
 
 
 if __name__ == "__main__":

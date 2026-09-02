@@ -1,0 +1,73 @@
+name: SAA transfer, explanation and adaptation qualification
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: saa-transfer-adaptation-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  transfer-adaptation:
+    name: SAA-10.2-11 / Python ${{ matrix.python-version }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version:
+          - "3.10"
+          - "3.12"
+          - "3.13"
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v7
+        with:
+          python-version: "${{ matrix.python-version }}"
+
+      - name: Compile transfer and adaptation stack
+        run: |
+          python -m py_compile \
+            ourd/egcf/algebra/algorithm_transfer.py \
+            ourd/egcf/algebra/retrieval_explanation.py \
+            ourd/egcf/algebra/algorithm_adaptation.py \
+            ourd/egcf/retrieval.py \
+            ourd/egcf/adaptation.py
+
+      - name: Import public facades
+        run: |
+          python - <<'PY'
+          import ourd.egcf.retrieval as retrieval
+          import ourd.egcf.adaptation as adaptation
+          for name in (
+              "AlgorithmDomainContract",
+              "AlgorithmTransferAssessment",
+              "RetrievalExplanation",
+              "assess_algorithm_transfer",
+              "explain_unified_retrieval",
+          ):
+              assert hasattr(retrieval, name), name
+          for name in (
+              "ControlledAdaptationPlan",
+              "AdaptedAlgorithmCandidate",
+              "build_controlled_adaptation_plan",
+              "create_adapted_candidate",
+          ):
+              assert hasattr(adaptation, name), name
+          print("public SAA-10.2-11 facades OK")
+          PY
+
+      - name: Run transfer and adaptation qualification suite
+        run: |
+          python -m unittest \
+            tests.test_saa_transfer_adaptation \
+            tests.test_saa_unified_retrieval \
+            -v

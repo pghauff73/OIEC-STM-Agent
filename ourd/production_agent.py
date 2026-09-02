@@ -1797,6 +1797,7 @@ class ProductionOURDAgent(BaseOURDAgent):
         review_mode = self._is_code_review_task(task)
         review_primary_targets: tuple[str, ...] = ()
         review_source_reads: set[str] = set()
+        named_file_read = False
         if review_mode:
             review_surface = self._build_code_review_surface(task)
             active_evidence_ids.add(review_surface["evidence_id"])
@@ -1920,7 +1921,11 @@ class ProductionOURDAgent(BaseOURDAgent):
         for step in range(1, step_budget + 1):
             self._require_not_cancelled(cancel_check)
             print(f"[agent step {step}]", file=os.sys.stderr)
-            tools = self._code_review_tool_specs() if review_mode else self.tool_specs()
+            tools = (
+                self._code_review_tool_specs()
+                if review_mode
+                else self._tools_for_model_context(named_file_read=named_file_read)
+            )
             instructions = self.instructions()
             try:
                 recovery = self._recover_provider_context(
@@ -1951,6 +1956,13 @@ class ProductionOURDAgent(BaseOURDAgent):
                         "epistemic_status": "REQUESTING_MODEL_BELIEF",
                         "context_budget_report_signature": recovery.report.signature,
                         "context_reduction_count": len(recovery.report.reduction_steps),
+                        "tool_context_mode": (
+                            "code_review"
+                            if review_mode
+                            else "named_file_read"
+                            if named_file_read
+                            else "full"
+                        ),
                     },
                 )
                 response = provider.create_response(
@@ -2122,6 +2134,11 @@ class ProductionOURDAgent(BaseOURDAgent):
                         and result.get("path") in review_primary_targets
                     ):
                         review_source_reads.add(str(result["path"]))
+                    if call_name == "read_file":
+                        named_file_read = named_file_read or self._is_named_file_read(
+                            task,
+                            result,
+                        )
                 evidence_id = result.get("evidence_id")
                 if isinstance(evidence_id, str) and evidence_id in self.state.evidence_registry:
                     active_evidence_ids.add(evidence_id)

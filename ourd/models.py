@@ -498,8 +498,8 @@ class RuntimeState:
     reasoning_problem: Optional[ReasoningProblem] = None
     reasoning_budget: Optional[ReasoningBudget] = None
     reasoning_hypothesis_state: Optional[ReasoningHypothesisSet] = None
-    hypothesis_updates: List[HypothesisUpdateRecord] = field(default_factory=list)
-    hypothesis_pool: Dict[str, ReasoningHypothesis] = field(default_factory=dict)
+    reasoning_hypothesis_updates: List[HypothesisUpdateRecord] = field(default_factory=list)
+    reasoning_hypothesis_pool: Dict[str, ReasoningHypothesis] = field(default_factory=dict)
     reasoning_topology: Optional[ReasoningTopology] = None
     reasoning_candidates: Optional[CandidateSet] = None
     reasoning_context: Optional[ReasoningContext] = None
@@ -514,6 +514,8 @@ class RuntimeState:
     def __post_init__(self) -> None:
         if int(self.control_only_progress_streak) < 0:
             raise ValueError("control-only progress streak cannot be negative")
+        if int(self.reasoning_transition_index) < 0:
+            raise ValueError("reasoning transition index cannot be negative")
 
     def to_dict(self) -> Dict[str, Any]:
         return asdict(self)
@@ -523,7 +525,7 @@ class RuntimeState:
         hypothesis_state: Optional[ReasoningHypothesisSet],
     ) -> None:
         self.reasoning_hypothesis_state = hypothesis_state
-        self.hypothesis_pool = (
+        self.reasoning_hypothesis_pool = (
             {}
             if hypothesis_state is None
             else {
@@ -534,20 +536,26 @@ class RuntimeState:
 
     def validate_reasoning_hypothesis_projection(self) -> None:
         if self.reasoning_hypothesis_state is None:
-            if self.hypothesis_pool:
-                raise ValueError("hypothesis pool exists without authoritative hypothesis state")
+            if self.reasoning_hypothesis_pool:
+                raise ValueError(
+                    "reasoning hypothesis pool exists without authoritative state"
+                )
             return
         expected = {
             hypothesis.hypothesis_id: hypothesis
             for hypothesis in self.reasoning_hypothesis_state.hypotheses
         }
-        if self.hypothesis_pool != expected:
-            raise ValueError("hypothesis pool conflicts with authoritative hypothesis state")
-        update_ids = [record.update_id for record in self.hypothesis_updates]
+        if self.reasoning_hypothesis_pool != expected:
+            raise ValueError(
+                "reasoning hypothesis pool conflicts with authoritative state"
+            )
+        update_ids = [record.update_id for record in self.reasoning_hypothesis_updates]
         if len(update_ids) != len(set(update_ids)):
-            raise ValueError("hypothesis update IDs must be unique")
+            raise ValueError("reasoning hypothesis update IDs must be unique")
         if set(self.reasoning_hypothesis_state.update_ids) - set(update_ids):
-            raise ValueError("hypothesis state references a missing update record")
+            raise ValueError(
+                "reasoning hypothesis state references a missing update record"
+            )
 
     def validate_hypothesis_projection(self) -> None:
         self.validate_reasoning_hypothesis_projection()
@@ -572,6 +580,14 @@ class RuntimeState:
         synthesis_payload = payload.get("last_synthesis")
         operation_payload = payload.get("next_reasoning_operation")
         reasoning_certificate_payload = payload.get("last_reasoning_certificate")
+        reasoning_updates_payload = payload.get(
+            "reasoning_hypothesis_updates",
+            payload.get("hypothesis_updates", []),
+        )
+        reasoning_pool_payload = payload.get(
+            "reasoning_hypothesis_pool",
+            payload.get("hypothesis_pool", {}),
+        )
         evidence = {
             key: EvidenceArtifact(**value)
             for key, value in payload.get("evidence_registry", {}).items()
@@ -640,13 +656,13 @@ class RuntimeState:
                 if reasoning_hypothesis_state_payload
                 else None
             ),
-            hypothesis_updates=[
+            reasoning_hypothesis_updates=[
                 HypothesisUpdateRecord.from_dict(value)
-                for value in payload.get("hypothesis_updates", [])
+                for value in reasoning_updates_payload
             ],
-            hypothesis_pool={
+            reasoning_hypothesis_pool={
                 str(key): ReasoningHypothesis.from_dict(value)
-                for key, value in payload.get("hypothesis_pool", {}).items()
+                for key, value in reasoning_pool_payload.items()
             },
             reasoning_topology=(
                 ReasoningTopology.from_dict(reasoning_topology_payload)

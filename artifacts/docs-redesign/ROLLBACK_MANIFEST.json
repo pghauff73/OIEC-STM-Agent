@@ -1,0 +1,36 @@
+{
+  "baseline": {
+    "artifacts": [
+      "artifacts/docs-redesign/baseline/site-manifest.json",
+      "artifacts/docs-redesign/baseline/SHA256SUMS",
+      "artifacts/docs-redesign/baseline/inventory.json"
+    ],
+    "branch": "main",
+    "commit": "0f3ce90a2c8360667f67ada20d113c1f7d540514",
+    "relational_ids_sha256": "66805dda605345b5fa720c6e56ced88308b2adcc3d7363e3e63bbb0e2586a5ad",
+    "remote_main": "0f3ce90a2c8360667f67ada20d113c1f7d540514",
+    "site_manifest_sha256": "c078d2fdca7bac37b3e94515fe3e7b7147766531af887c80382b7da8a4c93b00"
+  },
+  "candidate": {
+    "docs_tree_sha256": "315e0c522f8282197729b91dcf65ec5dddfc59132648c2f9258abeb31837aff3",
+    "documentation_version": "0.7.0",
+    "implementation_commit": "cdb8fdc420f3cd055153af05833b450ca77de6d3",
+    "relational_ids_sha256": "66805dda605345b5fa720c6e56ced88308b2adcc3d7363e3e63bbb0e2586a5ad",
+    "site_manifest_sha256": "1071fc625853c7f369668e0835e4d8e7a8478b147538a1a4b908b8f2ed0fc030",
+    "source_snapshot_sha256": "4443b6b05d4a168b90d1926725734c11729f0587bb91ec2a468d2c4a62397057",
+    "worktree_state": {
+      "tracked_modified": 1751,
+      "untracked_before_evidence_manifests": 26
+    }
+  },
+  "date": "2026-08-30",
+  "release_limit": "The reviewed implementation rollback point is commit cdb8fdc420f3cd055153af05833b450ca77de6d3. Release closure is accepted only when the final handoff verifies current local HEAD exactly matches remote main.",
+  "rollback_strategy": [
+    "Preserve the baseline artifacts before changing generated outputs.",
+    "Restore the smallest failed authored phase before regenerating generated HTML and SVG files.",
+    "Use tools/build_docs_site.py with the explicit date 2026-08-30 after restoring source owners.",
+    "Verify the baseline relational ID sequence hash before accepting a rollback.",
+    "Do not delete baseline artifacts or replace current generated output before validating the staged restoration."
+  ],
+  "schema_version": 1
+}

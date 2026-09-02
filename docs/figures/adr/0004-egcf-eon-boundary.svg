@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1160" height="317" viewBox="0 0 1160 317">
+<svg data-visual-grammar="1" data-visual-role="expert-document" data-doc-node="document-adr-0004-egcf-eon-boundary-md" data-node-role="process" aria-label="ADR 0004: EON Remains the Sole Workspace Mutation Boundary" tabindex="0" xmlns="http://www.w3.org/2000/svg" width="1160" height="317" viewBox="0 0 1160 317"><title>ADR 0004: EON Remains the Sole Workspace Mutation Boundary</title><desc>Generated expert-document diagram for ADR 0004: EON Remains the Sole Workspace Mutation Boundary.</desc>
 <style>
   :root { color-scheme: light; }
   svg { background:#fbf8ff; font-family:'Courier New',monospace; }

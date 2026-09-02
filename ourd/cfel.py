@@ -78,16 +78,20 @@ def record_collision(
         dimension_signature=dimension_signature,
     )
     state.collisions.append(record)
-    if severity_bp > 0 and state.reasoning_problem is not None and state.hypothesis_pool:
+    if (
+        severity_bp > 0
+        and state.reasoning_problem is not None
+        and state.reasoning_hypothesis_pool
+    ):
         from .reasoning import apply_collision_update, build_hypothesis_set
 
         hypothesis_state = state.reasoning_hypothesis_state
         if hypothesis_state is None:
-            maximum = max(1, len(state.hypothesis_pool))
+            maximum = max(1, len(state.reasoning_hypothesis_pool))
             if state.dimension_budget is not None:
                 maximum = max(maximum, state.dimension_budget.max_active_hypotheses)
             hypothesis_state = build_hypothesis_set(
-                tuple(state.hypothesis_pool.values()),
+                tuple(state.reasoning_hypothesis_pool.values()),
                 problem_id=state.reasoning_problem.problem_id,
                 max_hypotheses=maximum,
                 mutually_exclusive=state.reasoning_problem.mutually_exclusive_hypotheses,
@@ -102,8 +106,10 @@ def record_collision(
         )
         if revised.signature != hypothesis_state.signature:
             state.set_reasoning_hypothesis_state(revised)
-            existing_updates = {item.update_id for item in state.hypothesis_updates}
-            state.hypothesis_updates.extend(
+            existing_updates = {
+                item.update_id for item in state.reasoning_hypothesis_updates
+            }
+            state.reasoning_hypothesis_updates.extend(
                 item for item in updates if item.update_id not in existing_updates
             )
             state.reasoning_candidates = None

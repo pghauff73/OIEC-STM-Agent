@@ -1,0 +1,74 @@
+name: SAA closed improvement loop qualification
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: saa-closed-improvement-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  closed-improvement:
+    name: SAA-11.3-12 / Python ${{ matrix.python-version }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version:
+          - "3.10"
+          - "3.12"
+          - "3.13"
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v7
+        with:
+          python-version: "${{ matrix.python-version }}"
+
+      - name: Compile closed improvement stack
+        run: |
+          python -m py_compile \
+            ourd/egcf/algebra/multistep_evolution.py \
+            ourd/egcf/algebra/experiment_aggregation.py \
+            ourd/egcf/algebra/intelligence_loop.py \
+            ourd/egcf/improvement_store.py \
+            ourd/egcf/adaptation.py \
+            ourd/egcf/intelligence.py
+
+      - name: Import public facades
+        run: |
+          python - <<'PY'
+          import ourd.egcf.adaptation as adaptation
+          import ourd.egcf.intelligence as intelligence
+          for name in (
+              "MultiStepEvolutionPlan",
+              "EvolutionStepQualification",
+              "RepeatedExperimentAggregate",
+              "ImprovementLoopStore",
+              "aggregate_repeated_experiments",
+              "make_multistep_evolution_plan",
+              "qualify_evolution_step",
+          ):
+              assert hasattr(adaptation, name), name
+          for name in (
+              "IntelligenceImprovementDecision",
+              "evaluate_intelligence_improvement_loop",
+          ):
+              assert hasattr(intelligence, name), name
+          print("public SAA-11.3-12 facades OK")
+          PY
+
+      - name: Run closed improvement qualification suites
+        run: |
+          python -m unittest \
+            tests.test_saa_adaptation_lineage_experiments \
+            tests.test_saa_closed_improvement_loop \
+            -v

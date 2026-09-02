@@ -8,7 +8,15 @@
 
 **Target product version:** OIEC-STM-Agent `0.5.x` development line
 
-**Plan status:** Approved design input converted into an executable repository roadmap
+**Plan status:** Execution underway; bounded SR foundation integrated, comparative qualification open
+
+**Current checkpoint:** SR benchmark infrastructure, bounded reasoning records,
+hypothesis state, topology, deterministic scoring, falsification, synthesis,
+provider-bounded sampling, and source-bound model reports are integrated. The
+production hypothesis owner remains distinct from the namespaced
+`ReasoningHypothesis` owner, and RuntimeState v4 preserves both projections.
+This checkpoint does not satisfy SR-10 and does not authorize a general
+reasoning-superiority claim.
 
 ## 1. Objective
 
@@ -406,8 +414,8 @@ NO_SURVIVING_HYPOTHESIS
 Add:
 
 ```text
-hypothesis_state
-hypothesis_updates
+reasoning_hypothesis_state
+reasoning_hypothesis_updates
 reasoning_context
 contradictions
 last_synthesis
@@ -417,7 +425,8 @@ reasoning_qualification
 Migration requirements:
 
 1. Rebuild the current v3 projection without modifying old events.
-2. Convert `hypothesis_pool` into `HypothesisSet` deterministically.
+2. Convert `reasoning_hypothesis_pool` into `ReasoningHypothesisSet`
+   deterministically.
 3. Preserve existing v3 candidate, topology, and certificate records.
 4. Add new defaults without inventing evidence or contradiction resolutions.
 5. Append one migration event after the v4 projection is built.
@@ -615,8 +624,8 @@ gate that reports drift without rewriting history.
 - Implement fixed-point update and mutually exclusive normalization.
 - Bind updates to evidence IDs and CFEL collision IDs.
 - Add RuntimeState v4 migration and round-trip support.
-- Preserve current `hypothesis_pool` as a compatibility projection until all
-  callers use `hypothesis_state`.
+- Preserve `reasoning_hypothesis_pool` as a compatibility projection until all
+  OIEC-SR callers use `reasoning_hypothesis_state`.
 
 ### Tests
 
@@ -644,9 +653,10 @@ replayable from persisted updates.
   order-independent signatures, fixed-point Bayesian updates, deterministic
   mutually-exclusive normalization, monotonic evidence bindings, falsified
   recovery rules, and CFEL update integration.
-- Made `RuntimeState.hypothesis_state` authoritative under schema v4 while
-  preserving `hypothesis_pool` only as a validated derived compatibility
-  projection.
+- Made `RuntimeState.reasoning_hypothesis_state` authoritative for OIEC-SR under
+  schema v4 while preserving `reasoning_hypothesis_pool` only as a validated
+  derived compatibility projection. The production epistemic loop retains its
+  separate `RuntimeState.hypothesis_state` owner.
 - Added append-only v1-to-v4, v2-to-v4, and v3-to-v4 migrations without
   modifying historical events. Persisted update records rebuild the same state
   and fail closed when the compatibility projection drifts.
@@ -1298,14 +1308,14 @@ It should not claim proven general reasoning superiority.
 
 ## 15. Immediate Next Actions
 
-1. Freeze the current 282-test SR foundation as the SR-0 implementation baseline.
-2. Add `benchmarks/reasoning/schema.json`, task schema tests, and a deterministic
-   fixture runner.
-3. Create representative development tasks in all required categories.
-4. Generate `baseline-v1.json` for base, governed OIEC, and current OIEC-SR.
-5. Review the baseline failure taxonomy before changing reasoning algorithms.
-6. Begin SR-1 only after the SR-0 exit gate is satisfied.
+1. Freeze the integrated source and benchmark artifacts under one exact source
+   manifest before collecting additional model evidence.
+2. Audit SR-3 through SR-8 requirement rows against the current implementation
+   and add missing owner tests rather than inferring coverage from broad tests.
+3. Expand held-out task coverage and repeated-run statistics required by SR-10.
+4. Run the specified ablations and preserve raw source/model/runtime hashes.
+5. Complete independent human review before any qualification or release claim.
 
-The first decision checkpoint is therefore evidence-driven: benchmark the
-existing four-path implementation before adding more search, more models, or
-specialized adapters.
+The next decision checkpoint remains evidence-driven: deterministic
+implementation is present, but comparative qualification and exact-hash human
+approval remain separate gates.

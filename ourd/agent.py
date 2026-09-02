@@ -65,6 +65,7 @@ from .workspace import Workspace
 APPROVING_VERDICTS = {"APPROVE", "APPROVE_WITH_LIMITS"}
 ALL_VERDICTS = APPROVING_VERDICTS | {"REQUEST_EVIDENCE", "REVISE", "BLOCK"}
 EVIDENCE_CATEGORIES = {"invariant", "boundary", "counterexample", "test", "observation"}
+NAMED_FILE_CONTEXT_TOOLS = {"list_files", "read_file", "search_text"}
 
 
 class OURDAgent:
@@ -242,9 +243,11 @@ class OURDAgent:
                     raise StateError("pending action conflicts with transaction action identity")
         if any(
             key != hypothesis.hypothesis_id
-            for key, hypothesis in self.state.hypothesis_pool.items()
+            for key, hypothesis in self.state.reasoning_hypothesis_pool.items()
         ):
-            raise StateError("hypothesis pool key conflicts with hypothesis identity")
+            raise StateError(
+                "reasoning hypothesis pool key conflicts with hypothesis identity"
+            )
         try:
             self.state.validate_hypothesis_projection()
         except ValueError as exc:
@@ -416,6 +419,25 @@ class OURDAgent:
         if self.provider is None:
             self.provider = create_provider(self.provider_config)
         return self.provider
+
+    def _tools_for_model_context(self, *, named_file_read: bool) -> List[Dict[str, Any]]:
+        tools = self.tool_specs()
+        if not named_file_read or not self.state.authority.read_only:
+            return tools
+        return [
+            tool
+            for tool in tools
+            if str(tool.get("name", "")) in NAMED_FILE_CONTEXT_TOOLS
+        ]
+
+    def _is_named_file_read(self, task: str, result: Mapping[str, Any]) -> bool:
+        path = str(result.get("path", "")).strip()
+        return bool(
+            self.state.authority.read_only
+            and result.get("ok")
+            and path
+            and path.casefold() in task.casefold()
+        )
 
     def require_governance(self) -> None:
         if not self.state.governance.established:
@@ -793,7 +815,7 @@ class OURDAgent:
         self.state.transition_index = 0
         self.state.reasoning_problem = None
         self.state.set_reasoning_hypothesis_state(None)
-        self.state.hypothesis_updates = []
+        self.state.reasoning_hypothesis_updates = []
         self.state.reasoning_topology = None
         self.state.reasoning_candidates = None
         self.state.last_reasoning_certificate = None
@@ -880,7 +902,7 @@ class OURDAgent:
         self.state.reasoning_problem = problem
         self.state.reasoning_budget = None
         self.state.set_reasoning_hypothesis_state(hypothesis_state)
-        self.state.hypothesis_updates = []
+        self.state.reasoning_hypothesis_updates = []
         self.state.reasoning_topology = None
         self.state.reasoning_candidates = None
         self.state.reasoning_context = None
@@ -929,7 +951,7 @@ class OURDAgent:
             mutually_exclusive=hypothesis_state.mutually_exclusive,
         )
         self.state.set_reasoning_hypothesis_state(active_state)
-        self.state.hypothesis_updates = list(candidates.hypothesis_updates)
+        self.state.reasoning_hypothesis_updates = list(candidates.hypothesis_updates)
         self.state.reasoning_topology = topology
         self.state.reasoning_candidates = candidates
         self.state.reasoning_budget = reasoning_budget
@@ -1524,8 +1546,23 @@ class OURDAgent:
         self.save_state()
         return self._transaction_summary(record)
 
-    def list_files(self, path: str = ".", max_depth: int = 4) -> Dict[str, Any]:
+    def list_files(
+        self,
+        path: str = ".",
+        max_depth: int = 4,
+        offset: int = 0,
+        max_results: int = 200,
+    ) -> Dict[str, Any]:
         self._require_read_capability("workspace.list")
+        depth = int(max_depth)
+        if depth < 1 or depth > 20:
+            raise PolicyError("max_depth must be between 1 and 20")
+        page_size = int(max_results)
+        if page_size < 1 or page_size > 500:
+            raise PolicyError("max_results must be between 1 and 500")
+        requested_offset = int(offset)
+        if requested_offset < 0:
+            raise PolicyError("offset cannot be negative")
         requested_path = path.strip() or "."
         root = self.ws.resolve(requested_path)
         canonical_root = self.ws.canonical(requested_path)
@@ -1568,12 +1605,26 @@ class OURDAgent:
                     continue
                 if self.ws.ignored_parts(relative_parts):
                     continue
-                if len(candidate.parts) - base_depth > max_depth:
+                if len(candidate.parts) - base_depth > depth:
                     continue
                 relative = self.ws.rel(candidate)
                 if candidate.is_file() and self.ws.matches(relative, self.state.authority.allowed_paths):
                     out.append(relative)
-        payload: Dict[str, Any] = {"files": sorted(out)}
+        files = sorted(set(out))
+        total_files = len(files)
+        page_offset = min(requested_offset, total_files)
+        page = files[page_offset : page_offset + page_size]
+        consumed = page_offset + len(page)
+        has_more = consumed < total_files
+        next_offset = consumed if has_more else None
+        payload: Dict[str, Any] = {
+            "files": page,
+            "offset": page_offset,
+            "max_results": page_size,
+            "total_files": total_files,
+            "has_more": has_more,
+            "next_offset": next_offset,
+        }
         if canonical_root in {".", "src"} or not out:
             payload["repository_layout"] = self._repository_layout_projection()
         artifact = self._record_evidence(
@@ -2196,6 +2247,8 @@ class OURDAgent:
             content = "\n".join(
                 f"{index:5d} | {lines[index - 1]}" for index in range(start, end + 1)
             )
+        has_more = bool(lines and end < len(lines))
+        next_start_line = end + 1 if has_more else None
         artifact = self._record_evidence(
             kind="read",
             description=f"read_file {canonical}:{start}-{end}",
@@ -2208,13 +2261,20 @@ class OURDAgent:
             "path": canonical,
             "start_line": start,
             "end_line": end,
+            "total_lines": len(lines),
+            "has_more": has_more,
+            "next_start_line": next_start_line,
             "content": content,
             "evidence_id": artifact.artifact_id,
         }
 
     def search_text(self, query: str, path: str = ".", max_results: int = 100) -> Dict[str, Any]:
         self._require_read_capability("workspace.search")
-        canonical_root = self.ws.canonical(path)
+        result_limit = int(max_results)
+        if result_limit < 1 or result_limit > 500:
+            raise PolicyError("max_results must be between 1 and 500")
+        requested_path = path.strip() or "."
+        canonical_root = self.ws.canonical(requested_path)
         results = []
         for candidate in self.ws.iter_files(canonical_root):
             relative = self.ws.rel(candidate)
@@ -2227,9 +2287,9 @@ class OURDAgent:
             for index, line in enumerate(lines, 1):
                 if query.lower() in line.lower():
                     results.append({"path": relative, "line": index, "text": line[:500]})
-                    if len(results) >= max_results:
+                    if len(results) >= result_limit:
                         break
-            if len(results) >= max_results:
+            if len(results) >= result_limit:
                 break
         artifact = self._record_evidence(
             kind="read",
@@ -2240,8 +2300,10 @@ class OURDAgent:
         )
         return {
             "ok": True,
+            "path": canonical_root,
+            "max_results": result_limit,
             "results": results,
-            "truncated": len(results) >= max_results,
+            "truncated": len(results) >= result_limit,
             "evidence_id": artifact.artifact_id,
         }
 
@@ -2606,8 +2668,10 @@ class OURDAgent:
                 {
                     "path": {"type": "string", "minLength": 1},
                     "max_depth": {"type": "integer", "minimum": 1, "maximum": 20},
+                    "offset": {"type": "integer", "minimum": 0},
+                    "max_results": {"type": "integer", "minimum": 1, "maximum": 500},
                 },
-                ["path", "max_depth"],
+                ["path", "max_depth", "offset", "max_results"],
             ),
             function(
                 "build_corpus_manifest",
@@ -3096,10 +3160,11 @@ class OURDAgent:
         )
         input_items: List[Any] = [*history, {"role": "user", "content": task}]
         history_item_count = len(history)
+        named_file_read = False
         for step in range(1, self.max_steps + 1):
             self._require_not_cancelled(cancel_check)
             print(f"[agent step {step}]", file=os.sys.stderr)
-            tools = self.tool_specs()
+            tools = self._tools_for_model_context(named_file_read=named_file_read)
             instructions = self.instructions()
             try:
                 recovery = self._recover_provider_context(
@@ -3127,6 +3192,9 @@ class OURDAgent:
                         or "provider_default",
                         "max_transport_retries": self.provider_config.max_transport_retries,
                         "history_message_count": history_item_count,
+                        "tool_context_mode": (
+                            "named_file_read" if named_file_read else "full"
+                        ),
                         "context_budget_report_signature": recovery.report.signature,
                         "context_reduction_count": len(recovery.report.reduction_steps),
                     },
@@ -3190,6 +3258,11 @@ class OURDAgent:
                     self.save_state()
                 else:
                     result = self.dispatch(self._get(call, "name", ""), parsed)
+                    if self._get(call, "name", "") == "read_file":
+                        named_file_read = named_file_read or self._is_named_file_read(
+                            task,
+                            result,
+                        )
                 input_items.append(
                     {
                         "type": "function_call_output",

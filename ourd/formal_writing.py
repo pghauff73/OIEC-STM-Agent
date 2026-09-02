@@ -258,7 +258,7 @@ ARGUMENTATIVE ESSAY + LOGIC TOPOLOGY PROFILE
 - Use directed relations such as supports, warrants, attacks, rebuts, qualifies, limits, entails and depends_on.
 - Keep the positive support graph acyclic: evidence/premises support intermediate claims, and intermediate claims support the thesis. Avoid circular support.
 - Connect opposing evidence and premises through the counterclaim they support; dialectical attack/rebuttal relations may cross the positive support hierarchy.
-- Standardise important reasoning into premises and conclusion. Identify unstated premises needed for an inference and test whether they are defensible.
+- Standardise important reasoning into premises and conclusion. Identify implicit premises needed for an inference and test whether they are defensible.
 - Distinguish linked premises (needed together) from convergent premises (independent reasons). Use a shared inference_id for linked premises where a machine representation is produced.
 - Label material inference modes where useful: deductive, inductive, abductive, causal, analogical, authority or defeasible.
 - For deductive reasoning, test validity and premise acceptability. For inductive/abductive/causal reasoning, state the inference as defeasible and test alternative explanations or defeaters.

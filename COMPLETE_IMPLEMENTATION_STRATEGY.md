@@ -1,7 +1,7 @@
 # OIEC-STM-Agent Complete Implementation Strategy
 
-**Strategy date:** August 28, 2026  
-**Repository:** `pghauff73/OIEC-STM-Agent`  
+**Strategy date:** August 28, 2026
+**Repository:** `pghauff73/OIEC-STM-Agent`
 **Purpose:** complete, integrate, qualify, document, and release every accepted
 implementation without weakening authority, evidence, retry, persistence, or
 mutation invariants.
@@ -81,7 +81,7 @@ Current observations on August 28, 2026:
 - local worktree contains 179 modified and 108 untracked paths;
 - five upstream-changed files overlap the local dirty set:
   `ourd/__init__.py`, `ourd/cli.py`, `ourd/providers/base.py`,
-  the provider transport module, and `pyproject.toml`.
+  `ourd/providers/openai_responses.py`, and `pyproject.toml`.
 
 The upstream eleven-commit delta adds bounded writing modes, formal-writing
 profiles, multimodal visual editing, visual similarity, mesh import, a headless
@@ -184,7 +184,7 @@ and comparing its intended-file manifest with the original dirty worktree.
      provider controls;
    - `ourd/providers/base.py`: preserve upstream provider additions and the bounded
      multi-response/SR contract;
-   - `ourd/providers/llama_cpp_process.py`: preserve direct process transport,
+   - `ourd/providers/openai_responses.py`: preserve upstream transport behavior,
      exact preflight evidence, task-bound runtime release, and SR batching;
    - `pyproject.toml`: preserve all entry points, dependencies, package data, and
      advance one coherent development version.
@@ -207,6 +207,21 @@ python3 -m unittest discover -s tests/gui -t . -v
 - no duplicate command, provider, model, state, or GUI owner exists;
 - no intended file from either side is omitted;
 - the integration branch has a documented source manifest.
+
+**P0/P1 resolution record (August 30, 2026):** the original dirty checkout was
+preserved as a tracked patch with SHA-256
+`d1d7d205786915b3e2ff3e0121776622cde0765d3bdb2d4b2cb2bb26984e136d`, an
+untracked archive with SHA-256
+`e323821a8705288d9f6db3becccb22736eb81f34146541e9a1a72c93950e9ca7`, and an
+intended-file manifest with SHA-256
+`5568046e98be684c669f7c03187745f0e531c40354619512a239796b5b20fe24`.
+Reconstruction matched all 179 tracked modifications and 143 untracked paths.
+Integration then started from verified `main` commit `097d683`, applied authored
+source before generated documentation, and resolved overlapping semantic owners
+manually. Production `Hypothesis` state and namespaced `ReasoningHypothesis`
+state remain distinct; provider image expansion and bounded SR sampling both
+remain present. This record closes only P0 and P1 for the dirty-checkout
+resolution. P2 through P9 and release qualification remain open.
 
 ## 7. Phase P2 — Freeze the Complete Requirement Inventory
 
@@ -442,7 +457,7 @@ Preflight must bind:
 The verified local Qwen3.8 GGUF digest is:
 
 ```text
-028a1d47b9c822ca76d1e9295d0078d21351a8816ec5612cb4860d7c1ef429d9
+0fc041075efd255732ce6de77617ac31520b35a8dbffc06ef56cb80e5c8762ca
 ```
 
 Reverify it before qualification rather than treating this strategy as runtime

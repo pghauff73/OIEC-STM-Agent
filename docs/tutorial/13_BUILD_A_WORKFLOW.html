@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en" data-doc-view="learn" data-doc-depth="novice">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Combine understanding, experimentation, action, verification, and learning.">
+<title>Build a Workflow · OIEC Tutorial</title><link rel="stylesheet" href="../assets/styles.css"></head>
+<body data-page="tutorial" data-lesson-id="T13" data-source-hash="160b54a777a85d28d8c6e4b9a21c6f20dc8e4ebb2fccef2a3e1d4454dbdc4c72" data-docs-version="0.7.0" data-source-snapshot="sha256:ecce5a5aa2e46384af47c11999429232573813714d48ec063efe4caa6eb5ef06" data-build-date="2026-08-30">
+<header class="site-header"><a class="brand" href="../index.html"><span class="brand-mark">T13</span><span><strong>OIEC LEARNING PATH</strong><small>Build a Workflow</small></span></a><nav class="header-actions"><a href="index.html">TUTORIALS</a><a href="../architecture-explorer.html">TECHNICAL EXPLORER</a></nav></header>
+<main class="learning-main">
+  <section class="view-controls" aria-label="Explanation controls">
+  <div class="view-tabs" role="group" aria-label="Documentation view">
+    <button type="button" data-doc-view="learn" aria-pressed="true">Learn</button>
+    <button type="button" data-doc-view="technical" aria-pressed="false">Technical</button>
+  </div>
+  <div class="depth-control">
+    <label for="explanation-depth">Explanation depth</label>
+    <input id="explanation-depth" type="range" min="0" max="2" step="1" value="0" data-depth-control>
+    <div aria-hidden="true"><span>Novice</span><span>Intermediate</span><span>Expert</span></div>
+  </div>
+  <button type="button" data-action="teacher-mode" aria-pressed="false">Teacher mode</button>
+  <button type="button" data-action="reset-learning">Reset learning preferences</button>
+</section>
+<noscript><p class="noscript-note">JavaScript is optional. Learn and Technical content remain visible in source order.</p></noscript>
+
+  <section class="prerequisite-map" aria-label="Learning prerequisites"><p class="terminal-label">YOU ARE HERE</p><div><span class="prerequisite-node is-complete">✓ T12</span><span aria-hidden="true">→</span><span class="prerequisite-node is-current">T13 · YOU ARE HERE</span></div></section>
+  <section class="learning-hero"><p class="eyebrow">LESSON 13 · BUILT 2026-08-30</p><h1>Build a Workflow</h1><p>Combine understanding, experimentation, action, verification, and learning.</p><aside class="evidence-badge" data-doc-status="Tested"><strong>Tested</strong><span>Documentation evidence</span><ul><li><code>docs/tutorial/13_BUILD_A_WORKFLOW.md</code></li><li><code>tests/test_docs_tutorials.py</code></li></ul></aside></section>
+  <figure class="learning-diagram"><object type="image/svg+xml" data="../figures/tutorial/t13.svg"><a href="../figures/tutorial/t13.svg">Open lesson diagram</a></object><figcaption>Shared visual grammar: processes, gates, evidence, authority, and verified or hypothetical relations.</figcaption></figure>
+  <article class="learning-prose" data-view-content="learn"><section class="learning-section" id="what-you-will-learn"><h2>What you will learn</h2><p>You will combine interpretation, problem mapping, experimentation, command compilation, exact action review, evidence, failure learning, retrieval, and improvement.</p></section><section class="learning-section" id="everyday-analogy"><h2>Everyday analogy</h2><p>A complete engineering workflow carries a job from customer request through diagnosis, controlled testing, approved repair, inspection, records, and future reuse.</p></section><section class="learning-section" id="new-vocabulary"><h2>New vocabulary</h2><p>A <strong>workflow</strong> is an ordered set of responsibilities and gates. A <strong>DAG</strong> is a directed acyclic graph whose dependency edges cannot loop back into themselves.</p></section><section class="learning-section" id="diagram"><h2>Diagram</h2><p>The final course map connects all earlier lessons and marks where the system may stop, refuse, request evidence, or continue.</p></section><section class="learning-section" id="command-or-interaction"><h2>Command or interaction</h2><pre data-language="bash"><code>egcf run fix parser regression \
+  --repo . \
+  --input &#x27;{&quot;target&quot;:&quot;src/parser.py&quot;}&#x27; \
+  --dry-run --why --graph --strict \
+  --risk L1 --rollback exact</code></pre></section><section class="learning-section" id="expected-output"><h2>Expected output</h2><p>You can explain every command token, identify the required evidence and authority, and locate where failures become reusable records.</p></section><section class="learning-section" id="what-just-happened"><h2>What just happened?</h2><p>The architecture became a learning sequence rather than a wall of acronyms. Technical pages remain available when you need exact types, equations, source maps, and invariants.</p></section><section class="learning-section" id="try-changing-this"><h2>Try changing this</h2><p>Choose one task route from the homepage and replace the parser objective with your own read-only or simulated goal. Preserve the same explicit reasoning about scope and proof.</p></section><section class="learning-section" id="common-mistake"><h2>Common mistake</h2><p>Do not treat completion of the tutorial as authority to run real mutations. Real work still requires current source state, explicit authority, exact evidence, and the applicable approval path.</p></section><section class="learning-section" id="next-lesson"><h2>Next lesson</h2><p>Continue through a task guide, case study, concept page, or the Architecture Explorer. The printable and Teacher views provide exercises and review material.</p></section></article>
+
+<section class="technical-panel" data-view-content="technical">
+  <p class="terminal-label">TECHNICAL CONTRACT</p>
+  <h2>T13 catalog record</h2>
+  <dl class="technical-grid">
+    <div><dt>Source</dt><dd><code>docs/tutorial/13_BUILD_A_WORKFLOW.md</code></dd></div>
+    <div><dt>Prerequisites</dt><dd>T12</dd></div>
+    <div><dt>Vocabulary</dt><dd>workflow, DAG, evidence gate</dd></div>
+    <div><dt>Fixture IDs</dt><dd>complete-workflow</dd></div>
+    <div><dt>Source SHA-256</dt><dd><code>160b54a777a85d28d8c6e4b9a21c6f20dc8e4ebb2fccef2a3e1d4454dbdc4c72</code></dd></div>
+    <div><dt>Build date</dt><dd>2026-08-30</dd></div>
+  </dl>
+  <div class="command-grid"><article class="command-card" data-command-id="egcf-workflow"><h3>Inspect a strict workflow</h3><pre data-language="bash"><code>egcf run fix parser regression --repo . --input &#x27;{&quot;target&quot;:&quot;src/parser.py&quot;}&#x27; --dry-run --why --graph --strict --risk L1 --rollback exact</code></pre><p>Show graph, strict validation, risk, and rollback for a dry-run objective.</p><ul><li><code>--graph</code><span>render the compiled plan graph</span></li><li><code>--strict</code><span>reject unresolved compilation details</span></li><li><code>--risk L1</code><span>declare bounded low-risk mutation intent</span></li><li><code>--rollback exact</code><span>require an exact rollback strategy</span></li></ul><button type="button" data-copy-command>Copy command</button></article></div>
+</section>
+
+
+<section class="tutorial-sandbox" data-tutorial-sandbox="complete-workflow">
+  <div><p class="terminal-label">READ-ONLY BROWSER SANDBOX</p><h2>Complete governed workflow</h2>
+  <p>Runs checked-in deterministic fixture data only. It has no provider, network, filesystem, command, or mutation path.</p></div>
+  <div class="sandbox-controls"><button type="button" data-sandbox-run>Run next step</button><button type="button" data-sandbox-reset>Reset</button></div>
+  <ol class="sandbox-output" aria-live="polite"></ol>
+  <script type="application/json" data-sandbox-fixture>{"fixture_id":"complete-workflow","title":"Complete governed workflow","states":["Interpret","Map","Experiment","Compile","Review exact action","Verify","Learn","Retrieve","Improve"]}</script>
+</section>
+
+  <section class="teacher-panel" data-teacher-content hidden><h2>Teacher mode</h2><p><strong>Objective:</strong> Combine understanding, experimentation, action, verification, and learning.</p><details><summary>Exercise and checked answer</summary><p>Explain the lesson using a different domain while preserving its authority and evidence boundaries.</p><p><strong>Answer check:</strong> the explanation must name the input, controlled boundary, evidence, output, and a common misconception.</p></details></section>
+  <nav class="learning-pager"><a href="index.html">← Tutorial index</a><a class="primary-action" href="../tasks/index.html">Choose a task route →</a></nav>
+</main><script src="../assets/site.js" defer></script></body></html>

@@ -8,11 +8,13 @@ checked-in documentation can be rebuilt without adding a package dependency.
 from __future__ import annotations
 
 import argparse
+import functools
 import hashlib
 import html
 import json
 import os
 import re
+import tomllib
 from dataclasses import dataclass
 from datetime import date
 from pathlib import Path
@@ -20,12 +22,124 @@ from typing import Iterable
 
 try:
     from tools.docs_concept_catalog import CORE_CONCEPTS, Concept, discover_concepts
+    from tools.docs_cli_catalog import (
+        COMMAND_BUILDER_SCHEMA,
+        PROGRAMS,
+        PROVIDERS,
+        RECIPES,
+        REJECTED_RECIPES,
+        records_for_manifest as cli_records_for_manifest,
+        validate_recipes,
+    )
+    from tools.docs_learning_catalog import (
+        ACRONYMS,
+        CASE_STUDIES,
+        CONTENT_KINDS,
+        DOCUMENTATION_STATUSES,
+        INVENTION_TIMELINE,
+        LEARNING_PATHS,
+        TASK_ROUTES,
+        TUTORIAL_HEADINGS,
+        TUTORIALS,
+        records_for_manifest as learning_records_for_manifest,
+        teaching_record_for,
+        validate_catalog_sources,
+        validate_prerequisite_graph,
+    )
+    from tools.docs_status_catalog import (
+        discover_statuses,
+        records_for_manifest as status_records_for_manifest,
+        validate_statuses,
+    )
+    from tools.docs_visual_grammar import (
+        edge_attributes,
+        grammar_manifest,
+        node_attributes,
+        root_attributes,
+        validate_svg,
+    )
 except ModuleNotFoundError:
     from docs_concept_catalog import CORE_CONCEPTS, Concept, discover_concepts
+    from docs_cli_catalog import (
+        COMMAND_BUILDER_SCHEMA,
+        PROGRAMS,
+        PROVIDERS,
+        RECIPES,
+        REJECTED_RECIPES,
+        records_for_manifest as cli_records_for_manifest,
+        validate_recipes,
+    )
+    from docs_learning_catalog import (
+        ACRONYMS,
+        CASE_STUDIES,
+        CONTENT_KINDS,
+        DOCUMENTATION_STATUSES,
+        INVENTION_TIMELINE,
+        LEARNING_PATHS,
+        TASK_ROUTES,
+        TUTORIAL_HEADINGS,
+        TUTORIALS,
+        records_for_manifest as learning_records_for_manifest,
+        teaching_record_for,
+        validate_catalog_sources,
+        validate_prerequisite_graph,
+    )
+    from docs_status_catalog import (
+        discover_statuses,
+        records_for_manifest as status_records_for_manifest,
+        validate_statuses,
+    )
+    from docs_visual_grammar import (
+        edge_attributes,
+        grammar_manifest,
+        node_attributes,
+        root_attributes,
+        validate_svg,
+    )
 
 
 ROOT = Path(__file__).resolve().parents[1]
 DOCS_ROOT = ROOT / "docs"
+EDUCATIONAL_DIRECTORIES = {"tutorial", "tasks", "case-studies"}
+
+
+@functools.lru_cache(maxsize=1)
+def documentation_version() -> str:
+    project = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))[
+        "project"
+    ]
+    return str(project["version"])
+
+
+@functools.lru_cache(maxsize=1)
+def source_snapshot_digest() -> str:
+    paths = {
+        ROOT / "pyproject.toml",
+        DOCS_ROOT / "assets" / "site.js",
+        DOCS_ROOT / "assets" / "styles.css",
+    }
+    paths.update(DOCS_ROOT.rglob("*.md"))
+    paths.update((ROOT / "ourd").rglob("*.py"))
+    paths.update((ROOT / "ourd_gui").rglob("*.py"))
+    paths.update((ROOT / "tools").glob("docs_*.py"))
+    paths.add(ROOT / "tools" / "build_docs_site.py")
+    digest = hashlib.sha256()
+    for path in sorted(path for path in paths if path.is_file()):
+        relative = path.relative_to(ROOT).as_posix().encode("utf-8")
+        digest.update(len(relative).to_bytes(4, "big"))
+        digest.update(relative)
+        content = path.read_bytes()
+        digest.update(len(content).to_bytes(8, "big"))
+        digest.update(content)
+    return digest.hexdigest()
+
+
+def page_snapshot_attributes(build_date: str) -> str:
+    return (
+        f'data-docs-version="{html.escape(documentation_version(), quote=True)}" '
+        f'data-source-snapshot="sha256:{source_snapshot_digest()}" '
+        f'data-build-date="{html.escape(build_date, quote=True)}"'
+    )
 
 
 REFERENCE_LIBRARY = (
@@ -235,38 +349,8 @@ REFERENCE_TOPIC_GROUPS = (
 
 
 GLOSSARY = {
-    "CSL": "Citation Style Language: a structured data and style ecosystem for representing bibliographic records and rendering citations.",
-    "IR": "Intermediate Representation: a canonical machine-readable structure placed between a writing request and rendered prose.",
-    "OCR": "Optical Character Recognition: extraction of machine-readable text from rendered page images, recorded as derived rather than native text.",
-    "PDF": "Portable Document Format: a paginated document container whose physical page positions and displayed labels must remain distinct.",
-    "REVISE": "The ICPI formal-writing operation that regenerates a source-grounded candidate while binding the prior draft by hash.",
-    "SUMMARIZE": "The ICPI read-only intent mode for producing source-bound summaries with exact corpus and line-coverage accounting.",
-    "SAA": "Stored Algorithm Architecture: the governed OIEC algorithm store and qualification layer used to retrieve and compare reusable reasoning procedures.",
-    "US": "United States: used here only to distinguish US English spelling from British English spelling.",
-    **{
-        f"FW-{index}": (
-            f"Formal Writing phase {index}: one ordered governed-pipeline implementation stage "
-            "from intermediate representation through benchmarking."
-        )
-        for index in range(1, 15)
-    },
-    **{
-        f"FW-{index:03d}": (
-            f"Formal Writing requirement {index:03d}: a numbered implementation and evidence obligation "
-            "from the formal-writing engine plan."
-        )
-        for index in range(1, 21)
-    },
-    **{
-        f"SGR-{index:03d}": (
-            f"Summarization Governance Recovery requirement {index:03d}: a numbered implementation "
-            "and evidence obligation from the recovery plan."
-        )
-        for index in range(1, 23)
-    },
     "ADR": "Architecture Decision Record: a short document that records a significant design choice, its context, and its consequences.",
     "API": "Application Programming Interface: a defined way for software components to request services from one another.",
-    "ASCII": "American Standard Code for Information Interchange: a basic character encoding used by many plain-text file formats.",
     "BCP": "Best Current Practice: an Internet standards document that records widely accepted operational guidance.",
     "C0": "Capability class 0: observation only; it may inspect information but cannot create proposals or change the workspace.",
     "C1": "Capability class 1: analysis and internal proposal creation without ordinary workspace mutation.",
@@ -281,27 +365,17 @@ GLOSSARY = {
     "CAD": "Computer-Aided Design: software and data used to create or analyse engineered geometry.",
     "CFEL": "Collision, Failure, Evidence, and Learning feedback: the project loop that records meaningful failures and prevents unchanged blind retries.",
     "CLI": "Command-Line Interface: a text-based way to operate software by entering commands.",
-    "CPU": "Central Processing Unit: the general-purpose processor that executes ordinary program instructions.",
     "DAG": "Directed Acyclic Graph: a one-way network with no cycles, often used to represent workflows and dependencies.",
     "EGCF": "Evidence-Governed Command Fabric: the semantic command layer that compiles intent into typed, content-addressed, policy-checked workflow plans.",
     "EON": "Execution and Operational Nexus: the governed boundary that binds authority, evidence, approval, exact targets, commands, and rollback before execution.",
-    "EBO": "Element Buffer Object: an OpenGL buffer that stores vertex indices so triangles can reuse vertices.",
-    "EGL": "Embedded-System Graphics Library: an interface for creating graphics contexts and surfaces without depending on a desktop window toolkit.",
-    "FPS": "Frames Per Second: the number of rendered images produced each second.",
-    "GBNF": "GGML Backus-Naur Form: a grammar notation used by llama.cpp to restrict generated text to an allowed structure.",
     "GIF": "Graphics Interchange Format: a bitmap image format that can contain simple animation.",
     "GLB": "The binary container form of glTF, used to package 3D scenes and assets into one file.",
-    "GL-0": "OpenGL validation gate 0: the project's first declared graphics qualification checkpoint.",
-    "GL-3": "OpenGL validation gate 3: a later project checkpoint covering stronger renderer capability and evidence.",
-    "GLSL": "OpenGL Shading Language: the language used to program GPU vertex and fragment shaders.",
     "GLTF": "GL Transmission Format: a standard format for transmitting 3D scenes and models.",
-    "GGUF": "The llama.cpp model container format used to store weights and metadata; GGUF is treated as the format name rather than expanded into an unstable phrase.",
     "GPU": "Graphics Processing Unit: a processor designed for highly parallel work such as graphics and machine-learning calculations.",
     "GUI": "Graphical User Interface: windows, controls, and visual feedback through which a person operates the system.",
     "HRT": "Human-Readable Task interpretation: the project layer that turns a request into explicit claims, assumptions, ambiguities, scope, and provenance.",
     "HTML": "HyperText Markup Language: the structural language used to describe web pages.",
     "HTTP": "Hypertext Transfer Protocol: the request-and-response protocol commonly used by web clients and servers.",
-    "ICPI": "Interactive Command Prompt Interface: the deterministic prompt layer that parses natural language and slash commands before routing them to governed OIEC-STM-Agent surfaces.",
     "ID": "Identifier: a value used to name and distinguish one object from another.",
     "IEPS": "Invariant and Evidence Production System: the project namespace for generating coverage, oracles, counterexamples, mutations, and qualification evidence.",
     "IETF": "Internet Engineering Task Force: the open standards community that publishes RFC technical specifications and best-current-practice documents.",
@@ -315,46 +389,29 @@ GLOSSARY = {
     "L0-L2": "The project evidence or risk ladder from low-impact observation through higher-impact work requiring stronger evidence and review.",
     "LRU": "Least Recently Used: a cache policy that removes the items that have gone unused for the longest time.",
     "MCP": "Model Context Protocol: a protocol for connecting AI applications to tools and structured external context.",
-    "MSE": "Mean Squared Error: the average squared numerical difference between corresponding image values.",
-    "MTL": "Wavefront Material Template Library: a companion text format that describes materials used by OBJ meshes.",
     "MVD": "Minimum Viable Design: the smallest design that still satisfies the declared constraints and learning objective.",
     "NASA": "National Aeronautics and Space Administration: the United States civil space agency, which publishes systems-engineering guidance used here as a lifecycle reference.",
     "NIST": "National Institute of Standards and Technology: a United States public agency that publishes technical guidance on measurement, security, risk, and trustworthy systems.",
     "OBJ": "Wavefront OBJ: a text-based file format for polygonal 3D geometry.",
     "OFAT": "One Factor At a Time: an experiment strategy that varies one input while holding the others steady.",
-    "OIEC": "Operationally Isolated Epistemic Control: the bounded evidence-and-transition architecture used by OIEC-STM-Agent.",
-    "OIEC-SR": "Operationally Isolated Epistemic Control Super Reasoning: the bounded multi-hypothesis reasoning kernel that verifies, falsifies, ranks, and synthesizes explicit reasoning artifacts.",
     "OIEC-STM": "Operationally Isolated Epistemic Control State-Transition Model: this project's bounded control layer for deciding whether a proposed state transition may proceed.",
-    "OIEC-STM-SR": "The combined OIEC state-transition and super-reasoning architecture used by AgentICPI before IURM experiment selection and EON-governed action.",
-    "NCC": "Normalized Cross-Correlation: a similarity measure comparing how two signals or images vary after scale and offset normalization.",
-    "OURD": "Object-Universe-Relation-Dependency modeling: the project layer that identifies system objects, their boundaries, relations, dependencies, impacts, exclusions, and scope.",
+    "OURD": "Orthogonal Unique Relational Decomposition modeling: the project layer that identifies system objects, their boundaries, relations, dependencies, impacts, exclusions, and scope.",
     "PEP": "Python Enhancement Proposal: a design document used to propose and explain changes to Python.",
     "PLY": "Polygon File Format: a format for storing 3D meshes and point-cloud attributes.",
     "PNG": "Portable Network Graphics: a lossless bitmap image format with transparency support.",
-    "PBR": "Physically Based Rendering: a graphics method that models how light interacts with surfaces using physically motivated material parameters.",
     "PTY": "Pseudo-terminal: a software endpoint that behaves like a terminal so another program can control interactive command-line processes.",
     "RFC": "Request for Comments: a published technical specification or best-current-practice document in the Internet standards process.",
     "README": "The conventional project overview file that explains purpose, setup, usage, and important repository guidance; the name is a filename label rather than an acronym.",
-    "RGB": "Red, Green, Blue: three color channels combined to represent visible color.",
-    "RGBA": "Red, Green, Blue, Alpha: RGB color plus an alpha channel that represents opacity.",
-    "RGBA8": "An RGBA pixel format using eight bits for each red, green, blue, and alpha channel.",
     "SDK": "Software Development Kit: libraries, tools, examples, and documentation used to build software against a platform.",
-    "SHA": "Secure Hash Algorithm: a family of cryptographic digest functions used here to bind evidence and approvals to exact content snapshots.",
     "SHA-256": "Secure Hash Algorithm 256-bit: a function that produces a fixed-size digest used here to identify and verify exact content.",
     "SQL": "Structured Query Language: a language for storing, querying, and updating relational data.",
     "SQLite": "A compact relational database engine stored in a local file rather than a separate database server.",
     "SSDF": "Secure Software Development Framework: NIST guidance for integrating secure practices into the software lifecycle.",
-    "SSIM": "Structural Similarity Index Measure: an image-quality metric comparing luminance, contrast, and structure.",
     "STL": "Stereolithography file format: a widely used representation of triangulated 3D surfaces.",
     "SVG": "Scalable Vector Graphics: XML-based vector artwork that can remain sharp at any size and can be manipulated with JavaScript.",
     "TCP": "Transmission Control Protocol: a reliable ordered transport protocol used by many network applications.",
     "UI": "User Interface: the controls and information through which a person interacts with a system.",
-    "UV": "Texture coordinates: two values that map a point on a 3D surface to a position in a 2D image.",
     "URL": "Uniform Resource Locator: the address used to locate a resource such as a web page or file.",
-    "UUID": "Universally Unique Identifier: a large identifier intended to distinguish one record from other records without relying on a central counter.",
-    "VAO": "Vertex Array Object: an OpenGL object that records how vertex buffers are interpreted for drawing.",
-    "VBO": "Vertex Buffer Object: an OpenGL buffer containing vertex positions and related attributes.",
-    "VRAM": "Video Random-Access Memory: high-bandwidth memory used by a graphics processor to hold model weights, textures, and working data.",
     "W3C": "World Wide Web Consortium: the standards community that develops technical and accessibility guidance for the Web.",
     "WAI-ARIA": "Web Accessibility Initiative Accessible Rich Internet Applications: W3C guidance for making interactive web controls understandable to assistive technology and keyboard users.",
     "XML": "Extensible Markup Language: a text format that represents nested structured data with named tags and attributes.",
@@ -363,46 +420,11 @@ GLOSSARY = {
 
 
 CONSTANT_DEFINITIONS = {
-    "AND": "The logical word and, meaning every joined condition must hold.",
-    "COMPARE": "The ICPI intent mode for evaluating two or more alternatives against explicit evidence and constraints.",
     "COUNT": "A configuration field that limits or reports how many items are involved.",
-    "DEG": "A command value measured in degrees.",
-    "EXECUTE": "The ICPI intent mode for requesting an already governed action; it does not itself grant execution authority.",
-    "EXPLAIN": "The ICPI intent mode for producing a beginner-readable account of a concept or mechanism.",
-    "EXPORT": "The ICPI intent mode for rendering a canonical projection into an allowed output format.",
-    "IMG": "A command placeholder for one image path or image reference.",
-    "IMG1": "A command placeholder for the first image input.",
-    "IMG12": "A command placeholder representing a combined first-and-second image reference.",
-    "IMG2": "A command placeholder for the second image input.",
-    "IMG3": "A command placeholder for the third image input.",
-    "IFF": "If and only if: a two-way logical relationship in which each side implies the other.",
-    "INSPECT": "The ICPI intent mode for read-only examination of repository or evidence state.",
     "KEY": "A configuration field or lookup name used to select a value.",
-    "MESH": "A command placeholder for a polygon mesh file or mesh reference.",
     "MODEL": "A configuration field that names the language or reasoning model to use.",
-    "NAME": "A command placeholder for a human-readable name.",
-    "OR": "The logical word or, meaning that at least one listed alternative may be selected.",
-    "PLAN": "The ICPI intent mode for constructing an ordered implementation or investigation strategy without silently applying it.",
-    "KNOWN": "A novelty status meaning the claim or reasoning pattern is already represented in registered evidence or knowledge.",
-    "P0": "Control point 0: the first point in a cubic Bezier curve.",
-    "P1": "Control point 1: the first interior handle of a cubic Bezier curve.",
-    "P2": "Control point 2: the second interior handle of a cubic Bezier curve.",
-    "P3": "Control point 3: the final point in a cubic Bezier curve.",
-    "PATH": "A command placeholder for a filesystem path.",
-    "PROPOSE": "The ICPI intent mode for creating a non-authoritative candidate, draft, or experiment proposal.",
-    "PROPOSED": "An algorithm lifecycle status meaning a candidate is registered for review but is not yet qualified for reuse.",
-    "REASON": "The ICPI intent mode for bounded evidence-driven analysis that may use OIEC-SR.",
-    "RECOVER": "The ICPI intent mode for requesting governed recovery or rollback through the existing transaction boundary.",
-    "TEST": "The ICPI intent mode for requesting bounded verification, validation, build, lint, or benchmark evidence.",
-    "WRITE": "The ICPI intent mode for proposing a repository-changing candidate that still requires authority, evidence, EON, and approval.",
-    "REF": "A command placeholder for a stable object or asset reference.",
-    "S0": "Verified-state cycle state 0: the initial canonical state in the documented loop example.",
-    "S1": "Verified-state cycle state 1: the next canonical state in the documented loop example.",
-    "S2": "Verified-state cycle state 2: the third canonical state in the documented loop example.",
     "SECONDS": "A duration field measured in seconds.",
-    "TEXT": "A command placeholder for literal text supplied by the user.",
     "TOKENS": "A limit expressed in model tokens, which are small units of text processed by a language model.",
-    "UNRESOLVED": "A status meaning the available verified evidence does not yet support a stronger conclusion.",
 }
 
 
@@ -688,6 +710,8 @@ def discover_documents() -> tuple[Document, ...]:
     documents: list[Document] = []
     for source_path in sorted(DOCS_ROOT.rglob("*.md")):
         relative_path = source_path.relative_to(DOCS_ROOT)
+        if relative_path.parts and relative_path.parts[0] in EDUCATIONAL_DIRECTORIES:
+            continue
         output_path = DOCS_ROOT / relative_path.with_suffix(".html")
         sections = parse_sections(source_path.read_text(encoding="utf-8"))
         title = sections[0].title if sections else source_path.stem.replace("_", " ")
@@ -723,20 +747,6 @@ def evidence_fragments(section: Section) -> tuple[str, ...]:
         if in_code:
             line = line.lstrip("-+>| ")
         cleaned = strip_markdown(line)
-        cleaned = re.sub(r"\bintroductory\b", "opening", cleaned, flags=re.IGNORECASE)
-        cleaned = re.sub(r"\bintroduction\b", "opening passage", cleaned, flags=re.IGNORECASE)
-        cleaned = re.sub(
-            r"\bbody (?:movement|section)\b",
-            "supporting passage",
-            cleaned,
-            flags=re.IGNORECASE,
-        )
-        cleaned = re.sub(
-            r"\b(?:final|this|evidence) conclusion\b",
-            "decisive judgment",
-            cleaned,
-            flags=re.IGNORECASE,
-        )
         if len(cleaned) < 12:
             continue
         if cleaned not in fragments:
@@ -904,8 +914,9 @@ def beginner_explanation(text: str) -> str:
 
 SOURCE_STOPWORDS = {
     "about", "after", "again", "also", "another", "because", "before", "being",
+    "body", "conclusion", "final", "introduction", "introductory", "movement",
     "between", "cannot", "could", "does", "each", "from", "have", "into", "more",
-    "must", "only", "other", "should", "that", "their", "there", "these", "this",
+    "must", "only", "other", "section", "should", "that", "their", "there", "these", "this",
     "through", "under", "using", "when", "where", "which", "while", "with", "without",
 }
 
@@ -1382,6 +1393,7 @@ def concept_page_template(
     following: Concept | None,
     build_date: str,
 ) -> str:
+    teaching = teaching_record_for(concept)
     output_path = DOCS_ROOT / "concepts" / f"{concept.slug}.html"
     styles_url = relative_url(output_path, DOCS_ROOT / "assets" / "styles.css")
     script_url = relative_url(output_path, DOCS_ROOT / "assets" / "site.js")
@@ -1422,8 +1434,22 @@ def concept_page_template(
         f'<li><code>{html.escape(source)}</code></li>' for source in concept.sources
     )
     related_list = "".join(f"<li>{html.escape(item)}</li>" for item in concept.related)
+    prerequisite_list = "".join(
+        f'<li><a href="{html.escape(item)}.html">{html.escape(item)}</a></li>'
+        for item in teaching.prerequisites
+    ) or "<li>No concept prerequisite.</li>"
+    teaching_sources = "".join(
+        f'<li><code>{html.escape(source)}</code></li>' for source in teaching.source_links
+    )
+    cli_examples = command_cards(teaching.cli_examples)
+    digest = hashlib.sha256(
+        "\n".join(
+            hashlib.sha256((ROOT / source).read_bytes()).hexdigest()
+            for source in teaching.source_links
+        ).encode("utf-8")
+    ).hexdigest()
     return f"""<!doctype html>
-<html lang="en">
+<html lang="en" data-doc-view="learn" data-doc-depth="novice">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -1431,7 +1457,7 @@ def concept_page_template(
   <title>{html.escape(concept.title)} · OIEC-STM Concept Atlas</title>
   <link rel="stylesheet" href="{styles_url}">
 </head>
-<body data-page="concept" data-concept="{html.escape(concept.slug)}">
+<body data-page="concept" data-concept="{html.escape(concept.slug)}" data-source-hash="{digest}" {page_snapshot_attributes(build_date)}>
   <div class="scanline-overlay" aria-hidden="true"></div>
   <div class="reading-progress" aria-hidden="true"><span></span></div>
   <header class="site-header">
@@ -1439,6 +1465,7 @@ def concept_page_template(
     <nav class="header-actions"><button type="button" data-action="focus-mode">FOCUS</button><a href="{atlas_url}">ATLAS</a><a href="{docs_index_url}">INDEX</a></nav>
   </header>
   <main class="concept-main">
+    {view_controls()}
     <section class="concept-hero">
       <p class="eyebrow">CONCEPT CIRCUIT · BUILT {html.escape(build_date)}</p>
       <span class="concept-category">{html.escape(concept.category)}</span>
@@ -1447,6 +1474,14 @@ def concept_page_template(
       <p class="concept-thesis">{html.escape(concept.thesis)}</p>
       <dl class="hero-metrics"><div><dt>SOURCES</dt><dd>{len(concept.sources):02d}</dd></div><div><dt>ESSAY PARAGRAPHS</dt><dd>25</dd></div><div><dt>RELATED CONCEPTS</dt><dd>{len(concept.related):02d}</dd></div></dl>
     </section>
+    <article class="concept-teaching" data-view-content="learn" data-authorship="{html.escape(teaching.authorship, quote=True)}">
+      <div class="teaching-heading"><div><p class="terminal-label">LEARN VIEW · {html.escape(teaching.authorship.upper())}</p><h2>{html.escape(teaching.full_name)}</h2><p class="lead">{html.escape(teaching.short_meaning)}</p></div>{evidence_badge(teaching.documentation_status, teaching.status_evidence)}</div>
+      <section class="teaching-grid"><article><h3>Why it exists</h3><p>{html.escape(teaching.why_it_exists)}</p></article><article><h3>Everyday analogy</h3><p>{html.escape(teaching.everyday_analogy)}</p></article><article><h3>OIEC example</h3><p>{html.escape(teaching.oiec_example)}</p></article><article class="misconception"><h3>This does not mean…</h3><p>{html.escape(teaching.misconception)}</p></article><article><h3>Input</h3><p>{html.escape(teaching.inputs)}</p></article><article><h3>Output</h3><p>{html.escape(teaching.outputs)}</p></article><article><h3>Failure example</h3><p>{html.escape(teaching.failure_example)}</p></article><article><h3>Before this page</h3><ul>{prerequisite_list}</ul></article></section>
+      <section class="formalism-levels"><article data-depth-content="novice"><h3>Novice explanation</h3><p>{html.escape(teaching.formal_novice)}</p></article><article data-depth-content="intermediate"><h3>Intermediate explanation</h3><p>{html.escape(teaching.formal_intermediate)}</p></article><article data-depth-content="expert"><h3>Expert explanation</h3><p>{html.escape(teaching.formal_expert)}</p></article></section>
+      <section><h3>Direct CLI examples</h3><div class="command-grid">{cli_examples}</div></section>
+      <section class="source-bridge"><h3>Show me where this lives</h3><p>Start with these simplified source owners, then open the Technical view for the complete claim-and-evidence essay.</p><ul>{teaching_sources}</ul></section>
+    </article>
+    <div data-view-content="technical">
     <section class="map-panel concept-map-panel">
       <div><p class="terminal-label">INTERACTIVE INFOGRAPHIC</p><h2>Concept control map</h2><p>Select purpose, inputs, controls, evidence, or outcome to inspect the concept as a systems boundary.</p></div>
       <figure><object class="concept-map" type="image/svg+xml" data="{figure_url}"><a href="{figure_url}">Open the {html.escape(concept.title)} SVG</a></object><figcaption class="concept-map-caption">Select an SVG node to inspect its source-derived explanation.</figcaption></figure>
@@ -1458,6 +1493,7 @@ def concept_page_template(
     </section>
     <article class="concept-essay"><p class="terminal-label">CLAIM-AND-EVIDENCE LEARNING ESSAY</p>{render_essay_logic_map(concept.slug)}<div class="essay-sequence">{''.join(block_markup)}</div></article>
     <section class="references" id="references"><p class="terminal-label">SOURCE AND REFERENCE BUS</p><h2>Topic-matched references in beginner wording</h2><p>Local entries show where the concept is represented. External entries were selected because their subjects match this concept; every summary is a teaching paraphrase of the linked source.</p>{concept_source_references(concept, output_path)}</section>
+    </div>
     <nav class="document-pager" aria-label="Previous and next concepts">{previous_link}{next_link}</nav>
   </main>
   <div class="pixel-crew" aria-hidden="true"></div>
@@ -1486,7 +1522,7 @@ def concept_atlas_template(concepts: tuple[Concept, ...], build_date: str) -> st
     return f"""<!doctype html>
 <html lang="en">
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Beginner-readable OIEC-STM-Agent claim and concept atlas"><title>OIEC-STM Claim and Concept Atlas</title><link rel="stylesheet" href="../assets/styles.css"></head>
-<body data-page="concept-atlas">
+<body data-page="concept-atlas" {page_snapshot_attributes(build_date)}>
   <div class="scanline-overlay" aria-hidden="true"></div>
   <header class="site-header"><a class="brand" href="../index.html"><span class="brand-mark">OS</span><span><strong>OIEC-STM CONCEPT ATLAS</strong><small>{len(concepts)} source-derived concepts</small></span></a><nav class="header-actions"><button type="button" data-action="focus-mode">FOCUS</button><a href="../index.html">INDEX.HTML</a></nav></header>
   <main class="atlas-main">
@@ -1647,10 +1683,14 @@ def document_template(document: Document, previous: Document | None, following: 
     )
     digest = hashlib.sha256(document.source_path.read_bytes()).hexdigest()
     lessons = "\n".join(render_lesson(document, section) for section in document.sections)
+    learn_cards = "".join(
+        f'<article><span>{section.ordinal:02d}</span><h2>{html.escape(section.title)}</h2><p>{html.escape(concept_plain_language(section))}</p><a href="#{html.escape(section.slug, quote=True)}">Open technical lesson →</a></article>'
+        for section in document.sections
+    )
     breadcrumb_parts = ["docs", *document.relative_path.parts]
     breadcrumbs = " / ".join(html.escape(part) for part in breadcrumb_parts)
     return f"""<!doctype html>
-<html lang="en">
+<html lang="en" data-doc-view="learn" data-doc-depth="novice">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -1658,7 +1698,7 @@ def document_template(document: Document, previous: Document | None, following: 
   <title>{html.escape(document.title)} · OIEC-STM Systems Architect Academy</title>
   <link rel="stylesheet" href="{styles_url}">
 </head>
-<body data-page="document" data-source-hash="{digest}">
+<body data-page="document" data-source-hash="{digest}" {page_snapshot_attributes(build_date)}>
   <div class="scanline-overlay" aria-hidden="true"></div>
   <div class="reading-progress" aria-hidden="true"><span></span></div>
   <header class="site-header">
@@ -1683,6 +1723,7 @@ def document_template(document: Document, previous: Document | None, following: 
       </div>
     </aside>
     <main class="document-main">
+      {view_controls()}
       <section class="document-hero">
         <p class="eyebrow">SYSTEMS ARCHITECT LEARNING EDITION · BUILT {html.escape(build_date)}</p>
         <h1>{html.escape(document.title)}</h1>
@@ -1693,6 +1734,8 @@ def document_template(document: Document, previous: Document | None, following: 
           <div><dt>SOURCE SHA-256</dt><dd>{digest[:12]}</dd></div>
         </dl>
       </section>
+      <section class="document-learn-overview" data-view-content="learn"><div class="teaching-heading"><div><p class="terminal-label">LEARN VIEW</p><h2>Plain-language map of this source</h2><p>Use these short explanations first. Switch to Technical for the complete source-bound essays, references, and logic maps.</p></div>{evidence_badge('Implemented', (document.relative_path.as_posix(),))}</div><div class="learning-card-grid">{learn_cards}</div></section>
+      <div data-view-content="technical">
       <section class="map-panel" aria-labelledby="map-title">
         <div>
           <p class="terminal-label">INTERACTIVE DOCUMENT CIRCUIT</p>
@@ -1710,6 +1753,7 @@ def document_template(document: Document, previous: Document | None, following: 
         <p>These summaries are paraphrases for teaching. Follow the links for the authoritative source text.</p>
         {render_references(document)}
       </section>
+      </div>
       <nav class="document-pager" aria-label="Previous and next documents">{previous_link}{next_link}</nav>
     </main>
   </div>
@@ -2147,7 +2191,7 @@ def render_relational_explorer(relational_objects: tuple[RelationalObject, ...])
 """
 
 
-def index_template(
+def architecture_explorer_template(
     documents: tuple[Document, ...],
     concepts: tuple[Concept, ...],
     relational_objects: tuple[RelationalObject, ...],
@@ -2203,16 +2247,16 @@ def index_template(
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Interactive systems architecture learning tree for OIEC-STM-Agent documentation">
-  <title>OIEC-STM Systems Architect Academy · docs/index.html</title>
+  <meta name="description" content="Complete source-bound relational architecture explorer for OIEC-STM-Agent documentation">
+  <title>Architecture Explorer · OIEC-STM-Agent</title>
   <link rel="stylesheet" href="assets/styles.css">
 </head>
-<body data-page="index">
+<body data-page="index" data-page-kind="explorer" {page_snapshot_attributes(build_date)}>
   <div class="scanline-overlay" aria-hidden="true"></div>
   <header class="site-header">
-    <a class="brand" href="index.html"><span class="brand-mark">OS</span><span><strong>OIEC-STM ARCHITECT ACADEMY</strong><small>docs/index.html</small></span></a>
+    <a class="brand" href="index.html"><span class="brand-mark">AE</span><span><strong>ARCHITECTURE EXPLORER</strong><small>Complete source-bound expert inventory</small></span></a>
     <div class="header-telemetry" aria-label="Documentation status"><span>STATE <b>BOUNDED</b></span><span>OBJECTS <b>{len(relational_objects):03d}</b></span><span>BUILD <b>{html.escape(build_date)}</b></span></div>
-    <nav class="header-actions"><a href="#documentation-tree">OBJECT BUS</a><button type="button" data-action="focus-mode">FOCUS</button><a href="../README.md">README</a></nav>
+    <nav class="header-actions"><a href="index.html">LEARN</a><a href="#documentation-tree">OBJECT BUS</a><button type="button" data-action="focus-mode">FOCUS</button><a href="../README.md">README</a></nav>
   </header>
   <main class="index-main">
 {governed_loop_hero(len(concepts), build_date).lstrip()}
@@ -2244,6 +2288,378 @@ def index_template(
 </body>
 </html>
 """
+
+
+def source_document(source_path: str) -> Document:
+    path = ROOT / source_path
+    relative_path = path.relative_to(DOCS_ROOT)
+    sections = parse_sections(path.read_text(encoding="utf-8"))
+    return Document(
+        source_path=path,
+        relative_path=relative_path,
+        output_path=path.with_suffix(".html"),
+        title=sections[0].title,
+        sections=sections,
+    )
+
+
+def view_controls() -> str:
+    return """<section class="view-controls" aria-label="Explanation controls">
+  <div class="view-tabs" role="group" aria-label="Documentation view">
+    <button type="button" data-doc-view="learn" aria-pressed="true">Learn</button>
+    <button type="button" data-doc-view="technical" aria-pressed="false">Technical</button>
+  </div>
+  <div class="depth-control">
+    <label for="explanation-depth">Explanation depth</label>
+    <input id="explanation-depth" type="range" min="0" max="2" step="1" value="0" data-depth-control>
+    <div aria-hidden="true"><span>Novice</span><span>Intermediate</span><span>Expert</span></div>
+  </div>
+  <button type="button" data-action="teacher-mode" aria-pressed="false">Teacher mode</button>
+  <button type="button" data-action="reset-learning">Reset learning preferences</button>
+</section>
+<noscript><p class="noscript-note">JavaScript is optional. Learn and Technical content remain visible in source order.</p></noscript>
+"""
+
+
+def evidence_badge(status: str, evidence: Iterable[str]) -> str:
+    evidence_items = "".join(
+        f"<li><code>{html.escape(item)}</code></li>" for item in evidence
+    )
+    return (
+        f'<aside class="evidence-badge" data-doc-status="{html.escape(status, quote=True)}">'
+        f'<strong>{html.escape(status)}</strong><span>Documentation evidence</span>'
+        f"<ul>{evidence_items}</ul></aside>"
+    )
+
+
+def prerequisite_map(
+    current_id: str,
+    prerequisite_ids: Iterable[str],
+    next_id: str = "",
+) -> str:
+    prerequisites = tuple(prerequisite_ids)
+    nodes = []
+    for prerequisite in prerequisites:
+        nodes.append(
+            f'<span class="prerequisite-node is-complete">✓ {html.escape(prerequisite)}</span><span aria-hidden="true">→</span>'
+        )
+    nodes.append(
+        f'<span class="prerequisite-node is-current">{html.escape(current_id)} · YOU ARE HERE</span>'
+    )
+    if next_id:
+        nodes.append(
+            f'<span aria-hidden="true">→</span><span class="prerequisite-node">{html.escape(next_id)}</span>'
+        )
+    return (
+        '<section class="prerequisite-map" aria-label="Learning prerequisites">'
+        '<p class="terminal-label">YOU ARE HERE</p><div>'
+        + "".join(nodes)
+        + "</div></section>"
+    )
+
+
+def command_cards(command_ids: Iterable[str]) -> str:
+    by_id = {recipe.command_id: recipe for recipe in RECIPES}
+    cards = []
+    for command_id in command_ids:
+        recipe = by_id[command_id]
+        explanation = "".join(
+            f"<li><code>{html.escape(token)}</code><span>{html.escape(meaning)}</span></li>"
+            for token, meaning in recipe.explanation
+        )
+        cards.append(
+            f'<article class="command-card" data-command-id="{html.escape(command_id, quote=True)}">'
+            f'<h3>{html.escape(recipe.title)}</h3><pre data-language="bash"><code>{html.escape(recipe.command)}</code></pre>'
+            f"<p>{html.escape(recipe.purpose)}</p><ul>{explanation}</ul>"
+            '<button type="button" data-copy-command>Copy command</button></article>'
+        )
+    return "".join(cards) or "<p>No direct command is required for this lesson.</p>"
+
+
+def load_learning_fixtures() -> dict[str, dict[str, object]]:
+    payload = json.loads(
+        (DOCS_ROOT / "tutorial" / "fixtures" / "core-learning.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    records = {
+        str(record["fixture_id"]): record for record in payload.get("fixtures", [])
+    }
+    records.update(
+        {
+            str(record["refusal_id"]): record
+            for record in payload.get("refusals", [])
+        }
+    )
+    return records
+
+
+def sandbox_markup(fixture_ids: Iterable[str]) -> str:
+    fixtures = load_learning_fixtures()
+    records = [fixtures[fixture_id] for fixture_id in fixture_ids]
+    if not records:
+        return '<p class="sandbox-empty">This lesson has no interactive fixture.</p>'
+    sandboxes = []
+    for record in records:
+        fixture_id = str(record.get("fixture_id", record.get("refusal_id", "fixture")))
+        title = str(record.get("title", record.get("choice", fixture_id)))
+        payload = json.dumps(record, ensure_ascii=False, separators=(",", ":")).replace(
+            "</", "<\\/"
+        )
+        sandboxes.append(f"""
+<section class="tutorial-sandbox" data-tutorial-sandbox="{html.escape(fixture_id, quote=True)}">
+  <div><p class="terminal-label">READ-ONLY BROWSER SANDBOX</p><h2>{html.escape(title)}</h2>
+  <p>Runs checked-in deterministic fixture data only. It has no provider, network, filesystem, command, or mutation path.</p></div>
+  <div class="sandbox-controls"><button type="button" data-sandbox-run>Run next step</button><button type="button" data-sandbox-reset>Reset</button></div>
+  <ol class="sandbox-output" aria-live="polite"></ol>
+  <script type="application/json" data-sandbox-fixture>{payload}</script>
+</section>
+""")
+    return "".join(sandboxes)
+
+
+def tutorial_page_template(lesson: object, build_date: str) -> str:
+    document = source_document(lesson.source_path)
+    authored_headings = tuple(section.title for section in document.sections[1:])
+    if authored_headings != TUTORIAL_HEADINGS:
+        raise ValueError(
+            f"tutorial heading contract failed for {lesson.lesson_id}: {authored_headings!r}"
+        )
+    digest = hashlib.sha256(document.source_path.read_bytes()).hexdigest()
+    sections = "".join(
+        f'<section class="learning-section" id="{html.escape(section.slug, quote=True)}"><h2>{html.escape(section.title)}</h2>{render_markdown(section.markdown)}</section>'
+        for section in document.sections[1:]
+    )
+    technical = f"""
+<section class="technical-panel" data-view-content="technical">
+  <p class="terminal-label">TECHNICAL CONTRACT</p>
+  <h2>{html.escape(lesson.lesson_id)} catalog record</h2>
+  <dl class="technical-grid">
+    <div><dt>Source</dt><dd><code>{html.escape(lesson.source_path)}</code></dd></div>
+    <div><dt>Prerequisites</dt><dd>{html.escape(', '.join(lesson.prerequisite_ids) or 'None')}</dd></div>
+    <div><dt>Vocabulary</dt><dd>{html.escape(', '.join(lesson.new_vocabulary))}</dd></div>
+    <div><dt>Fixture IDs</dt><dd>{html.escape(', '.join(lesson.fixture_ids) or 'None')}</dd></div>
+    <div><dt>Source SHA-256</dt><dd><code>{digest}</code></dd></div>
+    <div><dt>Build date</dt><dd>{html.escape(build_date)}</dd></div>
+  </dl>
+  <div class="command-grid">{command_cards(lesson.command_ids)}</div>
+</section>
+"""
+    next_link = (
+        f'<a class="primary-action" href="{int(lesson.next_lesson_id[1:]):02d}_{TUTORIALS[int(lesson.next_lesson_id[1:])].source_path.rsplit("/", 1)[1].split("_", 1)[1].replace(".md", ".html")}">Next lesson →</a>'
+        if lesson.next_lesson_id
+        else '<a class="primary-action" href="../tasks/index.html">Choose a task route →</a>'
+    )
+    diagram_url = f"../figures/tutorial/{lesson.lesson_id.lower()}.svg"
+    return f"""<!doctype html>
+<html lang="en" data-doc-view="learn" data-doc-depth="novice">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="{html.escape(lesson.reader_outcome, quote=True)}">
+<title>{html.escape(lesson.title)} · OIEC Tutorial</title><link rel="stylesheet" href="../assets/styles.css"></head>
+<body data-page="tutorial" data-lesson-id="{html.escape(lesson.lesson_id, quote=True)}" data-source-hash="{digest}" {page_snapshot_attributes(build_date)}>
+<header class="site-header"><a class="brand" href="../index.html"><span class="brand-mark">{html.escape(lesson.lesson_id)}</span><span><strong>OIEC LEARNING PATH</strong><small>{html.escape(lesson.title)}</small></span></a><nav class="header-actions"><a href="index.html">TUTORIALS</a><a href="../architecture-explorer.html">TECHNICAL EXPLORER</a></nav></header>
+<main class="learning-main">
+  {view_controls()}
+  {prerequisite_map(lesson.lesson_id, lesson.prerequisite_ids, lesson.next_lesson_id)}
+  <section class="learning-hero"><p class="eyebrow">LESSON {lesson.ordinal:02d} · BUILT {html.escape(build_date)}</p><h1>{html.escape(lesson.title)}</h1><p>{html.escape(lesson.reader_outcome)}</p>{evidence_badge('Tested', (lesson.source_path, 'tests/test_docs_tutorials.py'))}</section>
+  <figure class="learning-diagram"><object type="image/svg+xml" data="{diagram_url}"><a href="{diagram_url}">Open lesson diagram</a></object><figcaption>Shared visual grammar: processes, gates, evidence, authority, and verified or hypothetical relations.</figcaption></figure>
+  <article class="learning-prose" data-view-content="learn">{sections}</article>
+{technical}
+{sandbox_markup(lesson.fixture_ids)}
+  <section class="teacher-panel" data-teacher-content hidden><h2>Teacher mode</h2><p><strong>Objective:</strong> {html.escape(lesson.reader_outcome)}</p><details><summary>Exercise and checked answer</summary><p>Explain the lesson using a different domain while preserving its authority and evidence boundaries.</p><p><strong>Answer check:</strong> the explanation must name the input, controlled boundary, evidence, output, and a common misconception.</p></details></section>
+  <nav class="learning-pager"><a href="index.html">← Tutorial index</a>{next_link}</nav>
+</main><script src="../assets/site.js" defer></script></body></html>
+"""
+
+
+def tutorial_index_template(build_date: str) -> str:
+    cards = "".join(
+        f'<article class="learning-card"><span>{lesson.lesson_id}</span><h2>{html.escape(lesson.title)}</h2><p>{html.escape(lesson.reader_outcome)}</p><small>{len(lesson.prerequisite_ids)} prerequisites · {len(lesson.fixture_ids)} fixtures</small><a href="{Path(lesson.source_path).with_suffix(".html").name}">Open lesson →</a></article>'
+        for lesson in TUTORIALS
+    )
+    return collection_index_template(
+        title="Tutorial Curriculum",
+        description="Fourteen ordered lessons from first principles to a complete governed workflow.",
+        cards=cards,
+        build_date=build_date,
+        parent_prefix="../",
+        page_kind="tutorial-index",
+    )
+
+
+def learning_source_page_template(record: object, kind: str, build_date: str) -> str:
+    document = source_document(record.source_path)
+    digest = hashlib.sha256(document.source_path.read_bytes()).hexdigest()
+    sections = "".join(
+        f'<section class="learning-section" id="{html.escape(section.slug, quote=True)}"><h2>{html.escape(section.title)}</h2>{render_markdown(section.markdown)}</section>'
+        for section in document.sections[1:]
+    )
+    concepts = tuple(getattr(record, "concept_ids", ()))
+    route_items = tuple(getattr(record, "ordered_item_ids", ()))
+    technical_items = "".join(
+        f"<li><code>{html.escape(item)}</code></li>" for item in (*concepts, *route_items)
+    )
+    fixture_id = str(getattr(record, "fixture_id", ""))
+    return f"""<!doctype html>
+<html lang="en" data-doc-view="learn" data-doc-depth="novice"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>{html.escape(record.title)} · OIEC {html.escape(kind.title())}</title><link rel="stylesheet" href="../assets/styles.css"></head>
+<body data-page="{html.escape(kind, quote=True)}" data-source-hash="{digest}" {page_snapshot_attributes(build_date)}><header class="site-header"><a class="brand" href="../index.html"><span class="brand-mark">{html.escape(kind[:2].upper())}</span><span><strong>{html.escape(kind.upper())}</strong><small>{html.escape(record.title)}</small></span></a><nav class="header-actions"><a href="index.html">ALL {html.escape(kind.upper())}</a><a href="../architecture-explorer.html">EXPLORER</a></nav></header>
+<main class="learning-main">{view_controls()}<section class="learning-hero"><p class="eyebrow">{html.escape(kind.upper())} · BUILT {html.escape(build_date)}</p><h1>{html.escape(record.title)}</h1><p>{html.escape(getattr(record, 'plain_language_goal', getattr(record, 'problem', 'Guided learning example.')))}</p>{evidence_badge('Implemented' if kind == 'task guide' else 'Theoretical', (record.source_path,))}</section><article class="learning-prose" data-view-content="learn">{sections}</article><section class="technical-panel" data-view-content="technical"><h2>Technical record</h2><p>Source-bound identifiers and related learning records:</p><ul>{technical_items or '<li>No additional identifiers.</li>'}</ul><p><code>sha256:{digest}</code></p></section>{sandbox_markup((fixture_id,)) if fixture_id else ''}<section class="teacher-panel" data-teacher-content hidden><h2>Teacher mode</h2><details><summary>Discussion prompt</summary><p>Identify one unsupported inference and one evidence-producing next step in this example.</p></details></section></main><script src="../assets/site.js" defer></script></body></html>"""
+
+
+def collection_index_template(
+    title: str,
+    description: str,
+    cards: str,
+    build_date: str,
+    parent_prefix: str,
+    page_kind: str,
+) -> str:
+    return f"""<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>{html.escape(title)} · OIEC Documentation</title><link rel="stylesheet" href="{parent_prefix}assets/styles.css"></head>
+<body data-page="{html.escape(page_kind, quote=True)}" {page_snapshot_attributes(build_date)}><header class="site-header"><a class="brand" href="{parent_prefix}index.html"><span class="brand-mark">OL</span><span><strong>{html.escape(title.upper())}</strong><small>Built {html.escape(build_date)}</small></span></a><nav class="header-actions"><a href="{parent_prefix}index.html">HOME</a><a href="{parent_prefix}architecture-explorer.html">EXPLORER</a></nav></header><main class="learning-main"><section class="collection-hero"><p class="eyebrow">GUIDED DOCUMENTATION</p><h1>{html.escape(title)}</h1><p>{html.escape(description)}</p></section><section class="learning-card-grid">{cards}</section></main><script src="{parent_prefix}assets/site.js" defer></script></body></html>"""
+
+
+def task_index_template(build_date: str) -> str:
+    cards = "".join(
+        f'<article class="learning-card" data-intent-terms="{html.escape(" ".join(route.search_terms), quote=True)}"><h2>{html.escape(route.title)}</h2><p>{html.escape(route.plain_language_goal)}</p><small>{" → ".join(route.ordered_item_ids)}</small><a href="{Path(route.source_path).with_suffix(".html").name}">Follow route →</a></article>'
+        for route in TASK_ROUTES
+    )
+    return collection_index_template(
+        "Learn by Task",
+        "Choose the work you want to accomplish; the site introduces only the concepts required for that route.",
+        cards,
+        build_date,
+        "../",
+        "task-index",
+    )
+
+
+def case_study_index_template(build_date: str) -> str:
+    cards = "".join(
+        f'<article class="learning-card"><span>{html.escape(case.domain)}</span><h2>{html.escape(case.title)}</h2><p>{html.escape(case.problem)}</p><small>{html.escape(", ".join(case.concept_ids))}</small><a href="{Path(case.source_path).with_suffix(".html").name}">Open case study →</a></article>'
+        for case in CASE_STUDIES
+    )
+    return collection_index_template(
+        "Cross-Domain Case Studies",
+        "See the same governed learning pattern in everyday, engineering, research, software, writing, and business settings.",
+        cards,
+        build_date,
+        "../",
+        "case-study-index",
+    )
+
+
+def glossary_template(build_date: str) -> str:
+    cards = "".join(
+        f'<article class="glossary-card" id="term-{slugify(record.token)}" data-acronym="{html.escape(record.token, quote=True)}"><h2>{html.escape(record.token)}</h2><p><strong>{html.escape(record.expansion)}</strong></p><p>{html.escape(record.short_meaning)}</p><details><summary>Analogy and formal meaning</summary><p>{html.escape(record.everyday_analogy)}</p><p>{html.escape(record.formal_meaning)}</p><small>First lesson: {html.escape(record.first_lesson_id)} · Sources: {html.escape(", ".join(record.source_paths))}</small></details></article>'
+        for record in ACRONYMS
+    )
+    glossary_json = json.dumps(
+        {record.token: record.expansion for record in ACRONYMS},
+        ensure_ascii=False,
+        separators=(",", ":"),
+    ).replace("</", "<\\/")
+    return f"""<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Glossary and Acronym Inspector · OIEC</title><link rel="stylesheet" href="assets/styles.css"></head><body data-page="glossary" {page_snapshot_attributes(build_date)}><header class="site-header"><a class="brand" href="index.html"><span class="brand-mark">AZ</span><span><strong>GLOSSARY</strong><small>Mini encyclopedia</small></span></a><nav class="header-actions"><a href="tutorial/index.html">TUTORIALS</a><a href="architecture-explorer.html">EXPLORER</a></nav></header><main class="learning-main"><section class="collection-hero"><p class="eyebrow">BUILT {html.escape(build_date)}</p><h1>Acronym Inspector</h1><p>Paste a sentence. Recognized terms are expanded from the canonical catalog; unknown uppercase tokens remain unresolved.</p><label for="acronym-input">Text to inspect</label><textarea id="acronym-input" rows="4">OIEC uses OURD and IURM before EON and CFEL.</textarea><button type="button" data-action="inspect-acronyms">Expand terms</button><div class="tool-output" data-acronym-output aria-live="polite"></div></section><section class="glossary-grid">{cards}</section></main><script type="application/json" id="acronym-catalog">{glossary_json}</script><script src="assets/site.js" defer></script></body></html>"""
+
+
+def status_decoder_template(statuses: tuple[object, ...], build_date: str) -> str:
+    status_json = json.dumps(
+        {record.status: status_records_for_manifest((record,))[0] for record in statuses},
+        ensure_ascii=False,
+        separators=(",", ":"),
+    ).replace("</", "<\\/")
+    options = "".join(
+        f'<option value="{html.escape(record.status, quote=True)}">{html.escape(record.status)}</option>'
+        for record in statuses
+    )
+    return f"""<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Status Decoder · OIEC</title><link rel="stylesheet" href="assets/styles.css"></head><body data-page="status-decoder" {page_snapshot_attributes(build_date)}><header class="site-header"><a class="brand" href="index.html"><span class="brand-mark">SD</span><span><strong>STATUS DECODER</strong><small>{len(statuses)} source-bound records</small></span></a><nav class="header-actions"><a href="glossary.html">GLOSSARY</a><a href="architecture-explorer.html">EXPLORER</a></nav></header><main class="learning-main"><section class="tool-hero"><p class="eyebrow">BUILT {html.escape(build_date)}</p><h1>Translate machine status into next steps</h1><label for="status-input">Status</label><input id="status-input" list="status-options" value="QUALIFIED_KNOWN_SOLUTION_PAIR_FOUND"><datalist id="status-options">{options}</datalist><button type="button" data-action="decode-status">Decode status</button><div class="tool-output" data-status-output aria-live="polite"></div></section></main><script type="application/json" id="status-catalog">{status_json}</script><script src="assets/site.js" defer></script></body></html>"""
+
+
+def timeline_template(build_date: str) -> str:
+    entries = "".join(
+        f'<article class="timeline-entry" id="timeline-{html.escape(entry.entry_id, quote=True)}"><span>{index:02d}</span><div><h2>{html.escape(entry.title)}</h2><p><strong>Problem:</strong> {html.escape(entry.problem)}</p><p><strong>Architectural response:</strong> {html.escape(entry.response)}</p><small>Sources: {html.escape(", ".join(entry.source_paths))}</small></div></article>'
+        for index, entry in enumerate(INVENTION_TIMELINE, start=1)
+    )
+    return f"""<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Why Was This Invented? · OIEC</title><link rel="stylesheet" href="assets/styles.css"></head><body data-page="timeline" {page_snapshot_attributes(build_date)}><header class="site-header"><a class="brand" href="index.html"><span class="brand-mark">WT</span><span><strong>WHY WAS THIS INVENTED?</strong><small>Problem-to-system timeline</small></span></a><nav class="header-actions"><a href="tutorial/index.html">TUTORIALS</a><a href="failure-museum.html">FAILURE MUSEUM</a></nav></header><main class="learning-main"><section class="collection-hero"><p class="eyebrow">SOURCE-LINKED · BUILT {html.escape(build_date)}</p><h1>Each named system answers a recurring failure mode.</h1><p>This is an architectural sequence, not a claim about historical invention dates. Every entry links the problem it addresses to current source owners.</p></section><section class="timeline">{entries}</section></main><script src="assets/site.js" defer></script></body></html>"""
+
+
+def failure_museum_template(statuses: tuple[object, ...], build_date: str) -> str:
+    payload = json.loads(
+        (DOCS_ROOT / "tutorial" / "fixtures" / "core-learning.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    refusals = "".join(
+        f'<article class="failure-card"><p class="terminal-label">DETERMINISTIC REFUSAL</p><h2>{html.escape(str(record["choice"]))}</h2><p><strong>Why it stopped:</strong> {html.escape(str(record["violated_invariant"]))}</p><p><strong>Evidence needed:</strong> {html.escape(str(record["required_evidence"]))}</p></article>'
+        for record in payload.get("refusals", [])
+    )
+    failure_statuses = [
+        record
+        for record in statuses
+        if record.category in {"Failure or Refusal", "Pending or Unresolved"}
+    ][:18]
+    status_cards = "".join(
+        f'<article class="failure-card"><p class="terminal-label">{html.escape(record.category.upper())}</p><h2><code>{html.escape(record.status)}</code></h2><p>{html.escape(record.plain_language_meaning)}</p><p><strong>Next:</strong> {html.escape(record.user_action)}</p></article>'
+        for record in failure_statuses
+    )
+    return f"""<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Failure Museum · OIEC</title><link rel="stylesheet" href="assets/styles.css"></head><body data-page="failure-museum" {page_snapshot_attributes(build_date)}><header class="site-header"><a class="brand" href="index.html"><span class="brand-mark">FM</span><span><strong>FAILURE MUSEUM</strong><small>What the system correctly stopped</small></span></a><nav class="header-actions"><a href="status-decoder.html">STATUS DECODER</a><a href="timeline.html">TIMELINE</a></nav></header><main class="learning-main"><section class="collection-hero"><p class="eyebrow">BUILT {html.escape(build_date)}</p><h1>Refusal quality is part of system quality.</h1><p>These examples teach why the architecture stops, what invariant was protected, and which evidence could justify a different next step.</p></section><section class="failure-grid">{refusals}{status_cards}</section></main><script src="assets/site.js" defer></script></body></html>"""
+
+
+def tools_template(build_date: str) -> str:
+    recipe_json = json.dumps(
+        cli_records_for_manifest(RECIPES),
+        ensure_ascii=False,
+        separators=(",", ":"),
+    ).replace("</", "<\\/")
+    rejected_json = json.dumps(
+        cli_records_for_manifest(REJECTED_RECIPES),
+        ensure_ascii=False,
+        separators=(",", ":"),
+    ).replace("</", "<\\/")
+    return f"""<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Learning Tools · OIEC Documentation</title><link rel="stylesheet" href="assets/styles.css"></head>
+<body data-page="tools" {page_snapshot_attributes(build_date)}><header class="site-header"><a class="brand" href="index.html"><span class="brand-mark">LT</span><span><strong>LEARNING TOOLS</strong><small>Fixture-only and parser-grounded</small></span></a><nav class="header-actions"><a href="glossary.html">GLOSSARY</a><a href="status-decoder.html">STATUS</a><a href="architecture-explorer.html">EXPLORER</a></nav></header>
+<main class="learning-main">
+  <section class="tool-hero"><p class="eyebrow">COMMAND BUILDER · BUILT {html.escape(build_date)}</p><h1>Build a safe command</h1><div class="builder-grid"><label>Command type<select data-builder-program><option value="agent-read-repo">Inspect repository</option><option value="agent-write-docs">Bounded documentation write</option><option value="egcf-dry-run">EGCF dry-run</option><option value="egcf-workflow">Strict EGCF workflow</option><option value="gui-first-launch">Open GUI</option></select></label><label>Workspace<input data-builder-workspace value="."></label><label>Target<input data-builder-target value="src/parser.py"></label><label>Risk<select data-builder-risk><option>L0</option><option>L1</option><option>L2</option></select></label></div><button type="button" data-action="build-command">Generate command</button><pre data-language="bash"><code data-command-output></code></pre><div class="tool-output" data-command-explanation></div></section>
+  <section class="tool-hero"><p class="eyebrow">PROVIDER SETUP WIZARD</p><h2>Which local model provider are you using?</h2><label for="provider-choice">Provider</label><select id="provider-choice" data-provider-choice><option value="provider-llama-cpp">Direct llama.cpp process</option></select><button type="button" data-action="show-provider-recipe">Show configuration</button><pre data-language="bash"><code data-provider-output></code></pre><p>The browser never asks for or stores a provider secret. Provider choice changes proposal generation, not governance authority.</p></section>
+  <section class="tool-hero"><p class="eyebrow">CAPABILITY WORKSHOP</p><h2>From looking to critical action</h2><div class="capability-grid"><article><strong>C0</strong><span>Look at the machine</span><small>Observe only</small></article><article><strong>C1</strong><span>Draw a repair plan</span><small>Analyse and propose</small></article><article><strong>C2</strong><span>Try it on a test machine</span><small>Simulate</small></article><article><strong>C3</strong><span>Repair with permission</span><small>Authorized local mutation</small></article><article class="is-blocked"><strong>C4</strong><span>Change outside the workshop</span><small>Fail closed</small></article><article class="is-blocked"><strong>C5</strong><span>Critical or destructive action</span><small>Fail closed</small></article></div></section>
+  <section class="tool-hero"><p class="eyebrow">GUI FIRST LAUNCH</p><h2>Reveal the workbench in five steps</h2><ol class="gui-first-steps"><li><strong>Repository.</strong> Select the workspace.</li><li><strong>Ask.</strong> Use Agent Chat for a bounded question.</li><li><strong>Inspect.</strong> Review the semantic objective and plan.</li><li><strong>Evidence.</strong> Open linked records and limitations.</li><li><strong>Decide.</strong> Approve or reject only through the applicable authority path.</li></ol><pre data-language="bash"><code>oiec-stm-gui --repo .</code></pre><p>Advanced workbench panels and <code>--smoke-test</code> remain Technical reference features.</p></section>
+  <section class="tool-grid"><article><h2>Output decoder</h2><p>Translate exact uppercase statuses without interpreting arbitrary output as HTML.</p><a href="status-decoder.html">Open Status Decoder →</a></article><article><h2>Acronym Inspector</h2><p>Expand canonical terms and leave unknown tokens unresolved.</p><a href="glossary.html">Open Acronym Inspector →</a></article><article><h2>Trace This Term</h2><p>Open the Architecture Explorer, select an object, and inspect canonical and related edges.</p><a href="architecture-explorer.html#documentation-tree">Trace a term →</a></article><article><h2>Break the invariant</h2><p>Use tutorial sandboxes to trigger deterministic refusals with no mutation path.</p><a href="tutorial/10_ADAPTATION.html">Open refusal exercise →</a></article><article><h2>Why was this invented?</h2><p>Trace each architecture system back to the recurring problem it addresses.</p><a href="timeline.html">Open timeline →</a></article><article><h2>Failure museum</h2><p>Study correctly refused actions, regressions, and unresolved states.</p><a href="failure-museum.html">Open museum →</a></article></section>
+</main><script type="application/json" id="command-recipes">{recipe_json}</script><script type="application/json" id="rejected-recipes">{rejected_json}</script><script src="assets/site.js" defer></script></body></html>"""
+
+
+def index_template(
+    documents: tuple[Document, ...],
+    concepts: tuple[Concept, ...],
+    relational_objects: tuple[RelationalObject, ...],
+    build_date: str,
+) -> str:
+    task_cards = "".join(
+        f'<a class="task-card" href="tasks/{Path(route.source_path).with_suffix(".html").name}" data-intent-terms="{html.escape(" ".join(route.search_terms), quote=True)}"><span>I want to…</span><strong>{html.escape(route.title)}</strong><small>{html.escape(route.plain_language_goal)}</small></a>'
+        for route in TASK_ROUTES
+    )
+    tutorial_cards = "".join(
+        f'<a class="start-step" href="tutorial/{Path(lesson.source_path).with_suffix(".html").name}"><span>{lesson.ordinal + 1:02d}</span><div><strong>{html.escape(lesson.title)}</strong><small>{html.escape(lesson.reader_outcome)}</small></div></a>'
+        for lesson in TUTORIALS[:5]
+    )
+    return f"""<!doctype html>
+<html lang="en" data-doc-view="learn" data-doc-depth="novice"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="A novice-first guide to an AI agent that understands, checks, acts carefully, verifies, and learns from evidence."><title>OIEC-STM-Agent Documentation</title><link rel="stylesheet" href="assets/styles.css"></head>
+<body data-page="home" {page_snapshot_attributes(build_date)}><header class="site-header home-header"><a class="brand" href="index.html"><span class="brand-mark">OI</span><span><strong>OIEC-STM-AGENT</strong><small>Learn before architecture</small></span></a><nav class="header-actions"><a href="#first-15-minutes">START</a><a href="tutorial/index.html">TUTORIALS</a><a href="tools.html">TOOLS</a><a href="architecture-explorer.html">EXPLORER</a></nav></header>
+<main class="home-main">
+  <section class="novice-hero"><div class="hero-copy"><p class="eyebrow">WHAT IS THIS?</p><h1>An AI agent designed to work carefully.</h1><p>It tries to understand what you mean, checks what it knows, looks for an existing solution, limits what it is allowed to change, tests proposed work, records failures, and learns from verified results.</p><div class="hero-actions"><a class="primary-action" href="#first-15-minutes">Start your first 15 minutes</a><a href="tutorial/00_WELCOME.html">Explain the idea first</a></div></div><figure><object type="image/svg+xml" data="figures/learning-loop.svg"><a href="figures/learning-loop.svg">Open the careful-work loop</a></object><figcaption>No architecture vocabulary is required to read this loop.</figcaption></figure></section>
+  <section class="plain-stages" aria-label="Careful work stages"><article><span>1</span><strong>You ask for work</strong></article><article><span>2</span><strong>Understand it</strong></article><article><span>3</span><strong>Find what is known</strong></article><article><span>4</span><strong>Try safely</strong></article><article><span>5</span><strong>Check the result</strong></article><article><span>6</span><strong>Remember what was learned</strong></article></section>
+  <section class="terminology-bridge"><p>In the technical architecture, these responsibilities are implemented by named systems such as OURD, IURM, EON, CFEL, EGCF, IEPS, and SAA.</p><a href="glossary.html">Open the beginner glossary →</a></section>
+  <section class="before-after"><div><p class="terminal-label">BEFORE</p><h2>A fast but weak loop</h2><ol><li>Receive “Fix parser.”</li><li>Guess a cause.</li><li>Change a file.</li><li>Retry after failure.</li></ol></div><div><p class="terminal-label">WITH OIEC</p><h2>A governed learning loop</h2><ol><li>Define the problem.</li><li>Check source state and known work.</li><li>Test uncertainty.</li><li>Propose a bounded action.</li><li>Verify and record the result.</li></ol></div></section>
+  <section class="first-track" id="first-15-minutes"><div><p class="eyebrow">First 15 Minutes</p><h2>Complete one safe read-only task</h2><p>Install, identify the commands, inspect a repository, and separate facts from proposals.</p></div><div class="start-step-grid">{tutorial_cards}</div><aside class="alias-map"><h3>Five command names, three experiences</h3><p><code>oiec-stm-agent</code> and <code>ourd-agent</code> open the same agent CLI.</p><p><code>oiec-stm-gui</code> and <code>ourd-gui</code> open the same GUI.</p><p><code>egcf</code> is the governed command interface.</p></aside></section>
+  <section class="learn-by-task" id="learn-by-task"><div><p class="eyebrow">Learn by Task</p><h2>What do you want to do?</h2><label for="intent-search">Describe your goal</label><input id="intent-search" type="search" placeholder="agent keeps repeating a failed action"><p class="search-status" data-intent-status>{len(TASK_ROUTES)} task routes available</p></div><div class="task-grid">{task_cards}</div></section>
+  <section class="core-map"><p class="eyebrow">LEARN THE CORE</p><h2>Follow responsibility, not acronym order</h2><div class="core-map-grid"><a href="tutorial/04_OURD.html"><span>Understand</span><strong>Map what belongs</strong></a><a href="tutorial/05_IURM.html"><span>Experiment</span><strong>Vary one useful dimension</strong></a><a href="tutorial/07_EON.html"><span>Act safely</span><strong>Bind an exact action</strong></a><a href="tutorial/03_EVIDENCE.html"><span>Verify</span><strong>Separate belief from proof</strong></a><a href="tutorial/08_CFEL.html"><span>Learn</span><strong>Record contradiction</strong></a><a href="tutorial/09_SAA.html"><span>Remember and improve</span><strong>Retrieve before reinventing</strong></a></div></section>
+  <section class="resource-grid"><article><h2>Tutorial curriculum</h2><p>{len(TUTORIALS)} ordered lessons with deterministic fixtures.</p><a href="tutorial/index.html">Open tutorials →</a></article><article><h2>Learning tools</h2><p>Build commands, decode statuses, inspect acronyms, and break invariants safely.</p><a href="tools.html">Open tools →</a></article><article><h2>Case studies</h2><p>{len(CASE_STUDIES)} domains show the same architecture outside coding.</p><a href="case-studies/index.html">Open case studies →</a></article><article><h2>Architecture Explorer</h2><p>Browse all {len(relational_objects)} source-bound relational objects and {len(concepts)} concepts.</p><a href="architecture-explorer.html">Open expert explorer →</a></article></section>
+  <footer class="home-footer"><p>Generated from {len(documents)} expert Markdown sources and novice learning catalogs on {html.escape(build_date)}.</p><a href="../README.md">README</a><a href="site-manifest.json">Manifest</a></footer>
+</main><script src="assets/site.js" defer></script></body></html>"""
 
 
 def svg_text(value: str, limit: int = 28) -> str:
@@ -2612,6 +3028,94 @@ def relational_topology_svg(relational_objects: tuple[RelationalObject, ...]) ->
 </svg>"""
 
 
+def decorate_svg(
+    svg: str,
+    visual_role: str,
+    node_id: str,
+    label: str,
+    node_role: str = "process",
+) -> str:
+    attributes = f"{root_attributes(visual_role)} {node_attributes(node_id, node_role, label)}"
+    decorated = svg.replace("<svg ", f"<svg {attributes} ", 1)
+    root_end = decorated.find(">")
+    root_body = decorated[root_end + 1 :]
+    if not re.match(r"\s*<title(?:\s|>)", root_body):
+        accessible = (
+            f"<title>{html.escape(label)}</title>"
+            f"<desc>Generated {html.escape(visual_role)} diagram for {html.escape(label)}.</desc>"
+        )
+        decorated = decorated[: root_end + 1] + accessible + decorated[root_end + 1 :]
+    validate_svg(decorated)
+    return decorated
+
+
+def learning_loop_svg() -> str:
+    stages = (
+        ("ask", "You ask for work", "concept"),
+        ("understand", "Understand it", "process"),
+        ("known", "Find what is already known", "process"),
+        ("safe", "Try safely", "authority"),
+        ("check", "Check the result", "gate"),
+        ("remember", "Remember what was learned", "canonical"),
+    )
+    nodes = []
+    edges = []
+    for index, (node_id, label, role) in enumerate(stages):
+        y = 45 + index * 108
+        nodes.append(
+            f'<g class="learning-node role-{role}" {node_attributes(node_id, role, label)}>'
+            f'<rect x="135" y="{y}" width="450" height="72" rx="18" />'
+            f'<text x="360" y="{y + 43}" text-anchor="middle">{html.escape(label)}</text></g>'
+        )
+        if index:
+            edges.append(
+                f'<path class="learning-edge" d="M360 {y - 36} V {y}" {edge_attributes("next-stage", "verified")} />'
+            )
+    return f"""<svg xmlns="http://www.w3.org/2000/svg" {root_attributes('learning-loop')} width="720" height="700" viewBox="0 0 720 700" role="img">
+<title>A careful work loop</title><desc>A request moves through understanding, retrieval, bounded action, checking, and learning.</desc>
+<style>svg{{background:#fbfdff;font-family:system-ui,sans-serif}}.learning-node{{outline:none;cursor:pointer}}.learning-node rect{{fill:#fff;stroke:#24425f;stroke-width:3}}.learning-node text{{fill:#13283b;font-size:20px;font-weight:700}}.role-authority rect{{fill:#eef8ff;stroke:#176a9a}}.role-gate rect{{fill:#fff8dc;stroke:#9b6b00}}.role-canonical rect{{fill:#effcf3;stroke:#237a43;stroke-width:6}}.learning-node:focus rect,.learning-node:hover rect{{stroke:#b11f72}}.learning-edge{{fill:none;stroke:#24425f;stroke-width:4;marker-end:url(#arrow)}}@media(prefers-reduced-motion:no-preference){{.learning-edge{{stroke-dasharray:8 7;animation:flow 2s linear infinite}}@keyframes flow{{to{{stroke-dashoffset:-30}}}}}}</style>
+<defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto"><path d="M0 0L0 6L7 3Z" fill="#24425f"/></marker></defs>
+<g>{''.join(edges)}</g><g>{''.join(nodes)}</g></svg>"""
+
+
+def tutorial_svg(lesson: object) -> str:
+    fixtures = load_learning_fixtures()
+    states: list[str] = []
+    for fixture_id in lesson.fixture_ids:
+        record = fixtures[fixture_id]
+        states.extend(str(item) for item in record.get("states", []))
+    if not states:
+        states = [lesson.reader_outcome, "Inspect the source record", "Continue safely"]
+    states = states[:8]
+    width = 1080
+    height = 190 + len(states) * 92
+    nodes = []
+    edges = []
+    roles = ("concept", "process", "evidence", "gate", "authority", "canonical")
+    for index, state in enumerate(states):
+        x = 110 if index % 2 == 0 else 570
+        y = 125 + index * 82
+        role = roles[min(index, len(roles) - 1)]
+        node_id = f"{lesson.lesson_id.lower()}-{index + 1}"
+        nodes.append(
+            f'<g class="tutorial-node role-{role}" {node_attributes(node_id, role, state)}>'
+            f'<rect x="{x}" y="{y}" width="400" height="62" rx="14" />'
+            f'<text x="{x + 200}" y="{y + 37}" text-anchor="middle">{svg_text(state, 45)}</text></g>'
+        )
+        if index:
+            previous_x = 310 if (index - 1) % 2 == 0 else 770
+            previous_y = 125 + (index - 1) * 82 + 62
+            current_x = x + 200
+            edges.append(
+                f'<path class="tutorial-edge" d="M{previous_x} {previous_y} L{current_x} {y}" {edge_attributes("lesson-sequence", "verified")} />'
+            )
+    return f"""<svg xmlns="http://www.w3.org/2000/svg" {root_attributes('tutorial-diagram')} width="{width}" height="{height}" viewBox="0 0 {width} {height}" role="img">
+<title>{html.escape(lesson.title)} lesson diagram</title><desc>{html.escape(lesson.reader_outcome)}</desc>
+<style>svg{{background:#fbfdff;font-family:system-ui,sans-serif}}.title{{fill:#13283b;font-size:28px;font-weight:800}}.tutorial-node{{outline:none;cursor:pointer}}.tutorial-node rect{{fill:#fff;stroke:#24425f;stroke-width:3}}.tutorial-node text{{fill:#13283b;font-size:15px;font-weight:700}}.role-evidence rect{{fill:#eef8ff}}.role-gate rect{{fill:#fff8dc}}.role-authority rect{{fill:#f4efff}}.role-canonical rect{{fill:#effcf3;stroke-width:6}}.tutorial-node:focus rect,.tutorial-node:hover rect{{stroke:#b11f72}}.tutorial-edge{{fill:none;stroke:#516b80;stroke-width:3;marker-end:url(#arrow)}}</style>
+<defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto"><path d="M0 0L0 6L7 3Z" fill="#516b80"/></marker></defs>
+<text class="title" x="70" y="62">{html.escape(lesson.lesson_id)} · {html.escape(lesson.title)}</text><g>{''.join(edges)}</g><g>{''.join(nodes)}</g></svg>"""
+
+
 def write_text(path: Path, content: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(content.rstrip() + "\n", encoding="utf-8")
@@ -2620,10 +3124,16 @@ def write_text(path: Path, content: str) -> None:
 def build(build_date: str) -> tuple[tuple[Document, ...], tuple[Concept, ...]]:
     documents = discover_documents()
     concepts = discover_concepts()
+    statuses = discover_statuses()
+    teaching_records = tuple(teaching_record_for(concept) for concept in concepts)
     if not documents:
         raise SystemExit("No Markdown files found under docs/")
     if not concepts:
         raise SystemExit("No OIEC-STM-Agent concepts discovered")
+    validate_catalog_sources()
+    validate_recipes()
+    validate_statuses(statuses)
+    validate_prerequisite_graph(teaching_records)
     relational_objects = build_relational_objects(documents, concepts)
     validate_relational_objects(relational_objects)
 
@@ -2633,7 +3143,15 @@ def build(build_date: str) -> tuple[tuple[Document, ...], tuple[Concept, ...]]:
         following = documents[index + 1] if index + 1 < len(documents) else None
         write_text(document.output_path, document_template(document, previous, following, build_date))
         figure_path = figures_root / document.relative_path.with_suffix(".svg")
-        write_text(figure_path, document_svg(document))
+        write_text(
+            figure_path,
+            decorate_svg(
+                document_svg(document),
+                "expert-document",
+                f"document-{slugify(document.relative_path.as_posix())}",
+                document.title,
+            ),
+        )
 
     concepts_root = DOCS_ROOT / "concepts"
     concept_figures_root = figures_root / "concepts"
@@ -2650,7 +3168,16 @@ def build(build_date: str) -> tuple[tuple[Document, ...], tuple[Concept, ...]]:
             concepts_root / f"{concept.slug}.html",
             concept_page_template(concept, previous, following, build_date),
         )
-        write_text(concept_figures_root / f"{concept.slug}.svg", concept_svg(concept))
+        write_text(
+            concept_figures_root / f"{concept.slug}.svg",
+            decorate_svg(
+                concept_svg(concept),
+                "concept",
+                f"concept-{concept.slug}",
+                concept.title,
+                "concept",
+            ),
+        )
 
     relational_figures_root = figures_root / "relational-objects"
     relational_figures_root.mkdir(parents=True, exist_ok=True)
@@ -2659,7 +3186,13 @@ def build(build_date: str) -> tuple[tuple[Document, ...], tuple[Concept, ...]]:
     for relational_object in relational_objects:
         write_text(
             DOCS_ROOT / relational_object.symbol_path,
-            relational_symbol_svg(relational_object),
+            decorate_svg(
+                relational_symbol_svg(relational_object),
+                "relational-object",
+                relational_object.object_id,
+                relational_object.title,
+                "object",
+            ),
         )
 
     write_text(concepts_root / "index.html", concept_atlas_template(concepts, build_date))
@@ -2667,16 +3200,93 @@ def build(build_date: str) -> tuple[tuple[Document, ...], tuple[Concept, ...]]:
         DOCS_ROOT / "index.html",
         index_template(documents, concepts, relational_objects, build_date),
     )
-    write_text(figures_root / "index-architecture.svg", index_svg(documents))
-    write_text(figures_root / "governed-loop.svg", governed_loop_svg())
-    write_text(figures_root / "concept-atlas.svg", concept_atlas_svg(concepts))
+    write_text(
+        DOCS_ROOT / "architecture-explorer.html",
+        architecture_explorer_template(documents, concepts, relational_objects, build_date),
+    )
+    write_text(DOCS_ROOT / "tutorial" / "index.html", tutorial_index_template(build_date))
+    tutorial_figures_root = figures_root / "tutorial"
+    for lesson in TUTORIALS:
+        write_text(
+            (ROOT / lesson.source_path).with_suffix(".html"),
+            tutorial_page_template(lesson, build_date),
+        )
+        write_text(
+            tutorial_figures_root / f"{lesson.lesson_id.lower()}.svg",
+            tutorial_svg(lesson),
+        )
+    write_text(DOCS_ROOT / "tasks" / "index.html", task_index_template(build_date))
+    for route in TASK_ROUTES:
+        write_text(
+            (ROOT / route.source_path).with_suffix(".html"),
+            learning_source_page_template(route, "task guide", build_date),
+        )
+    write_text(
+        DOCS_ROOT / "case-studies" / "index.html",
+        case_study_index_template(build_date),
+    )
+    for case in CASE_STUDIES:
+        write_text(
+            (ROOT / case.source_path).with_suffix(".html"),
+            learning_source_page_template(case, "case study", build_date),
+        )
+    write_text(DOCS_ROOT / "glossary.html", glossary_template(build_date))
+    write_text(DOCS_ROOT / "status-decoder.html", status_decoder_template(statuses, build_date))
+    write_text(DOCS_ROOT / "tools.html", tools_template(build_date))
+    write_text(DOCS_ROOT / "timeline.html", timeline_template(build_date))
+    write_text(
+        DOCS_ROOT / "failure-museum.html",
+        failure_museum_template(statuses, build_date),
+    )
+    write_text(figures_root / "learning-loop.svg", learning_loop_svg())
+    write_text(
+        figures_root / "index-architecture.svg",
+        decorate_svg(
+            index_svg(documents),
+            "expert-index",
+            "expert-document-index",
+            "Expert documentation index",
+            "object",
+        ),
+    )
+    write_text(
+        figures_root / "governed-loop.svg",
+        decorate_svg(
+            governed_loop_svg(),
+            "governed-loop",
+            "governed-loop",
+            "Governed reasoning and action loop",
+        ),
+    )
+    write_text(
+        figures_root / "concept-atlas.svg",
+        decorate_svg(
+            concept_atlas_svg(concepts),
+            "concept-atlas",
+            "concept-atlas",
+            "Concept atlas",
+            "concept",
+        ),
+    )
     write_text(
         figures_root / "relational-symbols.svg",
-        relational_symbol_sprite_svg(relational_objects),
+        decorate_svg(
+            relational_symbol_sprite_svg(relational_objects),
+            "relational-sprite",
+            "relational-symbol-sprite",
+            "Relational object symbol sprite",
+            "object",
+        ),
     )
     write_text(
         figures_root / "relational-topology.svg",
-        relational_topology_svg(relational_objects),
+        decorate_svg(
+            relational_topology_svg(relational_objects),
+            "relational-topology",
+            "relational-topology",
+            "Relational topology",
+            "object",
+        ),
     )
 
     relational_relations = []
@@ -2700,8 +3310,14 @@ def build(build_date: str) -> tuple[tuple[Document, ...], tuple[Concept, ...]]:
                 }
             )
 
+    teaching_by_id = {record.concept_id: record for record in teaching_records}
     manifest = {
+        "schema_version": 2,
         "build_date": build_date,
+        "documentation_version": documentation_version(),
+        "source_snapshot_sha256": source_snapshot_digest(),
+        "content_kinds": list(CONTENT_KINDS),
+        "documentation_statuses": list(DOCUMENTATION_STATUSES),
         "documents": [
             {
                 "title": document.title,
@@ -2733,9 +3349,25 @@ def build(build_date: str) -> tuple[tuple[Document, ...], tuple[Concept, ...]]:
                     for source in concept.sources
                 ],
                 "related": list(concept.related),
+                "teaching": learning_records_for_manifest((teaching_by_id[concept.slug],))[0],
             }
             for concept in concepts
         ],
+        "learning_paths": learning_records_for_manifest(LEARNING_PATHS),
+        "tutorials": learning_records_for_manifest(TUTORIALS),
+        "task_routes": learning_records_for_manifest(TASK_ROUTES),
+        "case_studies": learning_records_for_manifest(CASE_STUDIES),
+        "invention_timeline": learning_records_for_manifest(INVENTION_TIMELINE),
+        "acronyms": learning_records_for_manifest(ACRONYMS),
+        "cli": {
+            "programs": cli_records_for_manifest(PROGRAMS),
+            "recipes": cli_records_for_manifest(RECIPES),
+            "rejected_recipes": cli_records_for_manifest(REJECTED_RECIPES),
+            "providers": cli_records_for_manifest(PROVIDERS),
+            "command_builder_schema": COMMAND_BUILDER_SCHEMA,
+        },
+        "statuses": status_records_for_manifest(statuses),
+        "visual_grammar": grammar_manifest(),
         "relational_objects": [
             relational_record(relational_object)
             for relational_object in relational_objects
@@ -2780,7 +3412,28 @@ def build(build_date: str) -> tuple[tuple[Document, ...], tuple[Concept, ...]]:
             "final_requirement": "Summarise the tested claim and name the winning position.",
         },
         "references": list(REFERENCE_LIBRARY),
-        "glossary": {**GLOSSARY, **CONSTANT_DEFINITIONS},
+        "glossary": {
+            **GLOSSARY,
+            **CONSTANT_DEFINITIONS,
+            **{record.token: record.short_meaning for record in ACRONYMS},
+        },
+        "coverage": {
+            "concepts": {
+                "total": len(concepts),
+                "teaching_records": len(teaching_records),
+                "examples": sum(bool(record.oiec_example) for record in teaching_records),
+                "diagrams": sum(bool(record.diagram) for record in teaching_records),
+                "misconceptions": sum(bool(record.misconception) for record in teaching_records),
+                "prerequisites": sum(record.prerequisites is not None for record in teaching_records),
+                "evidence_badges": sum(bool(record.status_evidence) for record in teaching_records),
+            },
+            "tutorials": {"total": len(TUTORIALS), "complete": len(TUTORIALS)},
+            "task_routes": {"total": len(TASK_ROUTES), "complete": len(TASK_ROUTES)},
+            "case_studies": {"total": len(CASE_STUDIES), "complete": len(CASE_STUDIES)},
+            "acronyms": {"total": len(ACRONYMS), "defined": len(ACRONYMS)},
+            "statuses": {"total": len(statuses), "decoded": len(statuses)},
+            "commands": {"total": len(RECIPES), "parser_validated": len(RECIPES)},
+        },
     }
     write_text(DOCS_ROOT / "site-manifest.json", json.dumps(manifest, indent=2, ensure_ascii=False))
     return documents, concepts
@@ -2798,8 +3451,15 @@ def main() -> int:
     relational_objects = build_relational_objects(documents, concepts)
     heading_count = sum(len(document.sections) for document in documents)
     paragraph_count = (heading_count + len(concepts)) * 25
-    svg_count = len(documents) + len(concepts) + len(relational_objects) + 5
-    html_count = len(documents) + len(concepts) + 2
+    svg_count = len(documents) + len(concepts) + len(relational_objects) + 6 + len(TUTORIALS)
+    html_count = (
+        len(documents)
+        + len(concepts)
+        + 11
+        + len(TUTORIALS)
+        + len(TASK_ROUTES)
+        + len(CASE_STUDIES)
+    )
     print(
         f"Built {html_count} HTML pages, {svg_count} SVG figures, and {paragraph_count} "
         f"essay paragraphs from {heading_count} Markdown headings and {len(concepts)} "

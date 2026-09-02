@@ -1000,7 +1000,7 @@ class ReasoningPersistenceAndIntegrationTests(unittest.TestCase):
             hypothesis = hypotheses()[0]
             payload = RuntimeState(
                 reasoning_problem=reasoning_problem,
-                hypothesis_pool={hypothesis.hypothesis_id: hypothesis},
+                reasoning_hypothesis_pool={hypothesis.hypothesis_id: hypothesis},
             ).to_dict()
             payload["schema_version"] = 3
             payload.pop("reasoning_hypothesis_state", None)
@@ -1017,9 +1017,9 @@ class ReasoningPersistenceAndIntegrationTests(unittest.TestCase):
                 )
                 self.assertEqual(
                     migrated.reasoning_hypothesis_state.hypotheses[0],
-                    migrated.hypothesis_pool[hypothesis.hypothesis_id],
+                    migrated.reasoning_hypothesis_pool[hypothesis.hypothesis_id],
                 )
-                self.assertEqual([], migrated.hypothesis_updates)
+                self.assertEqual([], migrated.reasoning_hypothesis_updates)
                 events = list(EventStore(state_dir / "events.jsonl").events())
                 self.assertEqual(
                     {"from_schema": 3, "to_schema": 6},
@@ -1091,7 +1091,7 @@ class ReasoningPersistenceAndIntegrationTests(unittest.TestCase):
                     mutually_exclusive=True,
                 )
             )
-            state.hypothesis_pool = {}
+            state.reasoning_hypothesis_pool={}
             with self.assertRaisesRegex(StateError, "hypothesis pool conflicts"):
                 store.save(state)
             store.close()
@@ -1107,7 +1107,7 @@ class ReasoningPersistenceAndIntegrationTests(unittest.TestCase):
             hypothesis = hypotheses()[0]
             state = RuntimeState(
                 reasoning_problem=reasoning_problem,
-                hypothesis_pool={hypothesis.hypothesis_id: hypothesis},
+                reasoning_hypothesis_pool={hypothesis.hypothesis_id: hypothesis},
             )
             record_collision(
                 state,
@@ -1132,12 +1132,12 @@ class ReasoningPersistenceAndIntegrationTests(unittest.TestCase):
                     loaded.reasoning_hypothesis_state.signature,
                 )
                 self.assertEqual(
-                    state.hypothesis_updates[0].signature,
-                    loaded.hypothesis_updates[0].signature,
+                    state.reasoning_hypothesis_updates[0].signature,
+                    loaded.reasoning_hypothesis_updates[0].signature,
                 )
                 self.assertEqual(
                     loaded.reasoning_hypothesis_state.hypotheses[0],
-                    loaded.hypothesis_pool["h1"],
+                    loaded.reasoning_hypothesis_pool["h1"],
                 )
             finally:
                 reopened.close()
@@ -1386,7 +1386,7 @@ class ReasoningPersistenceAndIntegrationTests(unittest.TestCase):
         hypothesis = hypotheses()[0]
         state = RuntimeState(
             reasoning_problem=reasoning_problem,
-            hypothesis_pool={hypothesis.hypothesis_id: hypothesis},
+            reasoning_hypothesis_pool={hypothesis.hypothesis_id: hypothesis},
             last_reasoning_certificate=ReasoningCertificate(
                 problem_hash=reasoning_problem.signature,
                 reasoning_topology_hash="topology",
@@ -1405,12 +1405,12 @@ class ReasoningPersistenceAndIntegrationTests(unittest.TestCase):
             evidence_ids=["conflict"],
             severity_bp=6_000,
         )
-        revised = state.hypothesis_pool["h1"]
+        revised = state.reasoning_hypothesis_pool["h1"]
         self.assertEqual(("e1",), revised.supporting_evidence)
         self.assertEqual(("conflict",), revised.conflicting_evidence)
         self.assertEqual("WEAKENED", revised.status)
         self.assertIsNotNone(state.reasoning_hypothesis_state)
-        self.assertEqual(1, len(state.hypothesis_updates))
+        self.assertEqual(1, len(state.reasoning_hypothesis_updates))
         self.assertIsNone(state.last_reasoning_certificate)
 
     def test_cfel_matching_falsifier_marks_hypothesis_falsified(self) -> None:
@@ -1419,7 +1419,7 @@ class ReasoningPersistenceAndIntegrationTests(unittest.TestCase):
         hypothesis = hypotheses()[0]
         state = RuntimeState(
             reasoning_problem=reasoning_problem,
-            hypothesis_pool={hypothesis.hypothesis_id: hypothesis},
+            reasoning_hypothesis_pool={hypothesis.hypothesis_id: hypothesis},
         )
         record_collision(
             state,
@@ -1434,7 +1434,7 @@ class ReasoningPersistenceAndIntegrationTests(unittest.TestCase):
             falsifier="critical counterexample",
             severity_bp=8_000,
         )
-        self.assertEqual("FALSIFIED", state.hypothesis_pool["h1"].status)
+        self.assertEqual("FALSIFIED", state.reasoning_hypothesis_pool["h1"].status)
         self.assertEqual(
             0,
             state.reasoning_hypothesis_state.hypotheses[0].posterior_bp,
@@ -1447,7 +1447,7 @@ class ReasoningPersistenceAndIntegrationTests(unittest.TestCase):
         states = [
             RuntimeState(
                 reasoning_problem=reasoning_problem,
-                hypothesis_pool={hypothesis.hypothesis_id: hypothesis},
+                reasoning_hypothesis_pool={hypothesis.hypothesis_id: hypothesis},
             )
             for _ in range(2)
         ]
@@ -1469,8 +1469,8 @@ class ReasoningPersistenceAndIntegrationTests(unittest.TestCase):
             )
         self.assertEqual(records[0].collision_id, records[1].collision_id)
         self.assertEqual(
-            states[0].hypothesis_updates[0].signature,
-            states[1].hypothesis_updates[0].signature,
+            states[0].reasoning_hypothesis_updates[0].signature,
+            states[1].reasoning_hypothesis_updates[0].signature,
         )
         self.assertEqual(
             states[0].reasoning_hypothesis_state.signature,

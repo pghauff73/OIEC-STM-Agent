@@ -1,0 +1,78 @@
+name: SAA knowledge governance qualification
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: saa-knowledge-governance-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  knowledge-governance:
+    name: SAA-12.1-12.4 / Python ${{ matrix.python-version }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version:
+          - "3.10"
+          - "3.12"
+          - "3.13"
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v7
+        with:
+          python-version: "${{ matrix.python-version }}"
+
+      - name: Compile knowledge governance stack
+        run: |
+          python -m py_compile \
+            ourd/egcf/algebra/failure_algebra.py \
+            ourd/egcf/algebra/oiec_bench_gate.py \
+            ourd/egcf/algebra/knowledge_integrity.py \
+            ourd/egcf/algebra/improvement_scheduling.py \
+            ourd/egcf/algebra/promotion_governance.py \
+            ourd/egcf/knowledge_governance_store.py \
+            ourd/egcf/knowledge_governance_store_grounded.py \
+            ourd/egcf/intelligence.py \
+            ourd/improvement_cli.py \
+            ourd/cli.py
+
+      - name: Import public facade
+        run: |
+          python - <<'PY'
+          import ourd.egcf.intelligence as intelligence
+          import ourd.improvement_cli as improvement_cli
+          for name in (
+              "KnowledgeGovernanceStore",
+              "FailureObservation",
+              "OIECBenchGateAssessment",
+              "KnowledgeIntegrityTrajectory",
+              "ImprovementSchedule",
+              "CanonicalPromotionGovernanceAssessment",
+              "make_failure_observation",
+              "qualify_oiec_bench_gate",
+              "assess_integrity_trajectory",
+              "schedule_improvements",
+              "assess_canonical_promotion_governance",
+          ):
+              assert hasattr(intelligence, name), name
+          assert callable(improvement_cli.main)
+          print("public SAA-12.1-12.4 facade and improvement CLI OK")
+          PY
+
+      - name: Run knowledge governance qualification suite
+        run: |
+          python -m unittest \
+            tests.test_saa_knowledge_governance \
+            tests.test_saa_improvement_cli \
+            -v

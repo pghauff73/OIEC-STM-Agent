@@ -1,0 +1,67 @@
+name: SAA adaptation lineage and experiment qualification
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: saa-adaptation-lineage-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  adaptation-lineage:
+    name: SAA-11.1-11.2 / Python ${{ matrix.python-version }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version:
+          - "3.10"
+          - "3.12"
+          - "3.13"
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v7
+        with:
+          python-version: "${{ matrix.python-version }}"
+
+      - name: Compile lineage and experiment stack
+        run: |
+          python -m py_compile \
+            ourd/egcf/algebra/adaptation_lineage.py \
+            ourd/egcf/algebra/algorithm_experiment.py \
+            ourd/egcf/adaptation_store.py \
+            ourd/egcf/adaptation.py
+
+      - name: Import public facade
+        run: |
+          python - <<'PY'
+          import ourd.egcf.adaptation as adaptation
+          for name in (
+              "AdaptationLineageStore",
+              "AdaptationLineageEdge",
+              "AdaptationPromotionRecord",
+              "AlgorithmABExperimentDesign",
+              "AlgorithmABExperimentResult",
+              "ExperimentMetricSpec",
+              "make_ab_experiment_design",
+              "qualify_ab_experiment",
+          ):
+              assert hasattr(adaptation, name), name
+          print("public SAA-11.1-11.2 facade OK")
+          PY
+
+      - name: Run adaptation qualification suites
+        run: |
+          python -m unittest \
+            tests.test_saa_transfer_adaptation \
+            tests.test_saa_adaptation_lineage_experiments \
+            -v

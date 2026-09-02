@@ -14,11 +14,11 @@ formal-writing-citations = []
 formal-writing-semantic = []
 
 [project.scripts]
-oiec-stm-agent = "ourd.cli:main"
+oiec-stm-agent = "ourd.entrypoint:main"
 oiec-stm-sr-agent-icpi = "ourd_gui.app:main"
 oiec-stm-sr-AgentICPI = "ourd_gui.app:main"
 oiec-stm-gui = "ourd_gui.app:main"
-ourd-agent = "ourd.cli:main"
+ourd-agent = "ourd.entrypoint:main"
 egcf = "ourd.egcf.cli:main"
 ourd-gui = "ourd_gui.app:main"
 oiec-stm-formal-write = "ourd.formal_writing_cli:main"
