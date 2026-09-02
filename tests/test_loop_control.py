@@ -22,6 +22,7 @@ class LoopControlTests(unittest.TestCase):
         control=(),
         hypothesis_definitions=(),
         hypothesis_evidence=(),
+        active_evidence=(),
     ) -> VerifiedProjection:
         return VerifiedProjection(
             workspace_snapshot_hash="snapshot",
@@ -30,6 +31,7 @@ class LoopControlTests(unittest.TestCase):
             control_atoms=tuple(control),
             hypothesis_definition_atoms=tuple(hypothesis_definitions),
             hypothesis_evidence_atoms=tuple(hypothesis_evidence),
+            active_evidence_atoms=tuple(active_evidence),
             boundary_uncertainty_bp=0,
             signature=signature,
         )
@@ -101,6 +103,51 @@ class LoopControlTests(unittest.TestCase):
         second = verified_projection(state, "snapshot")
         self.assertEqual(first.evidence_atoms, second.evidence_atoms)
         self.assertEqual(first.signature, second.signature)
+
+    def test_existing_evidence_first_attachment_advances_active_context(self) -> None:
+        state = RuntimeState()
+        state.evidence_registry["e1"] = EvidenceArtifact(
+            artifact_id="e1",
+            kind="read",
+            description="inspect_repository_layout",
+            sha256="a" * 64,
+            source_snapshot_hash="snapshot",
+            path=".",
+            success=True,
+        )
+        controller = LoopProgressController()
+        before = controller.project(state, "snapshot")
+        after = controller.project(state, "snapshot", ["e1"])
+        assessment = controller.assess(
+            before=before,
+            after=after,
+            step_signature="attach-layout",
+        )
+        self.assertTrue(assessment.allowed)
+        self.assertEqual(1, assessment.new_evidence_count)
+        self.assertIn("novel_evidence", assessment.certificate.reasons)
+
+    def test_repeated_active_evidence_attachment_is_not_progress(self) -> None:
+        state = RuntimeState()
+        state.evidence_registry["e1"] = EvidenceArtifact(
+            artifact_id="e1",
+            kind="read",
+            description="inspect_repository_layout",
+            sha256="a" * 64,
+            source_snapshot_hash="snapshot",
+            path=".",
+            success=True,
+        )
+        controller = LoopProgressController()
+        before = controller.project(state, "snapshot", ["e1"])
+        after = controller.project(state, "snapshot", ["e1"])
+        assessment = controller.assess(
+            before=before,
+            after=after,
+            step_signature="attach-layout-again",
+        )
+        self.assertFalse(assessment.allowed)
+        self.assertEqual("NO_VERIFIED_PROGRESS", assessment.cycle_kind)
 
     def test_nonterminal_no_verified_change_is_blocked(self) -> None:
         projection = self.projection("same")

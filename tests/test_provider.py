@@ -1,15 +1,13 @@
 from types import SimpleNamespace
 from contextlib import contextmanager
-from io import BytesIO
+import hashlib
 import json
 import unittest
-import urllib.error
 from unittest import mock
 
 from ourd import AgentCancelledError, OURDAgent
+from ourd.context_budget import estimate_tokens
 from ourd.providers.base import ProviderConfig
-from ourd.errors import ContextBudgetError, ProviderError
-from ourd.providers.openai_responses import OpenAIResponsesProvider, estimate_tokens
 from tests.helpers import RepoFixture
 
 
@@ -104,9 +102,58 @@ class RecordingChatProvider:
         )
 
 
+class RecoveryReportingProvider:
+    def __init__(self):
+        self.config = ProviderConfig(model="recovery-reporting")
+        self.report = {
+            "schema_version": 1,
+            "kind": "OLLAMA_TRUNCATED_TOOL_JSON_OUTPUT_EXPANSION",
+            "tool_name": "run_super_reasoning",
+            "signature": "recovery-signature",
+        }
+
+    def preflight(self):
+        return {"status": "ready", "model": self.config.model}
+
+    def create_response(self, *, instructions, input_items, tools):
+        return SimpleNamespace(
+            output=[
+                SimpleNamespace(
+                    type="message",
+                    content=[SimpleNamespace(type="output_text", text="Recovered response.")],
+                )
+            ],
+            output_text="Recovered response.",
+        )
+
+    def consume_last_recovery_report(self):
+        report = dict(self.report)
+        self.report = {}
+        return report
+
+
 class ProviderTests(unittest.TestCase):
     def test_token_estimate_is_bounded_and_nonzero(self) -> None:
         self.assertGreater(estimate_tokens({"text": "hello"}), 0)
+
+    def test_agent_context_closes_owned_provider(self) -> None:
+        class ClosableProvider(RecordingChatProvider):
+            def __init__(self) -> None:
+                super().__init__(["ok"], ProviderConfig(model="closable"))
+                self.closed = False
+
+            def close(self) -> None:
+                self.closed = True
+
+        fixture = RepoFixture()
+        try:
+            provider = ClosableProvider()
+            with mock.patch("ourd.agent.create_provider", return_value=provider):
+                with OURDAgent(fixture.root, provider_config=provider.config) as agent:
+                    agent.provider_preflight()
+            self.assertTrue(provider.closed)
+        finally:
+            fixture.close()
 
     def test_fake_provider_completes_non_stateful_tool_loop(self) -> None:
         fixture = RepoFixture()
@@ -195,122 +242,61 @@ class ProviderTests(unittest.TestCase):
         finally:
             fixture.close()
 
-    def test_direct_local_ollama_transport_does_not_require_openai_sdk(self) -> None:
-        class Response:
-            def __init__(self, payload):
-                self.payload = payload
-
-            def __enter__(self):
-                return self
-
-            def __exit__(self, exc_type, exc, traceback):
-                return False
-
-            def read(self):
-                return json.dumps(self.payload).encode("utf-8")
-
-        def fake_urlopen(request, timeout):
-            url = request.full_url
-            if url.endswith("/api/show"):
-                return Response(
-                    {"details": {"family": "qwen", "parameter_size": "test", "quantization_level": "Q3"}}
-                )
-            if url.endswith("/api/tags"):
-                return Response(
-                    {"models": [{"name": "qwen-test:latest", "digest": "digest-1", "size": 123}]}
-                )
-            return Response(
-                {
-                    "status": "completed",
-                    "output": [{"type": "message", "content": [{"type": "output_text", "text": "ok"}]}],
-                    "output_text": None,
-                }
+    def test_run_started_trace_binds_task_without_persisting_task_body(self) -> None:
+        fixture = RepoFixture()
+        try:
+            provider = RecordingChatProvider(["done"])
+            events = []
+            task = "SENSITIVE-CONTEXT-PREVIEW\nsecond line"
+            with OURDAgent(
+                fixture.root,
+                provider=provider,
+                event_callback=events.append,
+            ) as agent:
+                self.assertEqual("done", agent.run_task(task))
+            run_started = next(
+                event for event in events if event["event_type"] == "run_started"
             )
-
-        with mock.patch("ourd.providers.openai_responses.urllib.request.urlopen", side_effect=fake_urlopen):
-            provider = OpenAIResponsesProvider(
-                ProviderConfig(
-                    model="qwen-test",
-                    base_url="http://127.0.0.1:11434/v1",
-                    context_budget_tokens=1000,
-                )
+            serialized = json.dumps(run_started, sort_keys=True)
+            self.assertNotIn("SENSITIVE-CONTEXT-PREVIEW", serialized)
+            persisted_events = (fixture.root / ".ourd-agent" / "events.jsonl").read_text(
+                encoding="utf-8"
             )
-            preflight = provider.preflight()
-            self.assertEqual("digest-1", preflight["model_digest"])
-            self.assertEqual("ollama_local", preflight["endpoint_type"])
-            response = provider.create_response(
-                instructions="test", input_items=[{"role": "user", "content": "hi"}], tools=[]
+            self.assertNotIn("SENSITIVE-CONTEXT-PREVIEW", persisted_events)
+            self.assertEqual(
+                hashlib.sha256(task.encode("utf-8")).hexdigest(),
+                run_started["payload"]["task_sha256"],
             )
-            self.assertEqual("completed", response["status"])
+            self.assertFalse(run_started["payload"]["task_body_persisted"])
+        finally:
+            fixture.close()
 
-    def test_context_budget_fails_before_transport(self) -> None:
-        provider = OpenAIResponsesProvider(
-            ProviderConfig(
-                model="qwen-test",
-                base_url="http://127.0.0.1:11434/v1",
-                context_budget_tokens=1,
+    def test_agent_traces_successful_provider_response_recovery(self) -> None:
+        fixture = RepoFixture()
+        try:
+            events = []
+            with OURDAgent(
+                fixture.root,
+                provider=RecoveryReportingProvider(),
+                event_callback=events.append,
+            ) as agent:
+                result = agent.run_task("Inspect")
+            self.assertEqual("Recovered response.", result)
+            recovery = next(
+                event
+                for event in events
+                if event["event_type"] == "provider_response_recovery"
             )
-        )
-        with self.assertRaises(ContextBudgetError):
-            provider.create_response(
-                instructions="too much", input_items=[{"role": "user", "content": "data"}], tools=[]
+            self.assertEqual(
+                "run_super_reasoning",
+                recovery["payload"]["tool_name"],
             )
-
-    def test_remote_provider_requires_api_key_before_sdk_import(self) -> None:
-        with self.assertRaises(ProviderError) as context:
-            OpenAIResponsesProvider(ProviderConfig(model="remote-model"))
-        self.assertIn("API_KEY", str(context.exception))
-
-    def test_invalid_local_json_is_reported_as_provider_error(self) -> None:
-        class Response:
-            def __enter__(self):
-                return self
-
-            def __exit__(self, exc_type, exc, traceback):
-                return False
-
-            def read(self):
-                return b"not-json"
-
-        provider = OpenAIResponsesProvider(
-            ProviderConfig(model="qwen-test", base_url="http://127.0.0.1:11434/v1")
-        )
-        with mock.patch(
-            "ourd.providers.openai_responses.urllib.request.urlopen",
-            return_value=Response(),
-        ), self.assertRaises(ProviderError):
-            provider.create_response(instructions="test", input_items=[], tools=[])
-
-    def test_endpoint_unreachable_is_reported_as_provider_error(self) -> None:
-        provider = OpenAIResponsesProvider(
-            ProviderConfig(model="qwen-test", base_url="http://127.0.0.1:11434/v1")
-        )
-        with mock.patch(
-            "ourd.providers.openai_responses.urllib.request.urlopen",
-            side_effect=urllib.error.URLError("offline"),
-        ), self.assertRaises(ProviderError) as context:
-            provider.preflight()
-        self.assertIn("cannot reach", str(context.exception))
-
-    def test_protocol_incompatible_response_is_rejected(self) -> None:
-        class Response:
-            def __enter__(self):
-                return self
-
-            def __exit__(self, exc_type, exc, traceback):
-                return False
-
-            def read(self):
-                return b'{"status":"completed"}'
-
-        provider = OpenAIResponsesProvider(
-            ProviderConfig(model="qwen-test", base_url="http://127.0.0.1:11434/v1")
-        )
-        with mock.patch(
-            "ourd.providers.openai_responses.urllib.request.urlopen", return_value=Response()
-        ), self.assertRaises(ProviderError) as context:
-            provider.create_response(instructions="test", input_items=[], tools=[])
-        self.assertIn("incompatible", str(context.exception))
+            self.assertEqual(
+                "recovery-signature",
+                recovery["payload"]["signature"],
+            )
+        finally:
+            fixture.close()
 
     def test_invalid_tool_arguments_return_structured_error(self) -> None:
         fixture = RepoFixture()

@@ -8,51 +8,142 @@ import tkinter as tk
 import tkinter.font as tkfont
 from pathlib import Path
 from tkinter import messagebox, ttk
-from typing import Optional, Sequence
+from typing import Mapping, Optional, Sequence
 
 from ourd.egcf.models import CommandDefinition, CompiledWorkflow, ExecutionPlan, FailureRecord
-from ourd.providers import ProviderConfig
+from ourd.errors import PolicyError
+from ourd.interaction import (
+    InteractionSessionSnapshot,
+    PinnedContextSet,
+    build_context_envelope,
+    build_interaction_confirmation,
+    build_interaction_confirmation_receipt,
+    build_pinned_context_envelope,
+    compare_context_envelopes,
+    dispatch_interaction,
+    pinned_context_freshness,
+    require_fresh_pinned_context,
+    route_interaction,
+)
+from ourd.providers import (
+    ProviderConfig,
+    QWEN38_Q2_K_MODEL_PATH,
+    QWEN38_Q2_K_SHA256,
+)
+from ourd.workspace import Workspace
 
 from .command_palette import CommandPaletteRegistry, PaletteCommand
 from .commands import ApprovalRequest, CommandRequest, ExecutionRequest, ObjectiveRequest, ReplayRequest, safe_default_modifiers
 from .controller import GuiController
 from .events import AgentEvent, AgentEventType
+from .formal_writing_controller import FormalWritingController
+from .formal_writing_gui import confirm_governed_write
+from .formal_writing_models import FormalWritingExecutionOptions, FormalWritingFormState
 from .governance_models import build_capability_ladder, matching_approval
+from .icpi_prompt import (
+    command_suggestions,
+    format_pinned_route_preview,
+    projection_surface,
+)
 from .model_backend import model_backend_info
 from .persistence import GuiPreferencesStore
+from .qwen_bootstrap import (
+    QWEN38_FAST_PRODUCT_ALIAS,
+    QwenBootstrapError,
+    QwenBootstrapResult,
+    ensure_qwen38_fast,
+)
 from .selection_trace import SelectionTrace
+from .supervisor_lifecycle import AppLifecycleRecorder
 from .views.approvals import ApprovalDialog
 from .views.command_palette import CommandPaletteDialog
 from .views.shell import WorkbenchShell
 from .widgets.status_badge import StatusBadge
 
 
+EXACT_AGENTICPI_EXECUTABLE = "oiec-stm-sr-AgentICPI"
+
+
+def _option_supplied(arguments: Sequence[str], name: str) -> bool:
+    return any(argument == name or argument.startswith(f"{name}=") for argument in arguments)
+
+
+def automatic_qwen_bootstrap_requested(
+    *,
+    arguments: Sequence[str],
+    executable_name: str,
+    explicit_setting: bool | None,
+    environment: Mapping[str, str] | None = None,
+) -> bool:
+    if explicit_setting is not None:
+        return explicit_setting
+    if Path(executable_name).name != EXACT_AGENTICPI_EXECUTABLE:
+        return False
+    env = os.environ if environment is None else environment
+    if any(
+        _option_supplied(arguments, name)
+        for name in ("--provider", "--model", "--runner-path", "--model-path")
+    ):
+        return False
+    return not any(
+        str(env.get(name, "")).strip()
+        for name in ("OURD_PROVIDER", "OURD_MODEL", "OURD_LLAMA_RUNNER", "OURD_LLAMA_MODEL_PATH")
+    )
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        prog="oiec-stm-gui",
-        description="Evidence-governed OIEC-STM-Agent workbench",
+        prog="oiec-stm-sr-agent-icpi",
+        description="Interactive governed OIEC-STM-SR-AgentICPI workbench",
     )
     parser.add_argument("--repo", default=".", help="Repository/workspace root")
     parser.add_argument("--authority", type=Path, help="External authority manifest")
     parser.add_argument(
+        "--provider",
+        default=os.getenv("OURD_PROVIDER", "llama_cpp_process"),
+        choices=["llama_cpp_process"],
+    )
+    parser.add_argument(
         "--model",
-        default=os.getenv("OURD_MODEL", "gpt-5.6"),
+        default=os.getenv("OURD_MODEL", "qwen3.8-27b-direct"),
         help="Agent Chat model and backend metadata shown in the GUI",
     )
     parser.add_argument(
         "--base-url",
-        default=os.getenv("OURD_BASE_URL", os.getenv("OPENAI_BASE_URL", "")),
-        help="OpenAI-compatible model backend URL",
+        default=os.getenv("OURD_BASE_URL", ""),
+        help="Deprecated compatibility field; direct process mode does not use a URL",
     )
     parser.add_argument(
         "--api-key",
-        default=os.getenv("OURD_API_KEY", os.getenv("OPENAI_API_KEY", "")),
-        help="Agent Chat provider API key; local Ollama accepts an ignored placeholder",
+        default=os.getenv("OURD_API_KEY", ""),
+        help="Deprecated compatibility field; direct process mode does not use API keys",
     )
     parser.add_argument(
         "--reasoning-effort",
         default=os.getenv("OURD_REASONING_EFFORT", ""),
         choices=["", "none", "low", "medium", "high", "xhigh"],
+    )
+    parser.add_argument(
+        "--json-object-output",
+        action="store_true",
+        default=os.getenv("OURD_JSON_OBJECT_OUTPUT", "").strip().lower()
+        in {"1", "true", "yes", "on"},
+        help="Deprecated compatibility flag; direct process output is grammar-first JSON",
+    )
+    parser.add_argument(
+        "--response-temperature-bp",
+        type=int,
+        default=int(os.getenv("OURD_RESPONSE_TEMPERATURE_BP", "-1")),
+    )
+    parser.add_argument(
+        "--response-top-p-bp",
+        type=int,
+        default=int(os.getenv("OURD_RESPONSE_TOP_P_BP", "-1")),
+    )
+    parser.add_argument(
+        "--response-seed",
+        type=int,
+        default=int(os.getenv("OURD_RESPONSE_SEED", "-1")),
     )
     parser.add_argument(
         "--max-output-tokens",
@@ -66,6 +157,17 @@ def build_parser() -> argparse.ArgumentParser:
         help="Agent Chat context budget shown in the backend panel",
     )
     parser.add_argument(
+        "--runtime-context-tokens",
+        type=int,
+        default=int(os.getenv("OURD_RUNTIME_CONTEXT", "0")),
+        help="Known provider runtime context; zero disables the combined runtime bound",
+    )
+    parser.add_argument(
+        "--context-safety-margin",
+        type=int,
+        default=int(os.getenv("OURD_CONTEXT_SAFETY_MARGIN", "512")),
+    )
+    parser.add_argument(
         "--timeout-seconds",
         type=float,
         default=float(os.getenv("OURD_TIMEOUT_SECONDS", "600")),
@@ -76,10 +178,110 @@ def build_parser() -> argparse.ArgumentParser:
         default=int(os.getenv("OURD_TRANSPORT_RETRIES", "0")),
     )
     parser.add_argument(
+        "--max-reasoning-samples",
+        type=int,
+        default=int(os.getenv("OURD_MAX_REASONING_SAMPLES", "16")),
+    )
+    parser.add_argument("--runner-path", default=os.getenv("OURD_LLAMA_RUNNER", ""))
+    parser.add_argument(
+        "--model-path",
+        default=os.getenv("OURD_LLAMA_MODEL_PATH", QWEN38_Q2_K_MODEL_PATH),
+    )
+    parser.add_argument(
+        "--expected-model-sha256",
+        default=os.getenv("OURD_LLAMA_MODEL_SHA256", QWEN38_Q2_K_SHA256),
+    )
+    parser.add_argument(
+        "--llama-cpp-build-dir",
+        default=os.getenv("OURD_LLAMA_CPP_BUILD_DIR", ""),
+    )
+    parser.add_argument(
+        "--llama-cpp-root",
+        default=os.getenv("OURD_LLAMA_CPP_ROOT", ""),
+    )
+    parser.add_argument(
+        "--llama-grammar-dir",
+        default=os.getenv("OURD_LLAMA_GRAMMAR_DIR", ""),
+    )
+    parser.add_argument(
+        "--llama-context",
+        type=int,
+        default=int(os.getenv("OURD_LLAMA_CONTEXT", "8192")),
+    )
+    parser.add_argument(
+        "--llama-gpu-layers",
+        type=int,
+        default=int(os.getenv("OURD_LLAMA_GPU_LAYERS", "-1")),
+    )
+    parser.add_argument(
+        "--llama-threads",
+        type=int,
+        default=int(os.getenv("OURD_LLAMA_THREADS", "0")),
+    )
+    parser.add_argument(
+        "--llama-seed",
+        type=int,
+        default=int(os.getenv("OURD_LLAMA_SEED", "1234")),
+    )
+    parser.add_argument(
+        "--llama-temperature-bp",
+        type=int,
+        default=int(os.getenv("OURD_LLAMA_TEMPERATURE_BP", "1000")),
+    )
+    parser.add_argument(
+        "--llama-top-p-bp",
+        type=int,
+        default=int(os.getenv("OURD_LLAMA_TOP_P_BP", "9500")),
+    )
+    parser.add_argument(
+        "--llama-top-k",
+        type=int,
+        default=int(os.getenv("OURD_LLAMA_TOP_K", "40")),
+    )
+    parser.add_argument(
         "--max-steps",
         type=int,
         default=80,
         help="Maximum governed model/tool steps per chat turn",
+    )
+    qwen_bootstrap = parser.add_mutually_exclusive_group()
+    qwen_bootstrap.add_argument(
+        "--auto-qwen",
+        dest="auto_qwen",
+        action="store_true",
+        default=None,
+        help="Apply the direct Qwen profile before opening ICPI; exact runner and GGUF paths are still required",
+    )
+    qwen_bootstrap.add_argument(
+        "--no-auto-qwen",
+        dest="auto_qwen",
+        action="store_false",
+        help="Disable automatic direct Qwen profile selection for this invocation",
+    )
+    parser.add_argument(
+        "--qwen-model",
+        default=os.getenv("OIEC_ICPI_QWEN_MODEL", QWEN38_FAST_PRODUCT_ALIAS),
+        help=(
+            "Required direct Qwen profile label for automatic selection; "
+            f"{QWEN38_FAST_PRODUCT_ALIAS!r} maps to qwen3.8-27b-direct"
+        ),
+    )
+    parser.add_argument(
+        "--qwen-startup-timeout",
+        type=float,
+        default=float(os.getenv("OIEC_ICPI_QWEN_STARTUP_TIMEOUT", "30")),
+        help="Deprecated compatibility timeout; direct process startup is handled by provider preflight",
+    )
+    parser.add_argument(
+        "--qwen-warmup-timeout",
+        type=float,
+        default=float(os.getenv("OIEC_ICPI_QWEN_WARMUP_TIMEOUT", "180")),
+        help="Deprecated compatibility timeout; direct process warmup is handled by provider preflight",
+    )
+    parser.add_argument(
+        "--no-qwen-warmup",
+        action="store_true",
+        help="Deprecated compatibility flag; direct process preflight does not warm through a service",
     )
     parser.add_argument(
         "--smoke-test",
@@ -97,19 +299,54 @@ class OURDWorkbench(tk.Tk):
         repository_root: Path,
         *,
         authority_path: Path | None = None,
-        model: str = "gpt-5.6",
+        provider_kind: str = "llama_cpp_process",
+        model: str = "qwen3.8-27b-direct",
         base_url: str = "",
         context_budget: int = 6000,
+        runtime_context_tokens: int = 0,
+        context_safety_margin_tokens: int = 512,
         api_key: str = "",
         reasoning_effort: str = "",
+        json_object_output: bool = False,
+        response_temperature_bp: int = -1,
+        response_top_p_bp: int = -1,
+        response_seed: int = -1,
         max_output_tokens: int = 2048,
         timeout_seconds: float = 600.0,
         transport_retries: int = 0,
+        max_reasoning_samples: int = 16,
+        runner_path: str = "",
+        model_path: str = "",
+        expected_model_sha256: str = "",
+        llama_cpp_root: str = "",
+        llama_cpp_build_dir: str = "",
+        llama_grammar_dir: str = "",
+        llama_context_tokens: int = 8192,
+        llama_gpu_layers: int = -1,
+        llama_threads: int = 0,
+        llama_seed: int = 1234,
+        llama_temperature_bp: int = 1000,
+        llama_top_p_bp: int = 9500,
+        llama_top_k: int = 40,
         max_steps: int = 80,
+        qwen_bootstrap_result: QwenBootstrapResult | None = None,
+        lifecycle_recorder: AppLifecycleRecorder | None = None,
     ) -> None:
         initialization_started = time.perf_counter()
         super().__init__()
+        self._closing = False
+        self._restore_after_id: str | None = None
+        self._poll_after_id: str | None = None
+        self._heartbeat_after_id: str | None = None
         self.repository_root = repository_root.resolve()
+        self.authority_path = authority_path.resolve() if authority_path is not None else None
+        self.lifecycle_recorder = lifecycle_recorder or AppLifecycleRecorder.from_environment(
+            self.repository_root
+        )
+        self.icpi_workspace = Workspace(self.repository_root)
+        self.pinned_context = PinnedContextSet()
+        self.pinned_context_envelope = None
+        self.context_delta = None
         self.preferences_store = GuiPreferencesStore(self.repository_root)
         self.preferences = self.preferences_store.load()
         self._apply_font_scale(self.preferences.font_scale)
@@ -119,7 +356,30 @@ class OURDWorkbench(tk.Tk):
             base_url=base_url,
             context_tokens=context_budget,
         )
-        self.title("OIEC-STM-Agent Workbench")
+        if qwen_bootstrap_result is not None:
+            bootstrap = qwen_bootstrap_result
+            backend_payload = self.model_backend.to_dict()
+            backend_payload.update(
+                {
+                    "health": "ready" if bootstrap.resident else "verified",
+                    "memory": (
+                        f"model={bootstrap.model_size} bytes; "
+                        f"vram={bootstrap.size_vram} bytes"
+                    ),
+                    "device_residency": (
+                        "verified direct process runtime"
+                        if bootstrap.resident
+                        else "verified but not preloaded"
+                    ),
+                    "provenance": (
+                        "automatic ICPI direct Qwen profile; "
+                        f"alias={bootstrap.product_alias}; "
+                        f"digest={bootstrap.model_digest}"
+                    ),
+                }
+            )
+            self.model_backend = type(self.model_backend)(**backend_payload)
+        self.title("OIEC-STM-SR-AgentICPI Workbench")
         self.geometry(self.preferences.window_geometry)
         self.minsize(900, 600)
         self.controller = GuiController(
@@ -127,16 +387,43 @@ class OURDWorkbench(tk.Tk):
             authority_path=authority_path,
             provider_config=ProviderConfig(
                 model=model,
+                provider_kind=provider_kind,
                 base_url=base_url,
                 api_key=api_key,
                 reasoning_effort=reasoning_effort,
+                json_object_output=json_object_output,
+                response_temperature_bp=response_temperature_bp,
+                response_top_p_bp=response_top_p_bp,
+                response_seed=response_seed,
                 max_output_tokens=max(1, max_output_tokens),
                 context_budget_tokens=max(256, context_budget),
+                runtime_context_tokens=max(0, runtime_context_tokens),
+                context_safety_margin_tokens=max(0, context_safety_margin_tokens),
                 timeout_seconds=max(1.0, timeout_seconds),
                 max_transport_retries=max(0, min(transport_retries, 5)),
+                max_reasoning_samples=max(1, min(max_reasoning_samples, 64)),
+                runner_path=runner_path,
+                model_path=model_path,
+                expected_model_sha256=expected_model_sha256,
+                llama_cpp_root=llama_cpp_root,
+                llama_cpp_build_dir=llama_cpp_build_dir,
+                llama_grammar_dir=llama_grammar_dir,
+                llama_context_tokens=max(256, llama_context_tokens),
+                llama_gpu_layers=llama_gpu_layers,
+                llama_threads=max(0, llama_threads),
+                llama_seed=llama_seed,
+                llama_temperature_bp=llama_temperature_bp,
+                llama_top_p_bp=llama_top_p_bp,
+                llama_top_k=llama_top_k,
             ),
             max_agent_steps=max(1, max_steps),
         )
+        self.formal_writing_controller = FormalWritingController(
+            self.repository_root,
+            authority_path=self.authority_path,
+        )
+        if qwen_bootstrap_result is not None:
+            self.controller.record_qwen_bootstrap(qwen_bootstrap_result)
         self.controller.bus.subscribe(self._handle_event)
         self._build_toolbar()
         self.shell = WorkbenchShell(
@@ -165,8 +452,17 @@ class OURDWorkbench(tk.Tk):
             on_chat_send=self._send_chat,
             on_chat_stop=self._stop_chat,
             on_new_chat=self._new_chat,
+            on_chat_preview=self._preview_chat,
+            on_chat_suggestions=command_suggestions,
+            on_formal_writing_submit=self._submit_formal_writing,
+            on_formal_writing_cancel=self._cancel_formal_writing,
+            on_formal_writing_prepare=self._prepare_formal_writing,
+            on_formal_writing_authority=self._set_formal_writing_authority,
+            formal_writing_authority_path=self.authority_path,
         )
         self.shell.pack(fill="both", expand=True)
+        self.shell.set_pinned_context(self.pinned_context)
+        self.shell.set_context_delta(self.context_delta)
         self.shell.render_state(self.controller.state)
         self._build_command_bar()
         self.palette = self._build_palette()
@@ -175,11 +471,17 @@ class OURDWorkbench(tk.Tk):
         self.bind_all("<Alt-Left>", lambda event: self.controller.navigate_back())
         self.bind_all("<Alt-Right>", lambda event: self.controller.navigate_forward())
         self.protocol("WM_DELETE_WINDOW", self._close)
-        self.after_idle(self._restore_preferences)
-        self.after(self.POLL_MS, self._poll)
+        self._restore_after_id = self.after_idle(self._restore_preferences)
+        self._poll_after_id = self.after(self.POLL_MS, self._poll)
+        self._heartbeat_after_id = self.after(1_000, self._lifecycle_heartbeat)
         self.controller.performance.record_ms(
             "gui.initialize",
             (time.perf_counter() - initialization_started) * 1_000,
+        )
+        self.lifecycle_recorder.startup_ready(
+            gui_session_id=self.controller.session_id,
+            source_snapshot=self.controller.gateway.snapshot(),
+            event_head=self.controller.state.event_head,
         )
 
     def _apply_font_scale(self, scale: float) -> None:
@@ -224,7 +526,7 @@ class OURDWorkbench(tk.Tk):
     def _build_command_bar(self) -> None:
         bar = ttk.Frame(self, padding=6)
         bar.pack(fill="x")
-        ttk.Label(bar, text="Semantic Objective").pack(side="left", padx=(0, 4))
+        ttk.Label(bar, text="ICPI Objective").pack(side="left", padx=(0, 4))
         self.prompt = tk.StringVar()
         entry = ttk.Entry(bar, textvariable=self.prompt)
         entry.pack(side="left", fill="x", expand=True)
@@ -408,14 +710,393 @@ class OURDWorkbench(tk.Tk):
 
     def _send_chat(self, message: str) -> None:
         self.shell.show_chat()
-        self.controller.submit_chat_message(message)
+        evidence_ids = self._known_evidence_ids()
+        try:
+            source_snapshot = self.controller.gateway.snapshot()
+            if not message.strip().startswith("/"):
+                require_fresh_pinned_context(
+                    self.pinned_context,
+                    self.pinned_context_envelope,
+                    current_source_snapshot_hash=source_snapshot,
+                )
+            routed_message = self.pinned_context.apply_to(
+                message,
+                self.icpi_workspace,
+            )
+            route = route_interaction(
+                routed_message,
+                self.icpi_workspace,
+                known_evidence_ids=evidence_ids,
+            )
+        except (PolicyError, ValueError) as exc:
+            if self.pinned_context.paths:
+                try:
+                    observed_envelope = self._build_pinned_context_envelope(
+                        self.pinned_context,
+                        source_snapshot_hash=self.controller.gateway.snapshot(),
+                    )
+                    if observed_envelope is not None and self.pinned_context_envelope is not None:
+                        self.context_delta = compare_context_envelopes(
+                            self.pinned_context_envelope,
+                            observed_envelope,
+                        )
+                        self.shell.set_context_envelope(self.pinned_context_envelope)
+                        self.shell.set_context_delta(self.context_delta)
+                        self.controller.record_pinned_context_transition(
+                            route=None,
+                            action="STALE_CONTEXT_BLOCK",
+                            pinned_context=self.pinned_context,
+                            context_envelope=self.pinned_context_envelope,
+                            context_delta=self.context_delta,
+                        )
+                        self.shell.show_context()
+                except (OSError, PolicyError, ValueError):
+                    pass
+            messagebox.showerror("ICPI request blocked", str(exc), parent=self)
+            return
+        freshness = pinned_context_freshness(
+            self.pinned_context,
+            self.pinned_context_envelope,
+            current_source_snapshot_hash=source_snapshot,
+        )
+        directive = dispatch_interaction(
+            route,
+            InteractionSessionSnapshot(
+                repository_root=str(self.repository_root),
+                source_snapshot=source_snapshot,
+                provider=self.controller.gateway.provider_config.provider_kind,
+                model=self.controller.gateway.provider_config.model,
+                authority_task_id="",
+                mode="governed-gui",
+                context_message_count=max(
+                    0,
+                    len(self.controller.state.chat_messages)
+                    - self.controller.state.chat_context_start,
+                ),
+                pinned_context_count=len(self.pinned_context.paths),
+                pinned_context_signature=self.pinned_context.signature,
+                pinned_context_envelope_id=(
+                    self.pinned_context_envelope.envelope_id
+                    if self.pinned_context_envelope is not None
+                    else ""
+                ),
+                pinned_context_source_snapshot=(
+                    self.pinned_context_envelope.source_snapshot_hash
+                    if self.pinned_context_envelope is not None
+                    else ""
+                ),
+                pinned_context_freshness=freshness,
+                active_operation=bool(self.controller._active_chat_operation_id),
+            ),
+        )
+        if directive.action == "RUN_AGENT":
+            try:
+                envelope = build_context_envelope(
+                    route,
+                    self.icpi_workspace,
+                    source_snapshot_hash=source_snapshot,
+                    known_evidence_ids=evidence_ids,
+                )
+            except (OSError, PolicyError, ValueError) as exc:
+                messagebox.showerror("ICPI context blocked", str(exc), parent=self)
+                return
+            confirmation = None
+            confirmation_receipt = None
+            if directive.requires_confirmation:
+                try:
+                    confirmation = build_interaction_confirmation(
+                        directive,
+                        context_envelope=envelope,
+                        pinned_context=self.pinned_context,
+                        pinned_context_envelope=self.pinned_context_envelope,
+                    )
+                except (PolicyError, ValueError) as exc:
+                    messagebox.showerror("ICPI confirmation blocked", str(exc), parent=self)
+                    return
+                accepted = messagebox.askyesno(
+                    confirmation.title,
+                    confirmation.render_text(),
+                    parent=self,
+                    default=messagebox.NO,
+                )
+                confirmation_receipt = build_interaction_confirmation_receipt(
+                    confirmation,
+                    accepted=accepted,
+                )
+                self.controller.record_confirmation_receipt(confirmation_receipt)
+                if not accepted:
+                    self.controller.record_icpi_exchange(
+                        message,
+                        "ICPI interpretation cancelled; no model turn was started.",
+                        route=route,
+                        action="INTERPRETATION_CANCELLED",
+                    )
+                    return
+            self.context_delta = compare_context_envelopes(envelope, envelope)
+            self.shell.set_context_envelope(envelope)
+            self.shell.set_context_delta(self.context_delta)
+            try:
+                self.controller.submit_chat_message(
+                    message,
+                    route=route,
+                    model_input=envelope.model_input,
+                    context_envelope=envelope,
+                    pinned_context=self.pinned_context,
+                    pinned_context_envelope=self.pinned_context_envelope,
+                    confirmation=confirmation,
+                    confirmation_receipt=confirmation_receipt,
+                )
+            except (PolicyError, RuntimeError, ValueError) as exc:
+                messagebox.showerror("ICPI dispatch blocked", str(exc), parent=self)
+            return
+        if directive.action == "NEW_CONTEXT":
+            self.controller.record_icpi_exchange(
+                message,
+                "Starting a new bounded model context.",
+                route=route,
+                action=directive.action,
+            )
+            self._new_chat()
+            return
+        if directive.action == "STOP":
+            stopped = self.controller.stop_chat()
+            self.controller.record_icpi_exchange(
+                message,
+                "Stop requested." if stopped else "No agent chat turn is running.",
+                route=route,
+                action=directive.action,
+            )
+            return
+        if directive.action == "PROVIDER_PREFLIGHT":
+            self.controller.submit_provider_preflight(route=route)
+            return
+        if directive.action == "EXIT":
+            self.controller.record_icpi_exchange(
+                message,
+                "The GUI does not close from an unaudited prompt command. Use the window close control.",
+                route=route,
+                action=directive.action,
+            )
+            return
+        self.controller.record_icpi_exchange(
+            message,
+            directive.message,
+            route=route,
+            action=directive.action,
+        )
+        self._apply_icpi_surface(directive)
+
+    def _known_evidence_ids(self) -> tuple[str, ...]:
+        return tuple(
+            sorted(
+                {
+                    evidence_id
+                    for task in self.controller.state.tasks.values()
+                    for evidence_id in task.evidence_ids
+                }
+            )
+        )
+
+    def _build_pinned_context_envelope(
+        self,
+        pinned_context: PinnedContextSet,
+        *,
+        source_snapshot_hash: str | None = None,
+    ):
+        return build_pinned_context_envelope(
+            pinned_context,
+            self.icpi_workspace,
+            source_snapshot_hash=(
+                source_snapshot_hash or self.controller.gateway.snapshot()
+            ),
+            known_evidence_ids=self._known_evidence_ids(),
+        )
+
+    def _preview_chat(self, message: str) -> str:
+        return format_pinned_route_preview(
+            message,
+            self.icpi_workspace,
+            self.pinned_context,
+            known_evidence_ids=self._known_evidence_ids(),
+        )
+
+    def _apply_icpi_surface(self, directive) -> None:
+        surface = projection_surface(directive.route.target)
+        command = directive.route.command
+        if directive.action == "ATTACH_CONTEXT" and command is not None:
+            try:
+                source_snapshot = self.controller.gateway.snapshot()
+                require_fresh_pinned_context(
+                    self.pinned_context,
+                    self.pinned_context_envelope,
+                    current_source_snapshot_hash=source_snapshot,
+                )
+                updated_context = self.pinned_context.add(
+                    self.icpi_workspace,
+                    command.arguments,
+                )
+                envelope = self._build_pinned_context_envelope(
+                    updated_context,
+                    source_snapshot_hash=source_snapshot,
+                )
+            except (OSError, PolicyError, ValueError) as exc:
+                messagebox.showerror(
+                    "ICPI attachment blocked",
+                    str(exc),
+                    parent=self,
+                )
+                return
+            self.pinned_context = updated_context
+            self.pinned_context_envelope = envelope
+            self.context_delta = (
+                compare_context_envelopes(envelope, envelope)
+                if envelope is not None
+                else None
+            )
+            self.shell.set_pinned_context(self.pinned_context)
+            self.shell.set_context_envelope(envelope)
+            self.shell.set_context_delta(self.context_delta)
+            self.controller.record_pinned_context_transition(
+                route=directive.route,
+                action="ATTACH_CONTEXT",
+                pinned_context=self.pinned_context,
+                context_envelope=self.pinned_context_envelope,
+                context_delta=self.context_delta,
+            )
+            self.shell.show_context()
+            return
+        if directive.action == "DETACH_CONTEXT" and command is not None:
+            try:
+                source_snapshot = self.controller.gateway.snapshot()
+                options = dict(command.options)
+                if options.get("all", "false").casefold() in {
+                    "1",
+                    "true",
+                    "yes",
+                    "on",
+                }:
+                    updated_context = self.pinned_context.clear()
+                else:
+                    updated_context = self.pinned_context.remove(
+                        self.icpi_workspace,
+                        command.arguments,
+                    )
+                if updated_context.paths:
+                    require_fresh_pinned_context(
+                        self.pinned_context,
+                        self.pinned_context_envelope,
+                        current_source_snapshot_hash=source_snapshot,
+                    )
+                envelope = self._build_pinned_context_envelope(
+                    updated_context,
+                    source_snapshot_hash=source_snapshot,
+                )
+            except (OSError, PolicyError, ValueError) as exc:
+                messagebox.showerror(
+                    "ICPI detach blocked",
+                    str(exc),
+                    parent=self,
+                )
+                return
+            self.pinned_context = updated_context
+            self.pinned_context_envelope = envelope
+            self.context_delta = (
+                compare_context_envelopes(envelope, envelope)
+                if envelope is not None
+                else None
+            )
+            self.shell.set_pinned_context(self.pinned_context)
+            self.shell.set_context_envelope(envelope)
+            self.shell.set_context_delta(self.context_delta)
+            self.controller.record_pinned_context_transition(
+                route=directive.route,
+                action="DETACH_CONTEXT",
+                pinned_context=self.pinned_context,
+                context_envelope=self.pinned_context_envelope,
+                context_delta=self.context_delta,
+            )
+            self.shell.show_context()
+            return
+        if command is not None and command.name == "context":
+            if not self.pinned_context.paths:
+                self.pinned_context_envelope = None
+                self.context_delta = None
+                self.shell.set_context_envelope(None)
+                self.shell.set_context_delta(None)
+                self.shell.show_context()
+                return
+            try:
+                observed_envelope = self._build_pinned_context_envelope(
+                    self.pinned_context,
+                )
+                assert observed_envelope is not None
+                baseline_envelope = self.pinned_context_envelope or observed_envelope
+                refresh_applied = directive.action == "REFRESH_CONTEXT"
+                self.context_delta = compare_context_envelopes(
+                    baseline_envelope,
+                    observed_envelope,
+                    refresh_applied=refresh_applied,
+                )
+                if refresh_applied:
+                    self.pinned_context_envelope = observed_envelope
+                displayed_envelope = self.pinned_context_envelope or observed_envelope
+            except (OSError, PolicyError, ValueError) as exc:
+                messagebox.showerror("ICPI context check blocked", str(exc), parent=self)
+                return
+            self.shell.set_context_envelope(displayed_envelope)
+            self.shell.set_context_delta(self.context_delta)
+            self.controller.record_pinned_context_transition(
+                route=directive.route,
+                action=("REFRESH_CONTEXT" if refresh_applied else "INSPECT_CONTEXT"),
+                pinned_context=self.pinned_context,
+                context_envelope=displayed_envelope,
+                context_delta=self.context_delta,
+            )
+            self.shell.show_context()
+            return
+        if directive.action == "GOVERNANCE_REQUIRED":
+            self.shell.show_eon()
+            return
+        if surface == "repository":
+            self.shell.show_repository()
+            if command is not None and command.arguments:
+                relative = self.icpi_workspace.canonical(command.arguments[0])
+                if self.icpi_workspace.resolve(relative).is_file():
+                    self._select_file(relative)
+        elif surface == "evidence":
+            identifiers = command.arguments if command is not None else ()
+            if not identifiers:
+                task = self.controller.state.tasks.get(self.controller.state.selected_task_id)
+                identifiers = task.evidence_ids if task is not None else ()
+            self.shell.show_evidence(identifiers)
+        elif surface == "reasoning":
+            self.shell.show_reasoning()
+        elif surface == "eon":
+            self.shell.show_eon()
+        elif surface == "artifacts":
+            self.shell.show_artifacts()
+        elif surface == "context":
+            self.shell.show_context()
 
     def _stop_chat(self) -> None:
         if not self.controller.stop_chat():
             self.shell.conversation.append("GUI", "No agent chat turn is running.")
 
     def _new_chat(self) -> None:
+        had_pinned_context = bool(self.pinned_context.paths)
         self.controller.new_chat_context()
+        self.pinned_context = self.pinned_context.clear()
+        self.pinned_context_envelope = None
+        self.context_delta = None
+        self.shell.set_pinned_context(self.pinned_context)
+        self.shell.set_context_envelope(None)
+        self.shell.set_context_delta(None)
+        if had_pinned_context:
+            self.controller.record_pinned_context_transition(
+                route=None,
+                action="NEW_CONTEXT",
+                pinned_context=self.pinned_context,
+            )
 
     def _submit_semantic_command(self, request: CommandRequest) -> None:
         self.shell.terminal.append(
@@ -740,16 +1421,88 @@ class OURDWorkbench(tk.Tk):
         self.capability_badge.set_status(status, f"{level.level} {level.status.upper()}")
 
     def _poll(self) -> None:
+        self._poll_after_id = None
+        if self._closing or not self.winfo_exists():
+            return
         _, failures = self.controller.drain_events()
         if failures:
             self.shell.conversation.append(
                 "GUI",
                 "; ".join(f"{type(item).__name__}: {item}" for item in failures),
             )
-        if self.winfo_exists():
-            self.after(self.POLL_MS, self._poll)
+        for event in self.formal_writing_controller.poll_events():
+            self.shell.formal_writing.apply_event(event)
+            if event.operation == "write" and event.event_type.value == "JOB_COMPLETED":
+                self.shell.show_governance()
+        if not self._closing and self.winfo_exists():
+            self._poll_after_id = self.after(self.POLL_MS, self._poll)
+
+    def _submit_formal_writing(
+        self,
+        operation: str,
+        form: FormalWritingFormState,
+        options: FormalWritingExecutionOptions,
+    ) -> None:
+        job_id = self.formal_writing_controller.submit(operation, form, options)
+        self.shell.formal_writing.set_busy(True, message=f"Queued {job_id}")
+
+    def _cancel_formal_writing(self) -> None:
+        if self.formal_writing_controller.request_cancel():
+            self.shell.formal_writing.status_var.set(
+                "Cancellation requested; waiting for a safe phase boundary"
+            )
+
+    def _set_formal_writing_authority(self, authority_path: Path) -> None:
+        self.authority_path = authority_path.resolve()
+        self.formal_writing_controller.authority_path = self.authority_path
+        self.shell.formal_writing.set_authority_path(self.authority_path)
+
+    def _prepare_formal_writing(self, form: FormalWritingFormState) -> None:
+        preview = self.formal_writing_controller.preview_governed_write(form)
+        confirmed = confirm_governed_write(self, preview)
+        if confirmed is None:
+            self.shell.formal_writing.status_var.set("Governed write preparation cancelled")
+            return
+        job_id = self.formal_writing_controller.submit_governed_write(
+            preview,
+            confirmed_request_signature=confirmed,
+        )
+        self.shell.formal_writing.set_busy(True, message=f"Queued {job_id}")
+
+    def _lifecycle_heartbeat(self) -> None:
+        self._heartbeat_after_id = None
+        if self._closing or not self.winfo_exists():
+            return
+        self.lifecycle_recorder.heartbeat(
+            chat_status=self.controller.state.chat_status,
+            pending_operations=len(self.controller._pending),
+        )
+        if not self._closing and self.winfo_exists():
+            self._heartbeat_after_id = self.after(1_000, self._lifecycle_heartbeat)
+
+    def _cancel_after_callback(self, attribute_name: str) -> None:
+        callback_id = getattr(self, attribute_name, None)
+        if not callback_id:
+            return
+        setattr(self, attribute_name, None)
+        try:
+            self.after_cancel(callback_id)
+        except tk.TclError:
+            pass
+
+    def _cancel_scheduled_callbacks(self) -> None:
+        self._cancel_after_callback("_restore_after_id")
+        self._cancel_after_callback("_poll_after_id")
+        self._cancel_after_callback("_heartbeat_after_id")
 
     def _close(self) -> None:
+        if self._closing:
+            return
+        self._closing = True
+        self._cancel_scheduled_callbacks()
+        self.lifecycle_recorder.shutdown_requested(
+            chat_status=self.controller.state.chat_status
+        )
         try:
             geometry = self.geometry()
             layout = self.shell.preference_state()
@@ -768,31 +1521,111 @@ class OURDWorkbench(tk.Tk):
                     }
                 )
             )
+            self.formal_writing_controller.shutdown(wait=False, timeout_seconds=1.0)
             self.controller.close()
             self.controller.drain_events()
+            self.lifecycle_recorder.checkpoint(
+                state_digest=self.controller.state.digest,
+                event_head=self.controller.state.event_head,
+            )
+            self.lifecycle_recorder.shutdown_complete()
+        except Exception as exc:
+            self.lifecycle_recorder.failure("SHUTDOWN_FAILED", exc)
+            raise
         finally:
-            self.destroy()
+            if self.winfo_exists():
+                self.destroy()
 
 
 def main(argv: Optional[Sequence[str]] = None) -> int:
+    raw_arguments = list(sys.argv[1:] if argv is None else argv)
     parser = build_parser()
-    args = parser.parse_args(argv)
+    args = parser.parse_args(raw_arguments)
     repository_root = Path(args.repo).resolve()
+    lifecycle_recorder = AppLifecycleRecorder.from_environment(repository_root)
+    lifecycle_recorder.startup_begin()
     try:
+        bootstrap_result = None
+        auto_qwen = automatic_qwen_bootstrap_requested(
+            arguments=raw_arguments,
+            executable_name=sys.argv[0],
+            explicit_setting=args.auto_qwen,
+        )
+        if auto_qwen:
+            explicit_model = _option_supplied(raw_arguments, "--model") or bool(
+                os.getenv("OURD_MODEL", "").strip()
+            )
+            requested_model = args.model if explicit_model else args.qwen_model
+            if not _option_supplied(raw_arguments, "--reasoning-effort") and not os.getenv(
+                "OURD_REASONING_EFFORT", ""
+            ):
+                args.reasoning_effort = "none"
+            if not _option_supplied(raw_arguments, "--context-budget") and not os.getenv(
+                "OURD_CONTEXT_BUDGET", ""
+            ):
+                args.context_budget = 6000
+            if not _option_supplied(raw_arguments, "--max-output-tokens") and not os.getenv(
+                "OURD_MAX_OUTPUT_TOKENS", ""
+            ):
+                args.max_output_tokens = 1400
+            if not _option_supplied(
+                raw_arguments, "--runtime-context-tokens"
+            ) and not os.getenv("OURD_RUNTIME_CONTEXT", ""):
+                args.runtime_context_tokens = args.llama_context
+            args.provider = "llama_cpp_process"
+            args.model = "qwen3.8-27b-direct"
+            bootstrap_result = ensure_qwen38_fast(
+                requested_model=requested_model,
+                runner_path=args.runner_path,
+                model_path=args.model_path,
+                expected_model_sha256=args.expected_model_sha256,
+            )
+            print(
+                "ICPI direct Qwen profile ready: "
+                f"alias={bootstrap_result.product_alias} model={bootstrap_result.resolved_model} "
+                f"digest={bootstrap_result.model_digest or 'unverified'} "
+                f"runner_configured={str(bool(args.runner_path)).lower()} "
+                f"model_configured={str(bool(args.model_path)).lower()}",
+                file=sys.stderr,
+            )
         app = OURDWorkbench(
             repository_root,
             authority_path=args.authority,
+            provider_kind=args.provider,
             model=args.model,
             base_url=args.base_url,
             context_budget=args.context_budget,
+            runtime_context_tokens=args.runtime_context_tokens,
+            context_safety_margin_tokens=args.context_safety_margin,
             api_key=args.api_key,
             reasoning_effort=args.reasoning_effort,
+            json_object_output=args.json_object_output,
+            response_temperature_bp=args.response_temperature_bp,
+            response_top_p_bp=args.response_top_p_bp,
+            response_seed=args.response_seed,
             max_output_tokens=args.max_output_tokens,
             timeout_seconds=args.timeout_seconds,
             transport_retries=args.transport_retries,
+            max_reasoning_samples=args.max_reasoning_samples,
+            runner_path=args.runner_path,
+            model_path=args.model_path,
+            expected_model_sha256=args.expected_model_sha256,
+            llama_cpp_root=args.llama_cpp_root,
+            llama_cpp_build_dir=args.llama_cpp_build_dir,
+            llama_grammar_dir=args.llama_grammar_dir,
+            llama_context_tokens=args.llama_context,
+            llama_gpu_layers=args.llama_gpu_layers,
+            llama_threads=args.llama_threads,
+            llama_seed=args.llama_seed,
+            llama_temperature_bp=args.llama_temperature_bp,
+            llama_top_p_bp=args.llama_top_p_bp,
+            llama_top_k=args.llama_top_k,
             max_steps=args.max_steps,
+            qwen_bootstrap_result=bootstrap_result,
+            lifecycle_recorder=lifecycle_recorder,
         )
     except Exception as exc:
+        lifecycle_recorder.failure("STARTUP_FAILED", exc)
         print(f"OIEC-STM-Agent GUI startup failed: {type(exc).__name__}: {exc}", file=sys.stderr)
         try:
             root = tk.Tk()

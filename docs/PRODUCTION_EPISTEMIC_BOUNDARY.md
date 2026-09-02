@@ -160,6 +160,43 @@ The `oiec-stm-agent` CLI and GUI `CoreGateway` instantiate `ProductionOURDAgent`
 
 This separation preserves compatibility for low-level tests and integrations while making the product-facing agent stricter.
 
+## Turn-scoped tool authority
+
+Each ICPI turn may carry a signed `TurnExecutionPolicy` bound to the route,
+source snapshot, context envelope, target paths, requested outputs, allowed
+tool groups, and mutation classification. The policy can only narrow the
+existing human authority. Tool availability is recalculated from current
+runtime state and every dispatch rechecks the same preconditions.
+
+Super reasoning is not a universal tool. It is hidden until the turn permits
+certified reasoning, governance is established, authority is current, and no
+pending action owns the boundary. An injected or stale call returns a signed,
+structured `ToolFailureEnvelope`. The first new recoverable precondition
+failure records one deterministic collision and permits a corrected transition;
+an identical retry reuses the collision identity and does not count as
+progress.
+
+Summarization is a distinct read-only intent. Corpus manifests bind exact paths,
+file hashes, line counts, and the source snapshot. Per-document coverage tracks
+merged read ranges and evidence IDs. A summary artifact is accepted only after
+complete coverage of the exact file, and whole-corpus completion is exact set
+equality between manifested and current summaries. Model-written summary prose
+is labelled as source-bound interpretation, not certified truth.
+
+Formal writing follows the same separation. Source extraction, anchors,
+locators, bibliographic records, citation uses, integrity reports, and writing
+certificates are deterministic artifacts. Concepts, reasoning labels,
+paraphrases, plans, and prose remain interpretations. A `WRITE` or `REVISE`
+operation returns a candidate only; workspace mutation still requires exact
+authority, a prepared transaction, EON action, evidence gate, human approval,
+application, verification, finalization, and rollback evidence.
+
+Terminal synthesis now separates verified tool outputs, verified policy
+failures, model-proposed tool arguments, restored source excerpts, document
+summary artifacts, and corpus coverage. Tool arguments never appear as verified
+observations, and restored Markdown or other repository text is explicitly
+treated as untrusted data rather than instructions.
+
 ## Core invariant
 
 The governing production invariant is:

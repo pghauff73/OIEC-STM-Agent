@@ -195,7 +195,7 @@ DEFINITION_OVERRIDES = {
     "CapabilityResolver": "The service that intersects capability requirements, grants, facets, scope, expiry, and use limits to compute effective authority.",
     "SelectionEngine": "The service that chooses a context-qualified algorithm using declared qualification strength and deterministic selection order.",
     "OURDAgent": "The runtime coordinator that presents model reasoning as proposals while routing governed tools, candidate transactions, EON actions, evidence, and CFEL through deterministic controls.",
-    "OpenAIResponsesProvider": "The bounded provider adapter for OpenAI-compatible Responses APIs, including context estimation, retries, tool-call normalization, and cancellation points.",
+    "LlamaCppProcessProvider": "The bounded direct-process provider adapter for local llama.cpp execution, including exact model identity, grammar-first output, context limits, deadlines, and cancellation points.",
     "IEPS": "The evidence-production service for coverage, counterexamples, mutation, shrinking, uniqueness, qualification, and gates.",
 }
 

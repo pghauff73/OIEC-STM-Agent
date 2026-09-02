@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import base64
 import csv
+import gzip
 import hashlib
 import io
 import os
@@ -31,10 +32,15 @@ def _source_files() -> Iterable[tuple[Path, str]]:
     for package in ("ourd", "ourd_gui"):
         for path in sorted((ROOT / package).rglob("*.py")):
             yield path, path.relative_to(ROOT).as_posix()
-    for name in ("oiec_stm_agent.py", "ourd_agent.py", "egcf.py"):
+    for name in (
+        "oiec_stm_agent.py",
+        "oiec_stm_sr_agenticpi.py",
+        "ourd_agent.py",
+        "egcf.py",
+    ):
         path = ROOT / name
         yield path, name
-    for directory in ("algorithms", "commands", "schemas", "workflows"):
+    for directory in ("algorithms", "commands", "grammars", "schemas", "workflows"):
         for path in sorted((ROOT / directory).rglob("*")):
             if path.is_file():
                 yield path, path.relative_to(ROOT).as_posix()
@@ -126,7 +132,7 @@ def build_wheel(
             (f"{dist_info}/entry_points.txt", _entry_points().encode("utf-8")),
             (
                 f"{dist_info}/top_level.txt",
-                b"ourd\nourd_gui\noiec_stm_agent\nourd_agent\negcf\n",
+                b"ourd\nourd_gui\noiec_stm_agent\noiec_stm_sr_agenticpi\nourd_agent\negcf\n",
             ),
         ]
     )
@@ -156,6 +162,7 @@ def build_sdist(
         ROOT / "pyproject.toml",
         ROOT / "README.md",
         ROOT / "oiec_stm_agent.py",
+        ROOT / "oiec_stm_sr_agenticpi.py",
         ROOT / "ourd_agent.py",
         ROOT / "egcf.py",
         *sorted((ROOT / "ourd").rglob("*.py")),
@@ -163,20 +170,43 @@ def build_sdist(
         *sorted((ROOT / "tools").glob("*.py")),
         *[
             path
-            for directory in ("algorithms", "commands", "schemas", "workflows", "docs")
+            for directory in (
+                "algorithms",
+                "benchmarks",
+                "commands",
+                "grammars",
+                "native",
+                "schemas",
+                "workflows",
+                "docs",
+            )
             for path in sorted((ROOT / directory).rglob("*"))
             if path.is_file()
         ],
     ]
     destination.parent.mkdir(parents=True, exist_ok=True)
-    with tarfile.open(destination, "w:gz", format=tarfile.PAX_FORMAT) as archive:
-        for path in included:
-            info = archive.gettarinfo(str(path), arcname=f"{prefix}/{path.relative_to(ROOT)}")
-            info.mtime = 0
-            info.uid = 0
-            info.gid = 0
-            info.uname = ""
-            info.gname = ""
-            with path.open("rb") as handle:
-                archive.addfile(info, handle)
+    with destination.open("wb") as raw_archive:
+        with gzip.GzipFile(
+            filename="",
+            mode="wb",
+            fileobj=raw_archive,
+            mtime=0,
+        ) as compressed_archive:
+            with tarfile.open(
+                fileobj=compressed_archive,
+                mode="w",
+                format=tarfile.PAX_FORMAT,
+            ) as archive:
+                for path in included:
+                    info = archive.gettarinfo(
+                        str(path),
+                        arcname=f"{prefix}/{path.relative_to(ROOT)}",
+                    )
+                    info.mtime = 0
+                    info.uid = 0
+                    info.gid = 0
+                    info.uname = ""
+                    info.gname = ""
+                    with path.open("rb") as handle:
+                        archive.addfile(info, handle)
     return filename

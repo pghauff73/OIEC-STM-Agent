@@ -1,0 +1,152 @@
+%PDF-1.4
+%‚„œ”
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Count 5 /Kids [5 0 R 7 0 R 9 0 R 11 0 R 13 0 R] >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+4 0 obj
+<< /Length 341 >>
+stream
+BT
+/F1 9 Tf
+72 720 Td
+14 TL
+(B-01) Tj
+T*
+(CLAIM: A concept label summarizes the role of a passage.) Tj
+T*
+(CONCEPT: concept identification) Tj
+T*
+(REASONING: The label groups the passage by function rather than copying its wording.) Tj
+T*
+(LIMITATION: A passage can legitimately support more than one concept.) Tj
+T*
+(PRINTED PAGE: 11) Tj
+ET
+endstream
+endobj
+5 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 4 0 R >>
+endobj
+6 0 obj
+<< /Length 341 >>
+stream
+BT
+/F1 9 Tf
+72 720 Td
+14 TL
+(B-02) Tj
+T*
+(CLAIM: Reasoning links evidence to a conclusion through explicit warrants.) Tj
+T*
+(CONCEPT: argument warrant) Tj
+T*
+(REASONING: Making the warrant explicit exposes assumptions that can be reviewed.) Tj
+T*
+(LIMITATION: Not every warrant is stated by the source author.) Tj
+T*
+(PRINTED PAGE: 12) Tj
+ET
+endstream
+endobj
+7 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 6 0 R >>
+endobj
+8 0 obj
+<< /Length 356 >>
+stream
+BT
+/F1 9 Tf
+72 720 Td
+14 TL
+(B-03) Tj
+T*
+(CLAIM: Quotation and paraphrase require separate provenance records.) Tj
+T*
+(CONCEPT: reference mode) Tj
+T*
+(REASONING: A quotation preserves exact words while a paraphrase records a semantic transformation.) Tj
+T*
+(LIMITATION: Both modes can still misrepresent surrounding context.) Tj
+T*
+(PRINTED PAGE: 13) Tj
+ET
+endstream
+endobj
+9 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 8 0 R >>
+endobj
+10 0 obj
+<< /Length 370 >>
+stream
+BT
+/F1 9 Tf
+72 720 Td
+14 TL
+(B-04) Tj
+T*
+(CLAIM: Conflicting sources should remain visible in a formal report.) Tj
+T*
+(CONCEPT: source disagreement) Tj
+T*
+(REASONING: Visible disagreement prevents a synthesized conclusion from appearing unanimous.) Tj
+T*
+(LIMITATION: The presence of disagreement does not decide which source is stronger.) Tj
+T*
+(PRINTED PAGE: 14) Tj
+ET
+endstream
+endobj
+11 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 10 0 R >>
+endobj
+12 0 obj
+<< /Length 347 >>
+stream
+BT
+/F1 9 Tf
+72 720 Td
+14 TL
+(B-05) Tj
+T*
+(CLAIM: A reference audit must bind findings to the current source bytes.) Tj
+T*
+(CONCEPT: hash-bound audit) Tj
+T*
+(REASONING: Content hashes reveal whether cited material changed after analysis.) Tj
+T*
+(LIMITATION: A hash cannot establish authorship or publication quality.) Tj
+T*
+(PRINTED PAGE: 15) Tj
+ET
+endstream
+endobj
+13 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 12 0 R >>
+endobj
+xref
+0 14
+0000000000 65535 f 
+0000000015 00000 n 
+0000000064 00000 n 
+0000000147 00000 n 
+0000000217 00000 n 
+0000000609 00000 n 
+0000000735 00000 n 
+0000001127 00000 n 
+0000001253 00000 n 
+0000001660 00000 n 
+0000001786 00000 n 
+0000002208 00000 n 
+0000002336 00000 n 
+0000002735 00000 n 
+trailer
+<< /Size 14 /Root 1 0 R >>
+startxref
+2863
+%%EOF

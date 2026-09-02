@@ -59,16 +59,12 @@ mint approval, capability grants, or human identity.
 
 ## Qwen Integration
 
-The VisualGrammar2d Qwen tooling is used only for bounded interpretation,
-critique, counterexample proposals, and missing-test suggestions. The evaluator
-records both neighboring CLI source hashes but sends a bounded raw Ollama
-request. This is deliberate: the higher-level wrapper currently does not
-forward `--qwen-model` to the Ollama-specific argument, while the direct CLI and
-this alias's stop-token template yield an empty structured fallback. The raw
-request binds the exact model tag and overrides only prompt templating and stop
-handling; full blob digests, response quality, token metrics, and post-run GPU
-residency are recorded. If `qwen3.8:16b` is not installed, evaluation fails
-rather than silently selecting a different model.
+Local Qwen tooling is used only for bounded interpretation, critique,
+counterexample proposals, and missing-test suggestions. Current OIEC model
+traffic should use the `llama_cpp_process` provider and bind the exact runner,
+GGUF digest, llama.cpp source, build directory, grammar set, response quality,
+token metrics, and source snapshot. If a requested model is unavailable,
+evaluation fails rather than silently selecting a different model.
 
 Run:
 
@@ -76,7 +72,8 @@ Run:
 python3 tools/evaluate_egcf_qwen.py --model qwen3.8:16b
 ```
 
-An installed alternative can be evaluated explicitly:
+An installed legacy VisualGrammar2d alternative can be evaluated explicitly
+outside Agent Chat:
 
 ```bash
 python3 tools/evaluate_egcf_qwen.py --model qwen3.8-27b-fast:latest

@@ -1,14 +1,26 @@
 from __future__ import annotations
 
 import tempfile
+import tarfile
 import unittest
 import zipfile
 from pathlib import Path
 
-from tools.build_backend import build_wheel
+from tools.build_backend import build_sdist, build_wheel
 
 
 class GuiPackagingTests(unittest.TestCase):
+    def test_build_artifacts_are_byte_reproducible(self) -> None:
+        with tempfile.TemporaryDirectory() as first_directory:
+            with tempfile.TemporaryDirectory() as second_directory:
+                first_wheel = Path(first_directory) / build_wheel(first_directory)
+                second_wheel = Path(second_directory) / build_wheel(second_directory)
+                first_sdist = Path(first_directory) / build_sdist(first_directory)
+                second_sdist = Path(second_directory) / build_sdist(second_directory)
+
+                self.assertEqual(first_wheel.read_bytes(), second_wheel.read_bytes())
+                self.assertEqual(first_sdist.read_bytes(), second_sdist.read_bytes())
+
     def test_wheel_contains_product_and_compatibility_entry_points(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             filename = build_wheel(directory)
@@ -16,16 +28,46 @@ class GuiPackagingTests(unittest.TestCase):
             with zipfile.ZipFile(wheel_path) as archive:
                 names = set(archive.namelist())
                 self.assertIn("ourd_gui/app.py", names)
+                self.assertIn("ourd_gui/formal_writing_gui.py", names)
+                self.assertIn("ourd_gui/formal_writing_controller.py", names)
+                self.assertIn("ourd_gui/formal_writing_models.py", names)
+                self.assertIn("ourd_gui/formal_writing_projection.py", names)
+                self.assertIn("ourd_gui/context_projection.py", names)
+                self.assertIn("ourd_gui/qwen_bootstrap.py", names)
+                self.assertIn("ourd_gui/views/context.py", names)
                 self.assertIn("ourd_gui/views/shell.py", names)
                 self.assertIn("oiec_stm_agent.py", names)
+                self.assertIn("oiec_stm_sr_agenticpi.py", names)
                 entry_points_name = next(
                     name for name in names if name.endswith(".dist-info/entry_points.txt")
                 )
                 entry_points = archive.read(entry_points_name).decode("utf-8")
         self.assertIn("oiec-stm-agent = ourd.cli:main", entry_points)
+        self.assertIn("oiec-stm-sr-agent-icpi = ourd_gui.app:main", entry_points)
+        self.assertIn("oiec-stm-sr-AgentICPI = ourd_gui.app:main", entry_points)
         self.assertIn("oiec-stm-gui = ourd_gui.app:main", entry_points)
         self.assertIn("ourd-agent = ourd.cli:main", entry_points)
         self.assertIn("ourd-gui = ourd_gui.app:main", entry_points)
+        self.assertIn(
+            "oiec-stm-formal-writing-gui = ourd_gui.formal_writing_gui:main",
+            entry_points,
+        )
+
+    def test_sdist_contains_reasoning_benchmark_harness_and_baseline(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            filename = build_sdist(directory)
+            archive_path = Path(directory) / filename
+            with tarfile.open(archive_path, "r:gz") as archive:
+                names = {Path(name).as_posix() for name in archive.getnames()}
+        self.assertTrue(any(name.endswith("/benchmarks/reasoning/schema.json") for name in names))
+        self.assertTrue(any(name.endswith("/benchmarks/reasoning/baseline-v1.json") for name in names))
+        self.assertTrue(any(name.endswith("/benchmarks/reasoning/baseline-v1.sha256") for name in names))
+        self.assertTrue(any(name.endswith("/benchmarks/reasoning/runs/SR-0B_FAILURE_ANALYSIS.md") for name in names))
+        self.assertTrue(any(name.endswith("/tools/run_reasoning_benchmark.py") for name in names))
+        self.assertTrue(any(name.endswith("/tools/run_reasoning_model_benchmark.py") for name in names))
+        self.assertTrue(any(name.endswith("/ourd/reasoning/model_benchmark.py") for name in names))
+        self.assertTrue(any(name.endswith("/grammars/providers/oiec_reasoning_response.gbnf") for name in names))
+        self.assertTrue(any(name.endswith("/native/oiec_llama_runner/main.cpp") for name in names))
 
 
 if __name__ == "__main__":

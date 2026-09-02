@@ -253,6 +253,7 @@ class VerifiedProjection:
     control_atoms: tuple[str, ...]
     hypothesis_definition_atoms: tuple[str, ...] = ()
     hypothesis_evidence_atoms: tuple[str, ...] = ()
+    active_evidence_atoms: tuple[str, ...] = ()
     boundary_uncertainty_bp: int = 0
     signature: str = ""
 
@@ -281,7 +282,11 @@ class TransitionAssessment:
         return {**asdict(self), "certificate": asdict(self.certificate)}
 
 
-def verified_projection(state: RuntimeState, workspace_snapshot_hash: str) -> VerifiedProjection:
+def verified_projection(
+    state: RuntimeState,
+    workspace_snapshot_hash: str,
+    active_evidence_ids: Sequence[str] = (),
+) -> VerifiedProjection:
     evidence_atoms = tuple(
         sorted({_evidence_atom(artifact) for artifact in state.evidence_registry.values()})
     )
@@ -290,6 +295,15 @@ def verified_projection(state: RuntimeState, workspace_snapshot_hash: str) -> Ve
     )
     control_atoms = _control_atoms(state)
     hypothesis_definitions, hypothesis_evidence = _hypothesis_atoms(state)
+    active_evidence_atoms = tuple(
+        sorted(
+            {
+                _evidence_atom(state.evidence_registry[evidence_id])
+                for evidence_id in active_evidence_ids
+                if evidence_id in state.evidence_registry
+            }
+        )
+    )
     boundary_uncertainty = (
         int(state.boundary_state.boundary_uncertainty_bp)
         if state.boundary_state is not None
@@ -302,6 +316,7 @@ def verified_projection(state: RuntimeState, workspace_snapshot_hash: str) -> Ve
         "control_atoms": control_atoms,
         "hypothesis_definition_atoms": hypothesis_definitions,
         "hypothesis_evidence_atoms": hypothesis_evidence,
+        "active_evidence_atoms": active_evidence_atoms,
         "boundary_uncertainty_bp": boundary_uncertainty,
     }
     return VerifiedProjection(
@@ -311,6 +326,7 @@ def verified_projection(state: RuntimeState, workspace_snapshot_hash: str) -> Ve
         control_atoms=control_atoms,
         hypothesis_definition_atoms=hypothesis_definitions,
         hypothesis_evidence_atoms=hypothesis_evidence,
+        active_evidence_atoms=active_evidence_atoms,
         boundary_uncertainty_bp=boundary_uncertainty,
         signature=stable_hash(material),
     )
@@ -335,8 +351,17 @@ class LoopProgressController:
         self._states: list[str] = []
         self._assessments: list[TransitionAssessment] = []
 
-    def project(self, state: RuntimeState, workspace_snapshot_hash: str) -> VerifiedProjection:
-        return verified_projection(state, workspace_snapshot_hash)
+    def project(
+        self,
+        state: RuntimeState,
+        workspace_snapshot_hash: str,
+        active_evidence_ids: Sequence[str] = (),
+    ) -> VerifiedProjection:
+        return verified_projection(
+            state,
+            workspace_snapshot_hash,
+            active_evidence_ids,
+        )
 
     def assess(
         self,
@@ -346,7 +371,11 @@ class LoopProgressController:
         step_signature: str,
         terminal: bool = False,
     ) -> TransitionAssessment:
-        new_evidence = set(after.evidence_atoms) - set(before.evidence_atoms)
+        new_persisted_evidence = set(after.evidence_atoms) - set(before.evidence_atoms)
+        new_active_evidence = (
+            set(after.active_evidence_atoms) - set(before.active_evidence_atoms)
+        )
+        new_evidence = new_persisted_evidence | new_active_evidence
         new_collisions = set(after.collision_atoms) - set(before.collision_atoms)
         new_control = set(after.control_atoms) - set(before.control_atoms)
         new_hypothesis_definitions = (
@@ -516,6 +545,33 @@ class LoopProgressController:
         self._states = self._states[-self.window :]
         self._assessments = self._assessments[-self.window :]
         return assessment
+
+    def exhaust_budget(
+        self,
+        *,
+        projection: VerifiedProjection,
+        step_signature: str,
+        maximum_steps: int,
+    ) -> TransitionAssessment:
+        assessment = self.assess(
+            before=projection,
+            after=projection,
+            step_signature=step_signature,
+            terminal=False,
+        )
+        stopped = replace(
+            assessment,
+            allowed=False,
+            terminal_state="CYCLE_STOP",
+            reason=(
+                f"bounded autonomous step budget exhausted after {int(maximum_steps)} steps; "
+                "synthesize the verified observations without further tool use"
+            ),
+            cycle_kind="COMPUTE_BUDGET_EXHAUSTED",
+            period=0,
+        )
+        self._assessments[-1] = stopped
+        return stopped
 
 
 def model_belief_record(

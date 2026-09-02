@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://oiec-stm.local/schemas/formal_writing/contracts.schema.json",
+  "title": "OIEC-STM Formal Writing Contracts v1",
+  "$defs": {
+    "SourceDocument": {
+      "type": "object",
+      "required": ["schema_version", "source_document_id", "content_sha256", "byte_size", "media_type", "page_count", "ingestion_adapter", "ingestion_adapter_version", "signature"],
+      "properties": {
+        "schema_version": {"const": 1},
+        "source_document_id": {"type": "string", "pattern": "^source:[0-9a-f]{64}$"},
+        "workspace_relative_path": {"type": "string"},
+        "content_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "byte_size": {"type": "integer", "minimum": 0},
+        "media_type": {"type": "string"},
+        "page_count": {"type": "integer", "minimum": 0},
+        "page_label_map": {"type": "array"},
+        "ingestion_adapter": {"type": "string"},
+        "ingestion_adapter_version": {"type": "string"},
+        "ocr_status": {"type": "string"},
+        "signature": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      },
+      "additionalProperties": true
+    },
+    "PageRecord": {
+      "type": "object",
+      "required": ["source_document_id", "physical_page_index", "physical_page_number", "display_page_label", "text_layer_kind", "page_text_sha256", "signature"],
+      "properties": {
+        "physical_page_index": {"type": "integer", "minimum": 0},
+        "physical_page_number": {"type": "integer", "minimum": 1},
+        "display_page_label": {"type": "string"},
+        "text_layer_kind": {"enum": ["native", "ocr", "reflowable"]},
+        "extraction_confidence": {"type": "integer", "minimum": 0, "maximum": 10000},
+        "page_text_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      },
+      "additionalProperties": true
+    },
+    "TextAnchor": {
+      "type": "object",
+      "required": ["anchor_id", "source_document_id", "source_content_sha256", "exact_text", "document_start_offset", "document_end_offset", "selector_signature"],
+      "properties": {
+        "anchor_id": {"type": "string", "pattern": "^anchor:"},
+        "exact_text": {"type": "string", "minLength": 1},
+        "document_start_offset": {"type": "integer", "minimum": 0},
+        "document_end_offset": {"type": "integer", "minimum": 1},
+        "page_spans": {"type": "array"},
+        "selector_signature": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      },
+      "additionalProperties": true
+    },
+    "ReferenceSpan": {
+      "type": "object",
+      "required": ["reference_span_id", "anchor_id", "reference_kind", "verbatim_text", "locator_display", "verification_status", "signature"],
+      "properties": {
+        "reference_kind": {"enum": ["quotation", "paraphrase_support", "summary_support", "synthesis_support", "definition", "data", "method", "counterevidence", "background"]},
+        "extraction_confidence": {"type": "integer", "minimum": 0, "maximum": 10000}
+      },
+      "additionalProperties": true
+    },
+    "ParaphraseLink": {"type": "object", "required": ["paraphrase_link_id", "draft_text", "source_span_ids", "support_relation", "signature"], "additionalProperties": true},
+    "ConceptAnnotation": {"type": "object", "required": ["concept_annotation_id", "concept_id", "preferred_label", "source_span_ids", "signature"], "additionalProperties": true},
+    "ReasoningAnnotation": {"type": "object", "required": ["reasoning_annotation_id", "source_span_ids", "component_role", "relation_type", "signature"], "additionalProperties": true},
+    "BibliographicRecord": {"type": "object", "required": ["bibliographic_record_id", "csl_item", "source_document_ids", "signature"], "additionalProperties": true},
+    "FormalWritingRequest": {
+      "type": "object",
+      "required": ["schema_version", "request_id", "operation", "objective", "profile", "source_paths", "output_paths", "request_signature"],
+      "properties": {
+        "schema_version": {"const": 1},
+        "operation": {"enum": ["INSPECT_SOURCES", "LOCATE_REFERENCE", "EXPLAIN_REFERENCE", "BUILD_SOURCE_MAP", "BUILD_ARGUMENT_MAP", "OUTLINE", "DRAFT", "REVISE", "VALIDATE", "WRITE", "EXPORT_REFERENCES"]},
+        "objective": {"type": "string", "minLength": 1},
+        "word_target": {"type": "integer", "minimum": 0},
+        "draft_paths": {"type": "array", "items": {"type": "string"}},
+        "network_policy": {"enum": ["offline", "metadata-only", "explicit-retrieval"]}
+      },
+      "additionalProperties": true
+    },
+    "FormalWritingPlan": {"type": "object", "required": ["plan_id", "request_id", "section_structure", "claim_inventory", "signature"], "additionalProperties": true},
+    "CitationUse": {"type": "object", "required": ["citation_use_id", "draft_span", "reference_span_ids", "verification_status"], "additionalProperties": true},
+    "ReferenceIntegrityReport": {"type": "object", "required": ["report_id", "draft_sha256", "unsupported_claims", "missing_locators", "stale_source_hashes", "passed", "signature"], "additionalProperties": true},
+    "WritingCertificate": {"type": "object", "required": ["certificate_id", "draft_sha256", "request_signature", "plan_signature", "integrity_report_signature", "performed_checks", "limitations", "signature"], "additionalProperties": true}
+  }
+}

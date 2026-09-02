@@ -1,0 +1,6 @@
+root ::= object
+object ::= "{" ws "\"operation\"" ws ":" ws string ws "," ws "\"objective\"" ws ":" ws string ws "," ws "\"source_paths\"" ws ":" ws array ws "}"
+array ::= "[" ws (string (ws "," ws string)*)? ws "]"
+string ::= "\"" chars "\""
+chars ::= ([^"\\] | "\\" ["\\/bfnrt])*
+ws ::= [ \t\n\r]*

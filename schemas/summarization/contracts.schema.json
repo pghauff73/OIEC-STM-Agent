@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://oiec-stm.local/schemas/summarization/contracts.schema.json",
+  "title": "OURD Summarization and Turn Recovery Contracts v1",
+  "$defs": {
+    "TurnExecutionPolicy": {
+      "type": "object",
+      "required": ["schema_version", "policy_id", "route_id", "route_signature", "source_snapshot_hash", "intent_mode", "route_target", "allowed_tool_groups", "signature", "authoritative"],
+      "properties": {"schema_version": {"const": 1}, "authoritative": {"const": false}},
+      "additionalProperties": true
+    },
+    "ToolAvailability": {"type": "object", "required": ["tool_name", "available", "reason_code", "current_state_signature"], "additionalProperties": true},
+    "ToolFailureEnvelope": {"type": "object", "required": ["ok", "error_code", "message", "failure_class", "recoverable", "tool_name", "call_fingerprint", "state_signature", "retry_disposition"], "properties": {"ok": {"const": false}}, "additionalProperties": true},
+    "CorpusManifest": {"type": "object", "required": ["schema_version", "manifest_id", "root_path", "source_snapshot_hash", "files", "manifest_signature"], "additionalProperties": true},
+    "DocumentReadCoverage": {"type": "object", "required": ["path", "content_sha256", "line_count", "covered_line_ranges", "uncovered_line_ranges", "read_evidence_ids", "coverage_complete", "coverage_signature"], "additionalProperties": true},
+    "DocumentSummaryArtifact": {"type": "object", "required": ["schema_version", "summary_id", "manifest_id", "path", "content_sha256", "source_snapshot_hash", "summary_sha256", "source_read_evidence_ids", "coverage_signature", "coverage_complete", "epistemic_status", "signature"], "additionalProperties": true},
+    "CorpusSummaryReport": {"type": "object", "required": ["manifest_id", "expected_paths", "summarized_paths", "missing_paths", "partial_paths", "stale_paths", "coverage_status", "source_snapshot_hash", "signature"], "additionalProperties": true},
+    "TerminalEvidenceProjection": {"type": "object", "required": ["verified_tool_observations", "verified_policy_failures", "model_proposed_tool_calls", "restored_source_excerpts", "document_summary_artifacts", "corpus_coverage", "material_limits", "projection_signature"], "additionalProperties": false}
+  }
+}

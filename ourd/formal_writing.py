@@ -6,7 +6,16 @@ from typing import Dict, Mapping, Tuple
 from .errors import PolicyError
 
 
-WRITING_PROFILES = ("general", "scientific-essay", "argumentative-essay")
+WRITING_PROFILES = (
+    "general",
+    "scientific-essay",
+    "argumentative-essay",
+    "engineering-report",
+    "literature-review",
+    "business-analysis",
+    "research-proposal",
+    "lab-report",
+)
 
 NODE_KINDS = {
     "thesis",
@@ -222,7 +231,7 @@ FORMAL UNIVERSITY WRITING RULES
 - Build paragraphs around a claim -> evidence -> reasoning link, not around one source at a time.
 - Synthesize multiple sources by theme, agreement, disagreement, method, limitation or implication; do not produce a source-by-source catalogue.
 - Evaluate evidence for relevance, credibility, method, limitations, bias and consistency with other evidence.
-- Make reasoning explicit: show why the evidence supports the claim and surface important implicit assumptions/warrants.
+- Make reasoning explicit: show why the evidence supports the claim and surface important implicit premises, assumptions and warrants.
 - Distinguish observed evidence from interpretation, inference, hypothesis and speculation.
 - Use calibrated language. Do not claim causation from correlation alone; qualify claims where evidence is partial, indirect or defeasible.
 - Include counterclaims or alternative explanations where they materially affect the thesis, then respond with evidence and reasoning rather than dismissive rhetoric.
@@ -245,7 +254,7 @@ SCIENTIFIC ESSAY PROFILE
 
     argumentative = """
 ARGUMENTATIVE ESSAY + LOGIC TOPOLOGY PROFILE
-- Construct an explicit ArgumentTopology before prose. Use one thesis node and nodes for claims, premises, evidence, warrants/implicit assumptions, counterclaims, rebuttals, qualifiers, limitations and implications.
+- Construct an explicit ArgumentTopology before prose. Use one thesis node and nodes for claims, premises, evidence, warrants/implicit premises and assumptions, counterclaims, rebuttals, qualifiers, limitations and implications.
 - Use directed relations such as supports, warrants, attacks, rebuts, qualifies, limits, entails and depends_on.
 - Keep the positive support graph acyclic: evidence/premises support intermediate claims, and intermediate claims support the thesis. Avoid circular support.
 - Connect opposing evidence and premises through the counterclaim they support; dialectical attack/rebuttal relations may cross the positive support hierarchy.
@@ -297,6 +306,131 @@ def profile_dimensions(profile: str) -> Tuple[str, ...]:
             "inference validity",
             "defeaters",
         )
-    if profile != "general":
-        raise PolicyError(f"unsupported writing profile: {profile!r}")
-    return base
+    profile_dimensions_by_name = {
+        "engineering-report": (
+            "requirements and constraints",
+            "option comparison",
+            "risk qualification",
+            "recommendation traceability",
+        ),
+        "literature-review": (
+            "thematic synthesis",
+            "study disagreement",
+            "method comparison",
+            "research gaps",
+        ),
+        "business-analysis": (
+            "benefit-cost comparison",
+            "operational risk",
+            "decision criteria",
+            "qualified recommendation",
+        ),
+        "research-proposal": (
+            "research gap",
+            "method rationale",
+            "falsifiable contribution",
+            "novelty review",
+        ),
+        "lab-report": (
+            "method traceability",
+            "result interpretation",
+            "measurement uncertainty",
+            "experimental limitations",
+        ),
+    }
+    if profile == "general":
+        return base
+    try:
+        return base + profile_dimensions_by_name[profile]
+    except KeyError as exc:
+        raise PolicyError(f"unsupported writing profile: {profile!r}") from exc
+
+
+from .writing_engine.models import (  # noqa: E402
+    BibliographicRecord,
+    CitationUse,
+    ConceptAnnotation,
+    DraftArtifact,
+    ExtractedSource,
+    FormalWritingPlan,
+    FormalWritingRequest,
+    FormalWritingResult,
+    PageRecord,
+    PageSpan,
+    ParaphraseLink,
+    PassageMatch,
+    ReasoningAnnotation,
+    ReferenceIntegrityReport,
+    ReferenceSpan,
+    SourceDocument,
+    TextAnchor,
+    WritingCertificate,
+)
+from .writing_engine.pipeline_models import (  # noqa: E402
+    ArgumentGraph,
+    Claim,
+    ConceptDefinition,
+    CounterClaim,
+    DocumentPlan,
+    DraftSection,
+    EvidenceLink,
+    FalsificationChallenge,
+    NoveltyAssessment,
+    ParagraphPlan,
+    QualifiedDocument,
+    ReasoningAlgorithmProposal,
+    ReasoningEdge,
+    ReasoningPathCandidate,
+    Qualification,
+    WritingAudit,
+    WritingTask,
+)
+from .writing_engine.service import FormalWritingService  # noqa: E402
+from .writing_engine.compiler import compile_formal_writing_request  # noqa: E402
+
+
+__all__ = [
+    "ArgumentEdge",
+    "ArgumentGraph",
+    "ArgumentNode",
+    "ArgumentTopology",
+    "BibliographicRecord",
+    "CitationUse",
+    "Claim",
+    "ConceptAnnotation",
+    "ConceptDefinition",
+    "CounterClaim",
+    "DocumentPlan",
+    "DraftArtifact",
+    "DraftSection",
+    "EvidenceLink",
+    "ExtractedSource",
+    "FormalWritingPlan",
+    "FormalWritingRequest",
+    "FormalWritingResult",
+    "FormalWritingService",
+    "FalsificationChallenge",
+    "NoveltyAssessment",
+    "PageRecord",
+    "PageSpan",
+    "ParaphraseLink",
+    "ParagraphPlan",
+    "PassageMatch",
+    "ReasoningAnnotation",
+    "ReasoningAlgorithmProposal",
+    "ReasoningEdge",
+    "ReasoningPathCandidate",
+    "ReferenceIntegrityReport",
+    "ReferenceSpan",
+    "SourceDocument",
+    "TextAnchor",
+    "Qualification",
+    "QualifiedDocument",
+    "WRITING_PROFILES",
+    "WritingCertificate",
+    "WritingAudit",
+    "WritingTask",
+    "compile_formal_writing_request",
+    "profile_dimensions",
+    "research_backed_profile",
+]

@@ -5,7 +5,7 @@ The Visual Workbench includes deterministic image-similarity and three-view matc
 Install the visual extra first:
 
 ```bash
-pip install -e '.[visual]'
+pip install '.[visual]'
 ```
 
 Visual matching uses Pillow for bounded raster preparation, edge extraction, and generated mesh projection images.

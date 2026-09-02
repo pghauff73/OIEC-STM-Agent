@@ -65,11 +65,10 @@ after this audit so they cover the audit itself.
 ## Qwen Boundary
 
 On August 21, 2026, `../VisualGrammar2d/qwen_cli.py` was verified as a bounded,
-deterministic local drafting interface. The exact requested Ollama tag
-`qwen3.8:16b` was not installed. The verified local profile was
-`qwen3.8-27b-fast`; it is not silently substituted for 16B. Any Qwen output is
+deterministic local drafting helper outside Agent Chat. That legacy helper is
 proposal-only and cannot qualify algorithms, satisfy deterministic evidence,
-approve a plan, or certify a snapshot.
+approve a plan, or certify a snapshot. Current Agent Chat provider selection is
+`llama_cpp_process`.
 
 ## Explicit Deferrals and Limits
 

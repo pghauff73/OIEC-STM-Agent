@@ -24,6 +24,11 @@ class RedactionTests(unittest.TestCase):
         items = safe_projection([1, 2, 3], max_items=2)
         self.assertEqual(3, len(items))
 
+    def test_secret_assignments_inside_strings_are_redacted(self) -> None:
+        projected = safe_projection("failure: api_key=super-secret-value")
+        self.assertNotIn("super-secret-value", projected)
+        self.assertIn("<redacted>", projected)
+
 
 if __name__ == "__main__":
     unittest.main()

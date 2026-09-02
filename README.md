@@ -5,10 +5,21 @@ governance, and transaction boundary:
 
 **HRTv1 → OURD → IURMv1.1.1 → EONv1 → Evidence Gate → Action → CFEL feedback**
 
+When a task benefits from explicit hypothesis comparison, the optional
+super-reasoning path is:
+
+**HRTv1 → OURD → OIEC boundary/dimension projection → OIEC-SR → IURMv1.1.1 → EONv1 → Evidence Gate → Action → CFEL feedback**
+
 The model may inspect, reason, propose, generate candidate patches, and analyze
 failures. It cannot grant itself mutation authority, lower deterministic risk,
 approve its own unsupported evidence, write internal evidence, or certify a
 release.
+
+The dependency-ordered program for integrating and completing every accepted
+implementation is `COMPLETE_IMPLEMENTATION_STRATEGY.md`. It covers current
+source recovery, upstream integration, OIEC-SR completion, direct llama.cpp
+Qwen3.8 support, documentation regeneration, qualification, exact-hash approval,
+merge, and release.
 
 ## What Is Enforced
 
@@ -84,6 +95,62 @@ All OIEC control quantities use integer basis points from `0` to `10000`.
 These values are deterministic telemetry and cannot lower the existing L0/L1/L2
 risk floor.
 
+## OIEC-SR v1.0 Super Reasoning
+
+OIEC-SR is an additive, bounded reasoning layer. It does not replace OURD,
+IURM, EON, CFEL, the evidence registry, or the mutation executor. It converts a
+governed `ReasoningProblem` and explicit `Hypothesis` pool into independently
+proposed, verified, and falsified candidate paths, then emits a deterministic
+`ReasoningCertificate`.
+
+The canonical records are `ReasoningProblem`, `Hypothesis`, `HypothesisSet`,
+`HypothesisUpdateRecord`, `ReasoningNode`, `ReasoningEdge`,
+`ReasoningTopology`, `ReasoningStep`, `ReasoningPath`, `VerifierReport`,
+`FalsifierReport`, `CandidateSet`, `ReasoningMetrics`, `ReasoningCertificate`,
+and `ReasoningBudget`. `SuperReasoningKernel` owns the pure orchestration.
+
+The default search uses four independent perspectives: causal/mechanistic,
+counterexample-first, formal derivation, and evidence synthesis. Candidate
+count is adapted to recorded uncertainty, difficulty, and disagreement but is
+always capped by OIEC dimensions and the provider's
+`max_reasoning_samples`. Each candidate receives a step-level verifier report;
+the top two verifier-ranked candidates receive separate falsifier reports.
+Selection then uses fixed-point scores and lexical path IDs as the final
+tie-break.
+
+Only structured artifacts are requested from providers: claims, premises,
+declared evidence IDs, checks, assumptions, counterexamples, and conclusions.
+The system neither requests nor persists hidden chain-of-thought. Provider
+self-confidence cannot override verifier, falsifier, evidence, topology, or
+budget results.
+
+`ReasoningTopology` schema v2 makes each inference edge content-addressed and
+assigns it an explicit deductive, inductive, abductive, causal, analogical,
+probabilistic, authority, defeasible, constraint, or computational mode.
+Evidence nodes must belong to the declared finite evidence universe. Material
+conclusions must trace through positive acyclic edges to evidence, an
+observation, a validated problem premise, or an explicit assumption;
+assumption-only conclusions remain hypothetical. Contradiction, falsification,
+undercut, and rebuttal edges never count as positive support, and disconnected
+reasoning branches fail closed.
+
+`OURDAgent.run_super_reasoning()` requires established governance, the exact
+current source snapshot, declared evidence IDs, and no pending EON action. It
+persists the bounded problem, hypotheses, candidate set, topology, and
+certificate in RuntimeState schema v4. `HypothesisSet` is the signed immutable
+owner; `hypothesis_pool` remains a derived compatibility projection. Every
+fixed-point evidence or CFEL belief change is bound to an immutable
+`HypothesisUpdateRecord`. A current accepted certificate may be
+bound into a later EON action; stale, tampered, unresolved, or no-value
+certificates fail closed. Existing callers that do not start a reasoning
+episode continue through the baseline path unchanged.
+
+CFEL collisions can weaken or falsify matching hypotheses without deleting
+previous support evidence. Collision identities and belief updates are
+content-addressed so identical projected inputs replay identically. Repeating
+different wording without measurable evidence, uncertainty, contradiction, or
+confidence improvement produces `STOP_NO_VALUE`, not a new permission to act.
+
 ## Install
 
 Python 3.10 or newer is required.
@@ -91,19 +158,18 @@ Python 3.10 or newer is required.
 ```bash
 python -m venv .venv
 source .venv/bin/activate
-pip install -e .
+pip install .
 ```
 
-The local Ollama transport uses the Python standard library. For OpenAI or
-another remote OpenAI-compatible provider, install the optional SDK:
+The local model transport is the direct `llama_cpp_process` provider. It uses a
+bounded JSONL subprocess protocol with the checked-in `oiec-llama-runner`; no
+remote provider SDK is required.
 
-```bash
-pip install -e '.[openai]'
-```
-
-The canonical commands are `oiec-stm-agent` and `oiec-stm-gui`. The historical
-`ourd-agent`, `ourd-gui`, and `python ourd_agent.py` launch paths remain
-supported compatibility aliases. The `ourd` Python package, `OURD_*`
+The canonical commands are `oiec-stm-agent` and
+`oiec-stm-sr-agent-icpi`. The exact-name `oiec-stm-sr-AgentICPI` command is
+installed as a compatibility alias for the product name. The historical
+`oiec-stm-gui`, `ourd-agent`, `ourd-gui`, and `python ourd_agent.py` launch
+paths remain supported compatibility aliases. The `ourd` Python package, `OURD_*`
 environment variables, and `.ourd-agent/` state directory remain stable public
 interfaces because OURD is still the semantic problem-model layer inside
 OIEC-STM-Agent.
@@ -120,36 +186,155 @@ oiec-stm-agent /path/to/repo \
 Read-only runs may create `.ourd-agent/` evidence and state inside the target
 workspace, but cannot mutate ordinary workspace files.
 
+## Formal Writing and Corpus Summaries
+
+The source-grounded writing engine is available through a dedicated command:
+
+```bash
+oiec-stm-formal-write locate \
+  --workspace . \
+  --source research/paper.md \
+  --task "Locate the definition of epistemic uncertainty."
+
+oiec-stm-formal-write draft \
+  --workspace . \
+  --source research/paper-a.md \
+  --source research/paper-b.md \
+  --profile scientific-essay \
+  --citation-style apa-7 \
+  --task "Evaluate the evidence for the proposed mechanism."
+```
+
+Supported command groups are `inspect`, `locate`, `explain-reference`,
+`source-map`, `argument-map`, `outline`, `draft`, `revise`, `validate`,
+`write`, and `references`. Reflowable Markdown, text, RST, HTML, CSV, JSON,
+and YAML sources receive exact line/section locators. PDF and OCR support are
+optional extras and fail closed when their dependencies or explicit OCR
+permission are absent.
+
+The canonical agent command also exposes the governed reasoning pipeline:
+
+```bash
+oiec-stm-agent write plan \
+  --task "Evaluate whether AI is beneficial for small businesses" \
+  --profile argumentative-essay
+
+oiec-stm-agent write draft \
+  --workspace . \
+  --source research/paper.md \
+  --task "Evaluate whether AI is beneficial for small businesses" \
+  --words 1800
+
+oiec-stm-agent write audit \
+  --draft <draft-id> \
+  --why \
+  --require-qualified
+```
+
+The pipeline persists signed `WritingTask`, `ConceptDefinition`, `Claim`,
+`EvidenceLink`, `ReasoningEdge`, `ArgumentGraph`, `DocumentPlan`,
+`ParagraphPlan`, `DraftSection`, `WritingAudit`, novelty, falsification, and
+review-bound SAA algorithm-proposal artifacts. Prose is compiled from the
+selected graph under `NoNewMaterialClaims`; unsupported, disconnected,
+semantically drifting, over-strong, or citation-untraceable claims fail closed.
+
+Profiles now include `scientific-essay`, `argumentative-essay`,
+`engineering-report`, `literature-review`, `business-analysis`,
+`research-proposal`, and `lab-report`. The deterministic OIEC-Bench track is
+available with `python3 tools/run_formal_writing_benchmark.py`.
+
+The same engine is available through a standalone Tk workbench without opening
+the complete AgentICPI GUI:
+
+```bash
+oiec-stm-formal-writing-gui --workspace /path/to/workspace
+python3 -m ourd_gui.formal_writing_gui --repo /path/to/workspace
+```
+
+Optional startup fields include `--task`, `--profile`, repeatable `--source`
+and `--rubric`, `--network-policy`, `--require-page-accuracy`, `--allow-ocr`,
+`--ocr-language`, `--authority`, and `--open-result`. Startup is observational:
+it initializes the visible form and selected persisted identity but does not
+automatically run a job. The reusable workbench supports Research, Argument,
+Plan, Draft, Audit, Revise, Inspect Sources, Locate Passage, Explain Reference,
+and Export References through the canonical compiler and service.
+
+The document is selection-only. Graph, evidence, audit, SAA proposal, and
+novelty panels preserve exact signed IDs and statuses. `Prepare Governed Write`
+requires a selected persisted draft and audit, explicit output and authority
+paths, and exact request-signature confirmation. It prepares a transaction and
+EON action with `PREPARED_PENDING_EVIDENCE_AND_HUMAN_APPROVAL`; it cannot
+approve, apply, certify, or release the document.
+
+`write` never silently edits the workspace. It requires an exact-snapshot
+authority manifest and the exact signed request confirmation, then prepares a
+transaction and EON action for evidence and human approval. The existing
+`oiec-stm-agent --write` command accepts `--source`, `--rubric`, `--draft`,
+`--citation-style`, `--word-target`, and page/OCR policy flags and compiles the
+same `FormalWritingRequest` as the dedicated command.
+
+Natural-language ICPI references include `@source[...]`,
+`@sourcefolder[...]`, `@rubric[...]`, `@draft[...]`, `@output[...]`, and
+`@style[...]`. British and US summary requests such as
+`Summarise each /docs/ markdown file.` and `Summarize @folder[docs]` compile to
+a read-only corpus policy. Completion requires exact manifest set equality,
+complete line coverage, and source-bound summary artifacts; summary turns do
+not require or expose super reasoning.
+
 ## Local Qwen3.8
 
-The verified local profile on August 21, 2026 is **not** a `qwen3.8:16b` tag.
+The verified local profile on August 30, 2026 is **not** a `qwen3.8:16b` tag.
 It is:
 
-- Ollama `0.32.14`;
-- `qwen3.8-27b-fast:latest`;
-- based on `hf.co/unsloth/Qwen3.8-27B-GGUF:Q3_K_S`;
-- configured for an 8192-token context and `draft_num_predict 2`.
+- `llama_cpp_process`;
+- `qwen3.8-27b-direct`;
+- based on `../Neuro-llama/Qwen3.8-27B-Q2_K.gguf`;
+- configured for an 8192-token llama.cpp context.
+
+The exact case-sensitive product launcher now performs automatic startup and
+verification when it is invoked without an explicit provider configuration:
+
+```bash
+oiec-stm-sr-AgentICPI --repo .
+```
+
+It resolves the product label `qwen3.8:27B-Fast` to
+`qwen3.8-27b-direct`, selects the direct provider, binds
+`../Neuro-llama/Qwen3.8-27B-Q2_K.gguf`, verifies its configured digest, and
+records any configured runner path. It never pulls, starts a model service, or
+silently substitutes a model. Use `--no-auto-qwen` to disable the profile or
+`--auto-qwen` with the source-tree/lowercase launchers.
 
 Revalidate the current host before every governed run:
 
 ```bash
 mkdir -p /tmp/ourd-preflight
 oiec-stm-agent /tmp/ourd-preflight \
-  --base-url http://127.0.0.1:11434/v1 \
-  --api-key ollama \
-  --model qwen3.8-27b-fast \
+  --provider llama_cpp_process \
+  --model qwen3.8-27b-direct \
+  --runner-path /absolute/path/to/oiec-llama-runner \
+  --model-path ../Neuro-llama/Qwen3.8-27B-Q2_K.gguf \
+  --expected-model-sha256 028a1d47b9c822ca76d1e9295d0078d21351a8816ec5612cb4860d7c1ef429d9 \
+  --llama-cpp-root /absolute/path/to/llama.cpp \
+  --llama-cpp-build-dir /absolute/path/to/llama.cpp/build \
+  --llama-grammar-dir "$PWD/grammars/providers" \
+  --llama-context 8192 \
   --reasoning-effort none \
   --context-budget 6000 \
-  --max-output-tokens 700 \
+  --max-output-tokens 1400 \
   --preflight
 ```
 
 Run the agent:
 
 ```bash
-export OURD_BASE_URL=http://127.0.0.1:11434/v1
-export OURD_API_KEY=ollama
-export OURD_MODEL=qwen3.8-27b-fast
+export OURD_PROVIDER=llama_cpp_process
+export OURD_MODEL=qwen3.8-27b-direct
+export OURD_LLAMA_RUNNER=/absolute/path/to/oiec-llama-runner
+export OURD_LLAMA_MODEL_PATH=../Neuro-llama/Qwen3.8-27B-Q2_K.gguf
+export OURD_LLAMA_MODEL_SHA256=028a1d47b9c822ca76d1e9295d0078d21351a8816ec5612cb4860d7c1ef429d9
+export OURD_LLAMA_CPP_ROOT=/absolute/path/to/llama.cpp
+export OURD_LLAMA_CPP_BUILD_DIR=/absolute/path/to/llama.cpp/build
 export OURD_REASONING_EFFORT=none
 export OURD_CONTEXT_BUDGET=6000
 export OURD_MAX_OUTPUT_TOKENS=700
@@ -161,6 +346,73 @@ oiec-stm-agent /path/to/repo --task "Inspect the repository read-only."
 The provider refuses requests estimated to exceed its configured context budget
 rather than silently increasing the verified model context.
 
+### Direct llama.cpp Qwen3.8
+
+OIEC-STM-Agent uses the Qwen3.8 GGUF through the native
+`oiec-llama-runner` process. This provider uses a bounded
+JSONL protocol, validates GBNF-constrained output, starts a fresh llama.cpp
+context for every completion, performs zero hidden retries, and leaves all
+authority, policy, EON, transaction, and approval decisions in OIEC-STM-Agent.
+The reviewed grammar set includes ordinary message output, ordinary tool output,
+and a compact no-whitespace function-call-only grammar. Every machine-readable
+benchmark answer and individual proposer, verifier, falsifier, or synthesizer
+object uses that structured tool channel, so JSON syntax is enforced before the
+existing deterministic semantic validators run. Provider tool schemas declare
+the allowed top-level vocabulary but intentionally leave role fields optional;
+required semantics remain owned by the role parser, verifier, evidence gate,
+and progress certificate rather than being misclassified as transport failure.
+Micro-batch array entries likewise remain semantically untyped at the transport
+boundary. A missing, extra, or non-object entry is rejected by the ordered role
+parser, recorded as a reasoning-validation repair, and may consume one bounded
+repair pass through independent structured object calls. The original response
+hash and repair record remain in benchmark telemetry; no retry is hidden and no
+malformed entry is accepted as evidence.
+The default OIEC-SR profile
+keeps proposers and falsifiers independent while verifying two candidates per
+structured model call; those batch sizes are part of the signed reasoning
+configuration rather than a prompt side effect.
+
+Build the runner against an existing llama.cpp checkout as described in
+`native/oiec_llama_runner/README.md`, then bind the exact runner, GGUF,
+llama.cpp source, build directory, grammar directory, and model digest:
+
+```bash
+export OURD_PROVIDER=llama_cpp_process
+export OURD_MODEL=qwen3.8-27b-direct
+export OURD_LLAMA_RUNNER=/absolute/path/to/oiec-llama-runner
+export OURD_LLAMA_MODEL_PATH=../Neuro-llama/Qwen3.8-27B-Q2_K.gguf
+export OURD_LLAMA_MODEL_SHA256=028a1d47b9c822ca76d1e9295d0078d21351a8816ec5612cb4860d7c1ef429d9
+export OURD_LLAMA_CPP_ROOT=/absolute/path/to/llama.cpp
+export OURD_LLAMA_CPP_BUILD_DIR=/absolute/path/to/llama.cpp/build
+export OURD_LLAMA_GRAMMAR_DIR="$PWD/grammars/providers"
+export OURD_LLAMA_CONTEXT=4096
+export OURD_LLAMA_GPU_LAYERS=32
+export OURD_LLAMA_THREADS=12
+export OURD_LLAMA_SEED=1234
+export OURD_CONTEXT_BUDGET=2000
+export OURD_MAX_OUTPUT_TOKENS=700
+export OURD_TRANSPORT_RETRIES=0
+
+oiec-stm-agent /path/to/repo --preflight
+oiec-stm-agent /path/to/repo --task "Inspect the repository read-only."
+```
+
+The SHA-256 value above identifies the GGUF verified on August 28, 2026; it is
+not permission to trust a different file with a similar name. Recompute and
+review the digest, runner hash, llama.cpp commit, shared-library hashes, device
+identity, context, sampler, and grammar hashes before qualification. The
+benchmark harness shares one direct model process across the base, OIEC, and
+OIEC-SR arms to avoid duplicate model residency, while the runner still creates
+a fresh bounded context for each completion.
+
+The provider-neutral local-model contract is adapted from the interface shape
+reviewed in `../Neuro-main/include/neuro/local_model.hpp`. OIEC keeps the typed
+status, descriptor, completion controls, metrics, streaming, chat-template, and
+cancellation concepts, but fixes `max_attempts` to one and retains process
+isolation so no retry can bypass CFEL or `AttemptKey`. See
+`docs/NEURO_LLAMA_CPP_INTEGRATION.md` for the logic topology, reuse boundary,
+tutorial, and live Qwen3.8 evidence.
+
 Omit `--task` for a multi-turn terminal chat. `/new` starts a fresh model
 context while preserving the repository audit trail, `/help` lists the local
 commands, and `/exit` or `/quit` closes the session:
@@ -169,13 +421,14 @@ commands, and `/exit` or `/quit` closes the session:
 oiec-stm-agent /path/to/repo
 ```
 
-### Optional VisualGrammar2d Qwen 16B drafting path
+### Optional legacy VisualGrammar2d Qwen 16B drafting path
 
 `../VisualGrammar2d/qwen_cli.py` can be reused as a bounded, read-only drafting
 helper for documentation, GUI labels, candidate explanations, and critique. It
 supports an Ollama backend, repository-constrained study context, explicit
 included files, deterministic decoding, input-character limits, output-token
-limits, context limits, and request timeouts.
+limits, context limits, and request timeouts. This is a legacy external helper,
+not the Agent Chat provider; Agent Chat uses `llama_cpp_process`.
 
 On **August 21, 2026**, this host does not contain an Ollama model named
 `qwen3.8:16b`; `ollama show qwen3.8:16b` returns "model not found". Do not
@@ -204,24 +457,31 @@ artifact hashes, exact-snapshot human approval, and rollback remain
 authoritative. The GUI Model panel therefore reports backend/model facts as
 observational metadata and explicitly marks model output non-authoritative.
 
-## Evidence-Governed GUI Workbench
+## OIEC-STM-SR-AgentICPI Workbench
 
-The `oiec-stm-gui` entry point opens the Tkinter engineering workbench:
+The `oiec-stm-sr-agent-icpi` entry point opens the Tkinter engineering
+workbench and its Codex-like governed command prompt:
 
 ```bash
-oiec-stm-gui --repo /path/to/repository
+oiec-stm-sr-agent-icpi --repo /path/to/repository
 ```
 
 For the currently verified local Qwen profile:
 
 ```bash
-oiec-stm-gui --repo /path/to/repository \
-  --model qwen3.8-27b-fast \
-  --base-url http://127.0.0.1:11434/v1 \
-  --api-key ollama \
+oiec-stm-sr-agent-icpi --repo /path/to/repository \
+  --provider llama_cpp_process \
+  --model qwen3.8-27b-direct \
+  --runner-path /absolute/path/to/oiec-llama-runner \
+  --model-path ../Neuro-llama/Qwen3.8-27B-Q2_K.gguf \
+  --expected-model-sha256 028a1d47b9c822ca76d1e9295d0078d21351a8816ec5612cb4860d7c1ef429d9 \
+  --llama-cpp-root /absolute/path/to/llama.cpp \
+  --llama-cpp-build-dir /absolute/path/to/llama.cpp/build \
+  --llama-grammar-dir "$PWD/grammars/providers" \
+  --llama-context 8192 \
   --reasoning-effort none \
   --context-budget 6000 \
-  --max-output-tokens 700
+  --max-output-tokens 1400
 ```
 
 The GUI is an observability and request surface over EGCF. It does not write
@@ -229,10 +489,30 @@ repository files directly or grant capability. Its principal panels are:
 
 - **Selection Trace:** intent, required capabilities, candidates, exclusions,
   score components, exact qualification/evidence links, winner, and tie-break.
-- **Agent Chat:** bounded multi-turn conversation, multiline composer, live
-  model/tool activity, cooperative Stop, New Chat context boundaries, and an
-  append-only replayable transcript. Agent tools still pass through the normal
-  authority, evidence, EON, and transaction controls.
+- **AgentICPI Prompt:** bounded multi-turn conversation, deterministic
+  natural-language intent routing, live risk/ambiguity preview, slash-command
+  completion, bounded `Ctrl+Up`/`Ctrl+Down` history, cooperative Stop, New Chat
+  context boundaries, content-addressed bounded file/folder context envelopes,
+  and an append-only replayable transcript. The transcript keeps the original
+  request while the model receives a snapshot-bound structured projection.
+  A read-only Context Inspector exposes exact envelope and source-snapshot
+  identities, bounded attachment/file metadata, hash and truncation status, and
+  redacted-by-default in-memory previews. Confirmation-required turns build that
+  exact envelope first and issue a non-authoritative accepted/rejected receipt
+  bound to the route, snapshot, envelope, budget, model-input SHA-256, counts,
+  and pinned draft. Accepted receipts are verified before task creation and
+  again immediately before provider invocation; rejection or drift starts no
+  model turn. `/attach` adds up to 32 canonical
+  workspace paths to a content-addressed pinned set and validates the resulting
+  draft envelope without calling the model; `/detach` removes selected paths or
+  clears all. `/context` reports a bounded file delta and `/context --refresh`
+  explicitly accepts the observed snapshot; stale pins block model turns and
+  are never silently refreshed. Pinned count/signature are visible in route
+  previews, `/status`, the Context Inspector, and journal metadata. `/new` clears pins. GUI and core
+  run-start audit records keep hashes and counts, not preview or structured-task
+  bodies.
+  Agent tools still pass through the normal authority, evidence, EON, and
+  transaction controls.
 - **Workflow / EON:** compiled DAG, risk, scope, pre/postconditions, rollback,
   exact source snapshot, matching approval, and execution state.
 - **Evidence / Governance:** IEPS coverage dimensions, evidence classes,
@@ -249,8 +529,10 @@ repository files directly or grant capability. Its principal panels are:
 - **Performance:** bounded timing telemetry, incremental task loading, and
   bounded immutable-object caching for large sessions.
 
-Use `Ctrl+L` to focus Agent Chat and `Ctrl+K` for the command palette. Press
-Enter to send and Shift+Enter to insert a newline. GUI-only preferences, chat
+Use `Ctrl+L` to focus AgentICPI and `Ctrl+K` for the command palette. Press
+Enter to send, Shift+Enter to insert a newline, and type `/` for deterministic
+command suggestions; Tab accepts the first matching command without submitting
+it. GUI-only preferences, chat
 events, and replay projection are stored under `.ourd-agent/gui/`; canonical
 agent and EGCF state remain under `.ourd-agent/` and `.ourd-agent/egcf/`.
 
@@ -264,14 +546,17 @@ xvfb-run -a python3 -m ourd_gui --repo /tmp/fixture --smoke-test
 sandboxed runners may not own `/tmp/.X11-unix`; the application still connects
 only through the validator's loopback display and temporary authority cookie.
 
-See `docs/OURD_AGENT_GUI.md` and the `docs/GUI_*.md` contracts for architecture,
-events, selection semantics, safety, testing, migrations, and current limits.
+See `docs/OIEC_STM_SR_AGENTICPI.md`, `docs/OURD_AGENT_GUI.md`, and the
+`docs/GUI_*.md` contracts for prompt semantics, architecture, events, selection
+semantics, safety, testing, migrations, and current limits.
 
 ## EGCFv1 Semantic Command Fabric
 
-Version `0.4.0` publishes the OIEC-STM-Agent name and OIEC-STMv1.2 bounded
-transition layer. The Evidence Governed Command Fabric remains available as the
-separate `egcf` entry point above the existing OURD/EON primitives:
+Version `0.7.0` adds grounded ReasoningTopology schema v2 on top of the
+first-class bounded hypothesis state and RuntimeState schema v4 foundation under the
+OIEC-STM-Agent name and OIEC-STMv1.2 bounded-transition layer. The Evidence
+Governed Command Fabric remains available as the separate `egcf` entry point
+above the existing OURD/EON primitives:
 
 ```text
 Intent
@@ -314,15 +599,13 @@ simulation, exact EON approval/execution/rollback, replay, assurance cases,
 host adapters, generated typed command references, and governed grammar,
 physics, geometry, vision, robotics, and CAD domain packs.
 
-Qwen integration remains proposal-only. `tools/evaluate_egcf_qwen.py` records
-the neighboring VisualGrammar2d wrapper and low-level CLI hashes, but uses a
-bounded raw Ollama request because the current wrapper routes its advertised
-model option to the default Ollama model and the direct CLI produces an empty
-fallback with this alias's stop-token template. The evaluator binds the exact
-tag, full Ollama blob digests, meaningful-output checks, and post-run 100% GPU
-residency, and verifies that the source snapshot remains unchanged. It never
-converts model output into authority, qualification, approval, or
-certification, and refuses silent substitution when `qwen3.8:16b` is absent.
+Legacy Qwen integration remains proposal-only. `tools/evaluate_egcf_qwen.py`
+records the neighboring VisualGrammar2d wrapper and low-level CLI hashes for
+historical EGCF evaluation. That path is not the Agent Chat provider; current
+Agent Chat uses `llama_cpp_process`. The legacy evaluator binds the exact tag,
+blob digests, meaningful-output checks, and source snapshot. It never converts
+model output into authority, qualification, approval, or certification, and
+refuses silent substitution when `qwen3.8:16b` is absent.
 
 Generate an exact-snapshot deterministic validation bundle:
 
@@ -460,10 +743,11 @@ Run deterministic validation:
 python3 tools/validate.py
 ```
 
-Run deterministic validation plus the optional live Qwen read-only tool loop:
+Run deterministic validation plus the optional live Qwen read-only tool loop
+when a direct runner and GGUF are configured:
 
 ```bash
-python3 tools/validate.py --live-ollama
+python3 tools/validate.py --live-llama-cpp
 ```
 
 Validation writes a JSON evidence report under `.ourd-agent/evidence/` unless
@@ -479,7 +763,7 @@ override deterministic failures.
 | Exact action, grounded gates, limits, expiry | `tests/test_actions.py` |
 | Atomic apply, multi-file recovery, mode rollback | `tests/test_actions.py` |
 | State restoration, chain validation, locking, redaction | `tests/test_persistence.py` |
-| Non-stateful tool loop and direct Ollama transport | `tests/test_provider.py` |
+| Non-stateful tool loop and direct llama.cpp process transport | `tests/test_provider.py`, `tests/providers/test_llama_cpp_process.py` |
 | CLI contract and strict tool schemas | `tests/test_cli.py` |
 | Empty reads and escaping-symlink listing | `tests/test_reads.py` |
 | Versioned schema artifacts | `tests/test_schemas.py` |

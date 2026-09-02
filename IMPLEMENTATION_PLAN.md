@@ -52,7 +52,7 @@ The requested label `Qwen3.8:16b` is unresolved. The verified local profile is:
 | --- | --- |
 | Ollama version | `0.32.14` |
 | Model alias | `qwen3.8-27b-fast:latest` |
-| Base model | `hf.co/unsloth/Qwen3.8-27B-GGUF:Q3_K_S` |
+| Base model | `../Neuro-llama/Qwen3.8-27B-Q2_K.gguf` |
 | Alias size | approximately 13 GB as reported by `ollama list` |
 | Context | `8192` |
 | Draft prediction | `draft_num_predict 2` |
@@ -123,7 +123,7 @@ ourd/
   cfel.py                     collision records and retry constraints
   providers/
     base.py                   provider interface
-    openai_responses.py       OpenAI and Ollama Responses implementation
+    llama_cpp_process.py      direct llama.cpp process implementation
 tests/
   test_authority.py
   test_workspace.py

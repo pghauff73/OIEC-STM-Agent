@@ -6,6 +6,7 @@ from typing import Any, Callable, Dict, Mapping, Sequence
 from ourd.production_agent import ProductionOURDAgent as OURDAgent
 from ourd.egcf.engine import EGCFEngine
 from ourd.providers import ProviderConfig
+from ourd.interaction import TurnExecutionPolicy
 from ourd.workspace import Workspace
 
 from .commands import (
@@ -34,7 +35,7 @@ class CoreGateway:
         self.authority_path = authority_path
         self.actor = actor
         self.recovery_transaction_id = recovery_transaction_id
-        self.provider_config = provider_config or ProviderConfig(model="gpt-5.6")
+        self.provider_config = provider_config or ProviderConfig(model="qwen3.8-27b-direct")
         if not self.provider_config.visual_asset_root:
             self.provider_config.visual_asset_root = str(
                 self.repository_root / ".ourd-agent" / "gui-assets"
@@ -94,6 +95,16 @@ class CoreGateway:
         with self._engine() as engine:
             return engine.replay(request.plan_id, dict(request.modifiers))
 
+    def provider_preflight(self) -> Dict[str, Any]:
+        with OURDAgent(
+            self.repository_root,
+            authority_path=self.authority_path,
+            recovery_transaction_id=self.recovery_transaction_id,
+            provider_config=self.provider_config,
+            max_steps=self.max_agent_steps,
+        ) as agent:
+            return agent.provider_preflight()
+
     def chat_turn(
         self,
         message: str,
@@ -101,6 +112,7 @@ class CoreGateway:
         *,
         event_callback: Callable[[Mapping[str, Any]], None] | None = None,
         cancel_check: Callable[[], bool] | None = None,
+        turn_execution_policy: TurnExecutionPolicy | None = None,
     ) -> str:
         with OURDAgent(
             self.repository_root,
@@ -109,9 +121,11 @@ class CoreGateway:
             provider_config=self.provider_config,
             max_steps=self.max_agent_steps,
             event_callback=event_callback,
+            turn_execution_policy=turn_execution_policy,
         ) as agent:
             return agent.run_task(
                 message,
                 conversation_history=history,
                 cancel_check=cancel_check,
+                turn_execution_policy=turn_execution_policy,
             )

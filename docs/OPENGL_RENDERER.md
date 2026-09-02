@@ -5,7 +5,7 @@ This module adds an optional headless OpenGL 3.3 rendering backend to the Visual
 ## Install
 
 ```bash
-pip install -e '.[opengl]'
+pip install '.[opengl]'
 ```
 
 The OpenGL extra installs ModernGL with its headless context support plus Pillow for texture decode and framebuffer encoding. The ordinary GUI still works without this extra and keeps the existing Tk software mesh viewer as a fallback.

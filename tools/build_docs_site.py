@@ -102,37 +102,209 @@ REFERENCE_LIBRARY = (
             "complete mediation, economy of mechanism, and explicit design rather than secrecy."
         ),
     },
+    {
+        "id": "R8",
+        "title": "NASA Systems Engineering Handbook",
+        "authors": "National Aeronautics and Space Administration",
+        "url": "https://www.nasa.gov/reference/systems-engineering-handbook/",
+        "summary": (
+            "NASA explains systems engineering as a lifecycle discipline that connects "
+            "stakeholder needs, requirements, design, implementation, verification, "
+            "validation, and technical decision-making."
+        ),
+    },
+    {
+        "id": "R9",
+        "title": "WAI-ARIA Authoring Practices: Developing a Keyboard Interface",
+        "authors": "World Wide Web Consortium Web Accessibility Initiative",
+        "url": "https://www.w3.org/WAI/ARIA/apg/practices/keyboard-interface/",
+        "summary": (
+            "W3C guidance explains that interactive interfaces need predictable keyboard "
+            "movement, visible focus, and controls whose behaviour is understandable "
+            "without relying on a mouse."
+        ),
+    },
+    {
+        "id": "R10",
+        "title": "RFC 8785: JSON Canonicalization Scheme",
+        "authors": "Anders Rundgren, Bruce Jordan, and Samuel Erdtman",
+        "url": "https://www.rfc-editor.org/rfc/rfc8785.html",
+        "summary": (
+            "The RFC defines a repeatable JSON representation so hashing and signing use "
+            "the same bytes even when ordinary serializers could choose different layouts."
+        ),
+    },
+    {
+        "id": "R11",
+        "title": "Atomic Commit in SQLite",
+        "authors": "SQLite Project",
+        "url": "https://sqlite.org/atomiccommit.html",
+        "summary": (
+            "SQLite describes atomic commit as making a transaction appear fully applied "
+            "or not applied at all, including recovery when interruption happens mid-write."
+        ),
+    },
+    {
+        "id": "R12",
+        "title": "Git Internals: Git Objects",
+        "authors": "Git Project",
+        "url": "https://git-scm.com/book/en/v2/Git-Internals-Git-Objects",
+        "summary": (
+            "Git stores content-addressed objects whose identifiers depend on content, "
+            "allowing snapshots and relationships to be checked rather than trusted by name."
+        ),
+    },
+    {
+        "id": "R13",
+        "title": "NIST SP 800-92: Guide to Computer Security Log Management",
+        "authors": "Karen Kent and Murugiah Souppaya",
+        "url": "https://csrc.nist.gov/pubs/sp/800/92/final",
+        "summary": (
+            "NIST treats logs as evidence that must be generated, protected, reviewed, and "
+            "managed across a lifecycle so events can support detection and investigation."
+        ),
+    },
+    {
+        "id": "R14",
+        "title": "Python Standard Library: dataclasses",
+        "authors": "Python Software Foundation",
+        "url": "https://docs.python.org/3/library/dataclasses.html",
+        "summary": (
+            "Python documents data classes as a way to declare named fields and generate "
+            "standard methods, making record structure explicit and inspectable."
+        ),
+    },
+    {
+        "id": "R15",
+        "title": "RFC 8259: The JavaScript Object Notation Data Interchange Format",
+        "authors": "Tim Bray and the IETF",
+        "url": "https://www.rfc-editor.org/rfc/rfc8259.html",
+        "summary": (
+            "The RFC defines JSON as a text format for structured values and specifies the "
+            "grammar needed for different implementations to exchange the same information."
+        ),
+    },
+    {
+        "id": "R16",
+        "title": "NIST Technical Note 1297: Measurement Uncertainty Terminology",
+        "authors": "National Institute of Standards and Technology",
+        "url": "https://www.nist.gov/pml/nist-technical-note-1297/nist-tn-1297-appendix-d1-terminology",
+        "summary": (
+            "NIST explains uncertainty as information about the spread of values that could "
+            "reasonably describe a measured result, rather than as a vague feeling of doubt."
+        ),
+    },
+)
+
+
+REFERENCE_BY_ID = {reference["id"]: reference for reference in REFERENCE_LIBRARY}
+
+
+REFERENCE_KEYWORDS = {
+    "R1": ("architecture", "quality", "trade-off", "component", "interface", "design"),
+    "R2": ("trust", "safety", "secure", "risk", "authority", "boundary", "lifecycle"),
+    "R3": ("software", "development", "test", "evidence", "vulnerability", "release"),
+    "R4": ("must", "should", "may", "requirement", "normative", "policy"),
+    "R5": ("control", "feedback", "collision", "system", "interaction", "constraint"),
+    "R6": ("experiment", "factor", "dimension", "baseline", "variation", "response"),
+    "R7": ("privilege", "permission", "access", "authorization", "deny", "capability"),
+    "R8": ("verification", "validation", "requirement", "stakeholder", "engineering", "decision"),
+    "R9": ("gui", "ui", "view", "keyboard", "focus", "accessibility", "interaction"),
+    "R10": ("canonical", "hash", "signature", "stable", "deterministic", "json"),
+    "R11": ("transaction", "atomic", "rollback", "recovery", "write", "commit"),
+    "R12": ("snapshot", "content", "object", "repository", "version", "provenance"),
+    "R13": ("event", "log", "audit", "trace", "record", "replay"),
+    "R14": ("class", "dataclass", "field", "record", "type", "schema"),
+    "R15": ("json", "serialization", "payload", "schema", "interchange", "parser"),
+    "R16": ("uncertainty", "measure", "score", "information", "confidence", "estimate"),
+}
+
+
+REFERENCE_TOPIC_GROUPS = (
+    (("transaction", "atomic", "rollback", "recovery", "migration"), ("R11", "R12", "R10", "R13", "R8")),
+    (("canonical", "hash", "signature", "json", "serialization", "schema"), ("R10", "R15", "R12", "R14", "R13")),
+    (("gui", "user interface", "keyboard", "focus", "accessibility", "view"), ("R9", "R1", "R8", "R5", "R2")),
+    (("authority", "approval", "capability", "permission", "privilege"), ("R7", "R2", "R4", "R3", "R13")),
+    (("security", "threat", "safe", "refusal", "fail closed"), ("R2", "R3", "R7", "R5", "R13")),
+    (("experiment", "dimension", "baseline", "variation", "uncertainty"), ("R6", "R16", "R8", "R5", "R3")),
+    (("test", "verification", "validation", "evidence", "audit", "completion"), ("R8", "R3", "R13", "R16", "R2")),
+    (("event", "log", "trace", "replay", "history"), ("R13", "R12", "R10", "R2", "R8")),
+    (("object", "relation", "dependency", "graph", "architecture"), ("R1", "R5", "R8", "R12", "R16")),
+    (("command", "namespace", "adapter", "execution"), ("R7", "R4", "R3", "R8", "R1")),
 )
 
 
 GLOSSARY = {
+    "CSL": "Citation Style Language: a structured data and style ecosystem for representing bibliographic records and rendering citations.",
+    "IR": "Intermediate Representation: a canonical machine-readable structure placed between a writing request and rendered prose.",
+    "OCR": "Optical Character Recognition: extraction of machine-readable text from rendered page images, recorded as derived rather than native text.",
+    "PDF": "Portable Document Format: a paginated document container whose physical page positions and displayed labels must remain distinct.",
+    "REVISE": "The ICPI formal-writing operation that regenerates a source-grounded candidate while binding the prior draft by hash.",
+    "SUMMARIZE": "The ICPI read-only intent mode for producing source-bound summaries with exact corpus and line-coverage accounting.",
+    "SAA": "Stored Algorithm Architecture: the governed OIEC algorithm store and qualification layer used to retrieve and compare reusable reasoning procedures.",
+    "US": "United States: used here only to distinguish US English spelling from British English spelling.",
+    **{
+        f"FW-{index}": (
+            f"Formal Writing phase {index}: one ordered governed-pipeline implementation stage "
+            "from intermediate representation through benchmarking."
+        )
+        for index in range(1, 15)
+    },
+    **{
+        f"FW-{index:03d}": (
+            f"Formal Writing requirement {index:03d}: a numbered implementation and evidence obligation "
+            "from the formal-writing engine plan."
+        )
+        for index in range(1, 21)
+    },
+    **{
+        f"SGR-{index:03d}": (
+            f"Summarization Governance Recovery requirement {index:03d}: a numbered implementation "
+            "and evidence obligation from the recovery plan."
+        )
+        for index in range(1, 23)
+    },
     "ADR": "Architecture Decision Record: a short document that records a significant design choice, its context, and its consequences.",
     "API": "Application Programming Interface: a defined way for software components to request services from one another.",
+    "ASCII": "American Standard Code for Information Interchange: a basic character encoding used by many plain-text file formats.",
+    "BCP": "Best Current Practice: an Internet standards document that records widely accepted operational guidance.",
     "C0": "Capability class 0: observation only; it may inspect information but cannot create proposals or change the workspace.",
     "C1": "Capability class 1: analysis and internal proposal creation without ordinary workspace mutation.",
     "C2": "Capability class 2: simulation in a disposable, synthetic, or otherwise isolated environment.",
     "C3": "Capability class 3: local workspace mutation through the governed EON execution boundary with exact authority and approval.",
     "C4": "Capability class 4: mutation of an external system; EGCFv1 currently fails closed for this class.",
     "C5": "Capability class 5: critical or destructive mutation; EGCFv1 currently fails closed for this class.",
+    "CERTIFIED": "A status label claiming that named certification checks and approvals have been satisfied; the label is trustworthy only when it is tied to current evidence.",
     "C0-C5": "The full capability-class ladder, from observation-only C0 through critical or destructive C5 operations.",
     "C2-C5": "Capability classes 2 through 5: simulation, local mutation, external mutation, and critical or destructive mutation.",
     "C3-C5": "The mutation-capable classes: governed local mutation, external mutation, and critical or destructive mutation.",
     "CAD": "Computer-Aided Design: software and data used to create or analyse engineered geometry.",
     "CFEL": "Collision, Failure, Evidence, and Learning feedback: the project loop that records meaningful failures and prevents unchanged blind retries.",
     "CLI": "Command-Line Interface: a text-based way to operate software by entering commands.",
+    "CPU": "Central Processing Unit: the general-purpose processor that executes ordinary program instructions.",
     "DAG": "Directed Acyclic Graph: a one-way network with no cycles, often used to represent workflows and dependencies.",
     "EGCF": "Evidence-Governed Command Fabric: the semantic command layer that compiles intent into typed, content-addressed, policy-checked workflow plans.",
     "EON": "Execution and Operational Nexus: the governed boundary that binds authority, evidence, approval, exact targets, commands, and rollback before execution.",
+    "EBO": "Element Buffer Object: an OpenGL buffer that stores vertex indices so triangles can reuse vertices.",
+    "EGL": "Embedded-System Graphics Library: an interface for creating graphics contexts and surfaces without depending on a desktop window toolkit.",
+    "FPS": "Frames Per Second: the number of rendered images produced each second.",
+    "GBNF": "GGML Backus-Naur Form: a grammar notation used by llama.cpp to restrict generated text to an allowed structure.",
     "GIF": "Graphics Interchange Format: a bitmap image format that can contain simple animation.",
     "GLB": "The binary container form of glTF, used to package 3D scenes and assets into one file.",
+    "GL-0": "OpenGL validation gate 0: the project's first declared graphics qualification checkpoint.",
+    "GL-3": "OpenGL validation gate 3: a later project checkpoint covering stronger renderer capability and evidence.",
+    "GLSL": "OpenGL Shading Language: the language used to program GPU vertex and fragment shaders.",
     "GLTF": "GL Transmission Format: a standard format for transmitting 3D scenes and models.",
+    "GGUF": "The llama.cpp model container format used to store weights and metadata; GGUF is treated as the format name rather than expanded into an unstable phrase.",
     "GPU": "Graphics Processing Unit: a processor designed for highly parallel work such as graphics and machine-learning calculations.",
     "GUI": "Graphical User Interface: windows, controls, and visual feedback through which a person operates the system.",
     "HRT": "Human-Readable Task interpretation: the project layer that turns a request into explicit claims, assumptions, ambiguities, scope, and provenance.",
     "HTML": "HyperText Markup Language: the structural language used to describe web pages.",
     "HTTP": "Hypertext Transfer Protocol: the request-and-response protocol commonly used by web clients and servers.",
+    "ICPI": "Interactive Command Prompt Interface: the deterministic prompt layer that parses natural language and slash commands before routing them to governed OIEC-STM-Agent surfaces.",
     "ID": "Identifier: a value used to name and distinguish one object from another.",
     "IEPS": "Invariant and Evidence Production System: the project namespace for generating coverage, oracles, counterexamples, mutations, and qualification evidence.",
+    "IETF": "Internet Engineering Task Force: the open standards community that publishes RFC technical specifications and best-current-practice documents.",
     "IURM": "Invariant-Uncertainty-Response Modeling: the project method for defining dimensions, baselines, controlled variations, interactions, sensitivity, and minimum viable designs.",
     "JPEG": "Joint Photographic Experts Group image: a compressed bitmap format commonly used for photographs.",
     "JSON": "JavaScript Object Notation: a text format for structured data made from objects, arrays, strings, numbers, booleans, and null values.",
@@ -143,36 +315,304 @@ GLOSSARY = {
     "L0-L2": "The project evidence or risk ladder from low-impact observation through higher-impact work requiring stronger evidence and review.",
     "LRU": "Least Recently Used: a cache policy that removes the items that have gone unused for the longest time.",
     "MCP": "Model Context Protocol: a protocol for connecting AI applications to tools and structured external context.",
+    "MSE": "Mean Squared Error: the average squared numerical difference between corresponding image values.",
+    "MTL": "Wavefront Material Template Library: a companion text format that describes materials used by OBJ meshes.",
     "MVD": "Minimum Viable Design: the smallest design that still satisfies the declared constraints and learning objective.",
+    "NASA": "National Aeronautics and Space Administration: the United States civil space agency, which publishes systems-engineering guidance used here as a lifecycle reference.",
+    "NIST": "National Institute of Standards and Technology: a United States public agency that publishes technical guidance on measurement, security, risk, and trustworthy systems.",
     "OBJ": "Wavefront OBJ: a text-based file format for polygonal 3D geometry.",
     "OFAT": "One Factor At a Time: an experiment strategy that varies one input while holding the others steady.",
+    "OIEC": "Operationally Isolated Epistemic Control: the bounded evidence-and-transition architecture used by OIEC-STM-Agent.",
+    "OIEC-SR": "Operationally Isolated Epistemic Control Super Reasoning: the bounded multi-hypothesis reasoning kernel that verifies, falsifies, ranks, and synthesizes explicit reasoning artifacts.",
+    "OIEC-STM": "Operationally Isolated Epistemic Control State-Transition Model: this project's bounded control layer for deciding whether a proposed state transition may proceed.",
+    "OIEC-STM-SR": "The combined OIEC state-transition and super-reasoning architecture used by AgentICPI before IURM experiment selection and EON-governed action.",
+    "NCC": "Normalized Cross-Correlation: a similarity measure comparing how two signals or images vary after scale and offset normalization.",
     "OURD": "Object-Universe-Relation-Dependency modeling: the project layer that identifies system objects, their boundaries, relations, dependencies, impacts, exclusions, and scope.",
     "PEP": "Python Enhancement Proposal: a design document used to propose and explain changes to Python.",
     "PLY": "Polygon File Format: a format for storing 3D meshes and point-cloud attributes.",
     "PNG": "Portable Network Graphics: a lossless bitmap image format with transparency support.",
+    "PBR": "Physically Based Rendering: a graphics method that models how light interacts with surfaces using physically motivated material parameters.",
     "PTY": "Pseudo-terminal: a software endpoint that behaves like a terminal so another program can control interactive command-line processes.",
     "RFC": "Request for Comments: a published technical specification or best-current-practice document in the Internet standards process.",
+    "README": "The conventional project overview file that explains purpose, setup, usage, and important repository guidance; the name is a filename label rather than an acronym.",
+    "RGB": "Red, Green, Blue: three color channels combined to represent visible color.",
+    "RGBA": "Red, Green, Blue, Alpha: RGB color plus an alpha channel that represents opacity.",
+    "RGBA8": "An RGBA pixel format using eight bits for each red, green, blue, and alpha channel.",
     "SDK": "Software Development Kit: libraries, tools, examples, and documentation used to build software against a platform.",
+    "SHA": "Secure Hash Algorithm: a family of cryptographic digest functions used here to bind evidence and approvals to exact content snapshots.",
     "SHA-256": "Secure Hash Algorithm 256-bit: a function that produces a fixed-size digest used here to identify and verify exact content.",
     "SQL": "Structured Query Language: a language for storing, querying, and updating relational data.",
     "SQLite": "A compact relational database engine stored in a local file rather than a separate database server.",
     "SSDF": "Secure Software Development Framework: NIST guidance for integrating secure practices into the software lifecycle.",
+    "SSIM": "Structural Similarity Index Measure: an image-quality metric comparing luminance, contrast, and structure.",
     "STL": "Stereolithography file format: a widely used representation of triangulated 3D surfaces.",
     "SVG": "Scalable Vector Graphics: XML-based vector artwork that can remain sharp at any size and can be manipulated with JavaScript.",
     "TCP": "Transmission Control Protocol: a reliable ordered transport protocol used by many network applications.",
     "UI": "User Interface: the controls and information through which a person interacts with a system.",
+    "UV": "Texture coordinates: two values that map a point on a 3D surface to a position in a 2D image.",
     "URL": "Uniform Resource Locator: the address used to locate a resource such as a web page or file.",
+    "UUID": "Universally Unique Identifier: a large identifier intended to distinguish one record from other records without relying on a central counter.",
+    "VAO": "Vertex Array Object: an OpenGL object that records how vertex buffers are interpreted for drawing.",
+    "VBO": "Vertex Buffer Object: an OpenGL buffer containing vertex positions and related attributes.",
+    "VRAM": "Video Random-Access Memory: high-bandwidth memory used by a graphics processor to hold model weights, textures, and working data.",
+    "W3C": "World Wide Web Consortium: the standards community that develops technical and accessibility guidance for the Web.",
+    "WAI-ARIA": "Web Accessibility Initiative Accessible Rich Internet Applications: W3C guidance for making interactive web controls understandable to assistive technology and keyboard users.",
+    "XML": "Extensible Markup Language: a text format that represents nested structured data with named tags and attributes.",
     "X11": "The X Window System protocol commonly used to display graphical Linux applications.",
 }
 
 
 CONSTANT_DEFINITIONS = {
+    "AND": "The logical word and, meaning every joined condition must hold.",
+    "COMPARE": "The ICPI intent mode for evaluating two or more alternatives against explicit evidence and constraints.",
     "COUNT": "A configuration field that limits or reports how many items are involved.",
+    "DEG": "A command value measured in degrees.",
+    "EXECUTE": "The ICPI intent mode for requesting an already governed action; it does not itself grant execution authority.",
+    "EXPLAIN": "The ICPI intent mode for producing a beginner-readable account of a concept or mechanism.",
+    "EXPORT": "The ICPI intent mode for rendering a canonical projection into an allowed output format.",
+    "IMG": "A command placeholder for one image path or image reference.",
+    "IMG1": "A command placeholder for the first image input.",
+    "IMG12": "A command placeholder representing a combined first-and-second image reference.",
+    "IMG2": "A command placeholder for the second image input.",
+    "IMG3": "A command placeholder for the third image input.",
+    "IFF": "If and only if: a two-way logical relationship in which each side implies the other.",
+    "INSPECT": "The ICPI intent mode for read-only examination of repository or evidence state.",
     "KEY": "A configuration field or lookup name used to select a value.",
+    "MESH": "A command placeholder for a polygon mesh file or mesh reference.",
     "MODEL": "A configuration field that names the language or reasoning model to use.",
+    "NAME": "A command placeholder for a human-readable name.",
+    "OR": "The logical word or, meaning that at least one listed alternative may be selected.",
+    "PLAN": "The ICPI intent mode for constructing an ordered implementation or investigation strategy without silently applying it.",
+    "KNOWN": "A novelty status meaning the claim or reasoning pattern is already represented in registered evidence or knowledge.",
+    "P0": "Control point 0: the first point in a cubic Bezier curve.",
+    "P1": "Control point 1: the first interior handle of a cubic Bezier curve.",
+    "P2": "Control point 2: the second interior handle of a cubic Bezier curve.",
+    "P3": "Control point 3: the final point in a cubic Bezier curve.",
+    "PATH": "A command placeholder for a filesystem path.",
+    "PROPOSE": "The ICPI intent mode for creating a non-authoritative candidate, draft, or experiment proposal.",
+    "PROPOSED": "An algorithm lifecycle status meaning a candidate is registered for review but is not yet qualified for reuse.",
+    "REASON": "The ICPI intent mode for bounded evidence-driven analysis that may use OIEC-SR.",
+    "RECOVER": "The ICPI intent mode for requesting governed recovery or rollback through the existing transaction boundary.",
+    "TEST": "The ICPI intent mode for requesting bounded verification, validation, build, lint, or benchmark evidence.",
+    "WRITE": "The ICPI intent mode for proposing a repository-changing candidate that still requires authority, evidence, EON, and approval.",
+    "REF": "A command placeholder for a stable object or asset reference.",
+    "S0": "Verified-state cycle state 0: the initial canonical state in the documented loop example.",
+    "S1": "Verified-state cycle state 1: the next canonical state in the documented loop example.",
+    "S2": "Verified-state cycle state 2: the third canonical state in the documented loop example.",
     "SECONDS": "A duration field measured in seconds.",
+    "TEXT": "A command placeholder for literal text supplied by the user.",
     "TOKENS": "A limit expressed in model tokens, which are small units of text processed by a language model.",
+    "UNRESOLVED": "A status meaning the available verified evidence does not yet support a stronger conclusion.",
 }
+
+
+BEGINNER_VOCABULARY = {
+    "architecture": "the high-level arrangement of responsibilities, connections, and design decisions in a system",
+    "artifact": "a saved result such as a file, log, report, test output, or transaction record",
+    "atomic": "all-or-nothing; either the complete change is accepted or none of it remains",
+    "authority": "permission granted by an allowed human or policy source, not permission invented by the software itself",
+    "canonical": "the single representation treated as the official source from which other views are derived",
+    "capability": "a narrowly described action that a component is permitted and technically able to perform",
+    "collision": "a recorded mismatch between what the system expected and what actually happened",
+    "deterministic": "producing the same result whenever the same exact inputs are supplied",
+    "evidence": "recorded information that another person or program can inspect when judging a claim",
+    "fail closed": "refusing the action when required permission, evidence, or state is missing or uncertain",
+    "falsifiable": "written so a test or observation could show that the claim is wrong",
+    "governance": "the rules that decide what may happen, who may approve it, and what proof is required",
+    "hash": "a fixed-size digital fingerprint calculated from content so unexpected changes can be detected",
+    "idempotent": "safe to repeat without creating an additional effect after the first successful application",
+    "immutable": "not allowed to change after it has been created",
+    "invariant": "a rule that must remain true while other parts of the system change",
+    "lifecycle": "the sequence from planning and creation through use, change, recovery, and retirement",
+    "namespace": "a named group that keeps related commands or identifiers separate from other groups",
+    "projection": "a view calculated from canonical facts for a particular purpose",
+    "provenance": "the trace showing where information came from and how it was produced",
+    "rollback": "restoring the earlier known state after a change fails or is rejected",
+    "runtime": "the period when the program is actually running rather than merely being described in source code",
+    "schema": "a machine-checkable description of the fields and value shapes that a record may contain",
+    "semantic": "concerned with meaning and responsibility rather than only spelling or file format",
+    "serialization": "turning structured data into bytes or text that can be stored or transmitted",
+    "snapshot": "a recorded view of the exact files or state at one point in time",
+    "state": "the information the system currently remembers and uses to decide what happens next",
+    "telemetry": "measurements and status information collected while a system operates",
+    "transaction": "a bounded group of changes treated as one all-or-nothing operation",
+    "uncertainty": "the explicitly recorded range of plausible explanations or values that remain unresolved",
+    "validation": "checking that the finished system solves the real stakeholder need",
+    "verification": "checking that an implementation satisfies a stated requirement or design rule",
+}
+
+
+ESSAY_LOGIC_TOPOLOGY = (
+    (
+        "Claim",
+        (
+            ("claim-proposition", "Proposition"),
+            ("claim-language", "Beginner language"),
+            ("claim-local-evidence", "Local evidence"),
+            ("claim-reference", "Reference lens"),
+            ("claim-test", "Proof question"),
+        ),
+    ),
+    (
+        "Mechanism",
+        (
+            ("mechanism-path", "Operating path"),
+            ("mechanism-tutorial", "Trace tutorial"),
+            ("mechanism-reference", "Lifecycle lens"),
+            ("mechanism-objection", "Objection"),
+            ("mechanism-result", "Mechanism result"),
+        ),
+    ),
+    (
+        "Proof",
+        (
+            ("proof-requirement", "Required evidence"),
+            ("proof-method", "Proof recipe"),
+            ("proof-reference", "Evidence lens"),
+            ("proof-counterexample", "Counterexample"),
+            ("proof-result", "Proof result"),
+        ),
+    ),
+    (
+        "Challenge",
+        (
+            ("challenge-defeat", "Defeat condition"),
+            ("challenge-failures", "Failure stories"),
+            ("challenge-reference", "Resilience lens"),
+            ("challenge-tradeoff", "Trade-off"),
+            ("challenge-result", "Challenge result"),
+        ),
+    ),
+    (
+        "Verdict",
+        (
+            ("verdict-comparison", "Evidence comparison"),
+            ("verdict-principle", "Governing principle"),
+            ("verdict-exercise", "Learner test"),
+            ("verdict-limit", "Known limit"),
+            ("verdict-winner", "Winning position"),
+        ),
+    ),
+)
+
+
+def flattened_essay_logic_nodes() -> tuple[tuple[str, str, str], ...]:
+    return tuple(
+        (stage, node_id, topic)
+        for stage, nodes in ESSAY_LOGIC_TOPOLOGY
+        for node_id, topic in nodes
+    )
+
+
+ESSAY_LOGIC_EDGES = tuple(
+    (current[1], following[1])
+    for current, following in zip(
+        flattened_essay_logic_nodes(),
+        flattened_essay_logic_nodes()[1:],
+    )
+)
+
+
+def essay_logic_topological_order() -> tuple[str, ...]:
+    nodes = flattened_essay_logic_nodes()
+    node_ids = tuple(node_id for _, node_id, _ in nodes)
+    if len(node_ids) != len(set(node_ids)):
+        raise ValueError("essay logic topology contains duplicate node identifiers")
+
+    node_set = set(node_ids)
+    indegree = {node_id: 0 for node_id in node_ids}
+    successors = {node_id: [] for node_id in node_ids}
+    for source, target in ESSAY_LOGIC_EDGES:
+        if source not in node_set or target not in node_set:
+            raise ValueError("essay logic topology edge references an unknown node")
+        successors[source].append(target)
+        indegree[target] += 1
+
+    ready = sorted(node_id for node_id, count in indegree.items() if count == 0)
+    ordered: list[str] = []
+    while ready:
+        node_id = ready.pop(0)
+        ordered.append(node_id)
+        for target in sorted(successors[node_id]):
+            indegree[target] -= 1
+            if indegree[target] == 0:
+                ready.append(target)
+                ready.sort()
+
+    if len(ordered) != len(node_ids):
+        raise ValueError("essay logic topology must be acyclic")
+    if tuple(ordered) != node_ids:
+        raise ValueError("essay paragraph declaration must follow the topology order")
+    return tuple(ordered)
+
+
+ESSAY_LOGIC_ORDER = essay_logic_topological_order()
+
+
+def essay_logic_node(block_index: int, paragraph_index: int) -> tuple[str, str, str]:
+    stage, nodes = ESSAY_LOGIC_TOPOLOGY[block_index]
+    node_id, topic = nodes[paragraph_index]
+    return stage, node_id, topic
+
+
+def logic_paragraph_id(prefix: str, node_id: str) -> str:
+    return f"logic-{slugify(prefix)}-{node_id}"
+
+
+def render_essay_logic_map(prefix: str) -> str:
+    stages = []
+    order_by_node = {
+        node_id: order
+        for order, node_id in enumerate(ESSAY_LOGIC_ORDER, start=1)
+    }
+    predecessor_by_node = {target: source for source, target in ESSAY_LOGIC_EDGES}
+    successor_by_node = {source: target for source, target in ESSAY_LOGIC_EDGES}
+    for stage_index, (stage, nodes) in enumerate(ESSAY_LOGIC_TOPOLOGY, start=1):
+        node_markup = "".join(
+            f'<li><button type="button" data-logic-target="{html.escape(logic_paragraph_id(prefix, node_id), quote=True)}" '
+            f'data-logic-node="{html.escape(node_id, quote=True)}" '
+            f'data-logic-order="{order_by_node[node_id]}" '
+            f'data-logic-predecessor="{html.escape(predecessor_by_node.get(node_id, ""), quote=True)}" '
+            f'data-logic-successor="{html.escape(successor_by_node.get(node_id, ""), quote=True)}">'
+            f'<span>{order_by_node[node_id]:02d}</span>{html.escape(topic)}</button></li>'
+            for node_id, topic in nodes
+        )
+        stages.append(
+            f'<li class="logic-stage" data-logic-stage="{stage_index}"><strong>{html.escape(stage)}</strong>'
+            f'<ol>{node_markup}</ol></li>'
+        )
+    return (
+        '<figure class="essay-logic-topology" data-essay-logic-map data-logic-ordering="topological">'
+        '<figcaption><span>LOGIC TOPOLOGY</span> Every paragraph topic follows this directed path from the claim to the winning position. Select any node to inspect that step and the path already completed.</figcaption>'
+        f'<ol class="logic-stage-list">{"".join(stages)}</ol></figure>'
+    )
+
+
+def render_essay_paragraph(
+    *,
+    prefix: str,
+    block_index: int,
+    paragraph_index: int,
+    paragraph: str,
+    data_attribute: str,
+) -> str:
+    stage, node_id, topic = essay_logic_node(block_index, paragraph_index)
+    paragraph_id = logic_paragraph_id(prefix, node_id)
+    order = ESSAY_LOGIC_ORDER.index(node_id) + 1
+    predecessor = ESSAY_LOGIC_ORDER[order - 2] if order > 1 else ""
+    successor = ESSAY_LOGIC_ORDER[order] if order < len(ESSAY_LOGIC_ORDER) else ""
+    return (
+        f'<p id="{html.escape(paragraph_id, quote=True)}" '
+        f'data-{data_attribute}="{paragraph_index + 1}" '
+        f'data-logic-node="{html.escape(node_id, quote=True)}" '
+        f'data-logic-stage="{html.escape(stage, quote=True)}" '
+        f'data-logic-topic="{html.escape(topic, quote=True)}" '
+        f'data-logic-order="{order}" '
+        f'data-logic-predecessor="{html.escape(predecessor, quote=True)}" '
+        f'data-logic-successor="{html.escape(successor, quote=True)}">'
+        f'<span class="paragraph-topic"><strong>{html.escape(stage)}</strong>'
+        f'<span>{order:02d}. {html.escape(topic)}</span></span>{paragraph}</p>'
+    )
 
 
 @dataclass(frozen=True)
@@ -283,6 +723,20 @@ def evidence_fragments(section: Section) -> tuple[str, ...]:
         if in_code:
             line = line.lstrip("-+>| ")
         cleaned = strip_markdown(line)
+        cleaned = re.sub(r"\bintroductory\b", "opening", cleaned, flags=re.IGNORECASE)
+        cleaned = re.sub(r"\bintroduction\b", "opening passage", cleaned, flags=re.IGNORECASE)
+        cleaned = re.sub(
+            r"\bbody (?:movement|section)\b",
+            "supporting passage",
+            cleaned,
+            flags=re.IGNORECASE,
+        )
+        cleaned = re.sub(
+            r"\b(?:final|this|evidence) conclusion\b",
+            "decisive judgment",
+            cleaned,
+            flags=re.IGNORECASE,
+        )
         if len(cleaned) < 12:
             continue
         if cleaned not in fragments:
@@ -355,11 +809,144 @@ def definition_for(token: str) -> str:
     )
 
 
+def topic_reference_ids(text: str, limit: int = 5) -> tuple[str, ...]:
+    haystack = strip_markdown(text).casefold()
+    group_scores = []
+    for group_index, (keywords, reference_ids) in enumerate(REFERENCE_TOPIC_GROUPS):
+        score = sum(
+            1
+            for keyword in keywords
+            if re.search(rf"(?<![a-z0-9]){re.escape(keyword)}(?![a-z0-9])", haystack)
+        )
+        if score:
+            group_scores.append((-score, group_index, reference_ids))
+    group_scores.sort()
+    selected = []
+    for _, _, reference_ids in group_scores:
+        for reference_id in reference_ids:
+            if reference_id not in selected:
+                selected.append(reference_id)
+            if len(selected) == limit:
+                return tuple(selected)
+
+    ranked = []
+    for reference_id, keywords in REFERENCE_KEYWORDS.items():
+        score = sum(1 for keyword in keywords if keyword in haystack)
+        ranked.append((reference_id, score))
+    ranked.sort(key=lambda item: (-item[1], item[0]))
+    for reference_id, score in ranked:
+        if score > 0 and reference_id not in selected:
+            selected.append(reference_id)
+        if len(selected) == limit:
+            return tuple(selected)
+    for fallback in ("R1", "R8", "R2", "R3", "R4"):
+        if len(selected) == limit:
+            break
+        if fallback not in selected:
+            selected.append(fallback)
+    return tuple(selected)
+
+
+def reference_lens(reference_id: str) -> str:
+    reference = REFERENCE_BY_ID[reference_id]
+    return html.escape(reference["summary"])
+
+
+def detected_acronyms(text: str) -> tuple[str, ...]:
+    tokens = re.findall(r"\b[A-Z][A-Z0-9]*(?:[-.][A-Z0-9]+)*\b", text)
+    ignored = {"A", "I", "MUST", "SHOULD", "MAY"}
+    return tuple(
+        sorted(
+            {
+                token.strip(".-")
+                for token in tokens
+                if token not in ignored and len(token.strip(".-")) > 1
+            }
+        )
+    )
+
+
+def beginner_entries(text: str) -> tuple[tuple[str, str], ...]:
+    entries: list[tuple[str, str]] = []
+    seen: set[str] = set()
+    for token in detected_acronyms(text):
+        normalized = token.casefold()
+        if normalized in seen:
+            continue
+        seen.add(normalized)
+        entries.append((token, definition_for(token)))
+    lowered = strip_markdown(text).casefold()
+    for term, definition in BEGINNER_VOCABULARY.items():
+        if len(entries) >= len(detected_acronyms(text)) + 8:
+            break
+        if re.search(rf"(?<![a-z0-9]){re.escape(term)}(?![a-z0-9])", lowered):
+            normalized = term.casefold()
+            if normalized not in seen:
+                seen.add(normalized)
+                entries.append((term, definition))
+    return tuple(entries)
+
+
+def beginner_explanation(text: str) -> str:
+    entries = beginner_entries(text)
+    if not entries:
+        return (
+            "No specialist abbreviation is required for this claim. The important words "
+            "are used in their ordinary sense, and the lesson explains each system rule "
+            "before asking the reader to judge it."
+        )
+    explanations = "; ".join(
+        f"<strong>{html.escape(term)}</strong> means {html.escape(definition).rstrip('.')}"
+        for term, definition in entries
+    )
+    return f"The specialist language used here is defined before the argument continues: {explanations}."
+
+
+SOURCE_STOPWORDS = {
+    "about", "after", "again", "also", "another", "because", "before", "being",
+    "between", "cannot", "could", "does", "each", "from", "have", "into", "more",
+    "must", "only", "other", "should", "that", "their", "there", "these", "this",
+    "through", "under", "using", "when", "where", "which", "while", "with", "without",
+}
+
+
+def source_keywords(fragment: str, limit: int = 5) -> tuple[str, ...]:
+    words = re.findall(r"[A-Za-z][A-Za-z0-9_.-]{2,}", strip_markdown(fragment))
+    candidates = []
+    seen = set()
+    for word in words:
+        normalized = word.casefold().strip(".-")
+        if normalized in SOURCE_STOPWORDS or normalized in seen:
+            continue
+        seen.add(normalized)
+        candidates.append(word.strip(".-"))
+    candidates.sort(key=lambda item: (-len(item), item.casefold()))
+    return tuple(candidates[:limit])
+
+
+def paraphrase_source_point(section: Section, fragment_index: int) -> str:
+    fragments = evidence_fragments(section)
+    fragment = fragments[min(fragment_index, len(fragments) - 1)]
+    keywords = source_keywords(fragment)
+    if keywords:
+        topic_list = ", ".join(html.escape(keyword) for keyword in keywords)
+        return (
+            f"The checked-in source connects {html.escape(section.title)} with {topic_list}. "
+            "In plain terms, it presents these as a concrete rule, responsibility, record, "
+            "or limit that can be inspected rather than as a slogan."
+        )
+    return (
+        f"The checked-in source presents {html.escape(section.title)} as a specific system "
+        "responsibility. In plain terms, the heading is evidence of an intended boundary, "
+        "but runtime tests are still needed to prove that the boundary is enforced."
+    )
+
+
 def citation(reference_id: str) -> str:
-    return f'<a class="citation-chip" href="#references">[{reference_id}]</a>'
+    return f'<a class="citation-chip" href="#ref-{reference_id}">[{reference_id}]</a>'
 
 
-def generate_essay_blocks(document: Document, section: Section) -> tuple[tuple[str, ...], ...]:
+def _legacy_generate_essay_blocks(document: Document, section: Section) -> tuple[tuple[str, ...], ...]:
     evidence = evidence_fragments(section)
     e1 = html.escape(evidence[0])
     e2 = html.escape(evidence[min(1, len(evidence) - 1)])
@@ -412,6 +999,67 @@ def generate_essay_blocks(document: Document, section: Section) -> tuple[tuple[s
             f"For a practical tutorial, a learner should now open the source-evidence panel, choose one sentence, identify its subject and verb, find the corresponding code or schema owner, and design one test that could disprove it. Next, the learner should inspect the interactive SVG and follow the path from claim to evidence to boundary to decision. This exercise transforms passive reading into architecture review.",
             f"The remaining limitation is provenance. This generated lesson explains and argues from checked-in documentation, but it does not independently certify that historical reports still match the current source or runtime. Exact-snapshot validation, human approval, and release decisions remain separate activities that require current artifacts.",
             f"The final judgement is therefore conditional but clear: retain <strong>{title}</strong> when it strengthens traceability, proportional authority, and recovery; revise it when it merely renames hidden coupling. That conclusion follows from the source evidence and the referenced systems literature rather than from visual style or rhetorical confidence. The reader should leave with both a position and a method for testing that position.",
+        ),
+    )
+    assert all(len(block) == 5 for block in blocks)
+    return blocks
+
+
+def generate_essay_blocks(document: Document, section: Section) -> tuple[tuple[str, ...], ...]:
+    stance, thesis = select_stance(section.title, section.markdown)
+    stance_html = html.escape(stance)
+    thesis_html = html.escape(thesis)
+    title = html.escape(section.title)
+    document_title = html.escape(document.title)
+    source_ref = citation("S1")
+    reference_ids = topic_reference_ids(
+        f"{document.title}\n{section.title}\n{section.markdown}",
+    )
+    refs = [citation(reference_id) for reference_id in reference_ids]
+    lenses = [reference_lens(reference_id) for reference_id in reference_ids]
+    reference_language = "\n".join(
+        f"{REFERENCE_BY_ID[reference_id]['title']} {REFERENCE_BY_ID[reference_id]['summary']}"
+        for reference_id in reference_ids
+    )
+    vocabulary = beginner_explanation(
+        f"{document.title}\n{section.title}\n{section.markdown}\n{stance}\n{thesis}\n{reference_language}",
+    )
+
+    blocks = (
+        (
+            f"<strong>Claim to prove:</strong> <strong>{title}</strong> should be treated as {stance_html}. {thesis_html} The claim matters inside <strong>{document_title}</strong> because a named feature is useful only when its responsibility, limits, and proof can be inspected {source_ref}.",
+            vocabulary,
+            f"{paraphrase_source_point(section, 0)} {source_ref} This is local evidence of intended design, not automatic proof that the running program obeys the design.",
+            f"A clearly relevant external lens says, in paraphrased form, that {lenses[0]} {refs[0]} Applied to <strong>{title}</strong>, the reference asks whether the claimed boundary improves an observable system quality rather than merely adding another name.",
+            f"The question that can prove or defeat the claim is simple: can a beginner trace one input, one responsible owner, one permitted result, and one refusal path for <strong>{title}</strong>? If any part is missing, the claim remains unproved.",
+        ),
+        (
+            f"<strong>How the proposed mechanism works:</strong> {paraphrase_source_point(section, 1)} {source_ref} The practical idea is to make responsibility visible enough that another person can follow it without guessing hidden state.",
+            f"A beginner can trace the mechanism in five steps: name the incoming information, identify the component that owns the rule, describe the allowed change, locate the saved evidence, and identify what happens when the rule is not satisfied. These steps turn <strong>{title}</strong> into a checkable explanation.",
+            f"The matched reference explains, in paraphrased wording, that {lenses[1]} {refs[1]} This supports the mechanism only if the repository exposes those lifecycle links in code, records, tests, or schemas.",
+            f"The strongest challenge is that explicit controls can slow simple work. That challenge wins whenever the control adds paperwork but no safer decision. The claim survives only when the control is proportional: low-impact work remains inexpensive, while consequential work receives stronger checks.",
+            f"The mechanism is provisionally supported when it replaces hidden coupling with an explicit owner and a visible path. It is weakened when the name exists but the implementation cannot show where the decision is made.",
+        ),
+        (
+            f"<strong>What evidence would prove the claim:</strong> {paraphrase_source_point(section, 2)} {source_ref} Evidence is useful only when a different reader can inspect how it was produced and what it does not cover.",
+            f"Use this proof recipe: write the claim in one sentence, record the exact source snapshot, run the smallest test that could fail, save the observed result, and state the known gap. A result without those links is information, but it is not strong proof.",
+            f"The topic-matched guidance says, in paraphrased form, that {lenses[2]} {refs[2]} For <strong>{title}</strong>, that means proof should be designed with the rule instead of being attached after the implementation is finished.",
+            f"A passing test can still mislead when it covers only one path or one machine. The honest response is to bind the result to exact inputs, preserve counterexamples, name uncovered cases, and rerun the check after relevant source changes.",
+            f"The claim gains support when its evidence is reproducible, source-bound, and limited to what was actually observed. It loses support when prose, old reports, or a successful demonstration are treated as universal certification.",
+        ),
+        (
+            f"<strong>What could defeat the claim:</strong> {paraphrase_source_point(section, 3)} {source_ref} A design must be judged by the failures it contains and exposes, not only by the successful path shown in a diagram.",
+            f"Test three beginner-friendly failure stories: the input is old, permission is missing, and saved state is damaged. For each story, ask whether the system refuses unsafe work, records the reason, protects the official facts, and offers a bounded recovery route.",
+            f"The relevant reference adds, in paraphrased wording, that {lenses[3]} {refs[3]} This makes refusal, recovery, and review part of the topic rather than optional details.",
+            f"The main trade-off is local speed against system-wide understanding. A shortcut may finish one task quickly while making review, recovery, delegation, and later change more expensive. An explicit rule earns its cost only when it lowers that wider risk.",
+            f"The stronger side of the argument favours reversible and observable decisions. If <strong>{title}</strong> documents only success, the claim is not ready to win; failure evidence must be added before the system receives broader authority.",
+        ),
+        (
+            f"<strong>How the evidence compares:</strong> the local source gives the project-specific claim {source_ref}; the matched references contribute architecture, lifecycle, security, measurement, interface, or data rules that fit this topic {refs[0]} {refs[1]} {refs[2]} {refs[3]} {refs[4]}.",
+            f"The argument does not say that more governance or more documentation is automatically better. It says that explicit ownership, bounded permission, reproducible proof, and recoverable change are better than hidden assumptions when the action can affect important work.",
+            f"A learner can test this position now: open the source panel, choose one rule, identify the code or schema that owns it, and design one observation that would show the rule is false. Then follow the interactive diagram from claim to evidence to boundary to decision.",
+            f"The limit of this lesson is clear. Generated teaching text does not certify runtime behaviour, historical reports, human approval, or release readiness. Those claims need fresh evidence from the exact current snapshot.",
+            f"<strong>The winning position is to retain {title} as {stance_html}</strong> when it creates a traceable owner, proportional authority, reproducible evidence, and a recovery path; otherwise the winning choice is to revise or remove it. This verdict follows from the tested claim and the topic-matched references, not from confident wording or visual polish.",
         ),
     )
     assert all(len(block) == 5 for block in blocks)
@@ -516,19 +1164,19 @@ def render_markdown(markdown: str) -> str:
 
 
 def render_glossary(section: Section) -> str:
-    concepts = section_concepts(section)
-    if not concepts:
+    entries = beginner_entries(f"{section.title}\n{section.markdown}")
+    if not entries:
         return (
             '<div class="glossary-empty">This section uses ordinary architecture language; '
             "specialist terms are explained in the essay and source evidence.</div>"
         )
-    entries = []
-    for token in concepts:
-        entries.append(
-            f'<div class="glossary-entry"><dt>{html.escape(token)}</dt>'
-            f'<dd>{html.escape(definition_for(token))}</dd></div>'
+    markup = []
+    for term, definition in entries:
+        markup.append(
+            f'<div class="glossary-entry"><dt>{html.escape(term)}</dt>'
+            f'<dd>{html.escape(definition)}</dd></div>'
         )
-    return f"<dl class=\"glossary-grid\">{''.join(entries)}</dl>"
+    return f"<dl class=\"glossary-grid\">{''.join(markup)}</dl>"
 
 
 def relative_url(from_path: Path, to_path: Path) -> str:
@@ -545,7 +1193,15 @@ def render_references(document: Document) -> str:
             "to current-source validation and exact-snapshot review.</p></li>"
         )
     ]
-    for reference in REFERENCE_LIBRARY:
+    reference_ids = []
+    for section in document.sections:
+        for reference_id in topic_reference_ids(
+            f"{document.title}\n{section.title}\n{section.markdown}",
+        ):
+            if reference_id not in reference_ids:
+                reference_ids.append(reference_id)
+    for reference_id in reference_ids:
+        reference = REFERENCE_BY_ID[reference_id]
         items.append(
             f'<li id="ref-{reference["id"]}"><span class="reference-id">{reference["id"]}</span>'
             f'<a href="{html.escape(reference["url"])}" rel="noreferrer">{html.escape(reference["title"])}</a>'
@@ -555,18 +1211,25 @@ def render_references(document: Document) -> str:
 
 
 def concept_citations(concept: Concept) -> tuple[str, ...]:
-    if concept.category == "Governed Reasoning Loop":
-        return ("R1", "R2", "R5", "R6", "R7")
-    if concept.category in {"Governance and Authority", "Execution Adapters", "Refusal and Error Semantics"}:
-        return ("R2", "R3", "R4", "R5", "R7")
-    if concept.category in {"Engineering Services", "Semantic Command Namespaces"}:
-        return ("R1", "R2", "R4", "R6", "R3")
-    if concept.category in {"Persistence and Provenance", "Canonical Records"}:
-        return ("R1", "R2", "R3", "R4", "R7")
-    return ("R1", "R2", "R3", "R5", "R7")
+    return topic_reference_ids(
+        "\n".join(
+            (
+                concept.title,
+                concept.category,
+                concept.definition,
+                concept.thesis,
+                concept.central_question,
+                concept.inputs,
+                concept.controls,
+                concept.evidence,
+                concept.outcome,
+                " ".join(concept.related),
+            )
+        )
+    )
 
 
-def generate_concept_essay_blocks(concept: Concept) -> tuple[tuple[str, ...], ...]:
+def _legacy_generate_concept_essay_blocks(concept: Concept) -> tuple[tuple[str, ...], ...]:
     title = html.escape(concept.title)
     definition = html.escape(concept.definition)
     thesis = html.escape(concept.thesis)
@@ -619,6 +1282,80 @@ def generate_concept_essay_blocks(concept: Concept) -> tuple[tuple[str, ...], ..
     return blocks
 
 
+def generate_concept_essay_blocks(concept: Concept) -> tuple[tuple[str, ...], ...]:
+    title = html.escape(concept.title)
+    definition = html.escape(concept.definition)
+    thesis = html.escape(concept.thesis)
+    question = html.escape(concept.central_question)
+    inputs = html.escape(concept.inputs)
+    controls = html.escape(concept.controls)
+    evidence = html.escape(concept.evidence)
+    outcome = html.escape(concept.outcome)
+    sources = html.escape(", ".join(concept.sources))
+    related = ", ".join(html.escape(item) for item in concept.related) or "the surrounding governed architecture"
+    reference_ids = concept_citations(concept)
+    refs = [citation(reference_id) for reference_id in reference_ids]
+    lenses = [reference_lens(reference_id) for reference_id in reference_ids]
+    reference_language = "\n".join(
+        f"{REFERENCE_BY_ID[reference_id]['title']} {REFERENCE_BY_ID[reference_id]['summary']}"
+        for reference_id in reference_ids
+    )
+    vocabulary = beginner_explanation(
+        "\n".join(
+            (
+                concept.title,
+                concept.definition,
+                concept.thesis,
+                concept.inputs,
+                concept.controls,
+                concept.evidence,
+                concept.outcome,
+                reference_language,
+            )
+        )
+    )
+
+    blocks = (
+        (
+            f"<strong>Claim to prove:</strong> <strong>{title}</strong> deserves a separate place in the architecture because {definition} The position being tested is: {thesis}",
+            vocabulary,
+            f"The checked-in owners are {sources} {citation('S1')}. In plain terms, these files show where the concept is represented and which part of the repository is expected to maintain it. A name in source code proves representation, but not correct runtime behaviour.",
+            f"The first matched reference says, in paraphrased form, that {lenses[0]} {refs[0]} This is relevant because <strong>{title}</strong> should be judged by the system responsibility it clarifies, not by how impressive its name sounds.",
+            f"The claim can be tested by answering this question without specialist knowledge: <q>{question}</q> If the answer cannot identify an owner, a rule, and observable proof, the concept has not yet justified its separate existence.",
+        ),
+        (
+            f"<strong>How the concept receives information:</strong> {inputs} An input is simply information available before a decision. Listing inputs prevents the system from quietly depending on hidden files, ambient settings, or assumptions.",
+            f"<strong>How the concept is controlled:</strong> {controls} A control is a rule that limits what may happen. These rules are what turn <strong>{title}</strong> from an informal idea into a responsibility that can be reviewed.",
+            f"The topic-matched guidance explains, in paraphrased wording, that {lenses[1]} {refs[1]} The concept therefore needs visible links from its inputs to its controls and onward to a bounded result.",
+            f"A reasonable challenge is that another named concept may already own the same fact. That challenge should win when duplication creates two competing sources of truth. The safer design keeps one official owner and derives other views with provenance.",
+            f"The mechanism is supported when a beginner can follow the path from input to rule to result without guessing. It is unsupported when the diagram shows a box but the implementation cannot distinguish that box from its neighbours.",
+        ),
+        (
+            f"<strong>What proof the concept should produce:</strong> {evidence} Proof is stronger than description because another reviewer can repeat the observation, compare it with the claim, and discover a disagreement.",
+            f"Use this beginner proof recipe: locate the owning source, identify one declared rule, run or inspect the smallest check that could fail, save the observed result, and write down the limitation. This method keeps a successful example from becoming an exaggerated claim.",
+            f"The relevant reference adds, in paraphrased form, that {lenses[2]} {refs[2]} For <strong>{title}</strong>, evidence should therefore identify exact inputs, exact state, and the rule used to interpret the result.",
+            f"A counterexample is especially valuable because it shows a case where the claim does not hold. If new evidence conflicts with earlier evidence, the architecture should record the conflict instead of deleting the inconvenient observation.",
+            f"The proof case is strongest when evidence is reproducible, source-bound, and honest about coverage. It is weakest when a class name, a diagram, or an old report is treated as proof by itself.",
+        ),
+        (
+            f"<strong>What result the concept is supposed to create:</strong> {outcome} A result should state what changed, what remained unchanged, and which component may use the result next.",
+            f"The nearest related ideas are {related}. A relation means that the concepts exchange information or constrain one another; it does not mean they are interchangeable or that one automatically proves the other.",
+            f"The matched reference says, in paraphrased wording, that {lenses[3]} {refs[3]} This makes lifecycle, recovery, accessibility, security, data form, or measurement part of the result whenever those topics are relevant.",
+            f"The strongest opposing case is unnecessary complexity. If <strong>{title}</strong> produces no unique decision, evidence, refusal, or reusable record, merging it with the true owner is clearer and safer than preserving a decorative abstraction.",
+            f"The concept survives this challenge only when its output is both useful and accountable. A reviewer must be able to explain what it adds that no neighbouring concept already owns.",
+        ),
+        (
+            f"<strong>How the evidence compares:</strong> the repository sources establish the intended project meaning {citation('S1')}, while the topic-matched references supply wider criteria that fit this concept {refs[0]} {refs[1]} {refs[2]} {refs[3]} {refs[4]}.",
+            f"The argument for <strong>{title}</strong> is not that software architecture needs more names. The argument is that one semantic fact needs one visible owner, explicit controls, and evidence that can be challenged.",
+            f"A learner can test the concept with a five-box sketch labelled purpose, inputs, controls, evidence, and outcome. Fill each box from this page, then remove every arrow that lacks a source link or a deterministic check.",
+            f"This educational page cannot certify live behaviour, historical reports, approval, or release readiness. It is a source-derived explanation whose claims still require current runtime evidence from an exact snapshot.",
+            f"<strong>The winning position is to retain {title}</strong> when it reduces uncertainty, owns a distinct responsibility, limits authority, or preserves provenance; otherwise the winning position is to merge or remove it. That verdict chooses the clearer testable architecture over a larger vocabulary.",
+        ),
+    )
+    assert all(len(block) == 5 for block in blocks)
+    return blocks
+
+
 def concept_source_references(concept: Concept, output_path: Path) -> str:
     items = []
     for index, source in enumerate(concept.sources, start=1):
@@ -629,7 +1366,8 @@ def concept_source_references(concept: Concept, output_path: Path) -> str:
             f'<a href="{html.escape(source_url)}">{html.escape(source)}</a>'
             '<p>Checked-in local source used to discover and define this concept. The source is evidence of representation, not automatic runtime certification.</p></li>'
         )
-    for reference in REFERENCE_LIBRARY:
+    for reference_id in concept_citations(concept):
+        reference = REFERENCE_BY_ID[reference_id]
         items.append(
             f'<li id="ref-{reference["id"]}"><span class="reference-id">{reference["id"]}</span>'
             f'<a href="{html.escape(reference["url"])}" rel="noreferrer">{html.escape(reference["title"])}</a>'
@@ -653,11 +1391,17 @@ def concept_page_template(
     figure_url = relative_url(output_path, figure_path)
     blocks = generate_concept_essay_blocks(concept)
     block_markup = []
-    labels = ("Introduction", "Body section one", "Body section two", "Body section three", "Conclusion")
+    labels = ("Claim to prove", "How it works", "What proves it", "What could defeat it", "Winning position")
     for block_index, block in enumerate(blocks):
         heading = f"<h3>{html.escape(concept.title)}</h3>" if block_index == 0 else ""
         paragraphs = "".join(
-            f'<p data-concept-paragraph="{paragraph_index + 1}">{paragraph}</p>'
+            render_essay_paragraph(
+                prefix=concept.slug,
+                block_index=block_index,
+                paragraph_index=paragraph_index,
+                paragraph=paragraph,
+                data_attribute="concept-paragraph",
+            )
             for paragraph_index, paragraph in enumerate(block)
         )
         block_markup.append(
@@ -712,8 +1456,8 @@ def concept_page_template(
       <article><h2>Related concepts</h2><ul>{related_list}</ul></article>
       <article><h2>Source owners</h2><ul>{source_list}</ul></article>
     </section>
-    <article class="concept-essay"><p class="terminal-label">ARGUMENTATIVE LEARNING ESSAY</p><div class="essay-sequence">{''.join(block_markup)}</div></article>
-    <section class="references" id="references"><p class="terminal-label">SOURCE AND TEXTBOOK BUS</p><h2>References and summarised excerpts</h2><p>Local source entries establish provenance. External entries provide systems, experiment, security, and architecture lenses; summaries are paraphrases.</p>{concept_source_references(concept, output_path)}</section>
+    <article class="concept-essay"><p class="terminal-label">CLAIM-AND-EVIDENCE LEARNING ESSAY</p>{render_essay_logic_map(concept.slug)}<div class="essay-sequence">{''.join(block_markup)}</div></article>
+    <section class="references" id="references"><p class="terminal-label">SOURCE AND REFERENCE BUS</p><h2>Topic-matched references in beginner wording</h2><p>Local entries show where the concept is represented. External entries were selected because their subjects match this concept; every summary is a teaching paraphrase of the linked source.</p>{concept_source_references(concept, output_path)}</section>
     <nav class="document-pager" aria-label="Previous and next concepts">{previous_link}{next_link}</nav>
   </main>
   <div class="pixel-crew" aria-hidden="true"></div>
@@ -736,17 +1480,17 @@ def concept_atlas_template(concepts: tuple[Concept, ...], build_date: str) -> st
     cards = "".join(
         f'<article class="concept-card" data-category="{html.escape(concept.category.lower(), quote=True)}" data-search="{html.escape((concept.title + " " + concept.category + " " + concept.definition + " " + " ".join(concept.related)).lower(), quote=True)}">'
         f'<span class="concept-card-index">{index:03d}</span><p>{html.escape(concept.category)}</p><h2>{html.escape(concept.title)}</h2><p>{html.escape(concept.definition)}</p>'
-        f'<a href="{html.escape(concept.slug)}.html">OPEN ESSAY + INFOGRAPHIC →</a></article>'
+        f'<a href="{html.escape(concept.slug)}.html">OPEN CLAIM + LOGIC MAP →</a></article>'
         for index, concept in enumerate(concepts, start=1)
     )
     return f"""<!doctype html>
 <html lang="en">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Source-derived OIEC-STM-Agent concept atlas"><title>OIEC-STM Concept Atlas</title><link rel="stylesheet" href="../assets/styles.css"></head>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Beginner-readable OIEC-STM-Agent claim and concept atlas"><title>OIEC-STM Claim and Concept Atlas</title><link rel="stylesheet" href="../assets/styles.css"></head>
 <body data-page="concept-atlas">
   <div class="scanline-overlay" aria-hidden="true"></div>
   <header class="site-header"><a class="brand" href="../index.html"><span class="brand-mark">OS</span><span><strong>OIEC-STM CONCEPT ATLAS</strong><small>{len(concepts)} source-derived concepts</small></span></a><nav class="header-actions"><button type="button" data-action="focus-mode">FOCUS</button><a href="../index.html">INDEX.HTML</a></nav></header>
   <main class="atlas-main">
-    <section class="atlas-hero"><div><p class="eyebrow">SOURCE-DERIVED ARCHITECTURE INVENTORY · {html.escape(build_date)}</p><h1>Every named concept should own a testable responsibility.</h1><p>This atlas searches the governed loop, {namespace_count} semantic namespaces, and {runtime_count} public runtime types. Every concept receives a beginner definition, an argumentative 25-paragraph essay, source provenance, textbook lenses, and an interactive SVG.</p></div><object class="atlas-map" type="image/svg+xml" data="../figures/concept-atlas.svg"><a href="../figures/concept-atlas.svg">Open the concept atlas SVG</a></object></section>
+    <section class="atlas-hero"><div><p class="eyebrow">SOURCE-DERIVED CLAIM INVENTORY · {html.escape(build_date)}</p><h1>Every concept begins as a claim that must earn its place.</h1><p>This atlas searches the governed loop, {namespace_count} semantic namespaces, and {runtime_count} public runtime types. Each page defines unfamiliar language, matches references to the concept's actual topic, and maps 25 paragraph topics from proposition through evidence and challenge to a winning position.</p></div><object class="atlas-map" type="image/svg+xml" data="../figures/concept-atlas.svg"><a href="../figures/concept-atlas.svg">Open the concept atlas SVG</a></object></section>
     <section class="atlas-controls"><label for="concept-search">SEARCH CONCEPTS<input id="concept-search" type="search" placeholder="authority, workflow, collision..."></label><div class="concept-filters"><button type="button" class="concept-filter is-active" data-concept-category="all">ALL <span>{len(concepts)}</span></button>{filters}</div><p class="concept-search-status" role="status" aria-live="polite">{len(concepts)} CONCEPTS ONLINE</p></section>
     <section class="concept-grid">{cards}</section>
   </main>
@@ -825,11 +1569,17 @@ def governed_loop_hero(concept_count: int, build_date: str) -> str:
 def render_lesson(document: Document, section: Section) -> str:
     blocks = generate_essay_blocks(document, section)
     block_markup: list[str] = []
-    labels = ("Introduction", "Body section one", "Body section two", "Body section three", "Conclusion")
+    labels = ("Claim to prove", "How it works", "What proves it", "What could defeat it", "Winning position")
     for block_index, block in enumerate(blocks):
         heading = f"<h3>{html.escape(section.title)}</h3>" if block_index == 0 else ""
         paragraphs = "".join(
-            f'<p data-essay-paragraph="{paragraph_index + 1}">{paragraph}</p>'
+            render_essay_paragraph(
+                prefix=section.slug,
+                block_index=block_index,
+                paragraph_index=paragraph_index,
+                paragraph=paragraph,
+                data_attribute="essay-paragraph",
+            )
             for paragraph_index, paragraph in enumerate(block)
         )
         block_markup.append(
@@ -853,6 +1603,7 @@ def render_lesson(document: Document, section: Section) -> str:
     <div class="diagram-stage" aria-label="Interactive claim, evidence, boundary, and decision diagram"></div>
     <figcaption>Select a node to inspect how this section turns a claim into an architectural decision.</figcaption>
   </figure>
+  {render_essay_logic_map(section.slug)}
   <div class="essay-sequence">{''.join(block_markup)}</div>
   <details class="source-evidence">
     <summary>Inspect original Markdown evidence</summary>
@@ -935,7 +1686,7 @@ def document_template(document: Document, previous: Document | None, following: 
       <section class="document-hero">
         <p class="eyebrow">SYSTEMS ARCHITECT LEARNING EDITION · BUILT {html.escape(build_date)}</p>
         <h1>{html.escape(document.title)}</h1>
-        <p>This page preserves the checked-in source while expanding every heading into an argumentative, beginner-readable lesson with explicit evidence, counterarguments, tutorials, glossary support, and conditional conclusions.</p>
+        <p>This page preserves the checked-in source while turning every heading into a beginner-readable claim that must earn support from local evidence, topic-matched references, counterexamples, and a decisive verdict.</p>
         <dl class="hero-metrics">
           <div><dt>MODULES</dt><dd>{len(document.sections):02d}</dd></div>
           <div><dt>ESSAY PARAGRAPHS</dt><dd>{len(document.sections) * 25}</dd></div>
@@ -1429,7 +2180,7 @@ def index_template(
         members = [document for document in documents if category_for(document) == category]
         category_object = category_objects[category]
         category_cards.append(
-            f'<button type="button" class="category-card" '
+            f'<button type="button" class="category-card" id="category-{slugify(category)}" '
             f'data-category="{html.escape(category.lower(), quote=True)}" '
             f'data-relational-jump="{html.escape(category_object.object_id, quote=True)}">'
             f'{relational_symbol_markup(category_object)}'
@@ -1479,10 +2230,10 @@ def index_template(
     </section>
     <section class="category-grid" aria-label="Architecture domains">{''.join(category_cards)}</section>
 {render_relational_explorer(relational_objects).lstrip()}
-    <section class="concept-atlas-callout"><div><p class="terminal-label">{len(concepts)} SOURCE-DERIVED CONCEPTS</p><h2>Open the long-form concept atlas.</h2><p>The object bus is optimized for topology and navigation. The concept atlas provides the corresponding essays, source provenance, interactive figures, and textbook lenses for every source-derived concept.</p><a class="primary-action" href="concepts/index.html">OPEN CONCEPT ATLAS</a></div><object class="atlas-preview" type="image/svg+xml" data="figures/concept-atlas.svg"><a href="figures/concept-atlas.svg">Open the concept atlas SVG</a></object></section>
+    <section class="concept-atlas-callout"><div><p class="terminal-label">{len(concepts)} SOURCE-DERIVED CONCEPTS</p><h2>Open the claim-and-concept atlas.</h2><p>The object bus is optimized for topology and navigation. Every concept page defines beginner language, tests one architectural claim against topic-matched references, and links 25 paragraph topics through an interactive logic map to a decisive winning position.</p><a class="primary-action" href="concepts/index.html">OPEN CLAIM ATLAS</a></div><object class="atlas-preview" type="image/svg+xml" data="figures/concept-atlas.svg"><a href="figures/concept-atlas.svg">Open the concept atlas SVG</a></object></section>
     <section class="learning-method">
       <div><p class="terminal-label">READING PROTOCOL</p><h2>How to learn from the site</h2></div>
-      <ol><li><strong>Orient.</strong> Read the plain-language introduction and glossary.</li><li><strong>Challenge.</strong> Compare the thesis with the source evidence and counterargument.</li><li><strong>Trace.</strong> Use the SVG nodes to follow claim, evidence, boundary, and decision.</li><li><strong>Test.</strong> Turn one documented claim into a falsifiable architecture check.</li></ol>
+      <ol><li><strong>Orient.</strong> Read the plain-language starting explanation and glossary.</li><li><strong>Challenge.</strong> Compare the thesis with the source evidence and counterargument.</li><li><strong>Trace.</strong> Use the SVG nodes to follow claim, evidence, boundary, and decision.</li><li><strong>Test.</strong> Turn one documented claim into a falsifiable architecture check.</li></ol>
     </section>
     <section class="index-references"><p class="terminal-label">TEXTBOOK LENSES</p><h2>Reference foundation</h2><ul>{references}</ul></section>
   </main>
@@ -2005,6 +2756,28 @@ def build(build_date: str) -> tuple[tuple[Document, ...], tuple[Concept, ...]]:
             "pipeline": ["HRTv1", "OURD", "IURMv1.1.1", "EONv1", "Evidence Gate", "Action", "CFEL"],
             "figure": "figures/governed-loop.svg",
             "thesis": "The agent is an uncertainty-reduction machine whose reasoning remains separate from mutation authority.",
+        },
+        "essay_logic_topology": [
+            {
+                "stage": stage,
+                "nodes": [
+                    {"id": node_id, "topic": topic}
+                    for node_id, topic in nodes
+                ],
+            }
+            for stage, nodes in ESSAY_LOGIC_TOPOLOGY
+        ],
+        "essay_logic_edges": [
+            {"source": source, "target": target}
+            for source, target in ESSAY_LOGIC_EDGES
+        ],
+        "essay_contract": {
+            "paragraphs_per_essay": 25,
+            "stages": len(ESSAY_LOGIC_TOPOLOGY),
+            "ordering": "topological",
+            "entry_node": ESSAY_LOGIC_ORDER[0],
+            "final_node": "verdict-winner",
+            "final_requirement": "Summarise the tested claim and name the winning position.",
         },
         "references": list(REFERENCE_LIBRARY),
         "glossary": {**GLOSSARY, **CONSTANT_DEFINITIONS},

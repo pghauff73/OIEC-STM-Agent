@@ -1,0 +1,114 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://oiec-stm.local/schemas/formal_writing/governed-pipeline.schema.json",
+  "title": "OIEC Governed Formal Writing Pipeline v1",
+  "$defs": {
+    "WritingTask": {
+      "type": "object",
+      "required": ["task_id", "question", "profile", "source_document_ids", "constraints", "signature"],
+      "properties": {
+        "task_id": {"type": "string", "pattern": "^writing-task:"},
+        "question": {"type": "string", "minLength": 1},
+        "profile": {"enum": ["general", "scientific-essay", "argumentative-essay", "engineering-report", "literature-review", "business-analysis", "research-proposal", "lab-report"]},
+        "genre": {"type": "string"},
+        "audience": {"type": "string"},
+        "discipline": {"type": "string"},
+        "word_target": {"type": "integer", "minimum": 0},
+        "citation_style": {"type": "string"},
+        "source_document_ids": {"type": "array", "items": {"type": "string"}},
+        "constraints": {"type": "array", "items": {"type": "string"}},
+        "required_counterargument": {"type": "boolean"},
+        "signature": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      },
+      "additionalProperties": false
+    },
+    "ConceptDefinition": {
+      "type": "object",
+      "required": ["concept_id", "preferred_label", "definition", "scope", "aliases", "exclusions", "evidence_ids", "signature"],
+      "properties": {
+        "concept_id": {"type": "string"},
+        "preferred_label": {"type": "string", "minLength": 1},
+        "definition": {"type": "string", "minLength": 1},
+        "scope": {"type": "array", "items": {"type": "string"}},
+        "aliases": {"type": "array", "items": {"type": "string"}},
+        "exclusions": {"type": "array", "items": {"type": "string"}},
+        "evidence_ids": {"type": "array", "items": {"type": "string"}},
+        "source_annotation_ids": {"type": "array", "items": {"type": "string"}},
+        "status": {"type": "string"},
+        "signature": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      },
+      "additionalProperties": false
+    },
+    "Claim": {
+      "type": "object",
+      "required": ["claim_id", "statement", "claim_type", "semantic_terms", "evidence_requirements", "supporting_evidence", "counterevidence", "confidence_bp", "status", "scope", "limitations", "material", "signature"],
+      "properties": {
+        "claim_id": {"type": "string", "pattern": "^writing-claim:"},
+        "statement": {"type": "string", "minLength": 1},
+        "claim_type": {"enum": ["FACTUAL", "CAUSAL", "COMPARATIVE", "NORMATIVE", "INTERPRETIVE", "DEFINITIONAL", "HYPOTHESIS"]},
+        "semantic_terms": {"type": "array", "items": {"type": "string"}},
+        "evidence_requirements": {"type": "array", "items": {"type": "string"}},
+        "supporting_evidence": {"type": "array", "items": {"type": "string"}},
+        "counterevidence": {"type": "array", "items": {"type": "string"}},
+        "confidence_bp": {"type": "integer", "minimum": 0, "maximum": 10000},
+        "status": {"enum": ["SUPPORTED", "PARTIALLY_SUPPORTED", "CONTRADICTED", "UNSUPPORTED", "EVIDENCE_CONFLICT", "EVIDENCE_INSUFFICIENT"]},
+        "scope": {"type": "array", "items": {"type": "string"}},
+        "limitations": {"type": "array", "items": {"type": "string"}},
+        "material": {"type": "boolean"},
+        "signature": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      },
+      "additionalProperties": false
+    },
+    "EvidenceLink": {
+      "type": "object",
+      "required": ["evidence_link_id", "claim_id", "evidence_artifact_id", "source_provenance", "support_relation", "scope_compatible", "strength_bp", "status", "signature"],
+      "properties": {
+        "evidence_link_id": {"type": "string", "pattern": "^evidence-link:"},
+        "claim_id": {"type": "string"},
+        "evidence_artifact_id": {"type": "string"},
+        "source_document_id": {"type": "string"},
+        "source_provenance": {"type": "array"},
+        "support_relation": {"type": "string"},
+        "scope_compatible": {"type": "boolean"},
+        "strength_bp": {"type": "integer", "minimum": 0, "maximum": 10000},
+        "status": {"type": "string"},
+        "limitations": {"type": "array", "items": {"type": "string"}},
+        "signature": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      },
+      "additionalProperties": false
+    },
+    "ReasoningEdge": {
+      "type": "object",
+      "required": ["edge_id", "source_id", "target_id", "relation", "rationale", "evidence_ids", "inference_mode", "confidence_bp", "signature"],
+      "properties": {
+        "edge_id": {"type": "string", "pattern": "^writing-edge:"},
+        "source_id": {"type": "string"},
+        "target_id": {"type": "string"},
+        "relation": {"enum": ["SUPPORTS", "CONTRADICTS", "QUALIFIES", "CAUSES", "GENERALIZES", "SPECIALIZES", "EXPLAINS", "COMPARES_WITH", "FALSIFIES", "DEPENDS_ON"]},
+        "rationale": {"type": "string"},
+        "evidence_ids": {"type": "array", "items": {"type": "string"}},
+        "inference_mode": {"type": "string"},
+        "confidence_bp": {"type": "integer", "minimum": 0, "maximum": 10000},
+        "signature": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      },
+      "additionalProperties": false
+    },
+    "CounterClaim": {"type": "object", "required": ["counterclaim_id", "claim", "target_claim_ids", "counterevidence_ids", "response_claim_ids", "status", "signature"], "properties": {"counterclaim_id": {"type": "string"}, "claim": {"$ref": "#/$defs/Claim"}, "target_claim_ids": {"type": "array"}, "counterevidence_ids": {"type": "array"}, "response_claim_ids": {"type": "array"}, "status": {"type": "string"}, "signature": {"type": "string"}}, "additionalProperties": false},
+    "Qualification": {"type": "object", "required": ["qualification_id", "target_claim_id", "statement", "triggers", "evidence_ids", "adequacy_bp", "signature"], "properties": {"qualification_id": {"type": "string"}, "target_claim_id": {"type": "string"}, "statement": {"type": "string"}, "triggers": {"type": "array"}, "evidence_ids": {"type": "array"}, "adequacy_bp": {"type": "integer", "minimum": 0, "maximum": 10000}, "signature": {"type": "string"}}, "additionalProperties": false},
+    "ParagraphPlan": {"type": "object", "required": ["paragraph_plan_id", "section_title", "order", "purpose", "claim_ids", "evidence_ids", "reasoning_edge_ids", "qualification_ids", "link", "signature"], "properties": {"paragraph_plan_id": {"type": "string"}, "section_title": {"type": "string"}, "order": {"type": "integer", "minimum": 0}, "purpose": {"type": "string"}, "claim_ids": {"type": "array"}, "evidence_ids": {"type": "array"}, "reasoning_edge_ids": {"type": "array"}, "qualification_ids": {"type": "array"}, "link": {"type": "string"}, "signature": {"type": "string"}}, "additionalProperties": false},
+    "ArgumentGraph": {"type": "object", "required": ["graph_id", "thesis_claim_id", "claims", "evidence_links", "reasoning_edges", "counterclaims", "qualifications", "concepts", "issues", "signature"], "properties": {"graph_id": {"type": "string"}, "thesis_claim_id": {"type": "string"}, "claims": {"type": "array", "items": {"$ref": "#/$defs/Claim"}}, "evidence_links": {"type": "array", "items": {"$ref": "#/$defs/EvidenceLink"}}, "reasoning_edges": {"type": "array", "items": {"$ref": "#/$defs/ReasoningEdge"}}, "counterclaims": {"type": "array", "items": {"$ref": "#/$defs/CounterClaim"}}, "qualifications": {"type": "array", "items": {"$ref": "#/$defs/Qualification"}}, "concepts": {"type": "array", "items": {"$ref": "#/$defs/ConceptDefinition"}}, "issues": {"type": "array"}, "signature": {"type": "string"}}, "additionalProperties": false},
+    "DocumentPlan": {"type": "object", "required": ["document_plan_id", "task", "graph", "candidate_paths", "selected_path_id", "paragraph_plans", "no_new_material_claims", "unresolved_evidence_gaps", "signature"], "properties": {"document_plan_id": {"type": "string"}, "task": {"$ref": "#/$defs/WritingTask"}, "graph": {"$ref": "#/$defs/ArgumentGraph"}, "candidate_paths": {"type": "array"}, "selected_path_id": {"type": "string"}, "paragraph_plans": {"type": "array", "items": {"$ref": "#/$defs/ParagraphPlan"}}, "no_new_material_claims": {"const": true}, "unresolved_evidence_gaps": {"type": "array"}, "signature": {"type": "string"}}, "additionalProperties": false},
+    "DraftSection": {"type": "object", "required": ["draft_section_id", "paragraph_plan_id", "heading", "text", "claim_ids", "evidence_ids", "reasoning_edge_ids", "qualification_ids", "sentence_claim_map", "signature"], "properties": {"draft_section_id": {"type": "string"}, "paragraph_plan_id": {"type": "string"}, "heading": {"type": "string"}, "text": {"type": "string"}, "claim_ids": {"type": "array"}, "evidence_ids": {"type": "array"}, "reasoning_edge_ids": {"type": "array"}, "qualification_ids": {"type": "array"}, "sentence_claim_map": {"type": "array"}, "signature": {"type": "string"}}, "additionalProperties": false},
+    "WritingAudit": {"type": "object", "required": ["audit_id", "document_plan_id", "material_claims", "claim_support_rate_bp", "evidence_coverage_bp", "semantic_consistency_bp", "argument_connectivity_bp", "unsupported_claim_rate_bp", "counterargument_coverage_bp", "qualification_adequacy_bp", "citation_traceability_bp", "status", "signature"], "properties": {"audit_id": {"type": "string"}, "document_plan_id": {"type": "string"}, "material_claims": {"type": "integer", "minimum": 0}, "fully_supported_claims": {"type": "integer", "minimum": 0}, "partially_supported_claims": {"type": "integer", "minimum": 0}, "unsupported_claims": {"type": "integer", "minimum": 0}, "claim_support_rate_bp": {"type": "integer", "minimum": 0, "maximum": 10000}, "evidence_coverage_bp": {"type": "integer", "minimum": 0, "maximum": 10000}, "semantic_consistency_bp": {"type": "integer", "minimum": 0, "maximum": 10000}, "argument_connectivity_bp": {"type": "integer", "minimum": 0, "maximum": 10000}, "unsupported_claim_rate_bp": {"type": "integer", "minimum": 0, "maximum": 10000}, "counterargument_coverage_bp": {"type": "integer", "minimum": 0, "maximum": 10000}, "qualification_adequacy_bp": {"type": "integer", "minimum": 0, "maximum": 10000}, "citation_traceability_bp": {"type": "integer", "minimum": 0, "maximum": 10000}, "unsupported_claim_ids": {"type": "array"}, "graph_issue_codes": {"type": "array"}, "performed_checks": {"type": "array"}, "limitations": {"type": "array"}, "status": {"enum": ["QUALIFIED_FORMAL_DOCUMENT", "REVISION_REQUIRED", "EVIDENCE_INSUFFICIENT"]}, "signature": {"type": "string"}}, "additionalProperties": false}
+  },
+  "type": "object",
+  "required": ["schema_version", "writing_task", "document_plan", "draft_sections", "writing_audit"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "writing_task": {"$ref": "#/$defs/WritingTask"},
+    "document_plan": {"$ref": "#/$defs/DocumentPlan"},
+    "draft_sections": {"type": "array", "items": {"$ref": "#/$defs/DraftSection"}},
+    "writing_audit": {"$ref": "#/$defs/WritingAudit"}
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:ourd:icpi:chat-scenario:v1",
+  "title": "ICPI Supervisor Heavy Chat Scenario v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "corpus_id",
+    "scenario_id",
+    "category",
+    "title",
+    "lane",
+    "seed",
+    "timeout_seconds",
+    "expected_outcome",
+    "steps",
+    "required_events",
+    "forbidden_events",
+    "fault_id",
+    "requirements",
+    "tags"
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "corpus_id": {"const": "ICPI-SUPERVISOR-HEAVY-v1"},
+    "scenario_id": {"type": "string", "pattern": "^[A-Z]{3}-[0-9]{3}$"},
+    "category": {
+      "enum": [
+        "startup_control",
+        "routing_icpi",
+        "corpus_summarization",
+        "governance_scope",
+        "formal_writing",
+        "page_reference",
+        "context_stress",
+        "fault_injection",
+        "chat_lifecycle",
+        "security_untrusted_text",
+        "visual_formatting"
+      ]
+    },
+    "title": {"type": "string", "minLength": 1},
+    "lane": {"enum": ["deterministic", "live", "both"]},
+    "seed": {"type": "integer", "minimum": 0},
+    "timeout_seconds": {"type": "integer", "minimum": 1},
+    "expected_outcome": {"type": "string", "minLength": 1},
+    "steps": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["action"],
+        "properties": {
+          "action": {
+            "enum": [
+              "send",
+              "type",
+              "sleep",
+              "stop",
+              "new_chat",
+              "set_theme",
+              "set_visual_formatting",
+              "history_previous",
+              "complete_slash",
+              "assert_composer",
+              "assert_plain_text_contains",
+              "capture_screenshot",
+              "arm_fault",
+              "close_gui",
+              "restart_supervisor",
+              "assert_state_restored"
+            ]
+          },
+          "text": {"type": "string"},
+          "seconds": {"type": "number", "minimum": 0},
+          "enabled": {"type": "boolean"},
+          "theme": {"type": "string", "minLength": 1},
+          "name": {"type": "string", "minLength": 1},
+          "fault_id": {"type": "string", "pattern": "^F[0-9]{2}$"}
+        }
+      }
+    },
+    "required_events": {"type": "array", "items": {"type": "string"}},
+    "forbidden_events": {"type": "array", "items": {"type": "string"}},
+    "fault_id": {"type": "string"},
+    "requirements": {"type": "array", "items": {"type": "string"}},
+    "tags": {"type": "array", "items": {"type": "string"}}
+  }
+}

@@ -5,11 +5,31 @@ from unittest import mock
 
 from ourd import OURDAgent
 from ourd.errors import StateError
-from ourd.persistence import EventStore, StateStore
+from ourd.persistence import EventStore, StateStore, redact
 from tests.helpers import RepoFixture, governance_args
 
 
 class PersistenceTests(unittest.TestCase):
+    def test_numeric_token_budget_is_not_redacted(self) -> None:
+        self.assertEqual(
+            {
+                "max_tokens": 12000,
+                "estimated_input_tokens": 6000,
+                "tokens_before": 6100,
+                "tokens_after": 5900,
+                "access_token": "<redacted>",
+            },
+            redact(
+                {
+                    "max_tokens": 12000,
+                    "estimated_input_tokens": 6000,
+                    "tokens_before": 6100,
+                    "tokens_after": 5900,
+                    "access_token": "secret",
+                }
+            ),
+        )
+
     def setUp(self) -> None:
         self.fixture = RepoFixture()
         self.authority = self.fixture.authority(allowed_paths=["README.md"])

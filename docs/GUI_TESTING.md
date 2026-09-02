@@ -1,6 +1,6 @@
 # OURD GUI Testing
 
-**Date:** 2026-08-21
+**Date:** 2026-08-31
 
 ## Deterministic GUI Suite
 
@@ -82,3 +82,58 @@ GUI initialization, worker operations, event rendering, event draining, and
 projection saves. Task paging and the bounded object cache protect large
 sessions. Targets remain diagnostic rather than authority: correctness and
 evidence gates always take precedence.
+
+## Formal-Writing GUI Validation
+
+Formal-writing coverage includes canonical GUI/CLI request equivalence, every
+read-only workflow action, exact plan/draft/audit/revision lineage, asynchronous
+phase ordering, cooperative cancellation, bounded shutdown, malformed and
+signature-invalid artifacts, source drift, graph/trace completeness, all audit
+statuses, novelty/SAA status preservation, adversarial source isolation,
+governed preview drift and confirmation checks, zero ordinary output mutation,
+display-backed widget behavior, standalone parsing/smoke, and packaging.
+
+Standalone smoke:
+
+```bash
+tmpdir=$(mktemp -d)
+xvfb-run -a python3 -m ourd_gui.formal_writing_gui \
+  --workspace "$tmpdir" \
+  --smoke-test
+```
+
+Focused deterministic suite:
+
+```bash
+python3 -m unittest \
+  tests.gui.test_formal_writing_models \
+  tests.gui.test_formal_writing_projection \
+  tests.gui.test_formal_writing_controller \
+  tests.gui.test_formal_writing_gui \
+  tests.gui.test_formal_writing_view \
+  tests.gui.test_formal_writing_performance \
+  tests.test_formal_writing_cli -v
+```
+
+The wheel must include `ourd_gui/formal_writing_gui.py`, its controller,
+models, projection, reusable view, and this console entry point:
+
+```text
+oiec-stm-formal-writing-gui = ourd_gui.formal_writing_gui:main
+```
+
+Measured implementation targets are less than two seconds for warm standalone
+startup, 500 ms for a cached refresh of 100 signed result artifacts, one second
+for 500 graph nodes and 1,000 edges, 100 ms for loaded-run selection, and one
+second for idle close. The GUI-only queue is capped at 1,000 events.
+
+Display-backed tests explicitly skip when Tk cannot open a display. Such skips
+do not establish visual qualification. Human review must still cover
+keyboard-only use, 100%-200% font scaling, narrow/wide layouts, long paths,
+high-density graphs, exact non-color status text, optional PDF rendering, and
+focus behavior.
+
+The local August 31, 2026 base environment has Pillow but not PyMuPDF or
+`pytesseract`. Base behavior and fail-closed optional-capability detection are
+validated; PDF/OCR visual qualification remains a separate optional-dependency
+gate.

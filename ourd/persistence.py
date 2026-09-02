@@ -8,6 +8,7 @@ import re
 import tempfile
 import uuid
 from copy import deepcopy
+from dataclasses import asdict
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, Iterable, Optional
@@ -16,10 +17,21 @@ from .errors import StateError
 from .models import RuntimeState
 
 
-RUNTIME_SCHEMA_VERSION = 2
+RUNTIME_SCHEMA_VERSION = 6
 
 
 SENSITIVE_KEY = re.compile(r"(?:api[_-]?key|token|secret|password|authorization)", re.I)
+NON_SECRET_TOKEN_KEYS = {
+    "input_tokens",
+    "max_tokens",
+    "output_tokens",
+    "token_budget",
+    "token_count",
+    "tokens",
+    "total_tokens",
+    "tokens_after",
+    "tokens_before",
+}
 SENSITIVE_ASSIGNMENT = re.compile(
     r"(?i)\b([A-Za-z0-9_-]*(?:api[_-]?key|access[_-]?token|refresh[_-]?token|secret|password|authorization))"
     r"(\s*[:=]\s*)([^\s,;]+)"
@@ -43,7 +55,7 @@ def migrate_v1_to_v2(payload: Dict[str, Any]) -> Dict[str, Any]:
     migrated = deepcopy(payload)
     if int(migrated.get("schema_version", 1)) != 1:
         raise StateError("runtime migration requires schema version 1")
-    migrated["schema_version"] = RUNTIME_SCHEMA_VERSION
+    migrated["schema_version"] = 2
     migrated.setdefault("boundary_state", None)
     migrated.setdefault("dimension_budget", None)
     migrated.setdefault("finite_evidence", None)
@@ -70,10 +82,126 @@ def migrate_v1_to_v2(payload: Dict[str, Any]) -> Dict[str, Any]:
     return migrated
 
 
+def migrate_v2_to_v3(payload: Dict[str, Any]) -> Dict[str, Any]:
+    migrated = deepcopy(payload)
+    if int(migrated.get("schema_version", 2)) != 2:
+        raise StateError("runtime migration requires schema version 2")
+    migrated["schema_version"] = 3
+    migrated.setdefault("reasoning_problem", None)
+    migrated.setdefault("reasoning_hypothesis_state", None)
+    migrated.setdefault("hypothesis_pool", {})
+    migrated.setdefault("reasoning_topology", None)
+    migrated.setdefault("reasoning_candidates", None)
+    migrated.setdefault("last_reasoning_certificate", None)
+    migrated.setdefault("reasoning_transition_index", 0)
+    action = migrated.get("pending_action")
+    if isinstance(action, dict):
+        action.setdefault("reasoning_certificate_signature", "")
+        action.setdefault("reasoning_winning_path_id", "")
+    return migrated
+
+
+def migrate_v3_to_v4(payload: Dict[str, Any]) -> Dict[str, Any]:
+    migrated = deepcopy(payload)
+    if int(migrated.get("schema_version", 3)) != 3:
+        raise StateError("runtime migration requires schema version 3")
+    migrated["schema_version"] = 4
+    pool = migrated.setdefault("hypothesis_pool", {})
+    if not isinstance(pool, dict):
+        raise StateError("runtime hypothesis pool must be an object")
+    for hypothesis in pool.values():
+        if isinstance(hypothesis, dict):
+            hypothesis.setdefault("predictions", [])
+    if pool:
+        from .reasoning.hypotheses import build_hypothesis_set
+
+        problem = migrated.get("reasoning_problem")
+        problem_id = "legacy:unbound-hypothesis-state"
+        mutually_exclusive = False
+        if isinstance(problem, dict):
+            problem_id = str(problem.get("problem_id", "")) or problem_id
+            mutually_exclusive = bool(problem.get("mutually_exclusive_hypotheses", False))
+        budget = migrated.get("dimension_budget")
+        maximum = len(pool)
+        if isinstance(budget, dict):
+            maximum = max(maximum, int(budget.get("max_active_hypotheses", maximum)))
+        state = build_hypothesis_set(
+            list(pool.values()),
+            problem_id=problem_id,
+            max_hypotheses=max(1, maximum),
+            mutually_exclusive=mutually_exclusive,
+        )
+        migrated["reasoning_hypothesis_state"] = asdict(state)
+        migrated["hypothesis_pool"] = {
+            hypothesis.hypothesis_id: asdict(hypothesis)
+            for hypothesis in state.hypotheses
+        }
+    else:
+        migrated["reasoning_hypothesis_state"] = None
+    migrated.setdefault("hypothesis_updates", [])
+    return migrated
+
+
+def migrate_v4_to_v5(payload: Dict[str, Any]) -> Dict[str, Any]:
+    migrated = deepcopy(payload)
+    if int(migrated.get("schema_version", 4)) != 4:
+        raise StateError("runtime migration requires schema version 4")
+    migrated["schema_version"] = 5
+    migrated.setdefault("reasoning_budget", None)
+    migrated.setdefault("reasoning_context", None)
+    migrated.setdefault("reasoning_contradictions", [])
+    migrated.setdefault("last_synthesis", None)
+    migrated.setdefault("next_reasoning_operation", None)
+    return migrated
+
+
+def _is_reasoning_hypothesis_state(payload: Any) -> bool:
+    if not isinstance(payload, dict):
+        return False
+    if "problem_id" in payload or "mutually_exclusive" in payload or "update_ids" in payload:
+        return True
+    hypotheses = payload.get("hypotheses")
+    if not isinstance(hypotheses, list):
+        return False
+    return any(
+        isinstance(hypothesis, dict)
+        and ("prior_bp" in hypothesis or "posterior_bp" in hypothesis)
+        for hypothesis in hypotheses
+    )
+
+
+def migrate_v5_to_v6(payload: Dict[str, Any]) -> Dict[str, Any]:
+    migrated = deepcopy(payload)
+    if int(migrated.get("schema_version", 5)) != 5:
+        raise StateError("runtime migration requires schema version 5")
+    migrated["schema_version"] = RUNTIME_SCHEMA_VERSION
+    legacy_hypothesis_state = migrated.get("hypothesis_state")
+    if (
+        migrated.get("reasoning_hypothesis_state") is None
+        and _is_reasoning_hypothesis_state(legacy_hypothesis_state)
+    ):
+        migrated["reasoning_hypothesis_state"] = legacy_hypothesis_state
+        migrated["hypothesis_state"] = None
+    else:
+        migrated.setdefault("reasoning_hypothesis_state", None)
+    migrated.setdefault("control_only_progress_streak", 0)
+    return migrated
+
+
 def redact(payload: Any) -> Any:
     if isinstance(payload, dict):
         return {
-            str(key): "<redacted>" if SENSITIVE_KEY.search(str(key)) else redact(value)
+            str(key): (
+                "<redacted>"
+                if SENSITIVE_KEY.search(str(key))
+                and str(key).casefold() not in NON_SECRET_TOKEN_KEYS
+                and not (
+                    isinstance(value, (int, float))
+                    and not isinstance(value, bool)
+                    and str(key).casefold().endswith("_tokens")
+                )
+                else redact(value)
+            )
             for key, value in payload.items()
         }
     if isinstance(payload, list):
@@ -98,7 +226,7 @@ def redact(payload: Any) -> Any:
     return payload
 
 
-def atomic_write_text(path: Path, text: str) -> None:
+def atomic_write_text(path: Path, text: str, *, durable: bool = True) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     descriptor, temporary_name = tempfile.mkstemp(prefix=f".{path.name}.", dir=path.parent)
     temporary = Path(temporary_name)
@@ -106,7 +234,8 @@ def atomic_write_text(path: Path, text: str) -> None:
         with os.fdopen(descriptor, "w", encoding="utf-8") as handle:
             handle.write(text)
             handle.flush()
-            os.fsync(handle.fileno())
+            if durable:
+                os.fsync(handle.fileno())
         os.replace(temporary, path)
     finally:
         if temporary.exists():
@@ -275,12 +404,31 @@ class StateStore:
             raise StateError("invalid runtime state schema version") from exc
         migrated_from = None
         if schema_version == 1:
-            payload = migrate_v1_to_v2(payload)
+            payload = migrate_v5_to_v6(
+                migrate_v4_to_v5(
+                    migrate_v3_to_v4(migrate_v2_to_v3(migrate_v1_to_v2(payload)))
+                )
+            )
             migrated_from = 1
+        elif schema_version == 2:
+            payload = migrate_v5_to_v6(
+                migrate_v4_to_v5(migrate_v3_to_v4(migrate_v2_to_v3(payload)))
+            )
+            migrated_from = 2
+        elif schema_version == 3:
+            payload = migrate_v5_to_v6(migrate_v4_to_v5(migrate_v3_to_v4(payload)))
+            migrated_from = 3
+        elif schema_version == 4:
+            payload = migrate_v5_to_v6(migrate_v4_to_v5(payload))
+            migrated_from = 4
+        elif schema_version == 5:
+            payload = migrate_v5_to_v6(payload)
+            migrated_from = 5
         elif schema_version != RUNTIME_SCHEMA_VERSION:
             raise StateError(f"unsupported runtime state schema: {schema_version}")
         try:
             state = RuntimeState.from_dict(payload)
+            state.validate_hypothesis_projection()
         except (TypeError, ValueError, KeyError) as exc:
             raise StateError(f"invalid runtime state: {exc}") from exc
         if state.schema_version != RUNTIME_SCHEMA_VERSION:
@@ -317,6 +465,10 @@ class StateStore:
     ) -> None:
         if state.schema_version != RUNTIME_SCHEMA_VERSION:
             raise StateError(f"unsupported runtime state schema: {state.schema_version}")
+        try:
+            state.validate_hypothesis_projection()
+        except ValueError as exc:
+            raise StateError(f"invalid runtime state: {exc}") from exc
         payload = state.to_dict()
         payload["event_head"] = self.events.head
         event = self.events.append(

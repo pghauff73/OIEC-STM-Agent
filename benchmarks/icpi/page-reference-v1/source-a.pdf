@@ -1,0 +1,126 @@
+%PDF-1.4
+%‚„œ”
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Count 4 /Kids [5 0 R 7 0 R 9 0 R 11 0 R] >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+4 0 obj
+<< /Length 338 >>
+stream
+BT
+/F1 9 Tf
+72 720 Td
+14 TL
+(A-01) Tj
+T*
+(CLAIM: Evidence claims require an observable source anchor.) Tj
+T*
+(CONCEPT: source anchoring) Tj
+T*
+(REASONING: An anchor permits a reader to recover the supporting passage independently.) Tj
+T*
+(LIMITATION: An anchor proves location, not the truth of the claim.) Tj
+T*
+(PRINTED PAGE: A-1) Tj
+ET
+endstream
+endobj
+5 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 4 0 R >>
+endobj
+6 0 obj
+<< /Length 348 >>
+stream
+BT
+/F1 9 Tf
+72 720 Td
+14 TL
+(A-02) Tj
+T*
+(CLAIM: A paraphrase must preserve the source qualification.) Tj
+T*
+(CONCEPT: qualified paraphrase) Tj
+T*
+(REASONING: Removing a qualifier changes the proposition and overstates the evidence.) Tj
+T*
+(LIMITATION: Equivalent wording may still be disputed by a domain reviewer.) Tj
+T*
+(PRINTED PAGE: A-2) Tj
+ET
+endstream
+endobj
+7 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 6 0 R >>
+endobj
+8 0 obj
+<< /Length 339 >>
+stream
+BT
+/F1 9 Tf
+72 720 Td
+14 TL
+(A-03) Tj
+T*
+(CLAIM: Page labels and physical page indices are distinct identifiers.) Tj
+T*
+(CONCEPT: page identity) Tj
+T*
+(REASONING: Front matter and custom numbering can separate printed labels from file order.) Tj
+T*
+(LIMITATION: Some documents omit printed labels entirely.) Tj
+T*
+(PRINTED PAGE: A-3) Tj
+ET
+endstream
+endobj
+9 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 8 0 R >>
+endobj
+10 0 obj
+<< /Length 362 >>
+stream
+BT
+/F1 9 Tf
+72 720 Td
+14 TL
+(A-04) Tj
+T*
+(CLAIM: Reference confidence must fall when extraction is incomplete.) Tj
+T*
+(CONCEPT: bounded confidence) Tj
+T*
+(REASONING: Incomplete text prevents a complete comparison between the draft and source.) Tj
+T*
+(LIMITATION: Lower confidence does not identify which missing sentence matters.) Tj
+T*
+(PRINTED PAGE: A-4) Tj
+ET
+endstream
+endobj
+11 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 10 0 R >>
+endobj
+xref
+0 12
+0000000000 65535 f 
+0000000015 00000 n 
+0000000064 00000 n 
+0000000140 00000 n 
+0000000210 00000 n 
+0000000599 00000 n 
+0000000725 00000 n 
+0000001124 00000 n 
+0000001250 00000 n 
+0000001640 00000 n 
+0000001766 00000 n 
+0000002180 00000 n 
+trailer
+<< /Size 12 /Root 1 0 R >>
+startxref
+2308
+%%EOF

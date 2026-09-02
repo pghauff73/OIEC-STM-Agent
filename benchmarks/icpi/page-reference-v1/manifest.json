@@ -1,0 +1,48 @@
+{
+  "files": {
+    "README.md": {
+      "sha256": "90b4fdefb47a22c6c2a036bbdb94990e3ba6a2781ee29ac9292397a43cec732b",
+      "size_bytes": 499
+    },
+    "expected-pages.json": {
+      "sha256": "245eec1a0e5089352aa0fd58a8e9e740075fa39f5a45c312cdb639b2bd0b89d4",
+      "size_bytes": 9673
+    },
+    "page-images/scanned-page-1.png": {
+      "sha256": "dcf700b9d61d340adcdcee97821d4e4d1e9959aef6a98bca3aaf98a2fb809441",
+      "size_bytes": 13107
+    },
+    "page-images/scanned-page-2.png": {
+      "sha256": "96e029a770c880e717125cf57dbec2e492707f7079f8d4e27cbf698cb84dba86",
+      "size_bytes": 13372
+    },
+    "scanned.pdf": {
+      "sha256": "057d07e6fa56b481c46cf85dad257e899875424f16b7f3ef266f4a569b410f19",
+      "size_bytes": 23581
+    },
+    "source-a.pdf": {
+      "sha256": "39b676ee7d5a612dbb7dd90702629d12357f172eff27bbff1fb99aa0c3d6c730",
+      "size_bytes": 2614
+    },
+    "source-b.pdf": {
+      "sha256": "ddd837443baee51fd2ab4c4ddf81ad559b2c5de01b42c750e56ee19b9bf7e46a",
+      "size_bytes": 3209
+    }
+  },
+  "fixture_id": "ICPI-PAGE-REFERENCE-v1",
+  "font_sha256": [
+    "6038a160b491e121c1f12c7bccb4a9c8730296e3adc1086a059404ed84b7451c"
+  ],
+  "generated_at": "2026-08-31T00:00:00Z",
+  "manifest_payload_sha256": "67f323112f5cc58d35a10bc3b8acfcdf97c7e4ec94bcdb72037b2ba7a75edc55",
+  "page_counts": {
+    "scanned": 2,
+    "source-a": 4,
+    "source-b": 5
+  },
+  "page_geometry": {
+    "height": 792,
+    "width": 612
+  },
+  "schema_version": 1
+}

@@ -6,10 +6,12 @@ from tkinter import ttk
 from typing import Callable, Iterable
 
 from ourd.egcf.models import ExecutionPlan, FailureRecord
+from ourd.interaction import ContextDelta, InteractionContextEnvelope, PinnedContextSet
 
 from ..read_models import ReadOnlyEGCFRepository
 from ..commands import CommandRequest
 from ..events import AgentEvent
+from ..formal_writing_models import FormalWritingExecutionOptions, FormalWritingFormState
 from ..model_backend import ModelBackendInfo
 from ..selection_trace import SelectionTrace
 from ..state import GuiState, GuiTask
@@ -19,9 +21,11 @@ from .assurance import AssuranceRecordView
 from .artifacts import ArtifactWorkbenchView
 from .cfel import CFELView
 from .conversation import ConversationView
+from .context import ContextInspectorView
 from .eon import EONInspectorView
 from .evidence import EvidenceView
 from .file_preview import FilePreviewView
+from .formal_writing import FormalWritingView
 from .governance import GovernanceView
 from .iurm import IURMDimensionView
 from .model_backend import ModelBackendView
@@ -29,6 +33,7 @@ from .performance import PerformanceView
 from .ourd import OURDGraphView
 from .repository import RepositoryView
 from .replay import ReplayView
+from .reasoning import ReasoningInspectorView
 from .selection import SelectionTraceView
 from .session_compare import SessionComparisonView
 from .tasks import TaskListView
@@ -67,6 +72,17 @@ class WorkbenchShell(ttk.Frame):
         on_chat_send: Callable[[str], None] | None = None,
         on_chat_stop: Callable[[], None] | None = None,
         on_new_chat: Callable[[], None] | None = None,
+        on_chat_preview: Callable[[str], str] | None = None,
+        on_chat_suggestions: Callable[[str], tuple[str, ...]] | None = None,
+        on_formal_writing_submit: Callable[
+            [str, FormalWritingFormState, FormalWritingExecutionOptions],
+            None,
+        ]
+        | None = None,
+        on_formal_writing_cancel: Callable[[], None] | None = None,
+        on_formal_writing_prepare: Callable[[FormalWritingFormState], None] | None = None,
+        on_formal_writing_authority: Callable[[Path], None] | None = None,
+        formal_writing_authority_path: Path | None = None,
     ) -> None:
         super().__init__(master)
         self.repository = repository
@@ -93,6 +109,8 @@ class WorkbenchShell(ttk.Frame):
             on_send=on_chat_send,
             on_stop=on_chat_stop,
             on_new_chat=on_new_chat,
+            on_preview=on_chat_preview,
+            on_suggestions=on_chat_suggestions,
         )
         self.workflow = WorkflowView(center_tabs, repository, on_object_selected)
         self.trace = TraceTimelineView(center_tabs, on_object_selected)
@@ -102,6 +120,17 @@ class WorkbenchShell(ttk.Frame):
             on_prepare_command=on_prepare_command,
         )
         self.iurm = IURMDimensionView(center_tabs, on_prepare_command)
+        self.reasoning = ReasoningInspectorView(center_tabs, repository_root)
+        self.formal_writing = FormalWritingView(
+            center_tabs,
+            repository_root,
+            on_submit=on_formal_writing_submit,
+            on_cancel=on_formal_writing_cancel,
+            on_prepare_write=on_formal_writing_prepare,
+            on_authority_selected=on_formal_writing_authority,
+            on_show_algorithms=self.show_formal_writing_algorithms,
+            authority_path=formal_writing_authority_path,
+        )
         self.terminal = SemanticTerminalView(
             center_tabs,
             repository,
@@ -126,6 +155,8 @@ class WorkbenchShell(ttk.Frame):
         center_tabs.add(self.workflow, text="Workflow")
         center_tabs.add(self.ourd, text="OURD")
         center_tabs.add(self.iurm, text="IURM")
+        center_tabs.add(self.reasoning, text="OIEC-SR")
+        center_tabs.add(self.formal_writing, text="Formal Writing")
         center_tabs.add(self.trace, text="Trace")
         center_tabs.add(self.terminal, text="Semantic Terminal")
         center_tabs.add(self.replay, text="Replay")
@@ -191,6 +222,7 @@ class WorkbenchShell(ttk.Frame):
             right_tabs,
             performance_supplier or (lambda: {}),
         )
+        self.context = ContextInspectorView(right_tabs)
         self.object_details = JsonView(right_tabs)
         self.file_preview = FilePreviewView(right_tabs, repository_root)
         right_tabs.add(self.evidence, text="Evidence")
@@ -202,6 +234,7 @@ class WorkbenchShell(ttk.Frame):
         right_tabs.add(self.assurance, text="Assurance")
         right_tabs.add(self.model_backend, text="Model")
         right_tabs.add(self.performance, text="Performance")
+        right_tabs.add(self.context, text="Context")
         right_tabs.add(self.file_preview, text="File")
         right_tabs.add(self.object_details, text="Object")
         self.right_tabs = right_tabs
@@ -266,6 +299,18 @@ class WorkbenchShell(ttk.Frame):
         )
         self.right_tabs.select(self.file_preview)
 
+    def set_context_envelope(
+        self,
+        envelope: InteractionContextEnvelope | None,
+    ) -> None:
+        self.context.set_envelope(envelope)
+
+    def set_pinned_context(self, pinned_context: PinnedContextSet) -> None:
+        self.context.set_pinned_context(pinned_context)
+
+    def set_context_delta(self, delta: ContextDelta | None) -> None:
+        self.context.set_context_delta(delta)
+
     def append_event(self, event) -> None:
         self.trace.append(event)
 
@@ -277,6 +322,8 @@ class WorkbenchShell(ttk.Frame):
         self.assurance.refresh()
         self.performance.refresh()
         self.visual.refresh_assets()
+        self.reasoning.refresh()
+        self.formal_writing.refresh()
 
     def show_selection(self) -> None:
         self.center_tabs.select(self.selection)
@@ -292,6 +339,22 @@ class WorkbenchShell(ttk.Frame):
 
     def show_iurm(self) -> None:
         self.center_tabs.select(self.iurm)
+
+    def show_reasoning(self) -> None:
+        self.reasoning.refresh()
+        self.center_tabs.select(self.reasoning)
+
+    def show_formal_writing(self) -> None:
+        self.formal_writing.refresh()
+        self.center_tabs.select(self.formal_writing)
+
+    def show_formal_writing_algorithms(self, algorithm_ids: tuple[str, ...]) -> None:
+        if not algorithm_ids:
+            return
+        self.algorithms.query.set(algorithm_ids[0])
+        self.algorithms.refresh()
+        self.algorithms.select_algorithm_ids(algorithm_ids)
+        self.right_tabs.select(self.algorithms)
 
     def show_replay(self) -> None:
         self.replay.refresh()
@@ -326,6 +389,9 @@ class WorkbenchShell(ttk.Frame):
     def show_artifacts(self) -> None:
         self.right_tabs.select(self.artifacts)
 
+    def show_context(self) -> None:
+        self.right_tabs.select(self.context)
+
     def show_assurance(self) -> None:
         self.right_tabs.select(self.assurance)
 
@@ -353,6 +419,10 @@ class WorkbenchShell(ttk.Frame):
             self.cfel.refresh()
         self.repository_view.set_show_internal_state(preferences.show_internal_state)
         self.replay.set_reduced_motion(preferences.reduced_motion)
+        self.conversation.set_visual_preferences(
+            preferences.chat_visual_formatting,
+            preferences.chat_visual_theme,
+        )
 
     def preference_state(self) -> dict[str, object]:
         positions = []
@@ -371,4 +441,5 @@ class WorkbenchShell(ttk.Frame):
                 ("cfel", self.cfel.browser.query.get()),
             ),
             "show_internal_state": self.repository_view.internal_state_enabled(),
+            **self.conversation.visual_preferences(),
         }

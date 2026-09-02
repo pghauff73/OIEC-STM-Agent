@@ -62,6 +62,34 @@ class SchemaTests(unittest.TestCase):
         self.assertFalse(algorithms["floating_versions_allowed"])
         self.assertFalse(algorithms["direct_command_callbacks_allowed"])
 
+    def test_governed_formal_writing_schema_is_strict_and_complete(self) -> None:
+        root = Path(__file__).resolve().parents[1]
+        payload = json.loads(
+            (root / "schemas" / "formal_writing" / "governed-pipeline.schema.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        self.assertEqual("object", payload["type"])
+        self.assertFalse(payload["additionalProperties"])
+        self.assertTrue(
+            {
+                "WritingTask",
+                "ConceptDefinition",
+                "Claim",
+                "EvidenceLink",
+                "ReasoningEdge",
+                "CounterClaim",
+                "Qualification",
+                "ParagraphPlan",
+                "ArgumentGraph",
+                "DocumentPlan",
+                "DraftSection",
+                "WritingAudit",
+            }
+            <= set(payload["$defs"])
+        )
+        assert_strict_object(self, payload, "governed-formal-writing")
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -1,7 +1,7 @@
 # OURD GUI Architecture
 
 **Architecture version:** 1  
-**Date:** 2026-08-21  
+**Date:** 2026-08-31
 **Status:** implemented candidate; deterministic validation and exact-snapshot human approval remain separate gates
 
 ## Authority Path
@@ -31,6 +31,36 @@ core decides whether they are permitted.
 - `ourd_gui/events.py` and `ourd_gui/state.py` define public GUI event and read-model schema version 1.
 - `ourd_gui/persistence.py` stores the append-only GUI journal, rebuildable SQLite projection, preferences, and non-authoritative exports.
 
+### Formal-Writing Subsystem
+
+```text
+standalone FormalWritingApplication or embedded WorkbenchShell
+  -> FormalWritingView
+  -> typed FormalWritingFormState and FormalWritingExecutionOptions
+  -> FormalWritingController (one worker, bounded GUI-only event queue)
+  -> FormalWritingService and signed writing contracts
+  -> .ourd-agent/writing atomic artifacts
+  -> FormalWritingProjectionStore read-only reconstruction
+```
+
+- `ourd_gui/formal_writing_gui.py` owns only standalone parsing, Tk lifecycle,
+  menus, font scaling, polling, authority selection, and exact-signature
+  confirmation.
+- `ourd_gui/formal_writing_controller.py` owns asynchronous coordination,
+  cooperative cancellation, exact persisted lineage resolution, qualification
+  gates, and shared governed-write preparation.
+- `ourd_gui/formal_writing_models.py` owns renderer-neutral form, option, job,
+  event, input-budget, and governed-preview records.
+- `ourd_gui/formal_writing_projection.py` validates complete signed results and
+  sources, emits bounded diagnostics for invalid artifacts, preserves source
+  freshness, and maps canonical graphs/audits into renderer-neutral records.
+- `ourd_gui/views/formal_writing.py` owns widgets and ephemeral selection only.
+  It imports no service, agent, transaction, approval, or EON mutation owner.
+
+The CLI and both GUI surfaces compile through the same canonical request
+compiler and call the same service. Governed preparation is shared by
+`ourd/formal_writing_governance.py`; no GUI-specific mutation path exists.
+
 ## Threads and Locks
 
 Tk widgets are accessed only on the Tk main thread. Core operations run on one
@@ -49,6 +79,14 @@ assembly also runs on the worker because it may hydrate many immutable objects.
 - JSON/detail projection is bounded by depth, item count, string length, and rendered characters.
 - Artifact reads and geometry inspection enforce explicit byte limits.
 - Performance telemetry keeps only the newest 1,000 samples.
+- Formal-writing selection is capped at 500 inputs, 32 MiB per input, and
+  256 MiB total. Projection reads cap artifacts at 32 MiB, 500 results, 500
+  source artifacts, and 5,000 pages. The view caps graph rendering at 500 nodes
+  and 2,000 edges, source display at 200,000 characters, general text at
+  500,000 characters, diagnostics at 100,000 characters, and PDF previews at
+  four million pixels.
+- Formal-writing projections cache validated path/stat snapshots. Source
+  freshness is recomputed on every refresh, so the cache cannot hide drift.
 
 ## Recovery
 
@@ -57,6 +95,11 @@ is disposable: if its schema, event count, or state digest is invalid, the
 controller rebuilds it from the journal. A partial final core-event line is not
 consumed until complete. A broken core hash chain fails closed rather than
 being presented as authoritative history.
+
+Standalone formal-writing preferences share the atomic GUI preference store
+but persist only window geometry, font scale, selected control tab, and one
+canonical result ID. Task text, source bodies, drafts, authority contents,
+signatures, approvals, and secrets are never stored as GUI preferences.
 
 ## Renderer Boundary
 

@@ -145,6 +145,17 @@ class AlgorithmsView(ttk.Frame):
         if self.on_object_selected is not None:
             self.on_object_selected(object_id)
 
+    def select_algorithm_ids(self, algorithm_ids: tuple[str, ...]) -> bool:
+        requested = set(algorithm_ids)
+        for object_id, record in self._records.items():
+            if record.algorithm_id not in requested:
+                continue
+            self.tree.selection_set(object_id)
+            self.tree.see(object_id)
+            self._selected(None)
+            return True
+        return False
+
     def _show_evidence(self) -> None:
         if not self._selected_id or self.on_show_evidence is None:
             return

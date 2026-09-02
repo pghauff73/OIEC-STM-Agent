@@ -9,7 +9,7 @@ The first vertical slice provides:
 - a bounded command line inside the GUI;
 - image input from user-selected files;
 - stable content-addressed image references such as `@img:3f24...`;
-- multimodal provider expansion so a referenced image is attached to the current model request for compatible Responses API models;
+- multimodal provider preparation so a referenced image can be attached only when the selected local provider supports image input;
 - passive image display without extra dependencies for Tk-supported image types;
 - richer supervised raster editing when Pillow is installed;
 - OBJ and STL wireframe display with mouse orbit and zoom;
@@ -23,7 +23,7 @@ The first vertical slice provides:
 The base GUI remains dependency-light. Install the optional visual extra for JPEG/WebP display and raster edits:
 
 ```bash
-pip install -e '.[visual]'
+pip install '.[visual]'
 ```
 
 This installs Pillow. The 3D wireframe viewer and Bezier editor use Tkinter and the Python standard library.
@@ -48,7 +48,7 @@ Importing the same bytes twice yields the same reference.
 
 The model does not receive arbitrary filesystem paths. An image is attached to a model request only when the user explicitly places its registered `@img:...` reference in the current chat message. Expansion to `input_image` occurs at the provider boundary, so base64 image data is not persisted in the ordinary chat transcript or OIEC trace events.
 
-Whether a local OpenAI-compatible model can consume the image still depends on that model and endpoint supporting multimodal Responses input. Unsupported model/backend combinations fail at the provider boundary rather than silently pretending the pixels were inspected.
+Whether a local model can consume the image still depends on that model and provider supporting multimodal input. Unsupported model/backend combinations fail at the provider boundary rather than silently pretending the pixels were inspected.
 
 ## Visual CLI
 
@@ -170,7 +170,7 @@ This first slice intentionally does not attempt to be Blender or a full raster p
 - OBJ/STL are the initial mesh formats.
 - Bezier editing currently uses cubic curves rather than surfaces or curve networks.
 - 2D editing is a bounded transform/crop/tone stack, not brush painting or generative fill.
-- Local multimodal inference depends on the selected Ollama/OpenAI-compatible model actually supporting image input.
+- Local multimodal inference depends on the selected local model/provider actually supporting image input.
 - `@mesh` and `@curve` references are GUI/reference objects; only `@img` references are currently expanded into provider binary inputs.
 
 These limits keep the milestone deterministic enough to test before adding texture painting, mesh editing, curve networks, surfaces, image-generation edit proposals, or Progen3D grammar binding.

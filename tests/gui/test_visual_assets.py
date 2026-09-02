@@ -5,7 +5,6 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from ourd.providers import OpenAIResponsesProvider, ProviderConfig
 from ourd_gui.visual_assets import VisualAssetRegistry
 
 
@@ -44,7 +43,7 @@ class VisualAssetTests(unittest.TestCase):
             self.assertTrue(first.reference.startswith("@match:"))
             self.assertEqual("report", first.kind)
 
-    def test_provider_expands_latest_img_reference_only(self) -> None:
+    def test_registry_builds_multimodal_user_item_for_explicit_image_reference(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             source = root / "input.png"
@@ -52,27 +51,16 @@ class VisualAssetTests(unittest.TestCase):
             source.write_bytes(payload)
             registry = VisualAssetRegistry(root)
             asset = registry.register_file(source, kind="image")
-            provider = OpenAIResponsesProvider(
-                ProviderConfig(
-                    model="local-test",
-                    base_url="http://localhost:11434/v1",
-                    api_key="ollama",
-                    visual_asset_root=str(registry.root),
-                )
+            earlier = registry.multimodal_user_item(f"Earlier {asset.reference}")
+            expanded = registry.multimodal_user_item(
+                f"Inspect this image {asset.reference}"
             )
-            expanded = provider._expand_latest_image_references(
-                [
-                    {"role": "user", "content": f"Earlier {asset.reference}"},
-                    {"role": "assistant", "content": "ack"},
-                    {"role": "user", "content": f"Inspect this image {asset.reference}"},
-                ]
-            )
-            self.assertIsInstance(expanded[-1]["content"], list)
-            image_item = expanded[-1]["content"][1]
+            self.assertIsInstance(expanded["content"], list)
+            image_item = expanded["content"][1]
             self.assertEqual("input_image", image_item["type"])
             encoded = image_item["image_url"].split(",", 1)[1]
             self.assertEqual(payload, base64.b64decode(encoded))
-            self.assertIsInstance(expanded[0]["content"], str)
+            self.assertIsInstance(earlier["content"], list)
 
 
 if __name__ == "__main__":

@@ -27,9 +27,25 @@ class GuiPersistenceTests(unittest.TestCase):
                 window_geometry="900x700",
                 recent_repositories=("/one", "/two"),
                 reduced_motion=True,
+                chat_visual_formatting=False,
+                chat_visual_theme="paper-ink",
             )
             store.save(preferences)
             self.assertEqual(preferences, store.load())
+
+    def test_legacy_preferences_receive_visual_text_defaults(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            store = GuiPreferencesStore(root)
+            store.path.parent.mkdir(parents=True)
+            store.path.write_text(
+                json.dumps({"schema_version": 2, "window_geometry": "800x600"}),
+                encoding="utf-8",
+            )
+            loaded = store.load()
+            self.assertEqual(4, loaded.schema_version)
+            self.assertTrue(loaded.chat_visual_formatting)
+            self.assertEqual("midnight-blueprint", loaded.chat_visual_theme)
 
     def test_assurance_export_is_bounded_to_gui_directory(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:

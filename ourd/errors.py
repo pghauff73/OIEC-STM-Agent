@@ -13,6 +13,10 @@ class ProviderError(RuntimeError):
 class ContextBudgetError(ProviderError):
     """Raised when a provider request exceeds the configured context budget."""
 
+    def __init__(self, message: str, *, report=None):
+        super().__init__(message)
+        self.report = dict(report or {})
+
 
 class AgentCancelledError(RuntimeError):
     """Raised when an interactive agent turn is cooperatively stopped."""

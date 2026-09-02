@@ -1,0 +1,182 @@
+{
+  "fixture_id": "ICPI-PAGE-REFERENCE-v1",
+  "pages": [
+    {
+      "accepted_paraphrase_concepts": [
+        "traceable evidence",
+        "recoverable source location"
+      ],
+      "claim": "Evidence claims require an observable source anchor.",
+      "concept": "source anchoring",
+      "limitation": "An anchor proves location, not the truth of the claim.",
+      "literal_text": "A-01\nCLAIM: Evidence claims require an observable source anchor.\nCONCEPT: source anchoring\nREASONING: An anchor permits a reader to recover the supporting passage independently.\nLIMITATION: An anchor proves location, not the truth of the claim.\nPRINTED PAGE: A-1",
+      "marker": "A-01",
+      "physical_page": 1,
+      "printed_page_label": "A-1",
+      "raster_only": false,
+      "reasoning": "An anchor permits a reader to recover the supporting passage independently.",
+      "source_id": "source-a"
+    },
+    {
+      "accepted_paraphrase_concepts": [
+        "qualification preservation",
+        "semantic fidelity"
+      ],
+      "claim": "A paraphrase must preserve the source qualification.",
+      "concept": "qualified paraphrase",
+      "limitation": "Equivalent wording may still be disputed by a domain reviewer.",
+      "literal_text": "A-02\nCLAIM: A paraphrase must preserve the source qualification.\nCONCEPT: qualified paraphrase\nREASONING: Removing a qualifier changes the proposition and overstates the evidence.\nLIMITATION: Equivalent wording may still be disputed by a domain reviewer.\nPRINTED PAGE: A-2",
+      "marker": "A-02",
+      "physical_page": 2,
+      "printed_page_label": "A-2",
+      "raster_only": false,
+      "reasoning": "Removing a qualifier changes the proposition and overstates the evidence.",
+      "source_id": "source-a"
+    },
+    {
+      "accepted_paraphrase_concepts": [
+        "printed versus physical pages",
+        "page-label distinction"
+      ],
+      "claim": "Page labels and physical page indices are distinct identifiers.",
+      "concept": "page identity",
+      "limitation": "Some documents omit printed labels entirely.",
+      "literal_text": "A-03\nCLAIM: Page labels and physical page indices are distinct identifiers.\nCONCEPT: page identity\nREASONING: Front matter and custom numbering can separate printed labels from file order.\nLIMITATION: Some documents omit printed labels entirely.\nPRINTED PAGE: A-3",
+      "marker": "A-03",
+      "physical_page": 3,
+      "printed_page_label": "A-3",
+      "raster_only": false,
+      "reasoning": "Front matter and custom numbering can separate printed labels from file order.",
+      "source_id": "source-a"
+    },
+    {
+      "accepted_paraphrase_concepts": [
+        "uncertainty disclosure",
+        "incomplete extraction"
+      ],
+      "claim": "Reference confidence must fall when extraction is incomplete.",
+      "concept": "bounded confidence",
+      "limitation": "Lower confidence does not identify which missing sentence matters.",
+      "literal_text": "A-04\nCLAIM: Reference confidence must fall when extraction is incomplete.\nCONCEPT: bounded confidence\nREASONING: Incomplete text prevents a complete comparison between the draft and source.\nLIMITATION: Lower confidence does not identify which missing sentence matters.\nPRINTED PAGE: A-4",
+      "marker": "A-04",
+      "physical_page": 4,
+      "printed_page_label": "A-4",
+      "raster_only": false,
+      "reasoning": "Incomplete text prevents a complete comparison between the draft and source.",
+      "source_id": "source-a"
+    },
+    {
+      "accepted_paraphrase_concepts": [
+        "passage function",
+        "concept classification"
+      ],
+      "claim": "A concept label summarizes the role of a passage.",
+      "concept": "concept identification",
+      "limitation": "A passage can legitimately support more than one concept.",
+      "literal_text": "B-01\nCLAIM: A concept label summarizes the role of a passage.\nCONCEPT: concept identification\nREASONING: The label groups the passage by function rather than copying its wording.\nLIMITATION: A passage can legitimately support more than one concept.\nPRINTED PAGE: 11",
+      "marker": "B-01",
+      "physical_page": 1,
+      "printed_page_label": "11",
+      "raster_only": false,
+      "reasoning": "The label groups the passage by function rather than copying its wording.",
+      "source_id": "source-b"
+    },
+    {
+      "accepted_paraphrase_concepts": [
+        "evidence-to-claim link",
+        "explicit warrant"
+      ],
+      "claim": "Reasoning links evidence to a conclusion through explicit warrants.",
+      "concept": "argument warrant",
+      "limitation": "Not every warrant is stated by the source author.",
+      "literal_text": "B-02\nCLAIM: Reasoning links evidence to a conclusion through explicit warrants.\nCONCEPT: argument warrant\nREASONING: Making the warrant explicit exposes assumptions that can be reviewed.\nLIMITATION: Not every warrant is stated by the source author.\nPRINTED PAGE: 12",
+      "marker": "B-02",
+      "physical_page": 2,
+      "printed_page_label": "12",
+      "raster_only": false,
+      "reasoning": "Making the warrant explicit exposes assumptions that can be reviewed.",
+      "source_id": "source-b"
+    },
+    {
+      "accepted_paraphrase_concepts": [
+        "quotation versus paraphrase",
+        "transformation provenance"
+      ],
+      "claim": "Quotation and paraphrase require separate provenance records.",
+      "concept": "reference mode",
+      "limitation": "Both modes can still misrepresent surrounding context.",
+      "literal_text": "B-03\nCLAIM: Quotation and paraphrase require separate provenance records.\nCONCEPT: reference mode\nREASONING: A quotation preserves exact words while a paraphrase records a semantic transformation.\nLIMITATION: Both modes can still misrepresent surrounding context.\nPRINTED PAGE: 13",
+      "marker": "B-03",
+      "physical_page": 3,
+      "printed_page_label": "13",
+      "raster_only": false,
+      "reasoning": "A quotation preserves exact words while a paraphrase records a semantic transformation.",
+      "source_id": "source-b"
+    },
+    {
+      "accepted_paraphrase_concepts": [
+        "conflict disclosure",
+        "balanced synthesis"
+      ],
+      "claim": "Conflicting sources should remain visible in a formal report.",
+      "concept": "source disagreement",
+      "limitation": "The presence of disagreement does not decide which source is stronger.",
+      "literal_text": "B-04\nCLAIM: Conflicting sources should remain visible in a formal report.\nCONCEPT: source disagreement\nREASONING: Visible disagreement prevents a synthesized conclusion from appearing unanimous.\nLIMITATION: The presence of disagreement does not decide which source is stronger.\nPRINTED PAGE: 14",
+      "marker": "B-04",
+      "physical_page": 4,
+      "printed_page_label": "14",
+      "raster_only": false,
+      "reasoning": "Visible disagreement prevents a synthesized conclusion from appearing unanimous.",
+      "source_id": "source-b"
+    },
+    {
+      "accepted_paraphrase_concepts": [
+        "source hash binding",
+        "current snapshot evidence"
+      ],
+      "claim": "A reference audit must bind findings to the current source bytes.",
+      "concept": "hash-bound audit",
+      "limitation": "A hash cannot establish authorship or publication quality.",
+      "literal_text": "B-05\nCLAIM: A reference audit must bind findings to the current source bytes.\nCONCEPT: hash-bound audit\nREASONING: Content hashes reveal whether cited material changed after analysis.\nLIMITATION: A hash cannot establish authorship or publication quality.\nPRINTED PAGE: 15",
+      "marker": "B-05",
+      "physical_page": 5,
+      "printed_page_label": "15",
+      "raster_only": false,
+      "reasoning": "Content hashes reveal whether cited material changed after analysis.",
+      "source_id": "source-b"
+    },
+    {
+      "accepted_paraphrase_concepts": [
+        "raster text extraction",
+        "OCR requirement"
+      ],
+      "claim": "Raster pages require OCR before text-level reference checks.",
+      "concept": "OCR dependency",
+      "limitation": "OCR can confuse characters and page layout.",
+      "literal_text": "S-01\nCLAIM: Raster pages require OCR before text-level reference checks.\nCONCEPT: OCR dependency\nREASONING: A raster image has pixels but no native character sequence for passage matching.\nLIMITATION: OCR can confuse characters and page layout.\nPRINTED PAGE: SCAN-1",
+      "marker": "S-01",
+      "physical_page": 1,
+      "printed_page_label": "SCAN-1",
+      "raster_only": true,
+      "reasoning": "A raster image has pixels but no native character sequence for passage matching.",
+      "source_id": "scanned"
+    },
+    {
+      "accepted_paraphrase_concepts": [
+        "recognition confidence",
+        "manual quotation review"
+      ],
+      "claim": "OCR-derived quotations require lower confidence than native text.",
+      "concept": "OCR uncertainty",
+      "limitation": "Manual review may still be required for critical quotations.",
+      "literal_text": "S-02\nCLAIM: OCR-derived quotations require lower confidence than native text.\nCONCEPT: OCR uncertainty\nREASONING: Recognition errors can alter exact wording even when the visible page is unchanged.\nLIMITATION: Manual review may still be required for critical quotations.\nPRINTED PAGE: SCAN-2",
+      "marker": "S-02",
+      "physical_page": 2,
+      "printed_page_label": "SCAN-2",
+      "raster_only": true,
+      "reasoning": "Recognition errors can alter exact wording even when the visible page is unchanged.",
+      "source_id": "scanned"
+    }
+  ],
+  "schema_version": 1
+}

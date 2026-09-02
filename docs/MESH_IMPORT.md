@@ -81,7 +81,7 @@ It can display bounded flat surfaces using material diffuse colors or vertex col
 Install visual support with:
 
 ```bash
-pip install -e '.[visual]'
+pip install '.[visual]'
 ```
 
 The current Tk viewer deliberately does **not** claim full UV texture rasterization onto perspective polygons. The importer preserves the UV/material/texture data so a later OpenGL/Progen3D renderer can consume the same mesh bundle without reparsing or losing provenance.

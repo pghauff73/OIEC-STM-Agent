@@ -49,6 +49,7 @@ class GraphView(ttk.Frame):
             ttk.Button(
                 toolbar,
                 text=label,
+                width=5,
                 command=lambda value=zoom: self.set_zoom(value),
             ).pack(side="left", padx=2)
         self.canvas = tk.Canvas(self, background="#f7f8fa", highlightthickness=0)

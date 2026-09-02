@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import json
+import inspect
 import threading
 import time
 import uuid
@@ -9,7 +11,19 @@ from pathlib import Path
 from typing import Any, Callable, Dict, Iterable, Mapping
 
 from ourd.egcf.models import AssuranceCase
-from ourd.errors import AgentCancelledError
+from ourd.errors import AgentCancelledError, PolicyError
+from ourd.interaction import (
+    ContextDelta,
+    InteractionConfirmation,
+    InteractionConfirmationReceipt,
+    InteractionContextEnvelope,
+    InteractionRoute,
+    PinnedContextSet,
+    compile_turn_execution_policy,
+    interaction_confirmation_receipt_audit_metadata,
+    require_fresh_pinned_context,
+    require_interaction_confirmation_receipt,
+)
 from ourd.providers import ProviderConfig
 
 from .assurance_exports import assurance_html, assurance_json, assurance_markdown
@@ -20,11 +34,16 @@ from .commands import (
     ObjectiveRequest,
     ReplayRequest,
 )
+from .context_projection import (
+    context_delta_audit_metadata,
+    context_envelope_audit_metadata,
+)
 from .core_gateway import CoreGateway
 from .events import AgentEvent, AgentEventBus, AgentEventType
 from .evidence_exports import evidence_json, evidence_markdown
 from .persistence import CoreEventTailer, GuiEventJournal, GuiExportStore, GuiProjectionStore
 from .performance import PerformanceMonitor
+from .qwen_bootstrap import QwenBootstrapResult
 from .read_models import ReadOnlyEGCFRepository
 from .redaction import safe_projection
 from .selection_trace import SelectionTraceAssembler
@@ -358,7 +377,22 @@ class GuiController:
             },
         )
 
-    def submit_chat_message(self, content: str) -> str:
+    def _start_chat_operation(
+        self,
+        content: str,
+        *,
+        label: str,
+        worker: Callable[
+            [list[Dict[str, str]], threading.Event, Callable[[Mapping[str, Any]], None]],
+            Any,
+        ],
+        route: InteractionRoute | None = None,
+        context_envelope: InteractionContextEnvelope | None = None,
+        pinned_context: PinnedContextSet | None = None,
+        pinned_context_envelope: InteractionContextEnvelope | None = None,
+        confirmation: InteractionConfirmation | None = None,
+        confirmation_receipt: InteractionConfirmationReceipt | None = None,
+    ) -> str:
         message = content.strip()
         if not message:
             raise ValueError("chat message is empty")
@@ -366,6 +400,44 @@ class GuiController:
             raise ValueError("chat message exceeds the 32,000 character limit")
         if self._active_chat_operation_id:
             raise RuntimeError("an agent chat turn is already running")
+        if context_envelope is not None:
+            if route is None:
+                raise ValueError("context envelope requires an interaction route")
+            if context_envelope.route_id != route.route_id:
+                raise ValueError("context envelope route ID mismatch")
+            if context_envelope.route_signature != route.signature:
+                raise ValueError("context envelope route signature mismatch")
+        if pinned_context is not None and context_envelope is not None:
+            projected_paths = {
+                item.value
+                for item in context_envelope.attachments
+                if item.kind in {"file", "folder", "path"}
+            }
+            missing_pins = set(pinned_context.paths) - projected_paths
+            if missing_pins:
+                raise ValueError(
+                    f"pinned context is missing from context envelope: {sorted(missing_pins)!r}"
+                )
+            require_fresh_pinned_context(
+                pinned_context,
+                pinned_context_envelope,
+                current_source_snapshot_hash=context_envelope.source_snapshot_hash,
+            )
+        if route is not None and route.requires_confirmation:
+            if confirmation is None or confirmation_receipt is None:
+                raise ValueError(
+                    "confirmation-required ICPI route needs an accepted exact receipt"
+                )
+            require_interaction_confirmation_receipt(
+                confirmation,
+                confirmation_receipt,
+                current_source_snapshot_hash=self.gateway.snapshot(),
+                context_envelope=context_envelope,
+                pinned_context=pinned_context,
+                pinned_context_envelope=pinned_context_envelope,
+            )
+        elif confirmation is not None or confirmation_receipt is not None:
+            raise ValueError("non-confirming ICPI route cannot carry a confirmation receipt")
         task_id = str(uuid.uuid4())
         turn_id = str(uuid.uuid4())
         operation_id = str(uuid.uuid4())
@@ -380,7 +452,7 @@ class GuiController:
             payload={
                 "title": message[:120],
                 "status": "RUNNING",
-                "message": "agent chat turn",
+                "message": label,
             },
         )
         self._emit(
@@ -402,27 +474,84 @@ class GuiController:
                 "history_message_count": len(history),
             },
         )
+        if route is not None:
+            context_metadata = (
+                context_envelope_audit_metadata(context_envelope)
+                if context_envelope is not None
+                else {
+                    "context_envelope_id": "",
+                    "context_envelope_signature": "",
+                    "context_source_snapshot": "",
+                    "context_reference_count": 0,
+                    "context_file_count": 0,
+                    "context_preview_bodies_persisted": False,
+                }
+            )
+            self._emit(
+                AgentEventType.CHAT_ACTIVITY,
+                task_id=task_id,
+                source="icpi",
+                payload={
+                    "trace_type": "icpi_route",
+                    "turn_id": turn_id,
+                    "route_id": route.route_id,
+                    "route_signature": route.signature,
+                    "kind": route.kind,
+                    "target": route.target,
+                    "requires_confirmation": route.requires_confirmation,
+                    **context_metadata,
+                    "pinned_context_id": (
+                        pinned_context.context_id if pinned_context is not None else ""
+                    ),
+                    "pinned_context_signature": (
+                        pinned_context.signature if pinned_context is not None else ""
+                    ),
+                    "pinned_context_count": (
+                        len(pinned_context.paths) if pinned_context is not None else 0
+                    ),
+                    "pinned_context_envelope_id": (
+                        pinned_context_envelope.envelope_id
+                        if pinned_context_envelope is not None
+                        else ""
+                    ),
+                    "pinned_context_source_snapshot": (
+                        pinned_context_envelope.source_snapshot_hash
+                        if pinned_context_envelope is not None
+                        else ""
+                    ),
+                    **(
+                        interaction_confirmation_receipt_audit_metadata(
+                            confirmation_receipt
+                        )
+                        if confirmation_receipt is not None
+                        else {
+                            "confirmation_receipt_id": "",
+                            "confirmation_receipt_signature": "",
+                            "confirmation_decision": "",
+                        }
+                    ),
+                },
+            )
         self._emit(
             AgentEventType.WORKER_STATUS,
             task_id=task_id,
-            payload={"status": "running: agent chat"},
+            payload={"status": f"running: {label}"},
         )
         started_at = time.perf_counter()
         future = self.executor.submit(
-            lambda: self.gateway.chat_turn(
-                message,
+            lambda: worker(
                 history,
-                event_callback=lambda envelope: self._publish_chat_trace(
+                cancel_event,
+                lambda envelope: self._publish_chat_trace(
                     task_id,
                     turn_id,
                     envelope,
                 ),
-                cancel_check=cancel_event.is_set,
             )
         )
         self._pending[operation_id] = PendingOperation(
             task_id,
-            "agent chat",
+            label,
             future,
             started_at,
         )
@@ -431,16 +560,249 @@ class GuiController:
                 operation_id,
                 task_id,
                 turn_id,
+                label,
                 completed,
             )
         )
         return turn_id
+
+    def submit_chat_message(
+        self,
+        content: str,
+        *,
+        route: InteractionRoute | None = None,
+        model_input: str = "",
+        context_envelope: InteractionContextEnvelope | None = None,
+        pinned_context: PinnedContextSet | None = None,
+        pinned_context_envelope: InteractionContextEnvelope | None = None,
+        confirmation: InteractionConfirmation | None = None,
+        confirmation_receipt: InteractionConfirmationReceipt | None = None,
+    ) -> str:
+        message = content.strip()
+        agent_message = model_input.strip() or message
+
+        def run_chat(
+            history: list[Dict[str, str]],
+            cancel_event: threading.Event,
+            event_callback: Callable[[Mapping[str, Any]], None],
+        ) -> str:
+            current_snapshot = self.gateway.snapshot()
+            if (
+                context_envelope is not None
+                and current_snapshot != context_envelope.source_snapshot_hash
+            ):
+                raise PolicyError("ICPI context envelope is stale before model invocation")
+            if confirmation is not None and confirmation_receipt is not None:
+                require_interaction_confirmation_receipt(
+                    confirmation,
+                    confirmation_receipt,
+                    current_source_snapshot_hash=current_snapshot,
+                    context_envelope=context_envelope,
+                    pinned_context=pinned_context,
+                    pinned_context_envelope=pinned_context_envelope,
+                )
+            turn_policy = None
+            if route is not None and route.kind == "INTENT" and route.intent is not None:
+                turn_policy = compile_turn_execution_policy(
+                    route,
+                    source_snapshot_hash=current_snapshot,
+                    context_envelope_signature=(
+                        context_envelope.signature if context_envelope is not None else ""
+                    ),
+                    corpus_request=(
+                        ("target_path", path) for path in route.intent.target_paths
+                    ),
+                )
+            chat_turn_parameters = inspect.signature(self.gateway.chat_turn).parameters
+            chat_turn_kwargs: dict[str, Any] = {
+                "event_callback": event_callback,
+                "cancel_check": cancel_event.is_set,
+            }
+            if "turn_execution_policy" in chat_turn_parameters:
+                chat_turn_kwargs["turn_execution_policy"] = turn_policy
+            return self.gateway.chat_turn(
+                agent_message,
+                history,
+                **chat_turn_kwargs,
+            )
+
+        return self._start_chat_operation(
+            message,
+            label="agent chat",
+            route=route,
+            context_envelope=context_envelope,
+            pinned_context=pinned_context,
+            pinned_context_envelope=pinned_context_envelope,
+            confirmation=confirmation,
+            confirmation_receipt=confirmation_receipt,
+            worker=run_chat,
+        )
+
+    def record_confirmation_receipt(
+        self,
+        receipt: InteractionConfirmationReceipt,
+    ) -> None:
+        self._emit(
+            AgentEventType.CHAT_ACTIVITY,
+            source="icpi",
+            payload={
+                "trace_type": "icpi_confirmation_receipt",
+                **interaction_confirmation_receipt_audit_metadata(receipt),
+            },
+        )
+
+    def record_qwen_bootstrap(self, result: QwenBootstrapResult) -> None:
+        self._emit(
+            AgentEventType.CHAT_ACTIVITY,
+            source="icpi",
+            payload={
+                "trace_type": "icpi_qwen_bootstrap",
+                "product_alias": result.product_alias,
+                "requested_model": result.requested_model,
+                "resolved_model": result.resolved_model,
+                "model_digest": result.model_digest,
+                "model_size": result.model_size,
+                "ollama_version": result.ollama_version,
+                "service_started": result.service_started,
+                "warmed": result.warmed,
+                "resident": result.resident,
+                "size_vram": result.size_vram,
+                "log_path": result.log_path,
+                "authoritative": False,
+                "api_key_persisted": False,
+            },
+        )
+
+    def submit_provider_preflight(
+        self,
+        *,
+        route: InteractionRoute | None = None,
+    ) -> str:
+        def run_preflight(
+            history: list[Dict[str, str]],
+            cancel_event: threading.Event,
+            event_callback: Callable[[Mapping[str, Any]], None],
+        ) -> str:
+            del history, event_callback
+            if cancel_event.is_set():
+                raise AgentCancelledError("provider preflight stopped by user")
+            result = self.gateway.provider_preflight()
+            if cancel_event.is_set():
+                raise AgentCancelledError("provider preflight stopped by user")
+            return json.dumps(result, indent=2, sort_keys=True, default=str)
+
+        return self._start_chat_operation(
+            "/preflight",
+            label="provider preflight",
+            route=route,
+            worker=run_preflight,
+        )
+
+    def record_icpi_exchange(
+        self,
+        content: str,
+        response: str,
+        *,
+        route: InteractionRoute,
+        action: str,
+    ) -> str:
+        message = content.strip()
+        if not message:
+            raise ValueError("ICPI command is empty")
+        turn_id = str(uuid.uuid4())
+        self._emit(
+            AgentEventType.CHAT_MESSAGE_ADDED,
+            source="icpi",
+            payload={
+                "message_id": str(uuid.uuid4()),
+                "turn_id": turn_id,
+                "role": "user",
+                "content": message,
+                "status": "complete",
+            },
+        )
+        if response.strip():
+            self._emit(
+                AgentEventType.CHAT_MESSAGE_ADDED,
+                source="icpi",
+                payload={
+                    "message_id": str(uuid.uuid4()),
+                    "turn_id": turn_id,
+                    "role": "system",
+                    "content": response.strip(),
+                    "status": "complete",
+                },
+            )
+        self._emit(
+            AgentEventType.CHAT_ACTIVITY,
+            source="icpi",
+            payload={
+                "trace_type": "icpi_local_command",
+                "turn_id": turn_id,
+                "route_id": route.route_id,
+                "route_signature": route.signature,
+                "kind": route.kind,
+                "target": route.target,
+                "action": action,
+                "requires_confirmation": route.requires_confirmation,
+            },
+        )
+        return turn_id
+
+    def record_pinned_context_transition(
+        self,
+        *,
+        route: InteractionRoute | None,
+        action: str,
+        pinned_context: PinnedContextSet,
+        context_envelope: InteractionContextEnvelope | None = None,
+        context_delta: ContextDelta | None = None,
+    ) -> None:
+        envelope_metadata = (
+            context_envelope_audit_metadata(context_envelope)
+            if context_envelope is not None
+            else {
+                "context_envelope_id": "",
+                "context_envelope_signature": "",
+                "context_source_snapshot": "",
+                "context_preview_bodies_persisted": False,
+            }
+        )
+        delta_metadata = (
+            context_delta_audit_metadata(context_delta)
+            if context_delta is not None
+            else {
+                "context_delta_signature": "",
+                "context_freshness": "EMPTY" if not pinned_context.paths else "UNCHECKED",
+                "context_refresh_applied": False,
+                "context_preview_bodies_persisted": False,
+            }
+        )
+        self._emit(
+            AgentEventType.CHAT_ACTIVITY,
+            source="icpi",
+            payload={
+                "trace_type": "icpi_pinned_context",
+                "route_id": route.route_id if route is not None else "",
+                "route_signature": route.signature if route is not None else "",
+                "action": action,
+                "pinned_context_id": pinned_context.context_id,
+                "pinned_context_signature": pinned_context.signature,
+                "pinned_context_count": len(pinned_context.paths),
+                "pinned_paths": list(pinned_context.paths),
+                **envelope_metadata,
+                **delta_metadata,
+                "authoritative": False,
+                "preview_bodies_persisted": False,
+            },
+        )
 
     def _chat_done(
         self,
         operation_id: str,
         task_id: str,
         turn_id: str,
+        label: str,
         future: Future[Any],
     ) -> None:
         pending = self._pending.pop(operation_id, None)
@@ -450,12 +812,12 @@ class GuiController:
             else 0.0
         )
         self.performance.record_ms(
-            "operation.agent_chat",
+            f"operation.{label.replace(' ', '_')}",
             duration_ms,
             {"task_id": task_id, "turn_id": turn_id},
         )
         status = "COMPLETED"
-        message = "agent chat completed"
+        message = f"{label} completed"
         result: Any = None
         try:
             result = future.result()
@@ -472,7 +834,7 @@ class GuiController:
             )
         except (AgentCancelledError, CancelledError):
             status = "CANCELLED"
-            message = "agent chat stopped"
+            message = f"{label} stopped"
             self._emit(
                 AgentEventType.CHAT_MESSAGE_ADDED,
                 task_id=task_id,
@@ -486,7 +848,7 @@ class GuiController:
             )
         except Exception as exc:
             status = "FAILED"
-            message = "agent chat failed"
+            message = f"{label} failed"
             error = f"{type(exc).__name__}: {exc}"
             self._emit(
                 AgentEventType.CHAT_MESSAGE_ADDED,
@@ -502,7 +864,7 @@ class GuiController:
             self._emit(
                 AgentEventType.UI_ERROR,
                 task_id=task_id,
-                payload={"message": error, "operation": "agent chat"},
+                payload={"message": error, "operation": label},
             )
         finally:
             self._emit(

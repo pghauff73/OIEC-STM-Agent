@@ -1,6 +1,7 @@
 # OIEC-STM-Agent GUI
 
 **Implementation date:** 2026-08-21  
+**Updated:** 2026-08-30
 **State:** governed candidate; deterministic validation and exact-snapshot human approval required
 
 ## Purpose
@@ -39,8 +40,14 @@ Agent Chat provider flags:
 
 ```text
 --model MODEL
---base-url URL
---api-key KEY
+--provider llama_cpp_process
+--runner-path PATH
+--model-path PATH
+--expected-model-sha256 digest
+--llama-cpp-root PATH
+--llama-cpp-build-dir PATH
+--llama-grammar-dir PATH
+--llama-context TOKENS
 --reasoning-effort {none,low,medium,high,xhigh}
 --max-output-tokens TOKENS
 --context-budget TOKENS
@@ -52,6 +59,15 @@ Agent Chat provider flags:
 These flags configure both the Model panel and Agent Chat. Each chat turn runs
 provider preflight before inference. The GUI never installs or silently
 substitutes a model, and provider readiness grants no repository authority.
+
+Invoking the exact case-sensitive `oiec-stm-sr-AgentICPI --repo .` product
+entry point with no explicit provider configuration automatically selects the
+direct Qwen profile: `qwen3.8:27B-Fast` maps to `qwen3.8-27b-direct` under the
+`llama_cpp_process` provider. Runner, GGUF, digest, llama.cpp source, build, and
+grammar evidence are verified by provider preflight, not by a model service.
+Missing configured paths fail closed and are never downloaded automatically.
+`--no-auto-qwen` disables this behavior; `--auto-qwen` enables it for
+compatibility or source-tree launch commands.
 
 ## Implemented Views
 
@@ -72,6 +88,63 @@ substitutes a model, and provider readiness grants no repository authority.
   interruption are not claimed.
 - Model output may request existing agent tools, but cannot bypass capability,
   evidence, approval, transaction, or rollback rules.
+- Converts explicit workspace references into content-addressed, snapshot-bound
+  context envelopes before model invocation. The Context tab shows bounded file
+  metadata, exact hash state, unresolved references, and truncation without
+  granting authority.
+- Redacts context preview bodies until the person explicitly reveals the
+  already bounded in-memory preview. GUI route events retain envelope identity
+  and counts only; core `run_started` events retain task hashes and size metrics
+  rather than the structured task body.
+- Builds the complete context envelope before any confirmation-required turn,
+  then records an accepted or rejected deterministic receipt bound to the exact
+  route, snapshot, envelope, budget, model-input digest, counts, and pinned
+  draft. Accepted receipts are checked before task creation and again at the
+  worker boundary; rejected or stale receipts start no provider turn.
+- `/attach` validates and pins up to 32 workspace paths, then constructs the
+  complete draft envelope without invoking the model or mutating files.
+  `/detach` removes selected pins or all pins; `New Chat` clears the set.
+- `/context` compares the pinned draft with the current exact snapshot and shows
+  a deterministic file delta. `/context --refresh` explicitly installs the new
+  in-memory draft; stale pinned drafts block model invocation until refreshed.
+- Displays pinned count and signature in live route preview and Context details,
+  records append-only transition/delta metadata, and rejects a model turn if its
+  exact envelope omits a pin or differs from the pinned draft snapshot.
+- Compiles an exact turn policy before dispatch. Read-only summaries receive
+  only repository/corpus read tools; super reasoning remains hidden until its
+  separate governance prerequisites are satisfied.
+- Shortens Agent Activity to high-value state transitions, selected bounded
+  arguments, structured error codes, aggregated corpus progress, and formal
+  writing completion. Full append-only trace and persisted evidence remain
+  available for detailed inspection and replay.
+
+### Formal Writing
+
+- Uses the same reusable `FormalWritingView` in the main workbench and the
+  standalone `oiec-stm-formal-writing-gui` application.
+- Provides typed Request, Inputs, Workflow, Writing Runs, Document, Argument
+  Graph, Evidence, Audit, SAA proposal, and novelty surfaces backed by signed
+  `.ourd-agent/writing/` artifacts.
+- Runs the canonical `FormalWritingService` on one dedicated worker through
+  `FormalWritingController`; Tk widgets remain on the main thread and receive
+  bounded immutable progress events at 50 ms polling intervals.
+- Supports Research, Argument, Plan, Draft, Audit, Revise, Inspect Sources,
+  Locate Passage, Explain Reference, and Export References. A persisted plan,
+  draft, audit, or request is selected by exact canonical ID.
+- Displays deterministic input manifests, source hashes, physical page indexes,
+  display labels, extraction/OCR state, freshness, sentence-to-claim traces,
+  complete typed graph relations, all audit metrics, limitations, performed
+  checks, exact novelty enums, and review-bound algorithm proposal status.
+- Safely renders optional PDF pages only when PyMuPDF is installed. OCR controls
+  are disabled unless PyMuPDF, Pillow, and `pytesseract` are all available;
+  OCR also requires explicit permission.
+- Keeps the document selection-only. No view can edit canonical writing
+  artifacts or ordinary workspace output files.
+- `Prepare Governed Write` binds the exact request signature, draft SHA, audit,
+  sources, authority digest, and output paths, then prepares the shared
+  transaction/EON candidate. The embedded workbench navigates to Governance;
+  approval, evidence acceptance, apply, verification, and rollback remain
+  separate authoritative surfaces.
 
 ### Selection Trace
 
@@ -185,10 +258,8 @@ Detailed contracts:
 
 ## Qwen From VisualGrammar2d
 
-`../VisualGrammar2d/qwen_cli.py` is suitable for bounded documentation drafting
-because it supports a local Ollama backend, repository-root confinement,
-explicit file inclusion, context limits, output limits, timeouts, and
-deterministic decoding. It must remain outside the authority path:
+`../VisualGrammar2d/qwen_cli.py` may be used only as an external bounded
+drafting helper. It must remain outside the authority path:
 
 ```text
 Qwen proposal
@@ -198,10 +269,10 @@ Qwen proposal
   -> governed execution
 ```
 
-As checked on August 21, 2026, the exact Ollama tag `qwen3.8:16b` is absent on
-this host. Install and validate that exact tag before naming it as active. The
-currently verified local profile remains `qwen3.8-27b-fast`, and it must not be
-silently substituted for a requested 16B model.
+The currently supported Agent Chat profile is the direct
+`qwen3.8-27b-direct` GGUF path. Do not silently substitute a different requested
+model; bind exact model identity and provenance before using any generated text
+as a proposal.
 
 ## Validation
 

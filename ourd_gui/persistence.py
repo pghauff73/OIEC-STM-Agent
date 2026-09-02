@@ -19,11 +19,12 @@ from .state import (
     GuiTask,
     reduce_event,
 )
+from .visual_text import DEFAULT_VISUAL_TEXT_THEME
 
 
 @dataclass(frozen=True)
 class GuiPreferences:
-    schema_version: int = 2
+    schema_version: int = 4
     window_geometry: str = "1280x800"
     selected_tab: str = "selection"
     selected_left_tab: int = 0
@@ -36,6 +37,12 @@ class GuiPreferences:
     show_internal_state: bool = False
     font_scale: float = 1.0
     reduced_motion: bool = False
+    chat_visual_formatting: bool = True
+    chat_visual_theme: str = DEFAULT_VISUAL_TEXT_THEME
+    formal_window_geometry: str = "1500x920"
+    formal_selected_control_tab: int = 0
+    formal_selected_result_id: str = ""
+    formal_font_scale: float = 1.0
 
 
 class GuiPreferencesStore:
@@ -48,7 +55,7 @@ class GuiPreferencesStore:
         try:
             payload = json.loads(self.path.read_text(encoding="utf-8"))
             return GuiPreferences(
-                schema_version=int(payload.get("schema_version", 1)),
+                schema_version=max(4, int(payload.get("schema_version", 1))),
                 window_geometry=str(payload.get("window_geometry", "1280x800")),
                 selected_tab=str(payload.get("selected_tab", "selection")),
                 selected_left_tab=int(payload.get("selected_left_tab", 0)),
@@ -67,6 +74,20 @@ class GuiPreferencesStore:
                 show_internal_state=bool(payload.get("show_internal_state", False)),
                 font_scale=float(payload.get("font_scale", 1.0)),
                 reduced_motion=bool(payload.get("reduced_motion", False)),
+                chat_visual_formatting=bool(payload.get("chat_visual_formatting", True)),
+                chat_visual_theme=str(
+                    payload.get("chat_visual_theme", DEFAULT_VISUAL_TEXT_THEME)
+                ),
+                formal_window_geometry=str(
+                    payload.get("formal_window_geometry", "1500x920")
+                ),
+                formal_selected_control_tab=int(
+                    payload.get("formal_selected_control_tab", 0)
+                ),
+                formal_selected_result_id=str(
+                    payload.get("formal_selected_result_id", "")
+                ),
+                formal_font_scale=float(payload.get("formal_font_scale", 1.0)),
             )
         except (OSError, ValueError, TypeError, json.JSONDecodeError):
             return GuiPreferences()

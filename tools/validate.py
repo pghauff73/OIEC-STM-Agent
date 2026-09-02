@@ -109,19 +109,34 @@ def source_hashes(root: Path) -> Dict[str, str]:
     }
 
 
-def run_live_ollama(args: argparse.Namespace) -> Dict[str, Any]:
+def run_live_llama_cpp(args: argparse.Namespace) -> Dict[str, Any]:
     with tempfile.TemporaryDirectory() as temporary:
         root = Path(temporary)
         (root / "README.md").write_text("# Live smoke\n\nread only\n", encoding="utf-8")
         config = ProviderConfig(
             model=args.model,
+            provider_kind="llama_cpp_process",
             base_url=args.base_url,
             api_key=args.api_key,
             reasoning_effort=args.reasoning_effort,
             max_output_tokens=args.max_output_tokens,
             context_budget_tokens=args.context_budget,
+            runtime_context_tokens=args.runtime_context_tokens,
             timeout_seconds=args.timeout_seconds,
-            max_transport_retries=args.transport_retries,
+            max_transport_retries=0,
+            runner_path=args.runner_path,
+            model_path=args.model_path,
+            expected_model_sha256=args.expected_model_sha256,
+            llama_cpp_root=args.llama_cpp_root,
+            llama_cpp_build_dir=args.llama_cpp_build_dir,
+            llama_grammar_dir=args.llama_grammar_dir,
+            llama_context_tokens=args.llama_context,
+            llama_gpu_layers=args.llama_gpu_layers,
+            llama_threads=args.llama_threads,
+            llama_seed=args.llama_seed,
+            llama_temperature_bp=args.llama_temperature_bp,
+            llama_top_p_bp=args.llama_top_p_bp,
+            llama_top_k=args.llama_top_k,
         )
         with OURDAgent(root, provider_config=config, max_steps=8) as agent:
             preflight = agent.provider_preflight()
@@ -306,15 +321,28 @@ def run_gui_smoke() -> Dict[str, Any]:
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Validate OIEC-STM-Agent")
-    parser.add_argument("--live-ollama", action="store_true")
-    parser.add_argument("--model", default="qwen3.8-27b-fast")
-    parser.add_argument("--base-url", default="http://127.0.0.1:11434/v1")
-    parser.add_argument("--api-key", default="ollama")
+    parser.add_argument("--live-llama-cpp", action="store_true")
+    parser.add_argument("--model", default="qwen3.8-27b-direct")
+    parser.add_argument("--base-url", default="")
+    parser.add_argument("--api-key", default="")
     parser.add_argument("--reasoning-effort", default="none")
     parser.add_argument("--max-output-tokens", type=int, default=700)
     parser.add_argument("--context-budget", type=int, default=6000)
+    parser.add_argument("--runtime-context-tokens", type=int, default=8192)
     parser.add_argument("--timeout-seconds", type=float, default=600.0)
-    parser.add_argument("--transport-retries", type=int, default=0)
+    parser.add_argument("--runner-path", default="")
+    parser.add_argument("--model-path", default="")
+    parser.add_argument("--expected-model-sha256", default="")
+    parser.add_argument("--llama-cpp-root", default="")
+    parser.add_argument("--llama-cpp-build-dir", default="")
+    parser.add_argument("--llama-grammar-dir", default="")
+    parser.add_argument("--llama-context", type=int, default=8192)
+    parser.add_argument("--llama-gpu-layers", type=int, default=-1)
+    parser.add_argument("--llama-threads", type=int, default=0)
+    parser.add_argument("--llama-seed", type=int, default=1234)
+    parser.add_argument("--llama-temperature-bp", type=int, default=1000)
+    parser.add_argument("--llama-top-p-bp", type=int, default=9500)
+    parser.add_argument("--llama-top-k", type=int, default=40)
     parser.add_argument("--report", type=Path)
     parser.add_argument("--no-report", action="store_true")
     return parser
@@ -330,13 +358,13 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     ]
     live = None
     live_error = ""
-    if args.live_ollama:
+    if args.live_llama_cpp:
         try:
-            live = run_live_ollama(args)
+            live = run_live_llama_cpp(args)
         except Exception as exc:
             live_error = f"{type(exc).__name__}: {exc}"
     deterministic_ok = all(check["ok"] for check in checks)
-    live_ok = not args.live_ollama or (
+    live_ok = not args.live_llama_cpp or (
         live is not None and live.get("ok") and not live.get("changed_files")
     )
     report = {
@@ -346,17 +374,16 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         "python": sys.version,
         "platform": platform.platform(),
         "dependency_availability": {
-            "openai": importlib.util.find_spec("openai") is not None,
             "setuptools": importlib.util.find_spec("setuptools") is not None,
         },
         "workspace_snapshot_hash": Workspace(REPO_ROOT).snapshot_hash(),
         "source_hashes": source_hashes(REPO_ROOT),
         "deterministic_checks": checks,
         "deterministic_ok": deterministic_ok,
-        "live_ollama_requested": args.live_ollama,
-        "live_ollama": live,
-        "live_ollama_error": live_error,
-        "live_ollama_ok": live_ok,
+        "live_llama_cpp_requested": args.live_llama_cpp,
+        "live_llama_cpp": live,
+        "live_llama_cpp_error": live_error,
+        "live_llama_cpp_ok": live_ok,
         "overall_ok": deterministic_ok and live_ok,
     }
     if not args.no_report:

@@ -2,6 +2,41 @@
 
 This document records the research basis for OIEC-STM-Agent's formal writing profiles. The implementation turns the findings into deterministic genre guidance plus an explicit argument-topology model. It is guidance for drafting and validation, not a substitute for a unit's assessment instructions or marking rubric.
 
+## GUI traceability boundary
+
+As of August 31, 2026, the standalone and embedded formal-writing workbenches
+are presentation and coordination surfaces over the same signed writing engine;
+they are not alternative academic-writing authorities. The request form compiles
+through the canonical compiler, and every workflow action runs through
+`FormalWritingService`. The GUI does not infer support, lower audit thresholds,
+invent page labels, accept novelty, or qualify a reasoning algorithm.
+
+The document surface is selection-only. A selected persisted sentence resolves
+through its signed sentence-to-claim map to the argument graph and stored
+reference IDs. The evidence reader displays exact reference text, bounded
+context, verification status, source identity/hash, extraction mode, physical
+page number or reflowable locator, OCR state, and freshness. Missing or drifted
+trace material is shown as a failure or diagnostic rather than reconstructed by
+guessing.
+
+The graph view renders evidence, claims, counterclaims, qualifications, and all
+typed reasoning relations with textual statuses. The audit view preserves all
+eight deterministic metrics, unsupported claims, graph issues, performed
+checks, limitations, selected reasoning-path scores, exact novelty enums, and
+the proposal status `PROPOSED_PENDING_HUMAN_REVIEW`. Qualified algorithm links
+in the embedded GUI navigate to existing EGCF qualification records; the
+standalone GUI creates no qualification or approval shortcut.
+
+Optional PDF rendering is inert and pixel bounded. OCR remains unavailable
+unless PyMuPDF, Pillow, and `pytesseract` are installed and OCR is explicitly
+permitted. The August 31 base environment lacks PyMuPDF and `pytesseract`, so no
+PDF geometry or OCR visual qualification is claimed from the base test run.
+
+Governed document preparation requires exact draft, audit, source, authority,
+output, and request-signature identities. It creates only a transaction and EON
+action pending evidence and human approval. Academic quality review, governed
+approval, apply verification, certification, and release remain separate gates.
+
 ## Research findings
 
 ### 1. University essays are thesis-driven arguments
@@ -161,3 +196,64 @@ The writer should distinguish:
 ## Academic integrity and local rules
 
 The agent must not invent citations, quotations, statistics, page numbers, DOIs, experimental results or sources. Assignment instructions, faculty conventions and marking rubrics override generic profile defaults. Where GenAI use must be disclosed, the student remains responsible for following the institution's current disclosure and academic-integrity requirements.
+
+## Implemented source-grounded engine
+
+The research profiles now sit above a deterministic source and reference layer
+rather than prompt guidance alone. The public compatibility module remains
+`ourd/formal_writing.py`; the implementation is split under
+`ourd/writing_engine/` into ingestion, source registry, page labels, anchors,
+passage retrieval, references, paraphrase checks, concepts, reasoning,
+topology, planning, drafting, revision, citations, critique, and service
+orchestration.
+
+Every accepted source is content-addressed by SHA-256. Reflowable sources retain
+line, section, paragraph, and exact-offset selectors without fabricated page
+numbers. PDF page records preserve physical page position separately from the
+displayed page label and retain blocks, lines, words, bounding boxes, rotation,
+text-layer kind, confidence, and page hashes when the optional PDF adapter is
+installed. Empty PDF text layers require explicit OCR permission, and OCR text
+is labelled as derived rather than native.
+
+References bind exact source text, bounded context, stable anchors, locators,
+verification status, and source hashes. Paraphrase analysis checks polarity,
+qualifiers, scope, causal-strength inflation, unsupported additions, and
+patchwriting risk. Concept and reasoning annotations retain source-span
+provenance and remain review-required unless deterministically verified.
+
+The `FormalWritingService` is shared by the dedicated CLI, the existing bounded
+write CLI, ICPI tool routing, persisted GUI projections, and tests. Drafts and
+revisions include citation-use mappings, source identities, reference integrity
+reports, and writing certificates. A revision is bound to the SHA-256 of the
+prior draft and is regenerated from verified passages rather than silently
+preserving unsupported prose.
+
+The writing certificate is deliberately limited. It records deterministic
+source, locator, quotation, citation, and hash checks. It does not certify that
+the prose is true, original, institutionally acceptable, or ready for
+submission. Human review remains mandatory for concept interpretation,
+reasoning interpretation, academic integrity, assignment fit, and final use.
+
+## Governed reasoning pipeline
+
+The implementation now separates what may be said from how it is rendered:
+
+```text
+WritingTask
+  -> ConceptDefinition and semantic drift gate
+  -> typed Claim inventory
+  -> provenance-bearing EvidenceLink qualification
+  -> ArgumentGraph and candidate ReasoningPathCandidate search
+  -> ParagraphPlan compilation
+  -> DraftSection rendering under NoNewMaterialClaims
+  -> falsification revision and WritingAudit
+  -> QualifiedDocument or fail-closed revision status
+```
+
+The writing audit reports claim support, evidence coverage, semantic
+consistency, argument connectivity, unsupported-claim rate,
+counterargument coverage, qualification adequacy, and citation traceability in
+basis points. `QUALIFIED_FORMAL_DOCUMENT` permits a review-bound SAA algorithm
+proposal, but never automatic qualification or novelty claims. Potentially new
+reasoning remains `POTENTIAL_NOVELTY_REQUIRES_REVIEW` until literature evidence
+and human review are supplied.

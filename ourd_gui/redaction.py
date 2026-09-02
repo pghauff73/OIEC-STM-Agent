@@ -4,6 +4,8 @@ from collections.abc import Mapping, Sequence
 from dataclasses import asdict, is_dataclass
 from typing import Any
 
+from ourd.persistence import redact
+
 
 REDACTED = "[REDACTED]"
 MAX_DEPTH_MARKER = "[maximum depth exceeded]"
@@ -83,9 +85,10 @@ def safe_projection(
             projected.append({TRUNCATED_ITEMS_MARKER: len(items) - max_items})
         return projected
     if isinstance(value, str):
-        if len(value) <= max_string_characters:
-            return value
-        return value[:max_string_characters] + "[truncated]"
+        redacted = str(redact(value))
+        if len(redacted) <= max_string_characters:
+            return redacted
+        return redacted[:max_string_characters] + "[truncated]"
     if isinstance(value, (bytes, bytearray)):
         return f"[{type(value).__name__} {len(value)} bytes]"
     if value is None or isinstance(value, (bool, int, float)):
