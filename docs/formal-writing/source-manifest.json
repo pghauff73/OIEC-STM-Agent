@@ -1,0 +1,292 @@
+{
+  "schema_version": 1,
+  "site_id": "oiec-stm-agent-formal-writing",
+  "title": "OIEC-STM-Agent — Formal Writing",
+  "build_date": "2026-08-31",
+  "base_commit": "d82969ac152281394423d30063a87d4de0f8889b",
+  "epistemic_policy": {
+    "primary_project_sources": "Establish repository-declared architecture, implementation, terminology, and status.",
+    "external_sources": "Support the writing, argumentation, scientific-communication, accessibility, and engineering method. They do not prove repository behaviour.",
+    "editorial_synthesis": "Must be labelled and must not be represented as a verbatim runtime API.",
+    "profile_guidance": "Formal Writing profiles guide model output but do not automatically grade or validate generated essays.",
+    "certification": "No certification, flawless-output, universal-safety, automatic-essay-compliance, or general-superiority claim is made."
+  },
+  "claims": [
+    {
+      "claim_id": "C1",
+      "proposition": "Model output remains advisory and cannot create its own mutation or release authority.",
+      "source_ids": [
+        "P1",
+        "P4",
+        "P8",
+        "P9",
+        "P10"
+      ],
+      "status": "source-backed"
+    },
+    {
+      "claim_id": "C2",
+      "proposition": "An unchanged exhausted attempt is blocked until materially relevant state changes or a terminal stop is justified.",
+      "source_ids": [
+        "P1",
+        "P2"
+      ],
+      "status": "source-backed"
+    },
+    {
+      "claim_id": "C3",
+      "proposition": "Exact snapshot, target, candidate, command, evidence, and risk identity limit approval drift.",
+      "source_ids": [
+        "P1",
+        "P2",
+        "P3",
+        "P8",
+        "P9",
+        "P10"
+      ],
+      "status": "source-backed"
+    },
+    {
+      "claim_id": "K1",
+      "proposition": "Governance imposes real process cost and should be treated as a risk-sensitive engineering trade-off.",
+      "source_ids": [
+        "P3",
+        "P4",
+        "E1",
+        "E2"
+      ],
+      "status": "qualified-editorial-inference"
+    },
+    {
+      "claim_id": "FW1",
+      "proposition": "The Formal Writing profiles specify guidance for an explicit thesis, evidence, reasoning, synthesis, counterargument treatment, calibrated certainty, and citation integrity; normal CLI output is not automatically checked for compliance.",
+      "source_ids": [
+        "P5",
+        "P6",
+        "P8",
+        "P9",
+        "W1",
+        "W2",
+        "W3",
+        "W4",
+        "W5"
+      ],
+      "status": "source-backed-guidance"
+    },
+    {
+      "claim_id": "OP1",
+      "proposition": "The current CLI exposes bounded writing arguments, delegates exact-snapshot path-bounded authority construction to the authority module, and routes selected Formal Writing guidance into the task prompt without making that guidance an authority grant or an automatic grading contract.",
+      "source_ids": [
+        "P3",
+        "P8",
+        "P9",
+        "P10"
+      ],
+      "status": "source-backed"
+    },
+    {
+      "claim_id": "SM1",
+      "proposition": "The compact admissibility equations on the website are an editorial abstraction of named repository constraints, not a verbatim runtime API.",
+      "source_ids": [
+        "P1",
+        "P2",
+        "P3",
+        "P10"
+      ],
+      "status": "editorial-synthesis"
+    }
+  ],
+  "sources": [
+    {
+      "source_id": "P1",
+      "class": "project",
+      "title": "README.md",
+      "path": "../../README.md",
+      "repository_path": "README.md",
+      "git_blob_sha": "68213efc384423bf4d857a4abd59a2b98f2efa2f",
+      "role": "Canonical architecture and operational overview"
+    },
+    {
+      "source_id": "P2",
+      "class": "project",
+      "title": "OIEC_STMV1_2_IMPLEMENTATION_REPORT.md",
+      "path": "../../OIEC_STMV1_2_IMPLEMENTATION_REPORT.md",
+      "repository_path": "OIEC_STMV1_2_IMPLEMENTATION_REPORT.md",
+      "git_blob_sha": "7577dda00a3147d762c5dfeb124280c80922975a",
+      "role": "Dated implementation, validation, invariant, and limitation evidence"
+    },
+    {
+      "source_id": "P3",
+      "class": "project",
+      "title": "docs/WRITING_MODE.md",
+      "path": "../WRITING_MODE.md",
+      "repository_path": "docs/WRITING_MODE.md",
+      "git_blob_sha": "3400eb1dab7783dde60fc98788f4c03d22595b01",
+      "role": "Governed writing-mode contract and examples"
+    },
+    {
+      "source_id": "P4",
+      "class": "project",
+      "title": "COMPLETE_IMPLEMENTATION_STRATEGY.md",
+      "path": "../../COMPLETE_IMPLEMENTATION_STRATEGY.md",
+      "repository_path": "COMPLETE_IMPLEMENTATION_STRATEGY.md",
+      "git_blob_sha": "4edfdc7466edecd858ca0466506169e673cd26e6",
+      "role": "Program status, dependencies, qualification gates, and open work"
+    },
+    {
+      "source_id": "P5",
+      "class": "project",
+      "title": "ourd/formal_writing.py",
+      "path": "../../ourd/formal_writing.py",
+      "repository_path": "ourd/formal_writing.py",
+      "git_blob_sha": "dcf970f31f0996a1929f17af5c62cefedb29225f",
+      "role": "Formal Writing profile definitions and machine-checkable topology validator"
+    },
+    {
+      "source_id": "P6",
+      "class": "project",
+      "title": "docs/FORMAL_WRITING_RESEARCH.md",
+      "path": "../FORMAL_WRITING_RESEARCH.md",
+      "repository_path": "docs/FORMAL_WRITING_RESEARCH.md",
+      "git_blob_sha": "994143821b88ed3409e52ceb0f6959fcac5ccf8b",
+      "role": "Repository research basis for formal academic and scientific writing"
+    },
+    {
+      "source_id": "P7",
+      "class": "project",
+      "title": "docs/ACRONYM_GLOSSARY.md",
+      "path": "../ACRONYM_GLOSSARY.md",
+      "repository_path": "docs/ACRONYM_GLOSSARY.md",
+      "git_blob_sha": "999993beade85d2036b73c7f64bfb42d3f077a55",
+      "role": "Canonical vocabulary and expansions"
+    },
+    {
+      "source_id": "P8",
+      "class": "project",
+      "title": "ourd/cli.py",
+      "path": "../../ourd/cli.py",
+      "repository_path": "ourd/cli.py",
+      "git_blob_sha": "cb13544802557523f4a6ff4b1321c1a1de575c2a",
+      "role": "Executable CLI arguments and delegation into bounded write-session construction"
+    },
+    {
+      "source_id": "P9",
+      "class": "project",
+      "title": "ourd/writing.py",
+      "path": "../../ourd/writing.py",
+      "repository_path": "ourd/writing.py",
+      "git_blob_sha": "937cb88c9f948ea6dde9c4e262c8929d52448626",
+      "role": "Non-authoritative Formal Writing prompt integration and bounded command capabilities"
+    },
+    {
+      "source_id": "P10",
+      "class": "project",
+      "title": "ourd/authority.py",
+      "path": "../../ourd/authority.py",
+      "repository_path": "ourd/authority.py",
+      "git_blob_sha": "d595afb05f7dc2e8114b24b4e1a3ca87fdbbfcb8",
+      "role": "Exact-snapshot authority construction, path normalization, risk posture, review settings, and read/write validation"
+    },
+    {
+      "source_id": "W1",
+      "class": "formal-writing",
+      "title": "Monash University — Writing an essay",
+      "url": "https://www.monash.edu/student-academic-success/excel-at-writing/how-to-write/essay",
+      "role": "Thesis-led essay structure and evidence-supported position"
+    },
+    {
+      "source_id": "W2",
+      "class": "formal-writing",
+      "title": "University of Melbourne — Using a writing process",
+      "url": "https://students.unimelb.edu.au/academic-skills/reading-writing-and-referencing/writing-effectively/using-a-writing-process",
+      "role": "Task analysis, research, critical analysis, drafting, citation, and revision"
+    },
+    {
+      "source_id": "W3",
+      "class": "formal-writing",
+      "title": "University of Oxford — Essay and dissertation writing skills",
+      "url": "https://www.ox.ac.uk/students/academic/guidance/skills/essay",
+      "role": "Evidence-bearing paragraph structure and conclusion discipline"
+    },
+    {
+      "source_id": "W4",
+      "class": "formal-writing",
+      "title": "Monash University — Bring together evidence and reasoning",
+      "url": "https://www.monash.edu/student-academic-success/sharpen-your-thinking/critical-thinking/create-argument/bring-together-your-evidence-and-reasoning",
+      "role": "Separation of evidential material from inferential reasoning"
+    },
+    {
+      "source_id": "W5",
+      "class": "formal-writing",
+      "title": "Stanford Encyclopedia of Philosophy — Informal Logic",
+      "url": "https://plato.stanford.edu/entries/logic-informal/",
+      "role": "Premise-conclusion standardisation, linked and convergent support, implicit premises, and diagrams"
+    },
+    {
+      "source_id": "W6",
+      "class": "formal-writing",
+      "title": "Nature Genetics — Cause, correlation, conjecture",
+      "url": "https://www.nature.com/articles/ng.3271",
+      "role": "Scientific claim, evidence, method, and claim-strength planning"
+    },
+    {
+      "source_id": "W7",
+      "class": "formal-writing",
+      "title": "Nature Methods — So you’re writing a paper",
+      "url": "https://www.nature.com/articles/nmeth.4532",
+      "role": "Audience, observations, analysis, interpretation, and reproducible communication"
+    },
+    {
+      "source_id": "W8",
+      "class": "formal-writing",
+      "title": "Nature — Five rules for evidence communication",
+      "url": "https://www.nature.com/articles/d41586-020-03189-1",
+      "role": "Calibrated certainty and avoidance of over-neat narratives"
+    },
+    {
+      "source_id": "E1",
+      "class": "engineering",
+      "title": "NIST SP 800-160 Vol. 1 Rev. 1",
+      "url": "https://csrc.nist.gov/pubs/sp/800/160/v1/r1/final",
+      "role": "Lifecycle engineering of trustworthy secure systems"
+    },
+    {
+      "source_id": "E2",
+      "class": "engineering",
+      "title": "NIST SP 800-218 — Secure Software Development Framework",
+      "url": "https://csrc.nist.gov/pubs/sp/800/218/final",
+      "role": "Lifecycle-integrated secure practices and common vocabulary"
+    },
+    {
+      "source_id": "E3",
+      "class": "engineering",
+      "title": "NASA Systems Engineering Handbook",
+      "url": "https://www.nasa.gov/reference/systems-engineering-handbook/",
+      "role": "Requirements, design, implementation, verification, validation, and lifecycle decisions"
+    },
+    {
+      "source_id": "E4",
+      "class": "engineering",
+      "title": "RFC 2119 / BCP 14",
+      "url": "https://www.rfc-editor.org/info/rfc2119",
+      "role": "Normative requirement language"
+    },
+    {
+      "source_id": "E5",
+      "class": "engineering",
+      "title": "WAI-ARIA Authoring Practices — Keyboard Interface",
+      "url": "https://www.w3.org/WAI/ARIA/apg/practices/keyboard-interface/",
+      "role": "Keyboard accessibility, visible focus, and understandable interaction"
+    }
+  ],
+  "artifacts": [
+    "index.html",
+    "assets/formal.css",
+    "assets/formal.js",
+    "figures/governed-pipeline.svg",
+    "figures/argument-topology.svg",
+    "figures/evidence-boundary.svg",
+    "README.md",
+    "source-manifest.json"
+  ]
+}

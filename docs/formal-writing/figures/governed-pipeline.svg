@@ -1,0 +1,121 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 760" role="img" aria-labelledby="title desc">
+  <title id="title">OIEC-STM-Agent governed architecture</title>
+  <desc id="desc">A responsibility map in which human authority bounds task interpretation, relational decomposition, bounded reasoning and experimentation, exact action construction, evidence-gated execution, collision feedback, and reusable knowledge.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#246b70"/>
+    </marker>
+    <marker id="arrow-warn" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#9b681b"/>
+    </marker>
+    <style>
+      .bg{fill:#fffdf7}
+      .boundary{fill:#f4e5c4;stroke:#9b681b;stroke-width:2.4}
+      .process{fill:#e4f0f0;stroke:#246b70;stroke-width:2}
+      .gate{fill:#f3eee3;stroke:#5f6c70;stroke-width:2}
+      .knowledge{fill:#e4ece4;stroke:#3f7350;stroke-width:2}
+      .feedback{fill:#f4dddd;stroke:#9a3f3f;stroke-width:2}
+      .label{font:700 20px system-ui,sans-serif;fill:#172028}
+      .small{font:500 15px system-ui,sans-serif;fill:#4e5a60}
+      .tiny{font:700 13px ui-monospace,monospace;fill:#246b70;letter-spacing:.08em}
+      .edge{fill:none;stroke:#246b70;stroke-width:3;marker-end:url(#arrow)}
+      .edge-dash{fill:none;stroke:#246b70;stroke-width:2.5;stroke-dasharray:10 8;marker-end:url(#arrow)}
+      .edge-warn{fill:none;stroke:#9b681b;stroke-width:2.5;marker-end:url(#arrow-warn)}
+      @media (prefers-color-scheme:dark){
+        .bg{fill:#182126}.boundary{fill:#3b301d}.process{fill:#18373b}.gate{fill:#202d32}.knowledge{fill:#1f3827}.feedback{fill:#432425}
+        .label{fill:#eff5f4}.small{fill:#b8c5c6}.tiny{fill:#8bd1d5}
+      }
+    </style>
+  </defs>
+  <rect class="bg" x="0" y="0" width="1400" height="760" rx="24"/>
+  <text class="tiny" x="55" y="55">RESPONSIBILITY MAP — NOT A MANDATORY LINEAR CALL TRACE</text>
+
+  <rect class="boundary" x="55" y="88" width="1290" height="100" rx="22"/>
+  <text class="label" x="700" y="127" text-anchor="middle">Human authority and exact-snapshot scope</text>
+  <text class="small" x="700" y="157" text-anchor="middle">The model may narrow this boundary; it may not enlarge it or approve itself.</text>
+
+  <path class="edge" d="M175 188 V245"/>
+  <path class="edge" d="M395 188 V245"/>
+  <path class="edge" d="M615 188 V245"/>
+  <path class="edge" d="M835 188 V245"/>
+  <path class="edge" d="M1055 188 V245"/>
+  <path class="edge" d="M1260 188 V245"/>
+
+  <g transform="translate(70 245)">
+    <rect class="process" width="210" height="110" rx="16"/>
+    <text class="tiny" x="105" y="30" text-anchor="middle">HRT</text>
+    <text class="label" x="105" y="58" text-anchor="middle">Interpret</text>
+    <text class="small" x="105" y="84" text-anchor="middle">task, scope, ambiguity</text>
+  </g>
+  <g transform="translate(290 245)">
+    <rect class="process" width="210" height="110" rx="16"/>
+    <text class="tiny" x="105" y="30" text-anchor="middle">OURD</text>
+    <text class="label" x="105" y="58" text-anchor="middle">Decompose</text>
+    <text class="small" x="105" y="84" text-anchor="middle">objects and relations</text>
+  </g>
+  <g transform="translate(510 245)">
+    <rect class="gate" width="210" height="110" rx="16"/>
+    <text class="tiny" x="105" y="30" text-anchor="middle">STM · BD · DL</text>
+    <text class="label" x="105" y="58" text-anchor="middle">Bound</text>
+    <text class="small" x="105" y="84" text-anchor="middle">state and dimensions</text>
+  </g>
+  <g transform="translate(730 245)">
+    <rect class="process" width="210" height="110" rx="16"/>
+    <text class="tiny" x="105" y="30" text-anchor="middle">SR · IURM</text>
+    <text class="label" x="105" y="58" text-anchor="middle">Compare</text>
+    <text class="small" x="105" y="84" text-anchor="middle">hypotheses and tests</text>
+  </g>
+  <g transform="translate(950 245)">
+    <rect class="gate" width="210" height="110" rx="16"/>
+    <text class="tiny" x="105" y="30" text-anchor="middle">IEPS</text>
+    <text class="label" x="105" y="58" text-anchor="middle">Produce evidence</text>
+    <text class="small" x="105" y="84" text-anchor="middle">checks and counterexamples</text>
+  </g>
+  <g transform="translate(1170 245)">
+    <rect class="gate" width="160" height="110" rx="16"/>
+    <text class="tiny" x="80" y="30" text-anchor="middle">EON</text>
+    <text class="label" x="80" y="58" text-anchor="middle">Bind action</text>
+    <text class="small" x="80" y="84" text-anchor="middle">exact identity</text>
+  </g>
+
+  <path class="edge" d="M280 300 H290"/>
+  <path class="edge" d="M500 300 H510"/>
+  <path class="edge" d="M720 300 H730"/>
+  <path class="edge" d="M940 300 H950"/>
+  <path class="edge" d="M1160 300 H1170"/>
+
+  <g transform="translate(310 445)">
+    <rect class="gate" width="270" height="118" rx="16"/>
+    <text class="tiny" x="135" y="32" text-anchor="middle">EGCF · POLICY · EVIDENCE GATE</text>
+    <text class="label" x="135" y="64" text-anchor="middle">Admit or block</text>
+    <text class="small" x="135" y="92" text-anchor="middle">capability, risk, evidence, review</text>
+  </g>
+  <g transform="translate(640 445)">
+    <rect class="process" width="240" height="118" rx="16"/>
+    <text class="tiny" x="120" y="32" text-anchor="middle">TRANSACTION / EXECUTOR</text>
+    <text class="label" x="120" y="64" text-anchor="middle">Apply exactly</text>
+    <text class="small" x="120" y="92" text-anchor="middle">atomic write or command</text>
+  </g>
+  <g transform="translate(940 445)">
+    <rect class="feedback" width="230" height="118" rx="16"/>
+    <text class="tiny" x="115" y="32" text-anchor="middle">CFEL</text>
+    <text class="label" x="115" y="64" text-anchor="middle">Record collision</text>
+    <text class="small" x="115" y="92" text-anchor="middle">failure, evidence, learning</text>
+  </g>
+
+  <path class="edge" d="M1250 355 V404 H445 V445"/>
+  <path class="edge" d="M580 504 H640"/>
+  <path class="edge" d="M880 504 H940"/>
+
+  <g transform="translate(530 640)">
+    <rect class="knowledge" width="340" height="82" rx="16"/>
+    <text class="tiny" x="170" y="27" text-anchor="middle">SAA</text>
+    <text class="label" x="170" y="56" text-anchor="middle">Qualify, retrieve, and reuse knowledge</text>
+  </g>
+
+  <path class="edge-warn" d="M1055 563 V600 H870 V681"/>
+  <path class="edge-dash" d="M530 681 H220 V355"/>
+  <text class="small" x="260" y="659">verified learning can inform later interpretation</text>
+
+  <text class="small" x="700" y="598" text-anchor="middle">No component shown below the authority boundary may create a broader grant.</text>
+</svg>

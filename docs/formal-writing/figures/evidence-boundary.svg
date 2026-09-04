@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1250 680" role="img" aria-labelledby="title desc">
+  <title id="title">Evidence and mutation boundary</title>
+  <desc id="desc">A proposed change remains outside the workspace mutation boundary until exact target scope, source snapshot, candidate identity, evidence, policy, and required human review agree. Execution then produces verification or failure feedback.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0 L10 5 L0 10 z" fill="#246b70"/>
+    </marker>
+    <marker id="block" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M1 1 L9 9 M9 1 L1 9" stroke="#9a3f3f" stroke-width="2.5"/>
+    </marker>
+    <style>
+      .bg{fill:#fffdf7}
+      .outside{fill:#e4f0f0;stroke:#246b70;stroke-width:2}
+      .gate{fill:#f4e5c4;stroke:#9b681b;stroke-width:2.5}
+      .inside{fill:#e4ece4;stroke:#3f7350;stroke-width:2.5}
+      .feedback{fill:#f4dddd;stroke:#9a3f3f;stroke-width:2}
+      .label{font:700 19px system-ui,sans-serif;fill:#172028}
+      .small{font:500 14px system-ui,sans-serif;fill:#4e5a60}
+      .tiny{font:700 12px ui-monospace,monospace;fill:#246b70;letter-spacing:.08em}
+      .edge{fill:none;stroke:#246b70;stroke-width:3;marker-end:url(#arrow)}
+      .blocked{fill:none;stroke:#9a3f3f;stroke-width:3;stroke-dasharray:8 7;marker-end:url(#block)}
+      .boundary-line{fill:none;stroke:#9b681b;stroke-width:4;stroke-dasharray:14 10}
+      @media(prefers-color-scheme:dark){
+        .bg{fill:#182126}.outside{fill:#18373b}.gate{fill:#3b301d}.inside{fill:#1f3827}.feedback{fill:#432425}
+        .label{fill:#eff5f4}.small{fill:#b8c5c6}.tiny{fill:#8bd1d5}
+      }
+    </style>
+  </defs>
+  <rect class="bg" width="1250" height="680" rx="24"/>
+  <text class="tiny" x="45" y="45">A WRITE REQUEST IS A CANDIDATE UNTIL EVERY REQUIRED OWNER AGREES</text>
+
+  <path class="boundary-line" d="M775 70 V610"/>
+  <text class="tiny" x="790" y="92">WORKSPACE MUTATION BOUNDARY</text>
+
+  <g transform="translate(60 105)">
+    <rect class="outside" width="235" height="100" rx="16"/>
+    <text class="label" x="117.5" y="43" text-anchor="middle">Task and proposal</text>
+    <text class="small" x="117.5" y="70" text-anchor="middle">model-generated candidate</text>
+  </g>
+  <g transform="translate(60 260)">
+    <rect class="outside" width="235" height="100" rx="16"/>
+    <text class="label" x="117.5" y="43" text-anchor="middle">Candidate bytes</text>
+    <text class="small" x="117.5" y="70" text-anchor="middle">diff, command, rollback</text>
+  </g>
+  <g transform="translate(60 415)">
+    <rect class="outside" width="235" height="100" rx="16"/>
+    <text class="label" x="117.5" y="43" text-anchor="middle">Evidence package</text>
+    <text class="small" x="117.5" y="70" text-anchor="middle">tests, invariants, counterexamples</text>
+  </g>
+
+  <g transform="translate(365 75)">
+    <path class="gate" d="M120 0 L240 65 L120 130 L0 65 Z"/>
+    <text class="label" x="120" y="58" text-anchor="middle">Target scope</text>
+    <text class="small" x="120" y="82" text-anchor="middle">authority ∩ governance</text>
+  </g>
+  <g transform="translate(365 225)">
+    <path class="gate" d="M120 0 L240 65 L120 130 L0 65 Z"/>
+    <text class="label" x="120" y="58" text-anchor="middle">Exact identity</text>
+    <text class="small" x="120" y="82" text-anchor="middle">snapshot + action + candidate</text>
+  </g>
+  <g transform="translate(365 375)">
+    <path class="gate" d="M120 0 L240 65 L120 130 L0 65 Z"/>
+    <text class="label" x="120" y="58" text-anchor="middle">Evidence / risk</text>
+    <text class="small" x="120" y="82" text-anchor="middle">policy and capability gate</text>
+  </g>
+  <g transform="translate(365 525)">
+    <path class="gate" d="M120 0 L240 65 L120 130 L0 65 Z"/>
+    <text class="label" x="120" y="58" text-anchor="middle">Human review</text>
+    <text class="small" x="120" y="82" text-anchor="middle">when required by risk</text>
+  </g>
+
+  <path class="edge" d="M295 155 H365"/>
+  <path class="edge" d="M295 310 H365"/>
+  <path class="edge" d="M295 465 H365"/>
+  <path class="edge" d="M605 140 H675 V290 H605"/>
+  <path class="edge" d="M605 290 H675 V440 H605"/>
+  <path class="edge" d="M605 440 H675 V590 H605"/>
+  <path class="edge" d="M605 590 H775"/>
+
+  <g transform="translate(835 175)">
+    <rect class="inside" width="330" height="120" rx="18"/>
+    <text class="tiny" x="165" y="31" text-anchor="middle">ADMITTED TRANSACTION</text>
+    <text class="label" x="165" y="65" text-anchor="middle">Apply exact candidate</text>
+    <text class="small" x="165" y="92" text-anchor="middle">atomic where possible; rollback retained</text>
+  </g>
+  <g transform="translate(835 375)">
+    <rect class="inside" width="330" height="100" rx="18"/>
+    <text class="label" x="165" y="43" text-anchor="middle">Verify observation</text>
+    <text class="small" x="165" y="70" text-anchor="middle">result, invariants, progress certificate</text>
+  </g>
+  <g transform="translate(835 535)">
+    <rect class="feedback" width="330" height="90" rx="18"/>
+    <text class="label" x="165" y="39" text-anchor="middle">CFEL feedback or terminal stop</text>
+    <text class="small" x="165" y="65" text-anchor="middle">unchanged failed attempts remain blocked</text>
+  </g>
+
+  <path class="edge" d="M1000 295 V375"/>
+  <path class="edge" d="M1000 475 V535"/>
+  <path class="blocked" d="M775 625 H700"/>
+  <text class="small" x="650" y="650" text-anchor="middle" fill="#9a3f3f">any failed gate blocks crossing</text>
+</svg>

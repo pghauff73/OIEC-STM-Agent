@@ -1,0 +1,66 @@
+name: Formal Writing website qualification
+
+on:
+  pull_request:
+    paths:
+      - "docs/formal-writing/**"
+      - "tests/test_formal_writing_site.py"
+      - ".github/workflows/formal-writing-site.yml"
+      - "README.md"
+      - "OIEC_STMV1_2_IMPLEMENTATION_REPORT.md"
+      - "COMPLETE_IMPLEMENTATION_STRATEGY.md"
+      - "docs/WRITING_MODE.md"
+      - "docs/FORMAL_WRITING_RESEARCH.md"
+      - "docs/ACRONYM_GLOSSARY.md"
+      - "ourd/formal_writing.py"
+      - "ourd/cli.py"
+      - "ourd/writing.py"
+      - "ourd/authority.py"
+  push:
+    branches:
+      - main
+    paths:
+      - "docs/formal-writing/**"
+      - "tests/test_formal_writing_site.py"
+      - ".github/workflows/formal-writing-site.yml"
+      - "README.md"
+      - "OIEC_STMV1_2_IMPLEMENTATION_REPORT.md"
+      - "COMPLETE_IMPLEMENTATION_STRATEGY.md"
+      - "docs/WRITING_MODE.md"
+      - "docs/FORMAL_WRITING_RESEARCH.md"
+      - "docs/ACRONYM_GLOSSARY.md"
+      - "ourd/formal_writing.py"
+      - "ourd/cli.py"
+      - "ourd/writing.py"
+      - "ourd/authority.py"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: formal-writing-site-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  qualify:
+    name: Source, structure, SVG and browser contracts
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Check out repository and provenance history
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - name: Run Formal Writing website qualification
+        run: python -m unittest -v tests.test_formal_writing_site
+
+      - name: Check browser JavaScript syntax
+        run: node --check docs/formal-writing/assets/formal.js

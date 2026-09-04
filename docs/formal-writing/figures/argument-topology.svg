@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 720" role="img" aria-labelledby="title desc">
+  <title id="title">Formal Writing argument topology</title>
+  <desc id="desc">Evidence and premises support claims through explicit warrants; claims support a central thesis; counterclaims attack material claims and receive rebuttals; qualifiers and limitations constrain the thesis before implications are drawn.</desc>
+  <defs>
+    <marker id="support" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0 L10 5 L0 10 z" fill="#246b70"/>
+    </marker>
+    <marker id="attack" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0 L10 5 L0 10 z" fill="#9a3f3f"/>
+    </marker>
+    <style>
+      .bg{fill:#fffdf7}
+      .evidence{fill:#eef4ef;stroke:#3f7350;stroke-width:2}
+      .claim{fill:#e4f0f0;stroke:#246b70;stroke-width:2}
+      .thesis{fill:#f4e5c4;stroke:#9b681b;stroke-width:3}
+      .counter{fill:#f4dddd;stroke:#9a3f3f;stroke-width:2}
+      .limit{fill:#f3eee3;stroke:#59666b;stroke-width:2}
+      .label{font:700 20px system-ui,sans-serif;fill:#172028}
+      .small{font:500 14px system-ui,sans-serif;fill:#4e5a60}
+      .tiny{font:700 12px ui-monospace,monospace;fill:#246b70;letter-spacing:.08em}
+      .support{fill:none;stroke:#246b70;stroke-width:3;marker-end:url(#support)}
+      .attack{fill:none;stroke:#9a3f3f;stroke-width:3;stroke-dasharray:9 7;marker-end:url(#attack)}
+      .qualify{fill:none;stroke:#59666b;stroke-width:2.5;marker-end:url(#support)}
+      @media(prefers-color-scheme:dark){
+        .bg{fill:#182126}.evidence{fill:#1f3827}.claim{fill:#18373b}.thesis{fill:#3b301d}.counter{fill:#432425}.limit{fill:#202d32}
+        .label{fill:#eff5f4}.small{fill:#b8c5c6}.tiny{fill:#8bd1d5}
+      }
+    </style>
+  </defs>
+  <rect class="bg" width="1100" height="720" rx="24"/>
+  <text class="tiny" x="42" y="46">POSITIVE SUPPORT IS ACYCLIC; DIALECTICAL EDGES MAY CROSS IT</text>
+
+  <g transform="translate(70 92)">
+    <path class="evidence" d="M0 0 H220 L250 30 V118 H0 Z"/>
+    <path d="M220 0 V30 H250" fill="none" stroke="#3f7350" stroke-width="2"/>
+    <text class="label" x="125" y="52" text-anchor="middle">Evidence</text>
+    <text class="small" x="125" y="80" text-anchor="middle">source reference required</text>
+  </g>
+  <g transform="translate(410 92)">
+    <rect class="evidence" width="250" height="118" rx="16"/>
+    <text class="label" x="125" y="52" text-anchor="middle">Premises</text>
+    <text class="small" x="125" y="80" text-anchor="middle">linked or convergent support</text>
+  </g>
+  <g transform="translate(780 92)">
+    <rect class="claim" width="250" height="118" rx="16"/>
+    <text class="label" x="125" y="52" text-anchor="middle">Warrant</text>
+    <text class="small" x="125" y="80" text-anchor="middle">why support is relevant</text>
+  </g>
+
+  <g transform="translate(190 310)">
+    <rect class="claim" width="260" height="118" rx="16"/>
+    <text class="label" x="130" y="52" text-anchor="middle">Supporting claim</text>
+    <text class="small" x="130" y="80" text-anchor="middle">intermediate conclusion</text>
+  </g>
+  <g transform="translate(650 310)">
+    <rect class="counter" width="260" height="118" rx="16"/>
+    <text class="label" x="130" y="52" text-anchor="middle">Counterclaim</text>
+    <text class="small" x="130" y="80" text-anchor="middle">attacks a claim or inference</text>
+  </g>
+
+  <g transform="translate(410 500)">
+    <rect class="thesis" width="280" height="126" rx="22"/>
+    <text class="tiny" x="140" y="32" text-anchor="middle">EXACTLY ONE</text>
+    <text class="label" x="140" y="68" text-anchor="middle">Central thesis</text>
+    <text class="small" x="140" y="98" text-anchor="middle">the proposition the essay defends</text>
+  </g>
+
+  <g transform="translate(760 520)">
+    <rect class="counter" width="250" height="100" rx="16"/>
+    <text class="label" x="125" y="44" text-anchor="middle">Rebuttal</text>
+    <text class="small" x="125" y="71" text-anchor="middle">answers the objection</text>
+  </g>
+
+  <g transform="translate(80 520)">
+    <rect class="limit" width="240" height="100" rx="16"/>
+    <text class="label" x="120" y="43" text-anchor="middle">Qualifier / limit</text>
+    <text class="small" x="120" y="70" text-anchor="middle">constrains claim strength</text>
+  </g>
+
+  <path class="support" d="M195 210 V270 H320 V310"/>
+  <path class="support" d="M535 210 V260 H360 V310"/>
+  <path class="support" d="M905 210 V270 H410 V310"/>
+  <path class="support" d="M320 428 V465 H500 V500"/>
+  <path class="attack" d="M650 369 H450"/>
+  <path class="attack" d="M780 428 V475 H885 V520"/>
+  <path class="support" d="M760 570 H690"/>
+  <path class="qualify" d="M320 570 H410"/>
+
+  <text class="small" x="535" y="246" text-anchor="middle">supports / warrants / entails / depends_on</text>
+  <text class="small" x="548" y="350" text-anchor="middle" fill="#9a3f3f">attacks</text>
+  <text class="small" x="893" y="475" text-anchor="middle" fill="#9a3f3f">requires response</text>
+  <text class="small" x="550" y="677" text-anchor="middle">Implications follow only after the thesis has been appropriately qualified.</text>
+</svg>
